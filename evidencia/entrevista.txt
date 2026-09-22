@@ -1,0 +1,29 @@
+1. Identificación de Actores y Carriles (Pools y Swimlanes)
+¿Cuáles son todos los roles, departamentos o unidades organizacionales que participan en el proceso, desde que un paciente es derivado o llega por primera vez al servicio de oncología hasta que recibe su atención?
+
+
+¿Intervienen actores externos al centro de salud en este flujo (como el propio paciente, familiares, prestadores externos o aseguradoras)?
+
+2. Evento de Inicio y Fronteras del Proceso (Start Event y Scope)
+¿Cuál es el evento exacto que desencadena el proceso? (Ej. ¿La recepción de una interconsulta médica digital, un llamado telefónico del paciente, o la llegada presencial a ventanilla?).
+
+¿En qué punto exacto se considera que finaliza este ciclo inicial de admisión y agendamiento? (Ej. ¿Cuando el paciente tiene su hora confirmada en el sistema, o cuando se completa la toma de muestras y la validación médica previa?).
+
+3. Secuencia de Actividades y Tareas (Task Flows)
+Admisión y Registro Inicial: ¿Cómo se captura la información del paciente cuando ingresa por primera vez a oncología? ¿Se usan formularios en papel, planillas Excel o sistemas legados?
+
+Toma de Muestras y Exámenes: ¿En qué momento del flujo se solicitan los exámenes de laboratorio previos obligatorios para oncología? ¿Cómo se traslada físicamente la orden y la muestra, y cómo recibe el médico los resultados?
+
+Evaluación y Definición de Protocolo: ¿Cómo procede el médico oncólogo al revisar los resultados para definir el esquema de tratamiento? ¿Dónde registra esta decisión?
+
+Agendamiento de Tratamientos y Horas: ¿Cómo se coordinan las agendas para las sesiones de quimioterapia, sillones de infusión y controles? ¿Qué criterios manuales o informales se utilizan actualmente para asignar los cupos?
+
+4. Puntos de Decisión y Validaciones (Gateways)
+¿Qué sucede si los resultados de los exámenes de laboratorio del paciente están fuera de los rangos de seguridad establecidos? ¿Quién toma la decisión de suspender o reprogramar el tratamiento y por qué medio se comunica?
+
+¿Existen puntos de aprobación obligatoria, filtros o revisiones cruzadas (por ejemplo, entre médico y farmacia o enfermería) antes de fijar una cita definitiva? ¿Cómo se ejecutan hoy?
+
+5. Excepciones, Retrasos y Cuellos de Botella (Exception Flows)
+¿Cuáles son los problemas más frecuentes que interrumpen o retrasan este proceso actualmente (ej. inasistencia de pacientes, fallas en la entrega de resultados de laboratorio, falta de disponibilidad de sillones o personal)?
+
+¿Cómo se manejan hoy en día las cancelaciones de última hora, las reagendas o los errores en los registros de los pacientes cuando se detectan a mitad del proceso?
