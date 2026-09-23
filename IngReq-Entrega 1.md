@@ -21,6 +21,21 @@
 
 ---
 
+## 👥 Declaración de Responsabilidades por Integrante
+
+Conforme a lo exigido en la Especificación de la Evaluación 1, la distribución oficial de responsabilidades del equipo sobre los entregables es la siguiente:
+
+| Integrante | Entregable(s) a Cargo |
+| :--- | :--- |
+| **Bruno Fernandez** | `01-proceso-as-is.md` y `02-rediseno-to-be.md` |
+| **[Nombre Compañero]** | `04-historias-usuario.md` |
+| **Máximo Torrijo** | `03-requisitos.md` |
+| **Ignacio Jorquera** | `05-elicitacion.md` y `06-atributos-calidad.md` |
+
+
+
+---
+
 ## 📂 Modelos y Diagramas BPMN
 
 - **Proceso AS-IS:** [diagramas/as-is.bpmn](file:///c:/Users/copad/OneDrive/Documentos/Metodología%20de%20Análisis/OncoTrace/diagramas/as-is.bpmn)
