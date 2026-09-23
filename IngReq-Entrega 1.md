@@ -1,16 +1,16 @@
-# Ingeniería de Requisitos — Entrega 1
+# 🚀 Ingeniería de Requisitos — Entrega 1
  
-## Equipo
+## 👥 Equipo
 - Bruno Fernandez
 - Máximo Torrijo
 - Ignacio Jorquera
 - [Nombre de tu otro compañero]
  
-## Proyecto
+## 🏥 Proyecto
 **OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico**
 Solución diseñada para el Hospital Dr. Gustavo Fricke que dota a las gestoras oncológicas de una herramienta centralizada. El sistema resuelve la fragmentación de datos clínicos, la pérdida de trazabilidad en derivaciones a prestadores externos y la sobrecarga operativa manual, asegurando el cumplimiento de las normativas GES.
  
-## Índice de documentos
+## 📂 Índice de documentos
 1. [Proceso AS-IS](./01-proceso-as-is.md)
 2. [Rediseño y TO-BE](./02-rediseno-to-be.md)
 3. [Clasificación de requisitos](./03-requisitos.md)
@@ -20,7 +20,7 @@ Solución diseñada para el Hospital Dr. Gustavo Fricke que dota a las gestoras 
 
 ---
 
-## 👥 Declaración de Responsabilidades por Integrante
+## 📋 Declaración de Responsabilidades por Integrante
 
 Conforme a lo exigido en la evaluación, la distribución de responsabilidades del equipo sobre los entregables es la siguiente:
 
@@ -33,7 +33,7 @@ Conforme a lo exigido en la evaluación, la distribución de responsabilidades d
 
 ---
 
-## 📂 Accesos Directos a Modelos BPMN
+## 🗺️ Accesos Directos a Modelos BPMN
 
 Para facilitar la revisión técnica, a continuación se enlazan los archivos fuente y las exportaciones gráficas de los modelos de proceso:
 
