@@ -1,28 +1,34 @@
 # 📋 Clasificación de requisitos
- 
+
+> **Dominio:** Sistema de Gestión Clínica y Trazabilidad de Atenciones (Plataforma OncoTrace)  
+> **Marco Teórico:** Ingeniería de Requisitos (Niveles de Usuario, Sistema y Software) y Atributos de Calidad ISO/IEC 25010:2023.
+
 ## 📦 Requisitos de producto
+
 | ID | Requisito | Tipo (funcional/no funcional) | Actividad TO-BE asociada |
 |----|-----------|--------------------------------|----------------------------|
-| 🔹 RF-01 | Proveer tablero visual y línea de tiempo con hitos y próximos pasos por paciente. | Funcional | Gestora monitorea tablero Kanban y revisa resultados consolidados |
-| 🔹 RF-02 | Registrar evaluación multidimensional (clínica, ECOG, vulnerabilidad social). | Funcional | Gestora realiza Evaluación Multidimensional (ECOG, Social, Red) |
-| 🔹 RF-03 | Registrar contactos asistenciales y necesidades en bitácora cronológica. | Funcional | Gestora registra primer contacto en Bitácora de Acompañamiento |
-| 🔹 RF-04 | Monitorear plazos y emitir alertas preventivas por vencimiento GES o inactividad. | Funcional | Motor de alertas evalúa plazos GES y riesgo de inactividad |
-| 🔹 RF-05 | Consolidar e indexar informes validados de anatomía patológica e imagenología. | Funcional | OncoTrace consolida e indexa informes de patología e imágenes |
-| 🔹 RF-06 | Programar comités, asignar pacientes y generar Ficha Resumen de Presentación. | Funcional | OncoTrace compila antecedentes y genera Ficha de Presentación |
-| 🔹 RF-07 | Registrar discusión clínica y formalizar acta oficial del comité con firma electrónica. | Funcional | Comité evalúa caso y firma Acta Digital con conducta terapéutica |
-| 🔹 RF-08 | Registrar y hacer seguimiento de derivaciones a Hospital Van Buren y clínicas privadas. | Funcional | Gestora realiza seguimiento activo de derivación en OncoTrace |
-| 🔸 RNF-01 | Disponibilidad ≥ 99.5% en horario hábil para acceso a datos críticos (Fiabilidad). | No funcional | OncoTrace consolida e indexa informes de patología e imágenes |
-| 🔸 RNF-02 | Tiempo de carga del tablero ≤ 2.0 segundos bajo carga nominal (Rendimiento). | No funcional | Gestora monitorea tablero Kanban y revisa resultados consolidados |
-| 🔸 RNF-03 | Autenticación robusta y cifrado AES-256 para datos clínicos (Seguridad). | No funcional | Gestora registra paciente en OncoTrace y activa trazabilidad |
-| 🔸 RNF-04 | Interoperar mediante HL7 FHIR / APIs con sistemas LIS y PACS (Compatibilidad). | No funcional | OncoTrace consolida e indexa informes de patología e imágenes |
+| **RF-USR-01** | **Tablero y Trazabilidad:** La gestora debe visualizar un tablero centralizado y una línea de tiempo cronológica por paciente con sus hitos completados y pendientes. | Funcional | Gestora monitorea tablero Kanban y revisa resultados consolidados |
+| **RF-USR-02** | **Evaluación Multidimensional:** La gestora debe poder registrar y actualizar la evaluación clínica, estado funcional (ECOG), factores de vulnerabilidad social y red de apoyo. | Funcional | Gestora realiza Evaluación Multidimensional (ECOG, Social, Red) |
+| **RF-USR-03** | **Bitácora de Acompañamiento:** La gestora debe registrar contactos asistenciales (llamadas, entrevistas, incidencias) en el historial cronológico del paciente. | Funcional | Gestora registra primer contacto en Bitácora de Acompañamiento |
+| **RF-SYS-01** | **Motor de Alertas GES:** El sistema debe monitorear días transcurridos y emitir alertas preventivas ante vencimiento de garantías GES o inactividad prolongada (>15 días). | Funcional | Motor de alertas evalúa plazos GES y riesgo de inactividad |
+| **RF-SYS-02** | **Consolidación Automatizada:** El sistema debe consolidar e indexar automáticamente los informes validados de anatomía patológica e imagenología. | Funcional | OncoTrace consolida e indexa informes de patología e imágenes |
+| **RF-SW-01** | **Gestión de Comités:** El sistema debe compilar automáticamente los antecedentes clínicos y generar la Ficha Resumen de Presentación para el comité. | Funcional | OncoTrace compila antecedentes y genera Ficha de Presentación |
+| **RF-SW-02** | **Acta Digital:** El sistema debe permitir registrar en tiempo real la discusión multidisciplinaria y formalizar el acta oficial con firma electrónica. | Funcional | Comité evalúa caso y firma Acta Digital con conducta terapéutica |
+| **RF-SYS-03** | **Trazabilidad de Derivaciones:** El sistema debe registrar y hacer seguimiento a las interconsultas enviadas al Hospital Carlos Van Buren y prestadores privados. | Funcional | Gestora realiza seguimiento activo de derivación en OncoTrace |
+| **RNF-SYS-01** | **Disponibilidad (Fiabilidad):** El sistema global (servidores y BD) debe garantizar una disponibilidad ≥ 99.5% en horario hábil para consultas operativas. | No funcional | OncoTrace consolida e indexa informes de patología e imágenes |
+| **RNF-SW-01** | **Tiempo de Respuesta (Eficiencia):** El tiempo de carga del tablero de trazabilidad y ficha del paciente debe ser ≤ 2.0 segundos bajo carga nominal (P95). | No funcional | Gestora monitorea tablero Kanban y revisa resultados consolidados |
+| **RNF-SW-02** | **Seguridad y Confidencialidad:** El sistema debe aplicar autenticación robusta institucional y cifrado AES-256 para los datos clínicos sensibles. | No funcional | Gestora registra paciente en OncoTrace y activa trazabilidad |
+| **RNF-PROD-01**| **Interoperabilidad (Compatibilidad):** El sistema debe ser capaz de interoperar mediante estándares HL7 FHIR / RESTful APIs con los sistemas LIS y PACS. | No funcional | OncoTrace consolida e indexa informes de patología e imágenes |
  
 ## 🏗️ Requisitos de proyecto
+
 | ID | Requisito |
 |----|-----------|
-| 🛠️ RY-01 | El desarrollo se gestionará mediante iteraciones quincenales usando un tablero Kanban en GitHub Projects. |
-| 🛠️ RY-02 | El equipo utilizará obligatoriamente Antigravity CLI para la gestión e inicialización del entorno de trabajo. |
+| **REQ-PROY-01** | **Herramienta de Construcción:** El equipo de ingeniería debe utilizar obligatoriamente *Antigravity CLI* para la inicialización y administración del flujo de trabajo del proyecto. |
+| **REQ-PROY-02** | **Gestión de Ciclo de Vida:** El desarrollo se gestionará mediante iteraciones ágiles utilizando un tablero Kanban alojado centralizadamente en GitHub Projects. |
  
 ## 🔗 Requisito derivado
-**Requisito origen:** 🔸 RNF-03 (Autenticación robusta y cifrado AES-256 para datos clínicos sensibles).
-**Requisito derivado:** 🔄 RD-01 (El sistema debe integrarse obligatoriamente mediante Single Sign-On (SSO) con el Directorio Activo institucional del Hospital Dr. Gustavo Fricke).
-**Justificación:** Para garantizar la seguridad y autenticación robusta exigida en el requisito origen y cumplir la Ley N° 20.584, el software no debe gestionar credenciales de forma aislada, derivando en la obligación técnica de consumir el servicio de identidades centralizado del hospital.
+
+**Requisito origen:** **RNF-SW-02** (El sistema debe aplicar autenticación robusta institucional y cifrado AES-256 para los datos clínicos sensibles).  
+**Requisito derivado:** **REQ-DER-01** (La plataforma debe integrarse obligatoriamente mediante *Single Sign-On* (SSO) con el Directorio Activo institucional del Hospital Dr. Gustavo Fricke).  
+**Justificación:** Para garantizar la seguridad exigida en el requisito origen y cumplir con la Ley N° 20.584 de confidencialidad médica, la plataforma OncoTrace no puede gestionar ni almacenar contraseñas de forma aislada. Esto deriva en la necesidad arquitectónica de consumir directamente el servicio de identidades y credenciales centralizado del hospital.
