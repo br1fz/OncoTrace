@@ -7,18 +7,18 @@
 
 ## 📌 Resumen de Historias de Usuario
 
-| ID | Título | Rol Principal | Módulo OncoTrace | Prioridad |
-|---|---|---|---|---|
-| **HU-01** | Tablero Visual de Trazabilidad y Timeline Clínico | Gestor/a Oncológico/a | Trazabilidad | Alta (Must) |
-| **HU-02** | Evaluación Multidimensional y Estratificación de Riesgo | Gestor/a Oncológico/a | Evaluación y Riesgo | Alta (Must) |
-| **HU-03** | Bitácora de Acompañamiento y Seguimiento Activo | Gestor/a Oncológico/a | Acompañamiento | Alta (Must) |
-| **HU-04** | Sistema de Alertas de Plazos GES y Detección de Deserción | Gestor/a Oncológico/a | Control de Plazos | Alta (Must) |
-| **HU-05** | Consolidación Automatizada de Biopsias e Informes Diagnósticos | Gestor/a Oncológico/a | Interoperabilidad / Diagnóstico | Alta (Must) |
-| **HU-06** | Preparación y Generación de Ficha para Comité Oncológico | Gestor/a Oncológico/a | Comité Oncológico | Alta (Must) |
-| **HU-07** | Registro en Línea y Acta Digital de Comité Oncológico | Médico / Comité Oncológico | Comité Oncológico | Alta (Must) |
-| **HU-08** | Monitoreo y Trazabilidad de Derivaciones Externas | Gestor/a Oncológico/a | Red Asistencial | Alta (Must) |
-| **HU-09** | Reportes de Gestión, Cumplimiento GES y Carga Asistencial | Jefatura de Oncología | Reportería | Media (Should) |
-| **HU-10** | Control de Roles, Privilegios y Auditoría de Ficha Clínica | Administrador / Seguridad | Seguridad | Alta (Must) |
+| ID | Título | Rol Principal | Prioridad | **Actividad TO-BE Asociada** |
+|---|---|---|---| :--- |
+| **HU-01** | Tablero Visual de Trazabilidad y Timeline Clínico | Gestor/a Oncológico/a | Alta (Must) | **User Task: TB_Task_MonitoreoTablero** |
+| **HU-02** | Evaluación Multidimensional y Estratificación | Gestor/a Oncológico/a | Alta (Must) | **User Task: TB_Task_EvaluacionMultidimensional** |
+| **HU-03** | Bitácora de Acompañamiento y Seguimiento Activo | Gestor/a Oncológico/a | Alta (Must) | **User Task: TB_Task_BitacoraAcompanamiento** |
+| **HU-04** | Sistema de Alertas de Plazos GES y Deserción | Gestor/a Oncológico/a | Alta (Must) | **Service Task: TB_Task_MotorAlertasGES** |
+| **HU-05** | Consolidación Automatizada de Biopsias | Gestor/a Oncológico/a | Alta (Must) | **Service Task: TB_Task_ConsolidacionAuto** |
+| **HU-06** | Generación de Ficha para Comité Oncológico | Gestor/a Oncológico/a | Alta (Must) | **Service Task: TB_Task_GenerarFichaComite** |
+| **HU-07** | Registro en Línea y Acta Digital de Comité | Médico / Comité | Alta (Must) | **User Task: TB_Task_ComiteDigital** |
+| **HU-08** | Monitoreo y Trazabilidad de Derivaciones | Gestor/a Oncológico/a | Alta (Must) | **User Task: TB_Task_TrazabilidadDerivaciones** |
+| **HU-09** | Reportes de Gestión y Cumplimiento GES | Jefatura de Oncología | Media (Should)| *(Transversal a la plataforma)* |
+| **HU-10** | Control de Roles, Privilegios y Auditoría | Administrador / Seguridad | Alta (Must) | *(Restricción global de sistema)* |
 
 ---
 
