@@ -23,7 +23,6 @@ Garantizar el acompañamiento continuo, la coordinación de estudios diagnóstic
  
 Archivo fuente: [`./diagramas/as-is.bpmn`](./diagramas/as-is.bpmn)
  
-*Nota: se distinguen tareas de usuario, de servicio y manuales con el marcador correspondiente en el archivo fuente.*
  
 ## ⚠️ Problemas identificados
 - 🔍 **Dispersión de resultados** en sistemas aislados (Pathology, LIS, PACS) que obliga a búsquedas manuales, generando demoras de hasta 15 días (afecta al Gestor y al Paciente).
