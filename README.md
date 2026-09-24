@@ -1,13 +1,38 @@
-# OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico
+# 🚀 OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico
 
 **CIN324 – Ingeniería de Requisitos | Entrega 1**  
 *Hospital Dr. Gustavo Fricke (HGF) – Servicio de Gestión Oncológica*
 
 ---
 
-## 🎯 Visión General
+## 👥 Equipo de Trabajo
 
-**OncoTrace** es una solución tecnológica diseñada específicamente para las **Gestoras y Gestores Oncológicos** y el equipo clínico multidisciplinario del Hospital Dr. Gustavo Fricke. Su objetivo central es garantizar la **trazabilidad continua de punta a punta**, la **evaluación multidimensional**, el **acompañamiento integral** y la **gestión oportuna** de los pacientes oncológicos a lo largo de todas las etapas de su proceso asistencial: desde la sospecha diagnóstica, confirmación e ingreso a comités, hasta el tratamiento, derivaciones interhospitalarias y seguimiento post-tratamiento.
+- **Bruno Fernandez**
+- **Máximo Torrijo**
+- **Ignacio Jorquera**
+- **Benjamin Carcamo**
+
+### 📋 Declaración de Responsabilidades por Integrante
+
+Conforme a lo exigido en la evaluación, la distribución de responsabilidades del equipo sobre los entregables es la siguiente:
+
+| Integrante | Entregable(s) a Cargo |
+| :--- | :--- |
+| **Bruno Fernandez** | [`01-proceso-as-is.md`](./01-proceso-as-is.md) y [`02-rediseno-to-be.md`](./02-rediseno-to-be.md) |
+| **Benjamin Carcamo** | [`04-historias-usuario.md`](./04-historias-usuario.md) |
+| **Máximo Torrijo** | [`03-requisitos.md`](./03-requisitos.md) |
+| **Ignacio Jorquera** | [`05-elicitacion.md`](./05-elicitacion.md) y [`06-atributos-calidad.md`](./06-atributos-calidad.md) |
+| **Equipo Completo** | [`07-matriz-trazabilidad.md`](./07-matriz-trazabilidad.md) (Integración Transversal y Trazabilidad) |
+
+---
+
+## 🎯 Visión General del Proyecto
+
+**OncoTrace** es una solución tecnológica diseñada específicamente para las **Gestoras y Gestores Oncológicos** y el equipo clínico multidisciplinario del **Hospital Dr. Gustavo Fricke (HGF)**. 
+
+Su objetivo central es garantizar la **trazabilidad continua de punta a punta**, la **evaluación multidimensional**, el **acompañamiento integral** y la **gestión oportuna** de los pacientes oncológicos a lo largo de todas las etapas de su proceso asistencial: desde la sospecha diagnóstica, confirmación e ingreso a comités, hasta el tratamiento, derivaciones interhospitalarias y seguimiento post-tratamiento.
+
+El sistema resuelve la fragmentación de datos clínicos, la pérdida de trazabilidad en derivaciones a prestadores externos y la sobrecarga operativa manual, asegurando el cumplimiento estricto de las normativas y plazos GES.
 
 ---
 
@@ -48,11 +73,40 @@
 
 ---
 
+## 📂 Índice Maestro de Documentos (Entrega 1)
+
+1. [**01. Proceso AS-IS**](./01-proceso-as-is.md) – Caracterización del proceso actual (nodos AS-01 a AS-06).
+2. [**02. Rediseño y Proceso TO-BE**](./02-rediseno-to-be.md) – Rediseño propuesto y mejoras de proceso (nodos TB-01 a TB-10).
+3. [**03. Clasificación de Requisitos**](./03-requisitos.md) – Matriz de requisitos funcionales y no funcionales.
+4. [**04. Historias de Usuario**](./04-historias-usuario.md) – 10 Historias de Usuario con Criterios de Aceptación (HU-xx-CAy).
+5. [**05. Elicitación**](./05-elicitacion.md) – Registro de técnicas y evidencias de elicitación (EL-01, EL-02).
+6. [**06. Atributos de Calidad**](./06-atributos-calidad.md) – Atributos de calidad y escenarios arquitectónicos (AC-01 a AC-03).
+7. [**07. Matriz de Trazabilidad End-to-End**](./07-matriz-trazabilidad.md) – Matriz maestra de trazabilidad end-to-end.
+
+---
+
+## 🗺️ Accesos Directos a Modelos BPMN
+
+Para facilitar la revisión técnica, a continuación se enlazan los archivos fuente de los modelos de proceso:
+
+- **Proceso AS-IS:** [`./diagramas/as-is.bpmn`](./diagramas/as-is.bpmn)
+- **Proceso TO-BE:** [`./diagramas/to-be.bpmn`](./diagramas/to-be.bpmn)
+
+---
+
+## 🎯 Resumen Ejecutivo del Rediseño
+
+El proyecto **OncoTrace** se enfoca exclusivamente en dotar a las Gestoras y Gestores Oncológicos del Hospital Dr. Gustavo Fricke de una herramienta digital integral. 
+
+Mediante la consolidación automática de exámenes, tableros Kanban de trazabilidad, generación automática de actas para los Comités Oncológicos y control estricto de plazos GES, la plataforma busca eliminar el punto ciego asistencial que ocurre actualmente al momento de derivar pacientes a recintos externos (como el Hospital Carlos Van Buren o clínicas privadas), reduciendo la sobrecarga administrativa y priorizando el acompañamiento efectivo del paciente.
+
+---
+
 ## 📁 Estructura del Repositorio
 
 ```
 OncoTrace/
-├── 📄 README.md                        # Visión general y descripción del proyecto
+├── 📄 README.md                        # Vista principal del repositorio en GitHub (Espejo de Entrega 1)
 ├── 📄 IngReq-Entrega 1.md              # Documento maestro integrador de la Entrega 1
 ├── 📄 01-proceso-as-is.md              # Caracterización del proceso actual (AS-IS, nodos AS-01 a AS-06)
 ├── 📄 02-rediseno-to-be.md             # Rediseño propuesto y mejoras de proceso (TO-BE, nodos TB-01 a TB-10)
