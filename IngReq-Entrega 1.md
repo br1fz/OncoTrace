@@ -4,7 +4,7 @@
 - Bruno Fernandez
 - Máximo Torrijo
 - Ignacio Jorquera
-- PONE TU NOMBRE ACÁ BENJA
+- Benjamin Carcamo
  
 ## 🏥 Proyecto
 **OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico**
@@ -27,7 +27,7 @@ Conforme a lo exigido en la evaluación, la distribución de responsabilidades d
 | Integrante | Entregable(s) a Cargo |
 | :--- | :--- |
 | **Bruno Fernandez** | `01-proceso-as-is.md` y `02-rediseno-to-be.md` |
-| **[Nombre Compañero]** | `04-historias-usuario.md` |
+| **Benjamin Carcamo** | `04-historias-usuario.md` |
 | **Máximo Torrijo** | `03-requisitos.md` |
 | **Ignacio Jorquera** | `05-elicitacion.md` y `06-atributos-calidad.md` |
 
