@@ -1,4 +1,4 @@
-# 🧭 Matriz Maestra de Trazabilidad End-to-End
+# 🧭 Matriz Maestra de Trazabilidad (End-to-End)
 
 > **Proyecto:** OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico  
 > **Institución:** Hospital Dr. Gustavo Fricke (HGF) – Servicio de Gestión Oncológica  
@@ -7,7 +7,7 @@
 
 ---
 
-## 🗺️ Mapa Conceptual de Nomenclatura e Instancias
+## 1. Mapa Conceptual de Nomenclatura e Instancias
 
 ```text
 ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
@@ -148,6 +148,6 @@
 
 ## 🎯 Conclusión de Consistencia del Sistema
 
-1. **Cobertura 100% del AS-IS:** Ningún nodo crítico identificado en el proceso actual queda sin solución en el rediseño TO-BE.
-2. **Derivación Formal de Requisitos:** Todos los requisitos funcionales (`RF-USR`, `RF-SYS`, `RF-SW`, `RF-EXT`) y no funcionales (`RNF`) se desprenden directamente de los objetivos de mejora.
-3. **Comprobabilidad de Historias:** Cada historia de usuario cuenta con criterios de aceptación formulados bajo estructura *Dado-Cuando-Entonces* o reglas de negocio estrictas, vinculadas a métricas de calidad ISO 25010.
+1. **Cobertura del proceso AS-IS:** Cada brecha crítica del flujo asistencial cuenta con una solución digital en el rediseño TO-BE.
+2. **Derivación de requisitos:** Los requisitos funcionales y no funcionales se desprenden directamente de las necesidades levantadas en la elicitación.
+3. **Validación de historias:** Cada historia de usuario cuenta con criterios de aceptación medibles y asociados a atributos de calidad ISO 25010.
