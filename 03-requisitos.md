@@ -32,3 +32,15 @@
 **Requisito origen:** **RNF-SW-02** (El sistema debe aplicar autenticación robusta institucional y cifrado AES-256 para los datos clínicos sensibles).  
 **Requisito derivado:** **REQ-DER-01** (La plataforma debe integrarse obligatoriamente mediante *Single Sign-On* (SSO) con el Directorio Activo institucional del Hospital Dr. Gustavo Fricke).  
 **Justificación:** Para garantizar la seguridad exigida en el requisito origen y cumplir con la Ley N° 20.584 de confidencialidad médica, la plataforma OncoTrace no puede gestionar ni almacenar contraseñas de forma aislada. Esto deriva en la necesidad arquitectónica de consumir directamente el servicio de identidades y credenciales centralizado del hospital.
+
+---
+
+## 🔮 Requisitos Tangentes y Visión Futura (Roadmap)
+
+> **Nota de Alcance:** Necesidades expresadas durante la entrevista con la Gestora Oncológica que corresponden a extensiones del ecosistema de atención al paciente, registradas para diseño y desarrollo en fases posteriores.
+
+| ID | Requisito Tangente | Tipo | Justificación Asistencial y Legal |
+| :--- | :--- | :--- | :--- |
+| **RF-EXT-01** | **Tótem de Autoatención y Consulta de Informes:** La estación interactiva en sala de espera debe permitir al paciente consultar de forma autónoma el estado de sus biopsias e informes médicos mediante lectura de RUT. | Funcional (Extensión) | Descongestionar el mesón de atención y mitigar las interrupciones operativas que sufren las gestoras debido a la alta demanda espontánea amparada bajo la Ley del Cáncer N° 21.258. |
+| **RF-EXT-02** | **Chatbot de Orientación y Triage Presencial:** El asistente virtual debe resolver dudas frecuentes sobre trámites, derechos legales y emitir tickets priorizados de atención según complejidad. | Funcional (Extensión) | Estandarizar la acogida del paciente (oncológico o en sospecha) y canalizar exclusivamente hacia las gestoras aquellos casos que requieren contención humana inmediata. |
+

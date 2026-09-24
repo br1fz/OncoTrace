@@ -4,7 +4,7 @@
 - Bruno Fernandez
 - Máximo Torrijo
 - Ignacio Jorquera
-- [Nombre de tu otro compañero]
+- PONE TU NOMBRE ACÁ BENJA
  
 ## 🏥 Proyecto
 **OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico**
