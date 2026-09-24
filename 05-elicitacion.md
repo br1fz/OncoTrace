@@ -3,7 +3,7 @@
 ## 🗣️ EL-01: Entrevista Semiestructurada en Profundidad
 * **Participante(s):** Gestora Oncológica, Servicio de Gestión Oncológica HGF.
 * **Fecha y modalidad:** 15 de septiembre de 2026, presencial.
-* **Evidencia:** Documento adjunto `./evidencia/Transcripcion_Entrevista_Oncologia.txt` en el repositorio.
+* **Evidencia:** Documento adjunto [`./evidencia/Transcripcion_Entrevista_Oncologia.txt`](./evidencia/Transcripcion_Entrevista_Oncologia.txt) en el repositorio.
 
 ### Hallazgos y Nodos Elicitados:
 * 🔍 **[AS-01] Fragmentación de resultados:** La consulta manual a través de distintos sistemas LIS y visores PACS provoca demoras asistenciales importantes.
@@ -16,7 +16,7 @@
 
 ## 📄 EL-02: Revisión Documental y Normativa
 * **Participante(s):** Equipo de Ingeniería de Requisitos (trabajo de gabinete).
-* **Evidencia:** Marco regulatorio y directrices vigentes de la red asistencial GES.
+* **Evidencia:** Marco regulatorio de Garantías Explícitas en Salud (GES) y protocolos clínicos locales HGF.
 
 ### Hallazgos y Nodos Elicitados:
 * ⚖️ **[AS-04] Control de Tiempos de Espera GES:** Determinación de los plazos legales fijados por el régimen GES para configurar alarmas tempranas ante eventuales vencimientos de garantías ([TB-04]).
@@ -29,6 +29,7 @@
 
 ### Síntesis de Hallazgos Validados:
 
+```text
 ┌──────────────────┐          ┌──────────────────┐          ┌──────────────────┐
 │ Dispersión de    │          │ Sobrecarga en    │          │ Pérdida de       │
 │ Resultados       │ ───────► │ Comités          │ ───────► │ Trazabilidad     │
@@ -39,5 +40,5 @@
 ┌──────────────────┐          ┌────────────────────────────────────────────────┐
 │ Demanda          │          │ Necesidad Tangente Identificada:               │
 │ Espontánea       │ ───────► │ Tótem de Autoatención y Chatbot de Orientación │
-│ (Ley del Cáncer) │          │ (Triage para descongestionar a las gestoras)   │
+│ (Ley del Cáncer) │ ───────► │ (Triage para descongestionar a las gestoras)   │
 └──────────────────┘          └────────────────────────────────────────────────┘
