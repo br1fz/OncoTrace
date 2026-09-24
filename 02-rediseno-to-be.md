@@ -4,21 +4,21 @@
 Atención Abierta de Especialidades (CAE) → Gestión, navegación, trazabilidad y acompañamiento oncológico digital mediante la plataforma **OncoTrace** en el Hospital Dr. Gustavo Fricke (HGF).
 
 ## Objetivo de negocio del proceso rediseñado
-Optimizar el flujo integral de atención del paciente oncológico mediante la centralización de datos clínicos, la automatización de la consolidación de estudios diagnósticos, el seguimiento proactivo de plazos de garantías legales (GES y Ley Nacional del Cáncer N° 21.258) y la trazabilidad de derivaciones a prestadores externos, liberando tiempo asistencial a las gestoras para un acompañamiento humano, oportuno y continuo.
+Optimizar el flujo integral de atención del paciente oncológico mediante la centralización de datos clínicos, la automatización de la consolidación de estudios diagnósticos, el seguimiento proactivo de plazos de garantías legales (GES / Ley del Cáncer N° 21.258) y la trazabilidad de punta a punta de derivaciones a prestadores externos, liberando tiempo asistencial a las gestoras para un acompañamiento humano y multidisciplinario oportuno.
 
 ---
 
-## Participantes y roles en el nuevo proceso
+## Participantes y sus roles en el nuevo proceso
 
 | Participante / Rol | Unidad / Institución | Responsabilidad y Objetivo en el TO-BE |
 | :--- | :--- | :--- |
 | **Gestor/a Oncológico/a** | Servicio de Gestión Oncológica (HGF) | Monitorea el tablero Kanban unificado, realiza la evaluación multidimensional inicial, gestiona la bitácora de acompañamiento y coordina la resolución de alertas preventivas. |
 | **Médico Tratante / Especialista** | Consultorio Adosado de Especialidades (CAE) | Emite solicitudes diagnósticas en el sistema, consulta antecedentes consolidados y formaliza decisiones terapéuticas en comités. |
-| **Comité Oncológico Multidisciplinario** | Equipo Colegiado de Especialistas HGF | Evalúa casos mediante fichas de presentación precargadas automáticamente y suscribe actas clínicas con firma electrónica. |
+| **Comité Oncológico Multidisciplinario** | Equipo Colegiado de Especialistas HGF | Evalúa casos mediante fichas de presentación pre-cargadas automáticamente y suscribe actas clínicas con firma electrónica. |
 | **Sistema OncoTrace (Automatizado)** | Plataforma Tecnológica Central | Interopera con LIS/PACS, indexa resultados de biopsias e imágenes, calcula plazos GES y emite alertas automáticas ante inactividad o proximidad de vencimientos. |
 | **Hospital Carlos Van Buren** | Prestador Público Externo | Recibe derivaciones digitales estructuradas y reporta hitos de inicio/término de radioterapia y quimioterapia de tumores sólidos. |
 | **Centros Privados en Convenio** | Prestadores Externos (PET-CT, EBUS) | Ejecutan exámenes de alta complejidad con seguimiento de órdenes de compra y carga digital de informes en OncoTrace. |
-| **Paciente / Familia** | Usuario Asistencial | Recibe orientación clara, acompañamiento continuo estructurado, toma de muestras oportuna y acceso expedito al estado de su proceso. |
+| **Paciente / Familia** | Usuario Asistencial | Recibe orientación clara, acompañamiento continuo estructurado, toma de muestras oportuna y acceso expedito a su estado de proceso. |
 
 ---
 
@@ -27,7 +27,7 @@ Optimizar el flujo integral de atención del paciente oncológico mediante la ce
 ![Proceso TO-BE](./diagramas/to-be.png)
 
 - **Archivo fuente BPMN:** [`./diagramas/to-be.bpmn`](./diagramas/to-be.bpmn)
-- **Especificación de tareas:** El modelo distingue formalmente tareas de usuario (*User Task*), tareas automatizadas del sistema (*Service Task*) y tareas manuales asistenciales (*Manual Task*).
+- **Especificación de Tareas:** El modelo distingue rigurosamente tareas de usuario (*User Task* con icono de persona), tareas automatizadas del sistema (*Service Task* con icono de engranaje) y tareas manuales asistenciales (*Manual Task* con icono de mano).
 
 ---
 
