@@ -17,6 +17,7 @@ Solución diseñada para el Hospital Dr. Gustavo Fricke que dota a las gestoras 
 4. [Historias de usuario](./04-historias-usuario.md)
 5. [Elicitación](./05-elicitacion.md)
 6. [Atributos de calidad](./06-atributos-calidad.md)
+7. [Matriz de Trazabilidad End-to-End](./07-matriz-trazabilidad.md)
 
 ---
 
@@ -30,6 +31,8 @@ Conforme a lo exigido en la evaluación, la distribución de responsabilidades d
 | **Benjamin Carcamo** | `04-historias-usuario.md` |
 | **Máximo Torrijo** | `03-requisitos.md` |
 | **Ignacio Jorquera** | `05-elicitacion.md` y `06-atributos-calidad.md` |
+| **Equipo Completo** | `07-matriz-trazabilidad.md` (Integración Transversal y Trazabilidad) |
+
 
 ---
 

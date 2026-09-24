@@ -54,12 +54,13 @@
 OncoTrace/
 ├── 📄 README.md                        # Visión general y descripción del proyecto
 ├── 📄 IngReq-Entrega 1.md              # Documento maestro integrador de la Entrega 1
-├── 📄 01-proceso-as-is.md              # Caracterización del proceso actual (AS-IS)
-├── 📄 02-rediseno-to-be.md             # Rediseño propuesto y mejoras de proceso (TO-BE)
+├── 📄 01-proceso-as-is.md              # Caracterización del proceso actual (AS-IS, nodos AS-01 a AS-06)
+├── 📄 02-rediseno-to-be.md             # Rediseño propuesto y mejoras de proceso (TO-BE, nodos TB-01 a TB-10)
 ├── 📄 03-requisitos.md                 # Matriz de requisitos funcionales y no funcionales
-├── 📄 04-historias-usuario.md          # 10 Historias de Usuario con Criterios de Aceptación
-├── 📄 05-elicitacion.md                # Registro de técnicas y evidencias de elicitación
-├── 📄 06-atributos-calidad.md          # Atributos de calidad y escenarios arquitectónicos
+├── 📄 04-historias-usuario.md          # 10 Historias de Usuario con Criterios de Aceptación (HU-xx-CAy)
+├── 📄 05-elicitacion.md                # Registro de técnicas y evidencias de elicitación (EL-01, EL-02)
+├── 📄 06-atributos-calidad.md          # Atributos de calidad y escenarios arquitectónicos (AC-01 a AC-03)
+├── 📄 07-matriz-trazabilidad.md        # Matriz maestra de trazabilidad end-to-end
 ├── 📁 diagramas/
 │   ├── 📄 as-is.bpmn                   # Modelo BPMN del proceso actual (AS-IS)
 │   └── 📄 to-be.bpmn                   # Modelo BPMN del proceso rediseñado (TO-BE)

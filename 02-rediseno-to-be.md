@@ -52,15 +52,23 @@ Optimizar el flujo integral de atención del paciente oncológico mediante la ce
 
 ---
 
-## ⚡ Cuadro Comparativo: Mejoras AS-IS vs. TO-BE
+## ⚡ Matriz de Rediseño y Nodos de Solución: AS-IS vs. TO-BE
 
-| Dimensión de Proceso | Situación Actual (AS-IS) | Rediseño Propuesto (TO-BE con OncoTrace) |
-| :--- | :--- | :--- |
-| **Localización de Exámenes** | Búsqueda manual dispersa en múltiples plataformas (LIS, PACS, papel) con demoras de hasta 15 días. | **Indexación y consolidación automática** de informes en la ficha única del paciente al ser validados. |
-| **Monitoreo de Plazos GES** | Seguimiento reactivo y conteo manual de días en planillas Excel con alto riesgo de multas y vencimientos. | **Motor de alertas preventivas en tiempo real** (semáforo de criticidad y detección de inactividad >15 días). |
-| **Gestión de Comités** | Transcripción manual de resúmenes en Word y actas físicas en papel con riesgo de omisión de datos. | **Ficha de presentación autogenerada** y formalización de acta clínica digital con firma electrónica. |
-| **Derivaciones Externas** | Envío de interconsultas físicas al Hospital Van Buren sin tracking de inicio de terapia (punto ciego). | **Módulo de trazabilidad de derivaciones** con registro de hitos, estados de interconsulta y confirmación de inicio. |
-| **Acompañamiento del Paciente** | Registros informales y dispersos; dificultad para detectar deserciones por vulnerabilidad social. | **Evaluación multidimensional estandarizada** (ECOG, red familiar, vulnerabilidad) y bitácora cronológica activa. |
+Cada componente del proceso rediseñado responde directamente a uno o más nodos críticos del AS-IS:
+
+| ID Nodo TO-BE | Nombre de la Solución TO-BE | Nodo AS-IS Mitigado | Situación Actual (AS-IS) | Rediseño Propuesto (TO-BE con OncoTrace) |
+| :--- | :--- | :--- | :--- | :--- |
+| **TB-01** | **Tablero Kanban y Timeline Clínico** | **AS-01**, **AS-04** | Búsqueda dispersa y falta de visibilidad del estado global del paciente. | Tablero unificado por fases (Sospecha, Comité, Tratamiento) y línea de tiempo con hitos y días transcurridos. |
+| **TB-02** | **Evaluación Multidimensional Estandarizada** | **AS-05** | Evaluación funcional y social no estandarizada ni registrada formalmente. | Registro estructurado de ECOG (0-4), factores de vulnerabilidad social y red de apoyo con cálculo automático de riesgo. |
+| **TB-03** | **Bitácora Cronológica de Acompañamiento** | **AS-05** | Registros informales o dispersos de llamadas y contactos asistenciales. | Historial inmutable de intervenciones, compromisos asistenciales y programación de próximas acciones. |
+| **TB-04** | **Motor de Alertas Preventivas GES e Inactividad** | **AS-04**, **AS-05** | Conteo manual de plazos en Excel con alto riesgo de multas y deserciones. | Motor automatizado que genera alertas de criticidad ante ≤ 5 días hábiles de plazo GES o > 15 días de inactividad asistencial. |
+| **TB-05** | **Indexación y Consolidación de Biopsias/PACS** | **AS-01** | Búsqueda manual en LIS/PACS con demoras de hasta 15 días. | Integración e indexación automática de informes clínicos validados asociados al RUN del paciente. |
+| **TB-06** | **Generación Automática de Ficha de Comité** | **AS-02** | Transcripción manual de antecedentes en documentos Word. | Compilación automática de diagnósticos, imágenes, biopsias y ECOG en ficha resumen lista para la sesión. |
+| **TB-07** | **Acta Clínica Digital con Firma Electrónica** | **AS-02** | Actas físicas en papel con riesgo de pérdida y sin trazabilidad inmediata. | Formalización del acta en tiempo real durante el comité, bloqueo post-firma digital y traspaso de tareas de seguimiento. |
+| **TB-08** | **Módulo de Trazabilidad de Derivaciones Externas** | **AS-03** | Interconsultas físicas al HCVB y privados sin retorno de confirmación (punto ciego). | Tracking continuo de estados (Solicitada → En espera → Atendida → Resultado), con registro de prestador y cierre de hitos. |
+| **TB-09** | **Tótem de Autoatención en Sala de Espera** | **AS-06** | Consultas presenciales espontáneas que colapsan el mesón de gestoras. | Estación interactiva táctil para consulta segura del estado de avance de biopsias e informes mediante lectura de RUT. |
+| **TB-10** | **Chatbot de Orientación Institucional y Triage** | **AS-06** | Interrupción continua para resolver dudas generales de la Ley N° 21.258. | Asistente virtual para preguntas frecuentes y emisión de tickets de triage priorizados según complejidad para la gestora. |
+
 
 ---
 
