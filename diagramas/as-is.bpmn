@@ -1,671 +1,1114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_ASIS_HGF" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.51.0">
-  <bpmn:collaboration id="Collaboration_ASIS">
-    <bpmn:participant id="Pool_HGF" name="Hospital Dr. Gustavo Fricke – Gestión Oncológica (AS-IS)" processRef="Process_HGF" />
-    <bpmn:participant id="Pool_HCVB" name="Hospital Carlos Van Buren (Radioterapia / QT Tumores Sólidos)" />
-    <bpmn:participant id="Pool_Privados" name="Centros de Salud Privados / Clínicas (PET-CT, EBUS, Ablación)" />
-    <bpmn:messageFlow id="MsgFlow_QTSolida_VB" name="Derivación QT Cáncer Sólido" sourceRef="IntermediateThrow_DerivacionQTSolida" targetRef="Pool_HCVB" />
-    <bpmn:messageFlow id="MsgFlow_Radio_VB" name="Derivación Radioterapia" sourceRef="IntermediateThrow_DerivacionRadio" targetRef="Pool_HCVB" />
-    <bpmn:messageFlow id="MsgFlow_CompraServicio" name="Solicitud Compra de Servicio (PET-CT / EBUS / Ablación)" sourceRef="Task_SolicitarCompraServicio" targetRef="Pool_Privados" />
-    <bpmn:messageFlow id="MsgFlow_ResultadosPrivados" name="Resultados de Exámenes Externos" sourceRef="Pool_Privados" targetRef="Task_RecibirResultadosExternos" />
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_ASIS_UGCO" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.51.0">
+  <bpmn:collaboration id="Collab_ASIS">
+    <bpmn:participant id="Pool_HGF" name="Hospital Dr. Gustavo Fricke – Gestión Oncológica (AS-IS)" processRef="Proc_HGF" />
+    <bpmn:participant id="Pool_Paciente" name="Paciente y Cuidador Principal" processRef="Proc_Paciente" />
+    <bpmn:participant id="Pool_RedExterna" name="Red Externa / Hosp. Carlos Van Buren / Centros Privados" />
+    <bpmn:messageFlow id="Msg_DossierToRed" name="Dossier físico de derivación" sourceRef="Task_UGAA_Derivar" targetRef="Pool_RedExterna" />
+    <bpmn:messageFlow id="Msg_CompraServicio" name="Solicitud compra de servicio (PET-CT, EBUS, etc.)" sourceRef="Task_CompraServicio" targetRef="Pool_RedExterna" />
+    <bpmn:messageFlow id="Msg_ResultadosExt" name="Resultados de exámenes externos" sourceRef="Pool_RedExterna" targetRef="Task_RecibirResultExt" />
+    <bpmn:messageFlow id="Msg_ContraRef" name="Epicrisis / Contrarreferencia" sourceRef="Pool_RedExterna" targetRef="Task_RecibirContraRef" />
+    <bpmn:messageFlow id="Msg_ContactoPaciente" name="Contacto inicial y orientación" sourceRef="Task_ContactoInicial" targetRef="Task_Pac_RecibeOrientacion" />
+    <bpmn:messageFlow id="Msg_NotifExamen" name="Notificación fecha de examen" sourceRef="Task_Admin_NotifPaciente" targetRef="Task_Pac_RecibeNotif" />
+    <bpmn:messageFlow id="Msg_InfoComite" name="Información resolución comité" sourceRef="Task_Gestor_InformaComite" targetRef="Task_Pac_RecibeInfoComite" />
+    <bpmn:messageFlow id="Msg_PacAsiste" name="Paciente asiste a exámenes" sourceRef="Task_Pac_AsistExamen" targetRef="Task_Apoyo_TomarMuestra" />
   </bpmn:collaboration>
-  <bpmn:process id="Process_HGF" name="Gestión Oncológica AS-IS – Hospital Dr. Gustavo Fricke" isExecutable="false">
-    <bpmn:laneSet id="LaneSet_HGF">
-      <bpmn:lane id="Lane_Paciente" name="Paciente / Familia">
-        <bpmn:flowNodeRef>Task_PresentarseCAE</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_RecibirNotificacion</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_ConsultaEspontanea</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_PacienteEnTratamientoFricke</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_PacienteListaEsperaQx</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>End_TratamientoFricke</bpmn:flowNodeRef>
+  <bpmn:process id="Proc_HGF" name="Trayectoria Oncológica AS-IS – UGCO" isExecutable="false">
+    <bpmn:laneSet id="LS_HGF">
+      <bpmn:lane id="Lane_APS" name="Atención primaria y red asistencial">
+        <bpmn:flowNodeRef>Start_DerivAPS</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Start_DerivUrgencia</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Start_DerivConsulta</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_AltaAPS</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_Medico" name="Médico Oncólogo / Comité Oncológico">
-        <bpmn:flowNodeRef>Start_TrasladoRed</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_Inicio</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_EmitirOrdenExamenes</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_RevisarResultadosNormales</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_RecibirAlertaCritica</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_PresentarComite</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_Tratamiento</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_DefinirCirugia</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_ProgramarQTHemato</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateThrow_DerivacionQTSolida</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateThrow_DerivacionRadio</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_DefinirCuidadosPaliativos</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Start_DerivacionConsulta</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Start_DerivacionComite</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_UGDA" name="UGDA y lista de espera">
+        <bpmn:flowNodeRef>GW_Ingreso</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GestorCirugiaLEIQ</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_Gestor" name="Gestor Oncológico (Enfermero / Matrón)">
-        <bpmn:flowNodeRef>Task_RecibirPaciente</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_OrientarPaciente</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_SolicitarAgendamiento</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_RecibirConfirmacion</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_Medico" name="Médico Tratante / Especialista">
+        <bpmn:flowNodeRef>Task_MedEvalua</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MedEmiteOrdenes</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_Confirmacion</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MedConfirmaDiag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_PostConfirmacion</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MedEmiteIPD</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MedComunicaDiag</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_MedPreparaComite</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Gestor" name="Gestor/a de casos UGCO">
+        <bpmn:flowNodeRef>Task_AsignarGestor</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ContactoInicial</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ValoracionDominios</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RegistroPlataforma</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GestorSolicitaExam</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_ExamenTipo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CompraServicio</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecibirResultExt</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_RescatarResultados</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_ValidacionExamenes</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_NotificarValoresCriticos</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_PasarResultadosMedico</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_SolicitarCompraServicio</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_RecibirResultadosExternos</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_TrazarPacientePlataforma</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_DerivarDuplaPsicosocial</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_DerivarNutricion</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_SeguimientoGestor</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>End_DerivadoExterno</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_ValoresCriticos</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_NotifCriticos</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_ConvExamenes</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_EntregaResultMedico</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GestorPreparaComite</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Gestor_InformaComite</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_TipoTratamiento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GestorQTHemato</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_DerivExterna</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecibirContraRef</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GestorDerivaPaliativos</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_PostTratInterno</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_DerivarMultidisc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_InicioSeguimiento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SeguimientoPeriodico</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_FinSeguimiento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_CierreCaso</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ContraRefAPS</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Fallecimiento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Traslado</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_Secretaria" name="Secretaría Oncológica">
-        <bpmn:flowNodeRef>Task_LlamarPaciente</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_TENS" name="TENS UGCO">
+        <bpmn:flowNodeRef>Task_TENS_Dossier</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_TENS_Contactabilidad</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_CAE" name="CAE (Centro de Atención de Especialidades) / Laboratorio">
-        <bpmn:flowNodeRef>Task_ConfirmarAgendamiento</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Task_TomarMuestra</bpmn:flowNodeRef>
+      <bpmn:lane id="Lane_Admin" name="Administrativo/a UGCO">
+        <bpmn:flowNodeRef>Task_Admin_RegistroIngreso</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Admin_TramitaExam</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Admin_NotifPaciente</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_UGAA" name="UGAA">
+        <bpmn:flowNodeRef>Task_UGAA_Derivar</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_GES" name="Unidad GES y registros">
+        <bpmn:flowNodeRef>Task_ConstanciaGES</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Comite" name="Comité Oncológico">
+        <bpmn:flowNodeRef>Task_ComiteEvalua</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ComiteResolucion</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Apoyo" name="Unidades de Apoyo Diagnóstico">
+        <bpmn:flowNodeRef>Start_InformeCritico</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Apoyo_TomarMuestra</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Apoyo_ProcesarExam</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Apoyo_EmitirInforme</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="Start_TrasladoRed" name="Traslado en red (otro servicio de salud o cambio de domicilio)">
-      <bpmn:documentation>El paciente se traslada de zona geográfica y debe continuar su atención oncológica en el Hospital Fricke. También incluye referencia entre especialidades dentro de la misma red.</bpmn:documentation>
-      <bpmn:outgoing>Flow_InicioTraslado</bpmn:outgoing>
+    <bpmn:dataObjectReference id="DataObj_FichaClinica" name="Ficha Clínica (Mixta)" dataObjectRef="DO_Ficha" />
+    <bpmn:dataObject id="DO_Ficha" />
+    <bpmn:dataObjectReference id="DataObj_PlataformaLocal" name="Plataforma de Registro Local (No interopera con MINSAL)" dataObjectRef="DO_Plataforma" />
+    <bpmn:dataObject id="DO_Plataforma" />
+    <bpmn:dataObjectReference id="DataObj_Dossier" name="Dossier Físico de Derivación" dataObjectRef="DO_Dossier" />
+    <bpmn:dataObject id="DO_Dossier" />
+    <bpmn:dataObjectReference id="DataObj_ActaComite" name="Acta de Comité / REM 0.7" dataObjectRef="DO_Acta" />
+    <bpmn:dataObject id="DO_Acta" />
+    <bpmn:dataObjectReference id="DataObj_ConstanciaGES" name="Constancia GES / IPD" dataObjectRef="DO_GES" />
+    <bpmn:dataObject id="DO_GES" />
+    <bpmn:startEvent id="Start_DerivAPS" name="Derivación desde APS (interconsulta)">
+      <bpmn:outgoing>Flow_APS</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="Gateway_Inicio" name="Vía de ingreso del paciente" gatewayDirection="Converging">
-      <bpmn:incoming>Flow_InicioConsulta</bpmn:incoming>
-      <bpmn:incoming>Flow_InicioComite</bpmn:incoming>
-      <bpmn:incoming>Flow_InicioTraslado</bpmn:incoming>
-      <bpmn:outgoing>Flow_InicioToRecepcion</bpmn:outgoing>
+    <bpmn:startEvent id="Start_DerivUrgencia" name="Derivación desde Urgencia Hospitalaria">
+      <bpmn:outgoing>Flow_Urgencia</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Start_InformeCritico" name="Informe crítico de Anatomía Patológica">
+      <bpmn:outgoing>Flow_InfCritico</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MsgDef_InfCritico" />
+    </bpmn:startEvent>
+    <bpmn:startEvent id="Start_DerivConsulta" name="Derivación desde consulta de especialidades">
+      <bpmn:outgoing>Flow_Consulta</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="GW_Ingreso" name="Vía de ingreso / Auditoría UGDA" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_APS</bpmn:incoming>
+      <bpmn:incoming>Flow_Urgencia</bpmn:incoming>
+      <bpmn:incoming>Flow_InfCritico</bpmn:incoming>
+      <bpmn:incoming>Flow_Consulta</bpmn:incoming>
+      <bpmn:outgoing>Flow_IngresoToMed</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_InicioConsulta" sourceRef="Start_DerivacionConsulta" targetRef="Gateway_Inicio" />
-    <bpmn:sequenceFlow id="Flow_InicioComite" sourceRef="Start_DerivacionComite" targetRef="Gateway_Inicio" />
-    <bpmn:sequenceFlow id="Flow_InicioTraslado" sourceRef="Start_TrasladoRed" targetRef="Gateway_Inicio" />
-    <bpmn:userTask id="Task_RecibirPaciente" name="Recibir al paciente y asignarlo a gestor oncológico de la especialidad">
-      <bpmn:documentation>El paciente ingresa al modelo de gestión y queda a cargo de un gestor oncológico específico de la especialidad. Los gestores son mayoritariamente enfermeros.</bpmn:documentation>
-      <bpmn:incoming>Flow_InicioToRecepcion</bpmn:incoming>
-      <bpmn:outgoing>Flow_RecepcionToOrientar</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_APS" sourceRef="Start_DerivAPS" targetRef="GW_Ingreso" />
+    <bpmn:sequenceFlow id="Flow_Urgencia" sourceRef="Start_DerivUrgencia" targetRef="GW_Ingreso" />
+    <bpmn:sequenceFlow id="Flow_InfCritico" sourceRef="Start_InformeCritico" targetRef="GW_Ingreso" />
+    <bpmn:sequenceFlow id="Flow_Consulta" sourceRef="Start_DerivConsulta" targetRef="GW_Ingreso" />
+    <bpmn:userTask id="Task_MedEvalua" name="Médico evalúa sospecha oncológica y deriva a UGCO">
+      <bpmn:documentation>El médico de especialidad evalúa al paciente con sospecha de cáncer y lo deriva a la Unidad de Gestión de Casos Oncológicos para inicio del acompañamiento.</bpmn:documentation>
+      <bpmn:incoming>Flow_IngresoToMed</bpmn:incoming>
+      <bpmn:outgoing>Flow_MedToAsignar</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_InicioToRecepcion" sourceRef="Gateway_Inicio" targetRef="Task_RecibirPaciente" />
-    <bpmn:userTask id="Task_OrientarPaciente" name="Orientar al paciente y familia sobre el proceso oncológico">
-      <bpmn:documentation>El gestor da indicaciones, orienta al paciente y su familia sobre el proceso que va a comenzar a transitar. El acompañamiento es holístico según la Ley del Cáncer.</bpmn:documentation>
-      <bpmn:incoming>Flow_RecepcionToOrientar</bpmn:incoming>
-      <bpmn:outgoing>Flow_OrientarToConsulta</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_IngresoToMed" sourceRef="GW_Ingreso" targetRef="Task_MedEvalua" />
+    <bpmn:userTask id="Task_AsignarGestor" name="Asignar gestor oncológico de la especialidad">
+      <bpmn:documentation>La enfermera supervisora o el equipo asigna un gestor responsable según la especialidad. Se consigna en la plataforma local y ficha clínica.</bpmn:documentation>
+      <bpmn:incoming>Flow_MedToAsignar</bpmn:incoming>
+      <bpmn:outgoing>Flow_AsignarToAdmin</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_RecepcionToOrientar" sourceRef="Task_RecibirPaciente" targetRef="Task_OrientarPaciente" />
-    <bpmn:userTask id="Task_ConsultaEspontanea" name="Consulta espontánea del paciente (RRSS, boca a boca)">
-      <bpmn:documentation>Pacientes que se han enterado por redes sociales o de boca a boca de la unidad de gestión oncológica y hacen consulta espontánea. Genera alta demanda no planificada.</bpmn:documentation>
+    <bpmn:sequenceFlow id="Flow_MedToAsignar" sourceRef="Task_MedEvalua" targetRef="Task_AsignarGestor" />
+    <bpmn:userTask id="Task_Admin_RegistroIngreso" name="Registrar ingreso, verificar datos de contacto y agendar primera atención">
+      <bpmn:documentation>La administrativa registra el ingreso del caso, verifica los datos de contactabilidad y agenda la primera atención del gestor.</bpmn:documentation>
+      <bpmn:incoming>Flow_AsignarToAdmin</bpmn:incoming>
+      <bpmn:outgoing>Flow_AdminToContacto</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Task_EmitirOrdenExamenes" name="Emitir orden de exámenes obligatorios (digital o papel)">
-      <bpmn:documentation>El médico emite la orden de exámenes que pueden ser en formato digital o en hoja de papel y los entrega al gestor oncológico. Los exámenes pueden incluir laboratorio, resonancia, escáner, biopsias, entre otros.</bpmn:documentation>
-      <bpmn:incoming>Flow_OrientarToConsulta</bpmn:incoming>
-      <bpmn:outgoing>Flow_OrdenToSolicitar</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_AsignarToAdmin" sourceRef="Task_AsignarGestor" targetRef="Task_Admin_RegistroIngreso" />
+    <bpmn:userTask id="Task_ContactoInicial" name="Realizar primer contacto obligatorio con paciente y cuidador">
+      <bpmn:documentation>Punto de contacto obligatorio #1. El gestor brinda orientación sobre la trayectoria, identifica al cuidador principal, informa nombre y vía de contacto del gestor responsable.</bpmn:documentation>
+      <bpmn:incoming>Flow_AdminToContacto</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContactoToValoracion</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_OrientarToConsulta" sourceRef="Task_OrientarPaciente" targetRef="Task_EmitirOrdenExamenes" />
-    <bpmn:sendTask id="Task_SolicitarAgendamiento" name="Solicitar agendamiento a unidad de toma de muestra (vía correo electrónico)">
-      <bpmn:documentation>El gestor oncológico solicita el agendamiento de los exámenes a la unidad de toma de muestra del CAE vía correo electrónico. El gestor tramita los exámenes, no el paciente, para garantizar la continuidad y evitar pérdidas en la gestión.</bpmn:documentation>
-      <bpmn:incoming>Flow_OrdenToSolicitar</bpmn:incoming>
-      <bpmn:outgoing>Flow_SolicitarToConfirmar</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_AdminToContacto" sourceRef="Task_Admin_RegistroIngreso" targetRef="Task_ContactoInicial" />
+    <bpmn:userTask id="Task_ValoracionDominios" name="Aplicar valoración inicial por dominios (clínico, emocional, social, espiritual)">
+      <bpmn:documentation>El gestor aplica la pauta de valoración inicial por dominios: clínico-funcional, emocional, familiar/cuidador, nutricional, socioeconómico, laboral/escolar, espiritual/cultural y comprensión de la información. Identifica necesidades de derivación multidisciplinaria.</bpmn:documentation>
+      <bpmn:incoming>Flow_ContactoToValoracion</bpmn:incoming>
+      <bpmn:outgoing>Flow_ValoracionToRegistro</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_ContactoToValoracion" sourceRef="Task_ContactoInicial" targetRef="Task_ValoracionDominios" />
+    <bpmn:userTask id="Task_RegistroPlataforma" name="Registrar caso en plataforma local y ficha clínica">
+      <bpmn:documentation>El gestor registra al paciente en la plataforma de registro local (herramienta digital institucional propia) y en la ficha clínica institucional. Nodo Crítico AS-05: esta plataforma no interopera con la Plataforma de Seguimiento Oncológico del MINSAL.</bpmn:documentation>
+      <bpmn:incoming>Flow_ValoracionToRegistro</bpmn:incoming>
+      <bpmn:outgoing>Flow_RegistroToOrdenes</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_ValoracionToRegistro" sourceRef="Task_ValoracionDominios" targetRef="Task_RegistroPlataforma" />
+    <bpmn:userTask id="Task_MedEmiteOrdenes" name="Médico emite órdenes de exámenes (digital o papel)">
+      <bpmn:documentation>El médico tratante emite las órdenes de exámenes (laboratorio, imágenes, biopsias, procedimientos) que pueden ser digitales o en papel.</bpmn:documentation>
+      <bpmn:incoming>Flow_RegistroToOrdenes</bpmn:incoming>
+      <bpmn:outgoing>Flow_OrdenesToGestor</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_RegistroToOrdenes" sourceRef="Task_RegistroPlataforma" targetRef="Task_MedEmiteOrdenes" />
+    <bpmn:userTask id="Task_GestorSolicitaExam" name="Gestor tramita agendamiento de exámenes (correo electrónico)">
+      <bpmn:documentation>El gestor oncológico solicita los exámenes a las unidades de apoyo vía correo electrónico. El gestor tramita directamente, no el paciente, para garantizar continuidad y evitar pérdidas.</bpmn:documentation>
+      <bpmn:incoming>Flow_OrdenesToGestor</bpmn:incoming>
+      <bpmn:outgoing>Flow_GestorToGWExamenTipo</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_OrdenesToGestor" sourceRef="Task_MedEmiteOrdenes" targetRef="Task_GestorSolicitaExam" />
+    <bpmn:exclusiveGateway id="GW_ExamenTipo" name="¿Modalidad de examen requerida?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_GestorToGWExamenTipo</bpmn:incoming>
+      <bpmn:outgoing>Flow_ExamenInterno</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ExamenExterno</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_GestorToGWExamenTipo" sourceRef="Task_GestorSolicitaExam" targetRef="GW_ExamenTipo" />
+    <bpmn:sequenceFlow id="Flow_ExamenInterno" name="Rama Interna: Examen en HGF" sourceRef="GW_ExamenTipo" targetRef="Task_Admin_TramitaExam" />
+    <bpmn:userTask id="Task_Admin_TramitaExam" name="Tramitar horas de exámenes con unidades de apoyo">
+      <bpmn:documentation>El administrativo coordina exámenes con las unidades de apoyo (laboratorio, imagenología, procedimientos) y rescata resultados pendientes. Registra en libros pertinentes.</bpmn:documentation>
+      <bpmn:incoming>Flow_ExamenInterno</bpmn:incoming>
+      <bpmn:outgoing>Flow_AdminToNotif</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="Task_Admin_NotifPaciente" name="Notificar al paciente fecha y hora de exámenes (teléfono)">
+      <bpmn:documentation>La administrativa o TENS llama por teléfono al paciente para informarle fecha y hora de sus exámenes.</bpmn:documentation>
+      <bpmn:incoming>Flow_AdminToNotif</bpmn:incoming>
+      <bpmn:outgoing>Flow_NotifToApoyo</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_OrdenToSolicitar" sourceRef="Task_EmitirOrdenExamenes" targetRef="Task_SolicitarAgendamiento" />
-    <bpmn:receiveTask id="Task_ConfirmarAgendamiento" name="Enviar confirmación de agendamiento (vía correo electrónico)">
-      <bpmn:documentation>La unidad de toma de muestra del CAE envía la confirmación de agendamiento al gestor oncológico vía correo electrónico.</bpmn:documentation>
-      <bpmn:incoming>Flow_SolicitarToConfirmar</bpmn:incoming>
-      <bpmn:outgoing>Flow_ConfirmarToRecibir</bpmn:outgoing>
-    </bpmn:receiveTask>
-    <bpmn:sequenceFlow id="Flow_SolicitarToConfirmar" sourceRef="Task_SolicitarAgendamiento" targetRef="Task_ConfirmarAgendamiento" />
-    <bpmn:userTask id="Task_RecibirConfirmacion" name="Recibir confirmación de agendamiento del CAE">
-      <bpmn:documentation>El gestor recibe la confirmación de fecha y hora para los exámenes del paciente.</bpmn:documentation>
-      <bpmn:incoming>Flow_ConfirmarToRecibir</bpmn:incoming>
-      <bpmn:outgoing>Flow_RecibirToLlamar</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_AdminToNotif" sourceRef="Task_Admin_TramitaExam" targetRef="Task_Admin_NotifPaciente" />
+    <bpmn:userTask id="Task_Apoyo_TomarMuestra" name="Realizar toma de muestras y exámenes">
+      <bpmn:documentation>Las unidades de apoyo (laboratorio, imagenología, endoscopia, procedimientos programados) ejecutan los exámenes indicados.</bpmn:documentation>
+      <bpmn:incoming>Flow_NotifToApoyo</bpmn:incoming>
+      <bpmn:outgoing>Flow_MuestraToProc</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_ConfirmarToRecibir" sourceRef="Task_ConfirmarAgendamiento" targetRef="Task_RecibirConfirmacion" />
-    <bpmn:userTask id="Task_LlamarPaciente" name="Llamar por teléfono al paciente para notificar fecha del examen">
-      <bpmn:documentation>La secretaría oncológica llama por teléfono al paciente para avisarle de la fecha y hora de su cita de toma de muestra.</bpmn:documentation>
-      <bpmn:incoming>Flow_RecibirToLlamar</bpmn:incoming>
-      <bpmn:outgoing>Flow_LlamarToNotificar</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_NotifToApoyo" sourceRef="Task_Admin_NotifPaciente" targetRef="Task_Apoyo_TomarMuestra" />
+    <bpmn:userTask id="Task_Apoyo_ProcesarExam" name="Procesar muestras y estudios">
+      <bpmn:incoming>Flow_MuestraToProc</bpmn:incoming>
+      <bpmn:outgoing>Flow_ProcToInforme</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_RecibirToLlamar" sourceRef="Task_RecibirConfirmacion" targetRef="Task_LlamarPaciente" />
-    <bpmn:userTask id="Task_RecibirNotificacion" name="Paciente recibe notificación telefónica de la cita">
-      <bpmn:documentation>El paciente recibe la llamada telefónica con la fecha de su examen.</bpmn:documentation>
-      <bpmn:incoming>Flow_LlamarToNotificar</bpmn:incoming>
-      <bpmn:outgoing>Flow_NotificarToPresentar</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_MuestraToProc" sourceRef="Task_Apoyo_TomarMuestra" targetRef="Task_Apoyo_ProcesarExam" />
+    <bpmn:userTask id="Task_Apoyo_EmitirInforme" name="Emitir informes de resultados (biopsias, imágenes, laboratorio)">
+      <bpmn:documentation>Las unidades emiten los resultados en distintas plataformas no interoperables (Nodo AS-01). Anatomía Patológica puede emitir informes críticos.</bpmn:documentation>
+      <bpmn:incoming>Flow_ProcToInforme</bpmn:incoming>
+      <bpmn:outgoing>Flow_InformeToRescatar</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_LlamarToNotificar" sourceRef="Task_LlamarPaciente" targetRef="Task_RecibirNotificacion" />
-    <bpmn:userTask id="Task_PresentarseCAE" name="Paciente se presenta físicamente en el CAE para toma de muestra">
-      <bpmn:documentation>El paciente asiste presencialmente al Centro de Atención de Especialidades (CAE), área de toma de muestra, para realizarse los exámenes el mismo día.</bpmn:documentation>
-      <bpmn:incoming>Flow_NotificarToPresentar</bpmn:incoming>
-      <bpmn:outgoing>Flow_PresentarToTomar</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_ProcToInforme" sourceRef="Task_Apoyo_ProcesarExam" targetRef="Task_Apoyo_EmitirInforme" />
+    <bpmn:userTask id="Task_RescatarResultados" name="Rescatar resultados de distintas plataformas (sistemas no interoperables)">
+      <bpmn:documentation>Nodo Crítico AS-01: El gestor busca los resultados manualmente en sistemas aislados (LIS, PACS, anatomía patológica). No existe interoperabilidad ni plataforma unificada.</bpmn:documentation>
+      <bpmn:incoming>Flow_InformeToRescatar</bpmn:incoming>
+      <bpmn:outgoing>Flow_RescatarToGW</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_NotificarToPresentar" sourceRef="Task_RecibirNotificacion" targetRef="Task_PresentarseCAE" />
-    <bpmn:userTask id="Task_TomarMuestra" name="Realizar toma de muestra y exámenes de laboratorio">
-      <bpmn:documentation>Personal del CAE/Laboratorio realiza la toma de muestra y exámenes de laboratorio indicados por el médico.</bpmn:documentation>
-      <bpmn:incoming>Flow_PresentarToTomar</bpmn:incoming>
-      <bpmn:outgoing>Flow_TomarToRescatar</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_PresentarToTomar" sourceRef="Task_PresentarseCAE" targetRef="Task_TomarMuestra" />
-    <bpmn:userTask id="Task_RescatarResultados" name="Rescatar resultados de distintas plataformas (sistemas legados no interoperables)">
-      <bpmn:documentation>El gestor oncológico rescata los resultados de las distintas plataformas del hospital. No hay interoperabilidad ni una plataforma unificada: existen distintas plataformas para exámenes de sangre, resonancia, y otros exámenes de apoyo. El gestor evalúa los parámetros.</bpmn:documentation>
-      <bpmn:incoming>Flow_TomarToRescatar</bpmn:incoming>
-      <bpmn:outgoing>Flow_RescatarToTraza</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_TomarToRescatar" sourceRef="Task_TomarMuestra" targetRef="Task_RescatarResultados" />
-    <bpmn:userTask id="Task_TrazarPacientePlataforma" name="Registrar trazabilidad del paciente en plataforma de creación propia">
-      <bpmn:documentation>Los gestores registran y trazan al paciente en una plataforma de creación propia para dar seguimiento a su estado (en qué va el paciente).</bpmn:documentation>
-      <bpmn:incoming>Flow_RescatarToTraza</bpmn:incoming>
-      <bpmn:outgoing>Flow_TrazaToGateway1</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_RescatarToTraza" sourceRef="Task_RescatarResultados" targetRef="Task_TrazarPacientePlataforma" />
-    <bpmn:exclusiveGateway id="Gateway_ValidacionExamenes" name="¿Existen valores críticos en los exámenes?" gatewayDirection="Diverging">
-      <bpmn:incoming>Flow_TrazaToGateway1</bpmn:incoming>
-      <bpmn:outgoing>Flow_ValoresCriticos</bpmn:outgoing>
-      <bpmn:outgoing>Flow_ValoresNormales</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_InformeToRescatar" sourceRef="Task_Apoyo_EmitirInforme" targetRef="Task_RescatarResultados" />
+    <bpmn:exclusiveGateway id="GW_ValoresCriticos" name="¿Existen valores críticos?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_RescatarToGW</bpmn:incoming>
+      <bpmn:outgoing>Flow_SiCriticos</bpmn:outgoing>
+      <bpmn:outgoing>Flow_NoCriticos</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_TrazaToGateway1" sourceRef="Task_TrazarPacientePlataforma" targetRef="Gateway_ValidacionExamenes" />
-    <bpmn:userTask id="Task_NotificarValoresCriticos" name="Notificar inmediatamente valores críticos al médico tratante">
-      <bpmn:documentation>Cuando los exámenes arrojan valores críticos, el gestor debe avisar inmediatamente al médico tratante para toma de decisiones urgente.</bpmn:documentation>
-      <bpmn:incoming>Flow_ValoresCriticos</bpmn:incoming>
-      <bpmn:outgoing>Flow_CriticosToMedico</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_RescatarToGW" sourceRef="Task_RescatarResultados" targetRef="GW_ValoresCriticos" />
+    <bpmn:userTask id="Task_NotifCriticos" name="Notificar valores críticos al médico tratante de inmediato">
+      <bpmn:incoming>Flow_SiCriticos</bpmn:incoming>
+      <bpmn:outgoing>Flow_CriticosToConv</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_ValoresCriticos" name="Sí – Valores críticos" sourceRef="Gateway_ValidacionExamenes" targetRef="Task_NotificarValoresCriticos" />
-    <bpmn:userTask id="Task_RecibirAlertaCritica" name="Médico recibe alerta de valores críticos y evalúa acciones">
-      <bpmn:documentation>El médico tratante recibe la notificación de valores críticos y evalúa las acciones urgentes a tomar.</bpmn:documentation>
-      <bpmn:incoming>Flow_CriticosToMedico</bpmn:incoming>
-      <bpmn:outgoing>Flow_AlertaToComite</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_SiCriticos" name="Sí – Valores críticos" sourceRef="GW_ValoresCriticos" targetRef="Task_NotifCriticos" />
+    <bpmn:sequenceFlow id="Flow_NoCriticos" name="No – Valores normales" sourceRef="GW_ValoresCriticos" targetRef="GW_ConvExamenes" />
+    <bpmn:sequenceFlow id="Flow_CriticosToConv" sourceRef="Task_NotifCriticos" targetRef="GW_ConvExamenes" />
+    <bpmn:sequenceFlow id="Flow_ExamenExterno" name="Rama Externa: Compra de servicio" sourceRef="GW_ExamenTipo" targetRef="Task_CompraServicio" />
+    <bpmn:sendTask id="Task_CompraServicio" name="Solicitar compra de servicio externo (PET-CT, EBUS, marcadores moleculares)">
+      <bpmn:documentation>Cuando el paciente requiere un estudio no disponible en el HGF ni en la red pública de derivación, el gestor gestiona la compra de servicio a centros privados (PET-CT, endosonografía, TACE, marcadores moleculares).</bpmn:documentation>
+      <bpmn:incoming>Flow_ExamenExterno</bpmn:incoming>
+      <bpmn:outgoing>Flow_CompraToRecibir</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_CompraToRecibir" sourceRef="Task_CompraServicio" targetRef="Task_RecibirResultExt" />
+    <bpmn:receiveTask id="Task_RecibirResultExt" name="Recibir resultados de exámenes externos (centros privados)">
+      <bpmn:documentation>El gestor recibe los resultados de los exámenes o procedimientos realizados en centros externos contratados por compra de servicio.</bpmn:documentation>
+      <bpmn:incoming>Flow_CompraToRecibir</bpmn:incoming>
+      <bpmn:outgoing>Flow_ResultExtToConv</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="Flow_ResultExtToConv" sourceRef="Task_RecibirResultExt" targetRef="GW_ConvExamenes" />
+    <bpmn:exclusiveGateway id="GW_ConvExamenes" name="Convergencia de resultados de exámenes" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_NoCriticos</bpmn:incoming>
+      <bpmn:incoming>Flow_CriticosToConv</bpmn:incoming>
+      <bpmn:incoming>Flow_ResultExtToConv</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConvToEntrega</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_ConvToEntrega" sourceRef="GW_ConvExamenes" targetRef="Task_EntregaResultMedico" />
+    <bpmn:userTask id="Task_EntregaResultMedico" name="Entregar resultados completos al médico tratante">
+      <bpmn:incoming>Flow_ConvToEntrega</bpmn:incoming>
+      <bpmn:outgoing>Flow_EntregaToConfirm</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_CriticosToMedico" sourceRef="Task_NotificarValoresCriticos" targetRef="Task_RecibirAlertaCritica" />
-    <bpmn:userTask id="Task_PasarResultadosMedico" name="Pasar resultados al médico/comité para etapificación">
-      <bpmn:documentation>Cuando los valores son normales, el gestor pasa los resultados al médico o comité oncológico para que puedan realizar la etapificación y definir el objetivo terapéutico.</bpmn:documentation>
-      <bpmn:incoming>Flow_ValoresNormales</bpmn:incoming>
-      <bpmn:outgoing>Flow_NormalesToMedico</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_EntregaToConfirm" sourceRef="Task_EntregaResultMedico" targetRef="GW_Confirmacion" />
+    <bpmn:exclusiveGateway id="GW_Confirmacion" name="¿Se confirma diagnóstico oncológico?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_EntregaToConfirm</bpmn:incoming>
+      <bpmn:outgoing>Flow_SiConfirma</bpmn:outgoing>
+      <bpmn:outgoing>Flow_NoConfirma</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_MedConfirmaDiag" name="Médico confirma diagnóstico oncológico">
+      <bpmn:documentation>El médico tratante confirma el diagnóstico de cáncer. Es el responsable de la confirmación o descarte.</bpmn:documentation>
+      <bpmn:incoming>Flow_SiConfirma</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConfToIPD</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_ValoresNormales" name="No – Valores normales" sourceRef="Gateway_ValidacionExamenes" targetRef="Task_PasarResultadosMedico" />
-    <bpmn:userTask id="Task_RevisarResultadosNormales" name="Médico revisa resultados y prepara presentación a comité">
-      <bpmn:documentation>El médico oncólogo revisa los resultados entregados por el gestor y prepara la ficha para presentar al comité oncológico.</bpmn:documentation>
-      <bpmn:incoming>Flow_NormalesToMedico</bpmn:incoming>
-      <bpmn:incoming>Flow_AlertaToComite</bpmn:incoming>
-      <bpmn:outgoing>Flow_RevisarToComite</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_SiConfirma" name="Sí – Diagnóstico confirmado" sourceRef="GW_Confirmacion" targetRef="Task_MedConfirmaDiag" />
+    <bpmn:exclusiveGateway id="GW_PostConfirmacion" name="Descarte – Fin del acompañamiento">
+      <bpmn:incoming>Flow_NoConfirma</bpmn:incoming>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_NoConfirma" name="No – Descartado" sourceRef="GW_Confirmacion" targetRef="GW_PostConfirmacion" />
+    <bpmn:userTask id="Task_MedEmiteIPD" name="Emitir Informe de Proceso Diagnóstico (IPD) si es GES">
+      <bpmn:documentation>Si la patología es GES, el médico emite el IPD que formaliza el diagnóstico. Si no es GES, queda consignado en la ficha clínica.</bpmn:documentation>
+      <bpmn:incoming>Flow_ConfToIPD</bpmn:incoming>
+      <bpmn:outgoing>Flow_IPDToComunica</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_NormalesToMedico" sourceRef="Task_PasarResultadosMedico" targetRef="Task_RevisarResultadosNormales" />
-    <bpmn:sequenceFlow id="Flow_AlertaToComite" sourceRef="Task_RecibirAlertaCritica" targetRef="Task_RevisarResultadosNormales" />
-    <bpmn:userTask id="Task_PresentarComite" name="Presentar paciente al Comité Oncológico para definición de tratamiento">
-      <bpmn:documentation>El caso del paciente se presenta al comité oncológico. El comité decide qué tipo de tratamiento recibe: quirúrgico, quimioterapia, radioterapia, o cuidados paliativos. Cada caso es individual y depende de la etapa de la enfermedad.</bpmn:documentation>
-      <bpmn:incoming>Flow_RevisarToComite</bpmn:incoming>
-      <bpmn:outgoing>Flow_ComiteToGateway2</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_ConfToIPD" sourceRef="Task_MedConfirmaDiag" targetRef="Task_MedEmiteIPD" />
+    <bpmn:userTask id="Task_MedComunicaDiag" name="Comunicar diagnóstico al paciente y familia">
+      <bpmn:documentation>El médico tratante comunica el diagnóstico confirmado al paciente. Este es un momento crítico de la trayectoria oncológica.</bpmn:documentation>
+      <bpmn:incoming>Flow_IPDToComunica</bpmn:incoming>
+      <bpmn:outgoing>Flow_ComunicaToGES</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_RevisarToComite" sourceRef="Task_RevisarResultadosNormales" targetRef="Task_PresentarComite" />
-    <bpmn:exclusiveGateway id="Gateway_Tratamiento" name="¿Qué tipo de tratamiento requiere el paciente?" gatewayDirection="Diverging">
-      <bpmn:incoming>Flow_ComiteToGateway2</bpmn:incoming>
+    <bpmn:sequenceFlow id="Flow_IPDToComunica" sourceRef="Task_MedEmiteIPD" targetRef="Task_MedComunicaDiag" />
+    <bpmn:userTask id="Task_ConstanciaGES" name="Confeccionar constancia GES y remitir a Unidad GES (si corresponde)">
+      <bpmn:documentation>El gestor confecciona la constancia GES en la etapa correspondiente y la remite a la Unidad GES. Nodo Crítico AS-04: el monitoreo de los plazos se realiza con planillas Excel manuales.</bpmn:documentation>
+      <bpmn:incoming>Flow_ComunicaToGES</bpmn:incoming>
+      <bpmn:outgoing>Flow_GESToPreparaComite</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_ComunicaToGES" sourceRef="Task_MedComunicaDiag" targetRef="Task_ConstanciaGES" />
+    <bpmn:userTask id="Task_GestorPreparaComite" name="Preparar caso para presentación a comité oncológico">
+      <bpmn:documentation>Nodo Crítico AS-02: El gestor verifica que los antecedentes estén completos, coordina con el médico la inclusión del caso en la tabla del comité y asesora en la preparación. La preparación es manual (Word) y las actas se registran en papel.</bpmn:documentation>
+      <bpmn:incoming>Flow_GESToPreparaComite</bpmn:incoming>
+      <bpmn:outgoing>Flow_PreparaToMedComite</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_GESToPreparaComite" sourceRef="Task_ConstanciaGES" targetRef="Task_GestorPreparaComite" />
+    <bpmn:userTask id="Task_MedPreparaComite" name="Médico presenta caso al comité oncológico">
+      <bpmn:documentation>El médico tratante presenta formalmente el caso al comité oncológico regional con todos los antecedentes.</bpmn:documentation>
+      <bpmn:incoming>Flow_PreparaToMedComite</bpmn:incoming>
+      <bpmn:outgoing>Flow_MedToComite</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_PreparaToMedComite" sourceRef="Task_GestorPreparaComite" targetRef="Task_MedPreparaComite" />
+    <bpmn:userTask id="Task_ComiteEvalua" name="Comité oncológico evalúa integralmente el caso">
+      <bpmn:documentation>El comité oncológico, compuesto por oncólogos, cirujanos, radioterapeutas, hematólogos y paliativistas, evalúa integralmente a la persona con cáncer.</bpmn:documentation>
+      <bpmn:incoming>Flow_MedToComite</bpmn:incoming>
+      <bpmn:outgoing>Flow_EvaluaToResol</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_MedToComite" sourceRef="Task_MedPreparaComite" targetRef="Task_ComiteEvalua" />
+    <bpmn:userTask id="Task_ComiteResolucion" name="Dictar resolución terapéutica y registrar acta (REM 0.7)">
+      <bpmn:documentation>El comité emite su resolución: cirugía, terapia sistémica, radioterapia, cuidados paliativos u otra modalidad. Se registra en acta con asistencia y resolución por paciente.</bpmn:documentation>
+      <bpmn:incoming>Flow_EvaluaToResol</bpmn:incoming>
+      <bpmn:outgoing>Flow_ResolToGestor</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_EvaluaToResol" sourceRef="Task_ComiteEvalua" targetRef="Task_ComiteResolucion" />
+    <bpmn:userTask id="Task_Gestor_InformaComite" name="Contactar al paciente para informar resolución de comité">
+      <bpmn:documentation>Punto de contacto obligatorio #3. El gestor contacta al paciente tras la comunicación del médico para explicar los pasos siguientes en lenguaje claro y verificar comprensión.</bpmn:documentation>
+      <bpmn:incoming>Flow_ResolToGestor</bpmn:incoming>
+      <bpmn:outgoing>Flow_InformaToGWTrat</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_ResolToGestor" sourceRef="Task_ComiteResolucion" targetRef="Task_Gestor_InformaComite" />
+    <bpmn:exclusiveGateway id="GW_TipoTratamiento" name="¿Qué tratamiento indica la resolución?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_InformaToGWTrat</bpmn:incoming>
       <bpmn:outgoing>Flow_Cirugia</bpmn:outgoing>
-      <bpmn:outgoing>Flow_QTHematologico</bpmn:outgoing>
-      <bpmn:outgoing>Flow_QTSolido</bpmn:outgoing>
-      <bpmn:outgoing>Flow_Radioterapia</bpmn:outgoing>
+      <bpmn:outgoing>Flow_QTHemato</bpmn:outgoing>
+      <bpmn:outgoing>Flow_DerivExterna</bpmn:outgoing>
       <bpmn:outgoing>Flow_Paliativos</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_ComiteToGateway2" sourceRef="Task_PresentarComite" targetRef="Gateway_Tratamiento" />
-    <bpmn:userTask id="Task_DefinirCirugia" name="Ingreso a lista de espera quirúrgica del Hospital Fricke">
-      <bpmn:documentation>Si el paciente requiere cirugía, se realiza en el Hospital Fricke. El paciente ingresa a la lista de espera quirúrgica.</bpmn:documentation>
+    <bpmn:sequenceFlow id="Flow_InformaToGWTrat" sourceRef="Task_Gestor_InformaComite" targetRef="GW_TipoTratamiento" />
+    <bpmn:userTask id="Task_GestorCirugiaLEIQ" name="Ingresar a lista de espera quirúrgica (LEIQ) del HGF">
+      <bpmn:documentation>El médico clasifica la solicitud quirúrgica en SIGTE (ONCO DIAGNÓSTICO, ONCO TRATAMIENTO, ONCO REHABILITACIÓN). El gestor verifica que el ingreso a LEIQ sea correcto. La administración de la lista corresponde a UGAC/UGDA.</bpmn:documentation>
       <bpmn:incoming>Flow_Cirugia</bpmn:incoming>
-      <bpmn:outgoing>Flow_CirugiaToListaEspera</bpmn:outgoing>
+      <bpmn:outgoing>Flow_CirugiaToPostTrat</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_Cirugia" name="Requiere Cirugía" sourceRef="Gateway_Tratamiento" targetRef="Task_DefinirCirugia" />
-    <bpmn:userTask id="Task_PacienteListaEsperaQx" name="Paciente en lista de espera quirúrgica">
-      <bpmn:documentation>El paciente queda en espera de la cirugía, acompañado por el gestor oncológico.</bpmn:documentation>
-      <bpmn:incoming>Flow_CirugiaToListaEspera</bpmn:incoming>
-      <bpmn:outgoing>Flow_ListaEsperaToSeguimiento</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_Cirugia" name="Cirugía en HGF" sourceRef="GW_TipoTratamiento" targetRef="Task_GestorCirugiaLEIQ" />
+    <bpmn:userTask id="Task_GestorQTHemato" name="Programar QT hematológica (adulto/niño) en HGF">
+      <bpmn:documentation>Los tumores líquidos (cánceres hematológicos) de adulto y niño se tratan en el Hospital Fricke. Se programa y administra la quimioterapia dentro del hospital.</bpmn:documentation>
+      <bpmn:incoming>Flow_QTHemato</bpmn:incoming>
+      <bpmn:outgoing>Flow_QTToPostTrat</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_CirugiaToListaEspera" sourceRef="Task_DefinirCirugia" targetRef="Task_PacienteListaEsperaQx" />
-    <bpmn:userTask id="Task_ProgramarQTHemato" name="Programar y administrar QT hematológica (adulto/niño) en Hospital Fricke">
-      <bpmn:documentation>Los tumores líquidos (cánceres hematológicos de sangre) tanto de adulto como de niño se tratan en el Hospital Fricke. Se programa y administra la quimioterapia dentro del hospital.</bpmn:documentation>
-      <bpmn:incoming>Flow_QTHematologico</bpmn:incoming>
-      <bpmn:outgoing>Flow_QTHematoToTratamiento</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_QTHemato" name="QT Hematológica (HGF)" sourceRef="GW_TipoTratamiento" targetRef="Task_GestorQTHemato" />
+    <bpmn:exclusiveGateway id="GW_DerivExterna" name="Derivación a red externa (RT / QT sólida)">
+      <bpmn:incoming>Flow_DerivExterna</bpmn:incoming>
+      <bpmn:outgoing>Flow_DerivToTENS</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_DerivExterna" name="QT Tumor Sólido / Radioterapia" sourceRef="GW_TipoTratamiento" targetRef="GW_DerivExterna" />
+    <bpmn:userTask id="Task_TENS_Dossier" name="Confeccionar dossier físico con documentación completa">
+      <bpmn:documentation>Nodo Crítico AS-03: El TENS confecciona el dossier con toda la documentación requerida (interconsulta, informes, biopsias, imágenes) en formato físico y lo entrega a UGAA para derivación al centro de referencia.</bpmn:documentation>
+      <bpmn:incoming>Flow_DerivToTENS</bpmn:incoming>
+      <bpmn:outgoing>Flow_DossierToUGAA</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_QTHematologico" name="QT Cáncer Hematológico (Adulto o Niño)" sourceRef="Gateway_Tratamiento" targetRef="Task_ProgramarQTHemato" />
-    <bpmn:userTask id="Task_PacienteEnTratamientoFricke" name="Paciente en tratamiento continuo y seguimiento en Hospital Fricke">
-      <bpmn:documentation>El paciente recibe tratamiento de quimioterapia hematológica o se encuentra en seguimiento post-cirugía dentro del Hospital Fricke, acompañado por el gestor oncológico.</bpmn:documentation>
-      <bpmn:incoming>Flow_QTHematoToTratamiento</bpmn:incoming>
-      <bpmn:incoming>Flow_ListaEsperaToSeguimiento</bpmn:incoming>
-      <bpmn:incoming>Flow_PaliativosToSeguimiento</bpmn:incoming>
-      <bpmn:outgoing>Flow_TratamientoToSeguimientoGestor</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_QTHematoToTratamiento" sourceRef="Task_ProgramarQTHemato" targetRef="Task_PacienteEnTratamientoFricke" />
-    <bpmn:sequenceFlow id="Flow_ListaEsperaToSeguimiento" sourceRef="Task_PacienteListaEsperaQx" targetRef="Task_PacienteEnTratamientoFricke" />
-    <bpmn:intermediateThrowEvent id="IntermediateThrow_DerivacionQTSolida" name="Derivar paciente a Hospital Van Buren (QT tumor sólido)">
-      <bpmn:documentation>Los cánceres de tumores sólidos (adulto y niño) se derivan al Hospital Carlos Van Buren para quimioterapia. A partir de este punto, el Hospital Fricke pierde visibilidad del seguimiento del paciente.</bpmn:documentation>
-      <bpmn:incoming>Flow_QTSolido</bpmn:incoming>
-      <bpmn:outgoing>Flow_QTSolidoToFin</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MsgDef_QTSolida" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:sequenceFlow id="Flow_QTSolido" name="QT Cáncer Órgano Sólido (Adulto o Niño)" sourceRef="Gateway_Tratamiento" targetRef="IntermediateThrow_DerivacionQTSolida" />
-    <bpmn:intermediateThrowEvent id="IntermediateThrow_DerivacionRadio" name="Derivar paciente a Hospital Van Buren (Radioterapia)">
-      <bpmn:documentation>Todas las radioterapias se derivan al Hospital Carlos Van Buren. El Hospital Fricke pierde visibilidad del seguimiento del paciente.</bpmn:documentation>
-      <bpmn:incoming>Flow_Radioterapia</bpmn:incoming>
-      <bpmn:outgoing>Flow_RadioToFin</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MsgDef_Radio" />
-    </bpmn:intermediateThrowEvent>
-    <bpmn:sequenceFlow id="Flow_Radioterapia" name="Radioterapia" sourceRef="Gateway_Tratamiento" targetRef="IntermediateThrow_DerivacionRadio" />
-    <bpmn:userTask id="Task_DefinirCuidadosPaliativos" name="Derivar a cuidados paliativos (cáncer avanzado)">
-      <bpmn:documentation>Hay pacientes cuyo cáncer está tan avanzado que pasan a comité oncológico pero se les asignan cuidados paliativos. Continúan siendo acompañados por el gestor.</bpmn:documentation>
-      <bpmn:incoming>Flow_Paliativos</bpmn:incoming>
-      <bpmn:outgoing>Flow_PaliativosToSeguimiento</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_Paliativos" name="Cuidados Paliativos" sourceRef="Gateway_Tratamiento" targetRef="Task_DefinirCuidadosPaliativos" />
-    <bpmn:sequenceFlow id="Flow_PaliativosToSeguimiento" sourceRef="Task_DefinirCuidadosPaliativos" targetRef="Task_PacienteEnTratamientoFricke" />
-    <bpmn:userTask id="Task_DerivarDuplaPsicosocial" name="Derivar a dupla psicosocial (psicólogo, psicooncólogo, asistente social)">
-      <bpmn:documentation>El gestor deriva al paciente a la dupla psicosocial según sus necesidades: asistencia psicológica (psicooncología) y asistente social para asesorar en programas de ayuda, nexo con municipalidad o APS para sostén económico.</bpmn:documentation>
-    </bpmn:userTask>
-    <bpmn:userTask id="Task_DerivarNutricion" name="Derivar a nutrición oncológica">
-      <bpmn:documentation>El gestor realiza nexo con nutrición oncológica dependiendo del tipo de cáncer y las necesidades nutricionales del paciente.</bpmn:documentation>
-    </bpmn:userTask>
-    <bpmn:sendTask id="Task_SolicitarCompraServicio" name="Solicitar compra de servicio externo (PET-CT, EBUS, Ablación)">
-      <bpmn:documentation>Cuando el paciente requiere un procedimiento que no está en la cartera de servicios del Hospital Fricke (como PET-CT, EBUS, ablación hepática), el gestor gestiona la compra de servicio o alianza estratégica con centros privados o de la red hospitalaria (Hospital del Tórax, San Borja Arriarán, clínicas en Santiago o V Región, OncoCenter, etc.).</bpmn:documentation>
+    <bpmn:sequenceFlow id="Flow_DerivToTENS" sourceRef="GW_DerivExterna" targetRef="Task_TENS_Dossier" />
+    <bpmn:sendTask id="Task_UGAA_Derivar" name="Derivar dossier al centro de referencia (HCVB u otro)">
+      <bpmn:documentation>UGAA envía el dossier físico al centro de referencia (Hospital Carlos Van Buren u otro de la macrored). A partir de este punto se pierde la visibilidad del paciente (Nodo AS-03).</bpmn:documentation>
+      <bpmn:incoming>Flow_DossierToUGAA</bpmn:incoming>
+      <bpmn:outgoing>Flow_UGAAToContraRef</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:receiveTask id="Task_RecibirResultadosExternos" name="Recibir resultados de exámenes externos (centros privados)">
-      <bpmn:documentation>El gestor recibe los resultados de los exámenes o procedimientos realizados en centros externos contratados.</bpmn:documentation>
+    <bpmn:sequenceFlow id="Flow_DossierToUGAA" sourceRef="Task_TENS_Dossier" targetRef="Task_UGAA_Derivar" />
+    <bpmn:receiveTask id="Task_RecibirContraRef" name="Recibir contrarreferencia / epicrisis del centro derivado">
+      <bpmn:documentation>El gestor recibe la epicrisis y contrarreferencia del centro de referencia una vez finalizado el tratamiento externo. Solicita interconsulta por sistema para dar continuidad.</bpmn:documentation>
+      <bpmn:incoming>Flow_UGAAToContraRef</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContraRefToPostTrat</bpmn:outgoing>
     </bpmn:receiveTask>
-    <bpmn:userTask id="Task_SeguimientoGestor" name="Seguimiento continuo del paciente por gestor oncológico">
-      <bpmn:documentation>El gestor oncológico realiza seguimiento continuo del paciente a lo largo de toda su trayectoria oncológica: verifica en qué va, gestiona nuevos exámenes, coordina con especialidades y resuelve dudas del paciente y familia. El gestor indica que falta tiempo para esta labor debido a la alta demanda espontánea. Se están evaluando alternativas como chatbot y tótems.</bpmn:documentation>
-      <bpmn:incoming>Flow_TratamientoToSeguimientoGestor</bpmn:incoming>
-      <bpmn:outgoing>Flow_SeguimientoToFin2</bpmn:outgoing>
+    <bpmn:sequenceFlow id="Flow_UGAAToContraRef" sourceRef="Task_UGAA_Derivar" targetRef="Task_RecibirContraRef" />
+    <bpmn:userTask id="Task_GestorDerivaPaliativos" name="Derivar a Cuidados Paliativos y Alivio del Dolor">
+      <bpmn:documentation>Pacientes con cáncer avanzado que requieren cuidados paliativos. El ingreso lo realiza el médico tratante mediante IPD y SIC. Continúan siendo acompañados por el gestor.</bpmn:documentation>
+      <bpmn:incoming>Flow_Paliativos</bpmn:incoming>
+      <bpmn:outgoing>Flow_PaliativosToPostTrat</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_TratamientoToSeguimientoGestor" sourceRef="Task_PacienteEnTratamientoFricke" targetRef="Task_SeguimientoGestor" />
-    <bpmn:endEvent id="End_DerivadoExterno" name="Paciente derivado a centro externo – Pérdida de visibilidad del seguimiento en Fricke">
-      <bpmn:documentation>El paciente es derivado al Hospital Van Buren o a centros privados. El Hospital Fricke pierde visibilidad y no tiene información de lo que sucede con el paciente tras la derivación.</bpmn:documentation>
-      <bpmn:incoming>Flow_QTSolidoToFin</bpmn:incoming>
-      <bpmn:incoming>Flow_RadioToFin</bpmn:incoming>
+    <bpmn:sequenceFlow id="Flow_Paliativos" name="Cuidados Paliativos" sourceRef="GW_TipoTratamiento" targetRef="Task_GestorDerivaPaliativos" />
+    <bpmn:exclusiveGateway id="GW_PostTratInterno" name="Convergencia post-tratamiento" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_CirugiaToPostTrat</bpmn:incoming>
+      <bpmn:incoming>Flow_QTToPostTrat</bpmn:incoming>
+      <bpmn:incoming>Flow_ContraRefToPostTrat</bpmn:incoming>
+      <bpmn:incoming>Flow_PaliativosToPostTrat</bpmn:incoming>
+      <bpmn:outgoing>Flow_PostTratToMultidisc</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_CirugiaToPostTrat" sourceRef="Task_GestorCirugiaLEIQ" targetRef="GW_PostTratInterno" />
+    <bpmn:sequenceFlow id="Flow_QTToPostTrat" sourceRef="Task_GestorQTHemato" targetRef="GW_PostTratInterno" />
+    <bpmn:sequenceFlow id="Flow_ContraRefToPostTrat" sourceRef="Task_RecibirContraRef" targetRef="GW_PostTratInterno" />
+    <bpmn:sequenceFlow id="Flow_PaliativosToPostTrat" sourceRef="Task_GestorDerivaPaliativos" targetRef="GW_PostTratInterno" />
+    <bpmn:userTask id="Task_DerivarMultidisc" name="Evaluar y derivar a equipo multidisciplinario (psicosocial, nutrición, kinesiología, etc.)">
+      <bpmn:documentation>El gestor evalúa necesidades de rehabilitación y deriva: dupla psicosocial, nutrición oncológica, kinesiología, fonoaudiología, terapia ocupacional, enfermería de ostomías, hospitalización domiciliaria. También evalúa al cuidador principal ante signos de sobrecarga.</bpmn:documentation>
+      <bpmn:incoming>Flow_PostTratToMultidisc</bpmn:incoming>
+      <bpmn:outgoing>Flow_MultidiscToGWInicioSeg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_PostTratToMultidisc" sourceRef="GW_PostTratInterno" targetRef="Task_DerivarMultidisc" />
+    <bpmn:parallelGateway id="GW_InicioSeguimiento" name="Inicio seguimiento continuo simultáneo" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_MultidiscToGWInicioSeg</bpmn:incoming>
+      <bpmn:outgoing>Flow_SeguimientoGestor</bpmn:outgoing>
+      <bpmn:outgoing>Flow_SeguimientoTENS</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_MultidiscToGWInicioSeg" sourceRef="Task_DerivarMultidisc" targetRef="GW_InicioSeguimiento" />
+    <bpmn:sequenceFlow id="Flow_SeguimientoGestor" sourceRef="GW_InicioSeguimiento" targetRef="Task_SeguimientoPeriodico" />
+    <bpmn:userTask id="Task_SeguimientoPeriodico" name="Seguimiento periódico del paciente y sobrevivientes">
+      <bpmn:documentation>El gestor asegura controles periódicos (3, 6, 12 meses o 5 años), mantiene contactabilidad, pesquisa inasistencias y acompaña el retorno a la vida cotidiana. Nodo Crítico AS-06: la demanda espontánea interrumpe esta labor.</bpmn:documentation>
+      <bpmn:incoming>Flow_SeguimientoGestor</bpmn:incoming>
+      <bpmn:outgoing>Flow_GestorToGWFinSeg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_GestorToGWFinSeg" sourceRef="Task_SeguimientoPeriodico" targetRef="GW_FinSeguimiento" />
+    <bpmn:sequenceFlow id="Flow_SeguimientoTENS" sourceRef="GW_InicioSeguimiento" targetRef="Task_TENS_Contactabilidad" />
+    <bpmn:userTask id="Task_TENS_Contactabilidad" name="Mantener contactabilidad con pacientes (teléfono, correo, presencial)">
+      <bpmn:documentation>El TENS apoya en mantener la contactabilidad con los pacientes vía telefónica, correo electrónico y presencial. Realiza seguimiento de exámenes y agenda en plataformas institucionales.</bpmn:documentation>
+      <bpmn:incoming>Flow_SeguimientoTENS</bpmn:incoming>
+      <bpmn:outgoing>Flow_TENSToGWFinSeg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_TENSToGWFinSeg" sourceRef="Task_TENS_Contactabilidad" targetRef="GW_FinSeguimiento" />
+    <bpmn:parallelGateway id="GW_FinSeguimiento" name="Convergencia de etapa de seguimiento" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_GestorToGWFinSeg</bpmn:incoming>
+      <bpmn:incoming>Flow_TENSToGWFinSeg</bpmn:incoming>
+      <bpmn:outgoing>Flow_SeguimientoToGWCierre</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_SeguimientoToGWCierre" sourceRef="GW_FinSeguimiento" targetRef="GW_CierreCaso" />
+    <bpmn:exclusiveGateway id="GW_CierreCaso" name="¿Criterio de cierre?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_SeguimientoToGWCierre</bpmn:incoming>
+      <bpmn:outgoing>Flow_Remision</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Fallecimiento</bpmn:outgoing>
+      <bpmn:outgoing>Flow_TrasladoCentro</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_ContraRefAPS" name="Coordinar contrarreferencia a APS y cerrar caso">
+      <bpmn:documentation>Finalizado el proceso de atención en especialidad, el gestor coordina el retorno a APS con la información necesaria para continuidad del cuidado. Registra cierre en plataforma local y ficha clínica.</bpmn:documentation>
+      <bpmn:incoming>Flow_Remision</bpmn:incoming>
+      <bpmn:outgoing>Flow_ContraRefToEnd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_Remision" name="Remisión / Alta clínica" sourceRef="GW_CierreCaso" targetRef="Task_ContraRefAPS" />
+    <bpmn:endEvent id="End_AltaAPS" name="Caso cerrado – Alta a APS">
+      <bpmn:incoming>Flow_ContraRefToEnd</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_QTSolidoToFin" sourceRef="IntermediateThrow_DerivacionQTSolida" targetRef="End_DerivadoExterno" />
-    <bpmn:sequenceFlow id="Flow_RadioToFin" sourceRef="IntermediateThrow_DerivacionRadio" targetRef="End_DerivadoExterno" />
-    <bpmn:endEvent id="End_TratamientoFricke" name="Paciente en tratamiento continuo y seguimiento en Hospital Fricke (acompañado por gestor oncológico)">
-      <bpmn:documentation>El paciente permanece dentro del Hospital Fricke en tratamiento (QT hematológica, post-cirugía o cuidados paliativos) y es acompañado de forma continua por el gestor oncológico según lo establece la Ley del Cáncer.</bpmn:documentation>
-      <bpmn:incoming>Flow_SeguimientoToFin2</bpmn:incoming>
+    <bpmn:sequenceFlow id="Flow_ContraRefToEnd" sourceRef="Task_ContraRefAPS" targetRef="End_AltaAPS" />
+    <bpmn:endEvent id="End_Fallecimiento" name="Caso cerrado – Fallecimiento">
+      <bpmn:incoming>Flow_Fallecimiento</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_SeguimientoToFin2" sourceRef="Task_SeguimientoGestor" targetRef="End_TratamientoFricke" />
-    <bpmn:startEvent id="Start_DerivacionConsulta" name="Derivación directa desde consulta médica de especialidades">
-      <bpmn:documentation>El paciente es derivado directamente desde una consulta médica en el CAE. El médico puede tener sospecha o confirmación de cáncer y lo deriva con indicaciones al servicio de gestión oncológica.</bpmn:documentation>
-      <bpmn:outgoing>Flow_InicioConsulta</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:startEvent id="Start_DerivacionComite" name="Derivación desde Comité Oncológico">
-      <bpmn:documentation>El paciente ha sido presentado en el comité oncológico y de ahí salen las acciones a realizar para su objetivo terapéutico.</bpmn:documentation>
-      <bpmn:outgoing>Flow_InicioComite</bpmn:outgoing>
-    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_Fallecimiento" name="Fallecimiento" sourceRef="GW_CierreCaso" targetRef="End_Fallecimiento" />
+    <bpmn:endEvent id="End_Traslado" name="Caso cerrado – Traslado a otro centro">
+      <bpmn:incoming>Flow_TrasladoCentro</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_TrasladoCentro" name="Traslado" sourceRef="GW_CierreCaso" targetRef="End_Traslado" />
   </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_ASIS_HGF">
-    <bpmndi:BPMNPlane id="BPMNPlane_ASIS" bpmnElement="Collaboration_ASIS">
+  <bpmn:process id="Proc_Paciente" name="Paciente y Cuidador Principal" isExecutable="false">
+    <bpmn:startEvent id="Start_Pac" name="Paciente recibe derivación">
+      <bpmn:outgoing>Flow_PacStart</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_Pac_RecibeOrientacion" name="Recibir orientación del gestor sobre trayectoria oncológica">
+      <bpmn:incoming>Flow_PacStart</bpmn:incoming>
+      <bpmn:outgoing>Flow_PacOrientToNotif</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_PacStart" sourceRef="Start_Pac" targetRef="Task_Pac_RecibeOrientacion" />
+    <bpmn:userTask id="Task_Pac_RecibeNotif" name="Recibir notificación de fecha de exámenes">
+      <bpmn:incoming>Flow_PacOrientToNotif</bpmn:incoming>
+      <bpmn:outgoing>Flow_PacNotifToAsist</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_PacOrientToNotif" sourceRef="Task_Pac_RecibeOrientacion" targetRef="Task_Pac_RecibeNotif" />
+    <bpmn:userTask id="Task_Pac_AsistExamen" name="Asistir presencialmente a toma de exámenes">
+      <bpmn:incoming>Flow_PacNotifToAsist</bpmn:incoming>
+      <bpmn:outgoing>Flow_PacAsistToInfo</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_PacNotifToAsist" sourceRef="Task_Pac_RecibeNotif" targetRef="Task_Pac_AsistExamen" />
+    <bpmn:userTask id="Task_Pac_RecibeInfoComite" name="Recibir información de resolución de comité y plan terapéutico">
+      <bpmn:incoming>Flow_PacAsistToInfo</bpmn:incoming>
+      <bpmn:outgoing>Flow_PacInfoToTrat</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_PacAsistToInfo" sourceRef="Task_Pac_AsistExamen" targetRef="Task_Pac_RecibeInfoComite" />
+    <bpmn:userTask id="Task_Pac_EnTratamiento" name="Paciente en tratamiento y seguimiento continuo">
+      <bpmn:incoming>Flow_PacInfoToTrat</bpmn:incoming>
+      <bpmn:outgoing>Flow_PacToEnd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_PacInfoToTrat" sourceRef="Task_Pac_RecibeInfoComite" targetRef="Task_Pac_EnTratamiento" />
+    <bpmn:endEvent id="End_Pac" name="Alta / Cierre de acompañamiento">
+      <bpmn:incoming>Flow_PacToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_PacToEnd" sourceRef="Task_Pac_EnTratamiento" targetRef="End_Pac" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ASIS">
+    <bpmndi:BPMNPlane id="BPMNPlane_ASIS" bpmnElement="Collab_ASIS">
       <bpmndi:BPMNShape id="Pool_HGF_di" bpmnElement="Pool_HGF" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="2460" height="900" />
-        <bpmndi:BPMNLabel />
+        <dc:Bounds x="160" y="80" width="4700" height="1380" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_CAE_di" bpmnElement="Lane_CAE" isHorizontal="true">
-        <dc:Bounds x="190" y="640" width="2430" height="120" />
+      <bpmndi:BPMNShape id="Lane_Apoyo_di" bpmnElement="Lane_Apoyo" isHorizontal="true">
+        <dc:Bounds x="190" y="1320" width="4670" height="140" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_Secretaria_di" bpmnElement="Lane_Secretaria" isHorizontal="true">
-        <dc:Bounds x="190" y="520" width="2430" height="120" />
+      <bpmndi:BPMNShape id="Lane_Comite_di" bpmnElement="Lane_Comite" isHorizontal="true">
+        <dc:Bounds x="190" y="1200" width="4670" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_GES_di" bpmnElement="Lane_GES" isHorizontal="true">
+        <dc:Bounds x="190" y="1100" width="4670" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_UGAA_di" bpmnElement="Lane_UGAA" isHorizontal="true">
+        <dc:Bounds x="190" y="1000" width="4670" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Admin_di" bpmnElement="Lane_Admin" isHorizontal="true">
+        <dc:Bounds x="190" y="880" width="4670" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_TENS_di" bpmnElement="Lane_TENS" isHorizontal="true">
+        <dc:Bounds x="190" y="760" width="4670" height="120" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_Gestor_di" bpmnElement="Lane_Gestor" isHorizontal="true">
-        <dc:Bounds x="190" y="300" width="2430" height="220" />
+        <dc:Bounds x="190" y="480" width="4670" height="280" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_Medico_di" bpmnElement="Lane_Medico" isHorizontal="true">
-        <dc:Bounds x="190" y="80" width="2430" height="220" />
+        <dc:Bounds x="190" y="320" width="4670" height="160" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_Paciente_di" bpmnElement="Lane_Paciente" isHorizontal="true">
-        <dc:Bounds x="190" y="760" width="2430" height="220" />
+      <bpmndi:BPMNShape id="Lane_UGDA_di" bpmnElement="Lane_UGDA" isHorizontal="true">
+        <dc:Bounds x="190" y="200" width="4670" height="120" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Start_TrasladoRed_di" bpmnElement="Start_TrasladoRed">
-        <dc:Bounds x="252" y="252" width="36" height="36" />
+      <bpmndi:BPMNShape id="Lane_APS_di" bpmnElement="Lane_APS" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="4670" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObj_FichaClinica_di" bpmnElement="DataObj_FichaClinica">
+        <dc:Bounds x="580" y="620" width="36" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="226" y="295" width="88" height="27" />
+          <dc:Bounds x="560" y="675" width="80" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_Inicio_di" bpmnElement="Gateway_Inicio" isMarkerVisible="true">
-        <dc:Bounds x="345" y="165" width="50" height="50" />
+      <bpmndi:BPMNShape id="DataObj_PlataformaLocal_di" bpmnElement="DataObj_PlataformaLocal">
+        <dc:Bounds x="1140" y="620" width="36" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="330" y="222" width="80" height="27" />
+          <dc:Bounds x="1120" y="675" width="80" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_RecibirPaciente_di" bpmnElement="Task_RecibirPaciente">
-        <dc:Bounds x="440" y="350" width="100" height="80" />
+      <bpmndi:BPMNShape id="DataObj_Dossier_di" bpmnElement="DataObj_Dossier">
+        <dc:Bounds x="3730" y="880" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3710" y="935" width="80" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_OrientarPaciente_di" bpmnElement="Task_OrientarPaciente">
-        <dc:Bounds x="580" y="350" width="100" height="80" />
+      <bpmndi:BPMNShape id="DataObj_ActaComite_di" bpmnElement="DataObj_ActaComite">
+        <dc:Bounds x="3430" y="1345" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3410" y="1400" width="80" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_ConsultaEspontanea_di" bpmnElement="Task_ConsultaEspontanea">
-        <dc:Bounds x="300" y="810" width="100" height="80" />
+      <bpmndi:BPMNShape id="DataObj_ConstanciaGES_di" bpmnElement="DataObj_ConstanciaGES">
+        <dc:Bounds x="3040" y="1215" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3020" y="1270" width="80" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_EmitirOrdenExamenes_di" bpmnElement="Task_EmitirOrdenExamenes">
-        <dc:Bounds x="720" y="140" width="100" height="80" />
+      <bpmndi:BPMNShape id="Start_DerivAPS_di" bpmnElement="Start_DerivAPS">
+        <dc:Bounds x="232" y="102" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_SolicitarAgendamiento_di" bpmnElement="Task_SolicitarAgendamiento">
-        <dc:Bounds x="860" y="350" width="100" height="80" />
+      <bpmndi:BPMNShape id="Start_DerivUrgencia_di" bpmnElement="Start_DerivUrgencia">
+        <dc:Bounds x="232" y="147" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_ConfirmarAgendamiento_di" bpmnElement="Task_ConfirmarAgendamiento">
-        <dc:Bounds x="860" y="670" width="100" height="80" />
+      <bpmndi:BPMNShape id="Start_InformeCritico_di" bpmnElement="Start_InformeCritico">
+        <dc:Bounds x="232" y="1372" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_RecibirConfirmacion_di" bpmnElement="Task_RecibirConfirmacion">
-        <dc:Bounds x="1000" y="350" width="100" height="80" />
+      <bpmndi:BPMNShape id="Start_DerivConsulta_di" bpmnElement="Start_DerivConsulta">
+        <dc:Bounds x="232" y="192" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_LlamarPaciente_di" bpmnElement="Task_LlamarPaciente">
-        <dc:Bounds x="1000" y="545" width="100" height="80" />
+      <bpmndi:BPMNShape id="GW_Ingreso_di" bpmnElement="GW_Ingreso" isMarkerVisible="true">
+        <dc:Bounds x="325" y="235" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_RecibirNotificacion_di" bpmnElement="Task_RecibirNotificacion">
-        <dc:Bounds x="1140" y="810" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_MedEvalua_di" bpmnElement="Task_MedEvalua">
+        <dc:Bounds x="420" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_PresentarseCAE_di" bpmnElement="Task_PresentarseCAE">
-        <dc:Bounds x="1140" y="670" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_AsignarGestor_di" bpmnElement="Task_AsignarGestor">
+        <dc:Bounds x="560" y="520" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_TomarMuestra_di" bpmnElement="Task_TomarMuestra">
-        <dc:Bounds x="1280" y="670" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_Admin_RegistroIngreso_di" bpmnElement="Task_Admin_RegistroIngreso">
+        <dc:Bounds x="700" y="900" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ContactoInicial_di" bpmnElement="Task_ContactoInicial">
+        <dc:Bounds x="840" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ValoracionDominios_di" bpmnElement="Task_ValoracionDominios">
+        <dc:Bounds x="980" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RegistroPlataforma_di" bpmnElement="Task_RegistroPlataforma">
+        <dc:Bounds x="1120" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_MedEmiteOrdenes_di" bpmnElement="Task_MedEmiteOrdenes">
+        <dc:Bounds x="1260" y="360" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_GestorSolicitaExam_di" bpmnElement="Task_GestorSolicitaExam">
+        <dc:Bounds x="1400" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_ExamenTipo_di" bpmnElement="GW_ExamenTipo" isMarkerVisible="true">
+        <dc:Bounds x="1545" y="535" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Admin_TramitaExam_di" bpmnElement="Task_Admin_TramitaExam">
+        <dc:Bounds x="1640" y="900" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Admin_NotifPaciente_di" bpmnElement="Task_Admin_NotifPaciente">
+        <dc:Bounds x="1780" y="900" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Apoyo_TomarMuestra_di" bpmnElement="Task_Apoyo_TomarMuestra">
+        <dc:Bounds x="1780" y="1350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Apoyo_ProcesarExam_di" bpmnElement="Task_Apoyo_ProcesarExam">
+        <dc:Bounds x="1920" y="1350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Apoyo_EmitirInforme_di" bpmnElement="Task_Apoyo_EmitirInforme">
+        <dc:Bounds x="2060" y="1350" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_RescatarResultados_di" bpmnElement="Task_RescatarResultados">
-        <dc:Bounds x="1280" y="350" width="100" height="80" />
+        <dc:Bounds x="2060" y="520" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_TrazarPacientePlataforma_di" bpmnElement="Task_TrazarPacientePlataforma">
-        <dc:Bounds x="1420" y="350" width="100" height="80" />
+      <bpmndi:BPMNShape id="GW_ValoresCriticos_di" bpmnElement="GW_ValoresCriticos" isMarkerVisible="true">
+        <dc:Bounds x="2195" y="535" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_ValidacionExamenes_di" bpmnElement="Gateway_ValidacionExamenes" isMarkerVisible="true">
-        <dc:Bounds x="1565" y="365" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1545" y="422" width="90" height="40" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Task_NotifCriticos_di" bpmnElement="Task_NotifCriticos">
+        <dc:Bounds x="2280" y="610" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_NotificarValoresCriticos_di" bpmnElement="Task_NotificarValoresCriticos">
-        <dc:Bounds x="1660" y="320" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_CompraServicio_di" bpmnElement="Task_CompraServicio">
+        <dc:Bounds x="1640" y="660" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_RecibirAlertaCritica_di" bpmnElement="Task_RecibirAlertaCritica">
-        <dc:Bounds x="1800" y="100" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_RecibirResultExt_di" bpmnElement="Task_RecibirResultExt">
+        <dc:Bounds x="1780" y="660" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_PasarResultadosMedico_di" bpmnElement="Task_PasarResultadosMedico">
-        <dc:Bounds x="1660" y="420" width="100" height="80" />
+      <bpmndi:BPMNShape id="GW_ConvExamenes_di" bpmnElement="GW_ConvExamenes" isMarkerVisible="true">
+        <dc:Bounds x="2425" y="535" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_RevisarResultadosNormales_di" bpmnElement="Task_RevisarResultadosNormales">
-        <dc:Bounds x="1940" y="140" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_EntregaResultMedico_di" bpmnElement="Task_EntregaResultMedico">
+        <dc:Bounds x="2510" y="520" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_PresentarComite_di" bpmnElement="Task_PresentarComite">
-        <dc:Bounds x="2080" y="140" width="100" height="80" />
+      <bpmndi:BPMNShape id="GW_Confirmacion_di" bpmnElement="GW_Confirmacion" isMarkerVisible="true">
+        <dc:Bounds x="2655" y="375" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_Tratamiento_di" bpmnElement="Gateway_Tratamiento" isMarkerVisible="true">
-        <dc:Bounds x="2225" y="155" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2205" y="100" width="90" height="40" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Task_MedConfirmaDiag_di" bpmnElement="Task_MedConfirmaDiag">
+        <dc:Bounds x="2740" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_DefinirCirugia_di" bpmnElement="Task_DefinirCirugia">
-        <dc:Bounds x="2340" y="90" width="100" height="80" />
+      <bpmndi:BPMNShape id="GW_PostConfirmacion_di" bpmnElement="GW_PostConfirmacion" isMarkerVisible="true">
+        <dc:Bounds x="2655" y="330" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_PacienteListaEsperaQx_di" bpmnElement="Task_PacienteListaEsperaQx">
-        <dc:Bounds x="2480" y="810" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_MedEmiteIPD_di" bpmnElement="Task_MedEmiteIPD">
+        <dc:Bounds x="2880" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_ProgramarQTHemato_di" bpmnElement="Task_ProgramarQTHemato">
-        <dc:Bounds x="2340" y="180" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_MedComunicaDiag_di" bpmnElement="Task_MedComunicaDiag">
+        <dc:Bounds x="3020" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_PacienteEnTratamientoFricke_di" bpmnElement="Task_PacienteEnTratamientoFricke">
-        <dc:Bounds x="2340" y="810" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_ConstanciaGES_di" bpmnElement="Task_ConstanciaGES">
+        <dc:Bounds x="3020" y="1110" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="IntermediateThrow_DerivacionQTSolida_di" bpmnElement="IntermediateThrow_DerivacionQTSolida">
-        <dc:Bounds x="2372" y="272" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2410" y="272" width="80" height="40" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Task_GestorPreparaComite_di" bpmnElement="Task_GestorPreparaComite">
+        <dc:Bounds x="3150" y="520" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="IntermediateThrow_DerivacionRadio_di" bpmnElement="IntermediateThrow_DerivacionRadio">
-        <dc:Bounds x="2452" y="272" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2490" y="272" width="80" height="27" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Task_MedPreparaComite_di" bpmnElement="Task_MedPreparaComite">
+        <dc:Bounds x="3150" y="360" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_DefinirCuidadosPaliativos_di" bpmnElement="Task_DefinirCuidadosPaliativos">
-        <dc:Bounds x="2340" y="370" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_ComiteEvalua_di" bpmnElement="Task_ComiteEvalua">
+        <dc:Bounds x="3280" y="1220" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_DerivarDuplaPsicosocial_di" bpmnElement="Task_DerivarDuplaPsicosocial">
-        <dc:Bounds x="580" y="440" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_ComiteResolucion_di" bpmnElement="Task_ComiteResolucion">
+        <dc:Bounds x="3410" y="1220" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_DerivarNutricion_di" bpmnElement="Task_DerivarNutricion">
-        <dc:Bounds x="720" y="440" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_Gestor_InformaComite_di" bpmnElement="Task_Gestor_InformaComite">
+        <dc:Bounds x="3410" y="520" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_SolicitarCompraServicio_di" bpmnElement="Task_SolicitarCompraServicio">
-        <dc:Bounds x="1420" y="440" width="100" height="80" />
+      <bpmndi:BPMNShape id="GW_TipoTratamiento_di" bpmnElement="GW_TipoTratamiento" isMarkerVisible="true">
+        <dc:Bounds x="3545" y="535" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_RecibirResultadosExternos_di" bpmnElement="Task_RecibirResultadosExternos">
-        <dc:Bounds x="1560" y="440" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_GestorCirugiaLEIQ_di" bpmnElement="Task_GestorCirugiaLEIQ">
+        <dc:Bounds x="3640" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_SeguimientoGestor_di" bpmnElement="Task_SeguimientoGestor">
-        <dc:Bounds x="2480" y="350" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_GestorQTHemato_di" bpmnElement="Task_GestorQTHemato">
+        <dc:Bounds x="3640" y="490" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="End_DerivadoExterno_di" bpmnElement="End_DerivadoExterno">
-        <dc:Bounds x="2532" y="452" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2510" y="495" width="80" height="40" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="GW_DerivExterna_di" bpmnElement="GW_DerivExterna" isMarkerVisible="true">
+        <dc:Bounds x="3625" y="615" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="End_TratamientoFricke_di" bpmnElement="End_TratamientoFricke">
-        <dc:Bounds x="2582" y="832" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2560" y="875" width="80" height="40" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Task_TENS_Dossier_di" bpmnElement="Task_TENS_Dossier">
+        <dc:Bounds x="3710" y="780" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Start_DerivacionConsulta_di" bpmnElement="Start_DerivacionConsulta">
-        <dc:Bounds x="252" y="82" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="226" y="125" width="89" height="53" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Task_UGAA_Derivar_di" bpmnElement="Task_UGAA_Derivar">
+        <dc:Bounds x="3710" y="1010" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Start_DerivacionComite_di" bpmnElement="Start_DerivacionComite">
-        <dc:Bounds x="252" y="182" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="228" y="225" width="85" height="40" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Task_RecibirContraRef_di" bpmnElement="Task_RecibirContraRef">
+        <dc:Bounds x="3850" y="600" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_InicioConsulta_di" bpmnElement="Flow_InicioConsulta">
-        <di:waypoint x="285" y="91" />
-        <di:waypoint x="370" y="91" />
-        <di:waypoint x="370" y="165" />
+      <bpmndi:BPMNShape id="Task_GestorDerivaPaliativos_di" bpmnElement="Task_GestorDerivaPaliativos">
+        <dc:Bounds x="3640" y="680" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_PostTratInterno_di" bpmnElement="GW_PostTratInterno" isMarkerVisible="true">
+        <dc:Bounds x="3995" y="535" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_DerivarMultidisc_di" bpmnElement="Task_DerivarMultidisc">
+        <dc:Bounds x="4070" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_InicioSeguimiento_di" bpmnElement="GW_InicioSeguimiento">
+        <dc:Bounds x="4195" y="535" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SeguimientoPeriodico_di" bpmnElement="Task_SeguimientoPeriodico">
+        <dc:Bounds x="4270" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_TENS_Contactabilidad_di" bpmnElement="Task_TENS_Contactabilidad">
+        <dc:Bounds x="4270" y="780" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_FinSeguimiento_di" bpmnElement="GW_FinSeguimiento">
+        <dc:Bounds x="4405" y="535" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_CierreCaso_di" bpmnElement="GW_CierreCaso" isMarkerVisible="true">
+        <dc:Bounds x="4485" y="535" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ContraRefAPS_di" bpmnElement="Task_ContraRefAPS">
+        <dc:Bounds x="4560" y="480" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_AltaAPS_di" bpmnElement="End_AltaAPS">
+        <dc:Bounds x="4682" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Fallecimiento_di" bpmnElement="End_Fallecimiento">
+        <dc:Bounds x="4682" y="542" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Traslado_di" bpmnElement="End_Traslado">
+        <dc:Bounds x="4682" y="612" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_APS_di" bpmnElement="Flow_APS">
+        <di:waypoint x="268" y="120" />
+        <di:waypoint x="296" y="120" />
+        <di:waypoint x="296" y="260" />
+        <di:waypoint x="325" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_InicioComite_di" bpmnElement="Flow_InicioComite">
-        <di:waypoint x="287" y="205" />
-        <di:waypoint x="317" y="205" />
-        <di:waypoint x="317" y="188" />
-        <di:waypoint x="347" y="188" />
+      <bpmndi:BPMNEdge id="Flow_Urgencia_di" bpmnElement="Flow_Urgencia">
+        <di:waypoint x="268" y="165" />
+        <di:waypoint x="296" y="165" />
+        <di:waypoint x="296" y="260" />
+        <di:waypoint x="325" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_InicioTraslado_di" bpmnElement="Flow_InicioTraslado">
-        <di:waypoint x="288" y="270" />
-        <di:waypoint x="370" y="215" />
+      <bpmndi:BPMNEdge id="Flow_InfCritico_di" bpmnElement="Flow_InfCritico">
+        <di:waypoint x="268" y="1390" />
+        <di:waypoint x="296" y="1390" />
+        <di:waypoint x="296" y="260" />
+        <di:waypoint x="325" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_InicioToRecepcion_di" bpmnElement="Flow_InicioToRecepcion">
-        <di:waypoint x="395" y="190" />
-        <di:waypoint x="420" y="190" />
-        <di:waypoint x="420" y="390" />
-        <di:waypoint x="440" y="390" />
+      <bpmndi:BPMNEdge id="Flow_Consulta_di" bpmnElement="Flow_Consulta">
+        <di:waypoint x="268" y="210" />
+        <di:waypoint x="296" y="210" />
+        <di:waypoint x="296" y="260" />
+        <di:waypoint x="325" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_RecepcionToOrientar_di" bpmnElement="Flow_RecepcionToOrientar">
-        <di:waypoint x="540" y="390" />
-        <di:waypoint x="580" y="390" />
+      <bpmndi:BPMNEdge id="Flow_IngresoToMed_di" bpmnElement="Flow_IngresoToMed">
+        <di:waypoint x="375" y="260" />
+        <di:waypoint x="397" y="260" />
+        <di:waypoint x="397" y="400" />
+        <di:waypoint x="420" y="400" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_OrientarToConsulta_di" bpmnElement="Flow_OrientarToConsulta">
-        <di:waypoint x="680" y="390" />
-        <di:waypoint x="700" y="390" />
-        <di:waypoint x="700" y="180" />
-        <di:waypoint x="720" y="180" />
+      <bpmndi:BPMNEdge id="Flow_MedToAsignar_di" bpmnElement="Flow_MedToAsignar">
+        <di:waypoint x="520" y="400" />
+        <di:waypoint x="540" y="400" />
+        <di:waypoint x="540" y="560" />
+        <di:waypoint x="560" y="560" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_OrdenToSolicitar_di" bpmnElement="Flow_OrdenToSolicitar">
-        <di:waypoint x="820" y="180" />
-        <di:waypoint x="840" y="180" />
-        <di:waypoint x="840" y="390" />
-        <di:waypoint x="860" y="390" />
+      <bpmndi:BPMNEdge id="Flow_AsignarToAdmin_di" bpmnElement="Flow_AsignarToAdmin">
+        <di:waypoint x="660" y="560" />
+        <di:waypoint x="680" y="560" />
+        <di:waypoint x="680" y="940" />
+        <di:waypoint x="700" y="940" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_SolicitarToConfirmar_di" bpmnElement="Flow_SolicitarToConfirmar">
-        <di:waypoint x="910" y="430" />
-        <di:waypoint x="910" y="670" />
+      <bpmndi:BPMNEdge id="Flow_AdminToContacto_di" bpmnElement="Flow_AdminToContacto">
+        <di:waypoint x="800" y="940" />
+        <di:waypoint x="820" y="940" />
+        <di:waypoint x="820" y="560" />
+        <di:waypoint x="840" y="560" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ConfirmarToRecibir_di" bpmnElement="Flow_ConfirmarToRecibir">
-        <di:waypoint x="960" y="710" />
-        <di:waypoint x="980" y="710" />
-        <di:waypoint x="980" y="390" />
-        <di:waypoint x="1000" y="390" />
+      <bpmndi:BPMNEdge id="Flow_ContactoToValoracion_di" bpmnElement="Flow_ContactoToValoracion">
+        <di:waypoint x="940" y="560" />
+        <di:waypoint x="980" y="560" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_RecibirToLlamar_di" bpmnElement="Flow_RecibirToLlamar">
-        <di:waypoint x="1050" y="430" />
-        <di:waypoint x="1050" y="545" />
+      <bpmndi:BPMNEdge id="Flow_ValoracionToRegistro_di" bpmnElement="Flow_ValoracionToRegistro">
+        <di:waypoint x="1080" y="560" />
+        <di:waypoint x="1120" y="560" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_LlamarToNotificar_di" bpmnElement="Flow_LlamarToNotificar">
-        <di:waypoint x="1100" y="585" />
-        <di:waypoint x="1120" y="585" />
-        <di:waypoint x="1120" y="850" />
-        <di:waypoint x="1140" y="850" />
+      <bpmndi:BPMNEdge id="Flow_RegistroToOrdenes_di" bpmnElement="Flow_RegistroToOrdenes">
+        <di:waypoint x="1220" y="560" />
+        <di:waypoint x="1240" y="560" />
+        <di:waypoint x="1240" y="400" />
+        <di:waypoint x="1260" y="400" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_NotificarToPresentar_di" bpmnElement="Flow_NotificarToPresentar">
-        <di:waypoint x="1190" y="810" />
-        <di:waypoint x="1190" y="750" />
+      <bpmndi:BPMNEdge id="Flow_OrdenesToGestor_di" bpmnElement="Flow_OrdenesToGestor">
+        <di:waypoint x="1360" y="400" />
+        <di:waypoint x="1380" y="400" />
+        <di:waypoint x="1380" y="560" />
+        <di:waypoint x="1400" y="560" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_PresentarToTomar_di" bpmnElement="Flow_PresentarToTomar">
-        <di:waypoint x="1240" y="710" />
-        <di:waypoint x="1280" y="710" />
+      <bpmndi:BPMNEdge id="Flow_GestorToGWExamenTipo_di" bpmnElement="Flow_GestorToGWExamenTipo">
+        <di:waypoint x="1500" y="560" />
+        <di:waypoint x="1545" y="560" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_TomarToRescatar_di" bpmnElement="Flow_TomarToRescatar">
-        <di:waypoint x="1330" y="670" />
-        <di:waypoint x="1330" y="430" />
+      <bpmndi:BPMNEdge id="Flow_ExamenInterno_di" bpmnElement="Flow_ExamenInterno">
+        <di:waypoint x="1595" y="560" />
+        <di:waypoint x="1617" y="560" />
+        <di:waypoint x="1617" y="940" />
+        <di:waypoint x="1640" y="940" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_RescatarToTraza_di" bpmnElement="Flow_RescatarToTraza">
-        <di:waypoint x="1380" y="390" />
-        <di:waypoint x="1420" y="390" />
+      <bpmndi:BPMNEdge id="Flow_AdminToNotif_di" bpmnElement="Flow_AdminToNotif">
+        <di:waypoint x="1740" y="940" />
+        <di:waypoint x="1780" y="940" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_TrazaToGateway1_di" bpmnElement="Flow_TrazaToGateway1">
-        <di:waypoint x="1520" y="390" />
-        <di:waypoint x="1565" y="390" />
+      <bpmndi:BPMNEdge id="Flow_NotifToApoyo_di" bpmnElement="Flow_NotifToApoyo">
+        <di:waypoint x="1830" y="980" />
+        <di:waypoint x="1830" y="1350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ValoresCriticos_di" bpmnElement="Flow_ValoresCriticos">
-        <di:waypoint x="1590" y="365" />
-        <di:waypoint x="1590" y="360" />
-        <di:waypoint x="1660" y="360" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1596" y="333" width="88" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNEdge id="Flow_MuestraToProc_di" bpmnElement="Flow_MuestraToProc">
+        <di:waypoint x="1880" y="1390" />
+        <di:waypoint x="1920" y="1390" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_CriticosToMedico_di" bpmnElement="Flow_CriticosToMedico">
-        <di:waypoint x="1760" y="360" />
-        <di:waypoint x="1780" y="360" />
-        <di:waypoint x="1780" y="140" />
-        <di:waypoint x="1800" y="140" />
+      <bpmndi:BPMNEdge id="Flow_ProcToInforme_di" bpmnElement="Flow_ProcToInforme">
+        <di:waypoint x="2020" y="1390" />
+        <di:waypoint x="2060" y="1390" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ValoresNormales_di" bpmnElement="Flow_ValoresNormales">
-        <di:waypoint x="1590" y="415" />
-        <di:waypoint x="1590" y="460" />
-        <di:waypoint x="1660" y="460" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1596" y="443" width="88" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNEdge id="Flow_InformeToRescatar_di" bpmnElement="Flow_InformeToRescatar">
+        <di:waypoint x="2110" y="1350" />
+        <di:waypoint x="2110" y="600" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_NormalesToMedico_di" bpmnElement="Flow_NormalesToMedico">
-        <di:waypoint x="1760" y="460" />
-        <di:waypoint x="1920" y="460" />
-        <di:waypoint x="1920" y="180" />
-        <di:waypoint x="1940" y="180" />
+      <bpmndi:BPMNEdge id="Flow_RescatarToGW_di" bpmnElement="Flow_RescatarToGW">
+        <di:waypoint x="2160" y="560" />
+        <di:waypoint x="2195" y="560" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_AlertaToComite_di" bpmnElement="Flow_AlertaToComite">
-        <di:waypoint x="1900" y="140" />
-        <di:waypoint x="1920" y="140" />
-        <di:waypoint x="1920" y="170" />
-        <di:waypoint x="1940" y="170" />
+      <bpmndi:BPMNEdge id="Flow_SiCriticos_di" bpmnElement="Flow_SiCriticos">
+        <di:waypoint x="2245" y="560" />
+        <di:waypoint x="2262" y="560" />
+        <di:waypoint x="2262" y="650" />
+        <di:waypoint x="2280" y="650" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_RevisarToComite_di" bpmnElement="Flow_RevisarToComite">
-        <di:waypoint x="2040" y="180" />
-        <di:waypoint x="2080" y="180" />
+      <bpmndi:BPMNEdge id="Flow_NoCriticos_di" bpmnElement="Flow_NoCriticos">
+        <di:waypoint x="2245" y="560" />
+        <di:waypoint x="2425" y="560" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ComiteToGateway2_di" bpmnElement="Flow_ComiteToGateway2">
-        <di:waypoint x="2180" y="180" />
-        <di:waypoint x="2225" y="180" />
+      <bpmndi:BPMNEdge id="Flow_CriticosToConv_di" bpmnElement="Flow_CriticosToConv">
+        <di:waypoint x="2380" y="650" />
+        <di:waypoint x="2402" y="650" />
+        <di:waypoint x="2402" y="560" />
+        <di:waypoint x="2425" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ExamenExterno_di" bpmnElement="Flow_ExamenExterno">
+        <di:waypoint x="1595" y="560" />
+        <di:waypoint x="1617" y="560" />
+        <di:waypoint x="1617" y="700" />
+        <di:waypoint x="1640" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CompraToRecibir_di" bpmnElement="Flow_CompraToRecibir">
+        <di:waypoint x="1740" y="700" />
+        <di:waypoint x="1780" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ResultExtToConv_di" bpmnElement="Flow_ResultExtToConv">
+        <di:waypoint x="1880" y="700" />
+        <di:waypoint x="2152" y="700" />
+        <di:waypoint x="2152" y="560" />
+        <di:waypoint x="2425" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ConvToEntrega_di" bpmnElement="Flow_ConvToEntrega">
+        <di:waypoint x="2475" y="560" />
+        <di:waypoint x="2510" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_EntregaToConfirm_di" bpmnElement="Flow_EntregaToConfirm">
+        <di:waypoint x="2610" y="560" />
+        <di:waypoint x="2632" y="560" />
+        <di:waypoint x="2632" y="400" />
+        <di:waypoint x="2655" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SiConfirma_di" bpmnElement="Flow_SiConfirma">
+        <di:waypoint x="2705" y="400" />
+        <di:waypoint x="2740" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_NoConfirma_di" bpmnElement="Flow_NoConfirma">
+        <di:waypoint x="2680" y="375" />
+        <di:waypoint x="2680" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ConfToIPD_di" bpmnElement="Flow_ConfToIPD">
+        <di:waypoint x="2840" y="400" />
+        <di:waypoint x="2880" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_IPDToComunica_di" bpmnElement="Flow_IPDToComunica">
+        <di:waypoint x="2980" y="400" />
+        <di:waypoint x="3020" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ComunicaToGES_di" bpmnElement="Flow_ComunicaToGES">
+        <di:waypoint x="3070" y="440" />
+        <di:waypoint x="3070" y="1110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_GESToPreparaComite_di" bpmnElement="Flow_GESToPreparaComite">
+        <di:waypoint x="3120" y="1150" />
+        <di:waypoint x="3135" y="1150" />
+        <di:waypoint x="3135" y="560" />
+        <di:waypoint x="3150" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PreparaToMedComite_di" bpmnElement="Flow_PreparaToMedComite">
+        <di:waypoint x="3200" y="520" />
+        <di:waypoint x="3200" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_MedToComite_di" bpmnElement="Flow_MedToComite">
+        <di:waypoint x="3250" y="400" />
+        <di:waypoint x="3265" y="400" />
+        <di:waypoint x="3265" y="1260" />
+        <di:waypoint x="3280" y="1260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_EvaluaToResol_di" bpmnElement="Flow_EvaluaToResol">
+        <di:waypoint x="3380" y="1260" />
+        <di:waypoint x="3410" y="1260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ResolToGestor_di" bpmnElement="Flow_ResolToGestor">
+        <di:waypoint x="3460" y="1220" />
+        <di:waypoint x="3460" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_InformaToGWTrat_di" bpmnElement="Flow_InformaToGWTrat">
+        <di:waypoint x="3510" y="560" />
+        <di:waypoint x="3545" y="560" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Cirugia_di" bpmnElement="Flow_Cirugia">
-        <di:waypoint x="2250" y="155" />
-        <di:waypoint x="2250" y="130" />
-        <di:waypoint x="2340" y="130" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2270" y="113" width="78" height="14" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="3595" y="560" />
+        <di:waypoint x="3617" y="560" />
+        <di:waypoint x="3617" y="260" />
+        <di:waypoint x="3640" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_CirugiaToListaEspera_di" bpmnElement="Flow_CirugiaToListaEspera">
-        <di:waypoint x="2440" y="130" />
-        <di:waypoint x="2530" y="130" />
-        <di:waypoint x="2530" y="810" />
+      <bpmndi:BPMNEdge id="Flow_QTHemato_di" bpmnElement="Flow_QTHemato">
+        <di:waypoint x="3595" y="560" />
+        <di:waypoint x="3617" y="560" />
+        <di:waypoint x="3617" y="530" />
+        <di:waypoint x="3640" y="530" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_QTHematologico_di" bpmnElement="Flow_QTHematologico">
-        <di:waypoint x="2275" y="180" />
-        <di:waypoint x="2308" y="180" />
-        <di:waypoint x="2308" y="220" />
-        <di:waypoint x="2340" y="220" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2290" y="193" width="120" height="27" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNEdge id="Flow_DerivExterna_di" bpmnElement="Flow_DerivExterna">
+        <di:waypoint x="3595" y="560" />
+        <di:waypoint x="3610" y="560" />
+        <di:waypoint x="3610" y="640" />
+        <di:waypoint x="3625" y="640" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_QTHematoToTratamiento_di" bpmnElement="Flow_QTHematoToTratamiento">
-        <di:waypoint x="2390" y="260" />
-        <di:waypoint x="2390" y="810" />
+      <bpmndi:BPMNEdge id="Flow_DerivToTENS_di" bpmnElement="Flow_DerivToTENS">
+        <di:waypoint x="3675" y="640" />
+        <di:waypoint x="3692" y="640" />
+        <di:waypoint x="3692" y="820" />
+        <di:waypoint x="3710" y="820" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ListaEsperaToSeguimiento_di" bpmnElement="Flow_ListaEsperaToSeguimiento">
-        <di:waypoint x="2480" y="850" />
-        <di:waypoint x="2440" y="850" />
+      <bpmndi:BPMNEdge id="Flow_DossierToUGAA_di" bpmnElement="Flow_DossierToUGAA">
+        <di:waypoint x="3760" y="860" />
+        <di:waypoint x="3760" y="1010" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_QTSolido_di" bpmnElement="Flow_QTSolido">
-        <di:waypoint x="2250" y="205" />
-        <di:waypoint x="2250" y="290" />
-        <di:waypoint x="2372" y="290" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2256" y="275" width="110" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_Radioterapia_di" bpmnElement="Flow_Radioterapia">
-        <di:waypoint x="2275" y="190" />
-        <di:waypoint x="2300" y="190" />
-        <di:waypoint x="2300" y="290" />
-        <di:waypoint x="2452" y="290" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2420" y="303" width="64" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNEdge id="Flow_UGAAToContraRef_di" bpmnElement="Flow_UGAAToContraRef">
+        <di:waypoint x="3810" y="1050" />
+        <di:waypoint x="3830" y="1050" />
+        <di:waypoint x="3830" y="640" />
+        <di:waypoint x="3850" y="640" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Paliativos_di" bpmnElement="Flow_Paliativos">
-        <di:waypoint x="2250" y="205" />
-        <di:waypoint x="2250" y="410" />
-        <di:waypoint x="2340" y="410" />
+        <di:waypoint x="3595" y="560" />
+        <di:waypoint x="3617" y="560" />
+        <di:waypoint x="3617" y="720" />
+        <di:waypoint x="3640" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CirugiaToPostTrat_di" bpmnElement="Flow_CirugiaToPostTrat">
+        <di:waypoint x="3740" y="260" />
+        <di:waypoint x="3867" y="260" />
+        <di:waypoint x="3867" y="560" />
+        <di:waypoint x="3995" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_QTToPostTrat_di" bpmnElement="Flow_QTToPostTrat">
+        <di:waypoint x="3740" y="530" />
+        <di:waypoint x="3867" y="530" />
+        <di:waypoint x="3867" y="560" />
+        <di:waypoint x="3995" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ContraRefToPostTrat_di" bpmnElement="Flow_ContraRefToPostTrat">
+        <di:waypoint x="3950" y="640" />
+        <di:waypoint x="3972" y="640" />
+        <di:waypoint x="3972" y="560" />
+        <di:waypoint x="3995" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PaliativosToPostTrat_di" bpmnElement="Flow_PaliativosToPostTrat">
+        <di:waypoint x="3740" y="720" />
+        <di:waypoint x="3867" y="720" />
+        <di:waypoint x="3867" y="560" />
+        <di:waypoint x="3995" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PostTratToMultidisc_di" bpmnElement="Flow_PostTratToMultidisc">
+        <di:waypoint x="4045" y="560" />
+        <di:waypoint x="4070" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_MultidiscToGWInicioSeg_di" bpmnElement="Flow_MultidiscToGWInicioSeg">
+        <di:waypoint x="4170" y="560" />
+        <di:waypoint x="4195" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SeguimientoGestor_di" bpmnElement="Flow_SeguimientoGestor">
+        <di:waypoint x="4245" y="560" />
+        <di:waypoint x="4270" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_GestorToGWFinSeg_di" bpmnElement="Flow_GestorToGWFinSeg">
+        <di:waypoint x="4370" y="560" />
+        <di:waypoint x="4405" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SeguimientoTENS_di" bpmnElement="Flow_SeguimientoTENS">
+        <di:waypoint x="4245" y="560" />
+        <di:waypoint x="4257" y="560" />
+        <di:waypoint x="4257" y="820" />
+        <di:waypoint x="4270" y="820" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_TENSToGWFinSeg_di" bpmnElement="Flow_TENSToGWFinSeg">
+        <di:waypoint x="4370" y="820" />
+        <di:waypoint x="4387" y="820" />
+        <di:waypoint x="4387" y="560" />
+        <di:waypoint x="4405" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SeguimientoToGWCierre_di" bpmnElement="Flow_SeguimientoToGWCierre">
+        <di:waypoint x="4455" y="560" />
+        <di:waypoint x="4485" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Remision_di" bpmnElement="Flow_Remision">
+        <di:waypoint x="4535" y="560" />
+        <di:waypoint x="4547" y="560" />
+        <di:waypoint x="4547" y="520" />
+        <di:waypoint x="4560" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ContraRefToEnd_di" bpmnElement="Flow_ContraRefToEnd">
+        <di:waypoint x="4660" y="520" />
+        <di:waypoint x="4671" y="520" />
+        <di:waypoint x="4671" y="140" />
+        <di:waypoint x="4682" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Fallecimiento_di" bpmnElement="Flow_Fallecimiento">
+        <di:waypoint x="4535" y="560" />
+        <di:waypoint x="4682" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_TrasladoCentro_di" bpmnElement="Flow_TrasladoCentro">
+        <di:waypoint x="4535" y="560" />
+        <di:waypoint x="4608" y="560" />
+        <di:waypoint x="4608" y="630" />
+        <di:waypoint x="4682" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Pool_Paciente_di" bpmnElement="Pool_Paciente" isHorizontal="true">
+        <dc:Bounds x="160" y="1500" width="4700" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_Pac_di" bpmnElement="Start_Pac">
+        <dc:Bounds x="232" y="1572" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pac_RecibeOrientacion_di" bpmnElement="Task_Pac_RecibeOrientacion">
+        <dc:Bounds x="840" y="1550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pac_RecibeNotif_di" bpmnElement="Task_Pac_RecibeNotif">
+        <dc:Bounds x="1780" y="1550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pac_AsistExamen_di" bpmnElement="Task_Pac_AsistExamen">
+        <dc:Bounds x="1920" y="1550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pac_RecibeInfoComite_di" bpmnElement="Task_Pac_RecibeInfoComite">
+        <dc:Bounds x="3410" y="1550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pac_EnTratamiento_di" bpmnElement="Task_Pac_EnTratamiento">
+        <dc:Bounds x="3640" y="1550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_Pac_di" bpmnElement="End_Pac">
+        <dc:Bounds x="4682" y="1572" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_PacStart_di" bpmnElement="Flow_PacStart">
+        <di:waypoint x="268" y="1590" />
+        <di:waypoint x="840" y="1590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PacOrientToNotif_di" bpmnElement="Flow_PacOrientToNotif">
+        <di:waypoint x="940" y="1590" />
+        <di:waypoint x="1780" y="1590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PacNotifToAsist_di" bpmnElement="Flow_PacNotifToAsist">
+        <di:waypoint x="1880" y="1590" />
+        <di:waypoint x="1920" y="1590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PacAsistToInfo_di" bpmnElement="Flow_PacAsistToInfo">
+        <di:waypoint x="2020" y="1590" />
+        <di:waypoint x="3410" y="1590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PacInfoToTrat_di" bpmnElement="Flow_PacInfoToTrat">
+        <di:waypoint x="3510" y="1590" />
+        <di:waypoint x="3640" y="1590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PacToEnd_di" bpmnElement="Flow_PacToEnd">
+        <di:waypoint x="3740" y="1590" />
+        <di:waypoint x="4682" y="1590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Pool_RedExterna_di" bpmnElement="Pool_RedExterna" isHorizontal="true">
+        <dc:Bounds x="160" y="1720" width="4700" height="90" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Msg_DossierToRed_di" bpmnElement="Msg_DossierToRed">
+        <di:waypoint x="3760" y="1090" />
+        <di:waypoint x="3760" y="1720" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2256" y="393" width="80" height="14" />
+          <dc:Bounds x="3729" y="1389" width="82" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_PaliativosToSeguimiento_di" bpmnElement="Flow_PaliativosToSeguimiento">
-        <di:waypoint x="2390" y="450" />
-        <di:waypoint x="2390" y="810" />
+      <bpmndi:BPMNEdge id="Msg_CompraServicio_di" bpmnElement="Msg_CompraServicio">
+        <di:waypoint x="1657" y="740" />
+        <di:waypoint x="1657" y="1720" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1618" y="1207" width="84" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_TratamientoToSeguimientoGestor_di" bpmnElement="Flow_TratamientoToSeguimientoGestor">
-        <di:waypoint x="2440" y="850" />
-        <di:waypoint x="2530" y="850" />
-        <di:waypoint x="2530" y="430" />
+      <bpmndi:BPMNEdge id="Msg_ResultadosExt_di" bpmnElement="Msg_ResultadosExt">
+        <di:waypoint x="1854" y="1720" />
+        <di:waypoint x="1854" y="740" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1815" y="1207" width="71" height="40" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_QTSolidoToFin_di" bpmnElement="Flow_QTSolidoToFin">
-        <di:waypoint x="2408" y="290" />
-        <di:waypoint x="2550" y="290" />
-        <di:waypoint x="2550" y="452" />
+      <bpmndi:BPMNEdge id="Msg_ContraRef_di" bpmnElement="Msg_ContraRef">
+        <di:waypoint x="3900" y="1720" />
+        <di:waypoint x="3900" y="680" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3849" y="1182" width="86" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_RadioToFin_di" bpmnElement="Flow_RadioToFin">
-        <di:waypoint x="2488" y="290" />
-        <di:waypoint x="2550" y="290" />
-        <di:waypoint x="2550" y="452" />
+      <bpmndi:BPMNEdge id="Msg_ContactoPaciente_di" bpmnElement="Msg_ContactoPaciente">
+        <di:waypoint x="890" y="600" />
+        <di:waypoint x="890" y="1550" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_SeguimientoToFin2_di" bpmnElement="Flow_SeguimientoToFin2">
-        <di:waypoint x="2580" y="390" />
-        <di:waypoint x="2600" y="390" />
-        <di:waypoint x="2600" y="832" />
+      <bpmndi:BPMNEdge id="Msg_NotifExamen_di" bpmnElement="Msg_NotifExamen">
+        <di:waypoint x="1830" y="980" />
+        <di:waypoint x="1830" y="1550" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Pool_HCVB_di" bpmnElement="Pool_HCVB" isHorizontal="true">
-        <dc:Bounds x="160" y="1040" width="2460" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Pool_Privados_di" bpmnElement="Pool_Privados" isHorizontal="true">
-        <dc:Bounds x="160" y="1160" width="2460" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="MsgFlow_QTSolida_VB_di" bpmnElement="MsgFlow_QTSolida_VB">
-        <di:waypoint x="2390" y="308" />
-        <di:waypoint x="2390" y="1040" />
+      <bpmndi:BPMNEdge id="Msg_InfoComite_di" bpmnElement="Msg_InfoComite">
+        <di:waypoint x="3460" y="600" />
+        <di:waypoint x="3460" y="1550" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="MsgFlow_Radio_VB_di" bpmnElement="MsgFlow_Radio_VB">
-        <di:waypoint x="2470" y="308" />
-        <di:waypoint x="2470" y="1040" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="MsgFlow_CompraServicio_di" bpmnElement="MsgFlow_CompraServicio">
-        <di:waypoint x="1470" y="520" />
-        <di:waypoint x="1470" y="1160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="MsgFlow_ResultadosPrivados_di" bpmnElement="MsgFlow_ResultadosPrivados">
-        <di:waypoint x="1610" y="1160" />
-        <di:waypoint x="1610" y="520" />
+      <bpmndi:BPMNEdge id="Msg_PacAsiste_di" bpmnElement="Msg_PacAsiste">
+        <di:waypoint x="1950" y="1550" />
+        <di:waypoint x="1950" y="1490" />
+        <di:waypoint x="1840" y="1490" />
+        <di:waypoint x="1840" y="1430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1793" y="1444" width="84" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

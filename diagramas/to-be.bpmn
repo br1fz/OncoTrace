@@ -1,65 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  id="Definitions_TOBE_HGF"
-                  targetNamespace="http://bpmn.io/schema/bpmn"
-                  exporter="Antigravity IDE"
-                  exporterVersion="1.0.0">
-
-  <!-- ================================================================== -->
-  <!--  COLLABORATION: Pools y Message Flows                               -->
-  <!-- ================================================================== -->
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_TOBE_HGF" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.51.0">
   <bpmn:collaboration id="Collaboration_TOBE">
-
     <bpmn:participant id="Pool_HGF_TB" name="Hospital Dr. Gustavo Fricke – Plataforma OncoTrace (TO-BE)" processRef="Process_HGF_TB" />
     <bpmn:participant id="Pool_HCVB_TB" name="Hospital Carlos Van Buren (Radioterapia / QT Tumores Sólidos)" />
     <bpmn:participant id="Pool_Privados_TB" name="Centros de Salud Privados / Clínicas (PET-CT, EBUS)" />
-
-    <!-- Message Flows -->
-    <bpmn:messageFlow id="MF_TB_QTSolida" name="Derivación QT Sólida + Trazabilidad OncoTrace"
-                      sourceRef="TB_IntThrow_QTSolida" targetRef="Pool_HCVB_TB" />
-    <bpmn:messageFlow id="MF_TB_Radio" name="Derivación Radioterapia + Trazabilidad OncoTrace"
-                      sourceRef="TB_IntThrow_Radio" targetRef="Pool_HCVB_TB" />
-    <bpmn:messageFlow id="MF_TB_CompraServ" name="Solicitud Compra de Servicio"
-                      sourceRef="TB_Task_CompraServicio" targetRef="Pool_Privados_TB" />
-    <bpmn:messageFlow id="MF_TB_ResultadosExt" name="Recepción Informes Digitales Externos"
-                      sourceRef="Pool_Privados_TB" targetRef="TB_Task_RecibirResultExt" />
-
+    <bpmn:messageFlow id="MF_TB_DerivacionHCVB" name="Dossier Digital y Derivación Externa (Macrored)" sourceRef="TB_Task_UGAA_Despachar" targetRef="Pool_HCVB_TB" />
+    <bpmn:messageFlow id="MF_TB_CompraServ" name="Solicitud Compra de Servicio (PET-CT / EBUS)" sourceRef="TB_Task_CompraServicio" targetRef="Pool_Privados_TB" />
+    <bpmn:messageFlow id="MF_TB_ResultadosExt" name="Recepción Informes Digitales Externos" sourceRef="Pool_Privados_TB" targetRef="TB_Task_RecibirResultExt" />
   </bpmn:collaboration>
-
-  <!-- ================================================================== -->
-  <!--  PROCESO TO-BE: Hospital Dr. Gustavo Fricke                         -->
-  <!-- ================================================================== -->
   <bpmn:process id="Process_HGF_TB" name="Plataforma de Trazabilidad y Gestión Oncológica OncoTrace – HGF" isExecutable="false">
-
     <bpmn:laneSet id="LaneSet_TB">
-
-      <!-- Lane: Paciente / Familia -->
-      <bpmn:lane id="Lane_TB_Paciente" name="Paciente / Familia">
+      <bpmn:lane id="Lane_TB_Paciente" name="Paciente / Familia y Cuidador">
         <bpmn:flowNodeRef>TB_Task_PresentarseCAE</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_TomarMuestra</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_Task_PacienteTratamiento</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_ListaEsperaQx</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_PacienteTratamiento</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_End_Tratamiento</bpmn:flowNodeRef>
       </bpmn:lane>
-
-      <!-- Lane: Gestor/a Oncológico/a -->
-      <bpmn:lane id="Lane_TB_Gestor" name="Gestor/a Oncológico/a (Enfermero/a Gestor)">
-        <bpmn:flowNodeRef>TB_Task_IngresoOncoTrace</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_Task_EvaluacionMultidimensional</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_Task_BitacoraAcompanamiento</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_Task_MonitoreoTablero</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_GW_Validacion</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_Task_ProgramarComite</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_Task_TrazabilidadDerivaciones</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_Task_CompraServicio</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_Task_RecibirResultExt</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_End_Derivado</bpmn:flowNodeRef>
-      </bpmn:lane>
-
-      <!-- Lane: Médico Tratante / Especialista -->
       <bpmn:lane id="Lane_TB_Medico" name="Médico Tratante / Especialista">
         <bpmn:flowNodeRef>TB_Start_Consulta</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Start_Comite</bpmn:flowNodeRef>
@@ -68,192 +25,179 @@
         <bpmn:flowNodeRef>TB_Task_EmitirOrden</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_Cirugia</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_QTHemato</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_IntThrow_QTSolida</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>TB_IntThrow_Radio</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_Paliativos</bpmn:flowNodeRef>
       </bpmn:lane>
-
-      <!-- Lane: Comité Oncológico Multidisciplinario -->
+      <bpmn:lane id="Lane_TB_Gestor" name="Gestor/a Oncológico/a (UGCO)">
+        <bpmn:flowNodeRef>TB_Task_IngresoOncoTrace</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_EvaluacionMultidimensional</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_BitacoraAcompanamiento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_MonitoreoTablero</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_GW_Validacion</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_CompraServicio</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_RecibirResultExt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_ProgramarComite</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_ContraRefCierre</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_TB_TENS" name="Técnico en Enfermería (TENS UGCO)">
+        <bpmn:flowNodeRef>TB_Task_TENS_DossierDigital</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_TB_Admin" name="Administrativo/a UGCO">
+        <bpmn:flowNodeRef>TB_Task_Admin_Citas</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_TB_UGAA" name="UGAA (Gestión de Atención Abierta)">
+        <bpmn:flowNodeRef>TB_Task_UGAA_Despachar</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_End_Derivado</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_TB_GES" name="Unidad GES y Registros">
+        <bpmn:flowNodeRef>TB_Task_GES_Validar</bpmn:flowNodeRef>
+      </bpmn:lane>
       <bpmn:lane id="Lane_TB_Comite" name="Comité Oncológico Multidisciplinario">
         <bpmn:flowNodeRef>TB_Task_ComiteDigital</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_GW_Tratamiento</bpmn:flowNodeRef>
       </bpmn:lane>
-
-      <!-- Lane: Sistema OncoTrace (Automatizado) -->
-      <bpmn:lane id="Lane_TB_Sistema" name="Sistema OncoTrace (Motor de Trazabilidad y Alertas)">
+      <bpmn:lane id="Lane_TB_Sistema" name="Sistema OncoTrace (Motor Central Automático)">
         <bpmn:flowNodeRef>TB_Task_ConsolidacionAuto</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_MotorAlertasGES</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_Task_SincronizacionMINSAL</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_GenerarFichaComite</bpmn:flowNodeRef>
       </bpmn:lane>
-
     </bpmn:laneSet>
-
-    <!-- ==================== EVENTOS DE INICIO ==================== -->
     <bpmn:startEvent id="TB_Start_Consulta" name="Sospecha Clínica en Consulta">
       <bpmn:outgoing>TB_Flow_01a</bpmn:outgoing>
     </bpmn:startEvent>
-
     <bpmn:startEvent id="TB_Start_Comite" name="Ingreso Directo a Comité">
       <bpmn:outgoing>TB_Flow_01b</bpmn:outgoing>
     </bpmn:startEvent>
-
     <bpmn:startEvent id="TB_Start_Traslado" name="Traslado Extra-red / APS">
       <bpmn:outgoing>TB_Flow_01c</bpmn:outgoing>
     </bpmn:startEvent>
-
     <bpmn:exclusiveGateway id="TB_GW_Inicio" name="Punto de Entrada al Proceso">
       <bpmn:incoming>TB_Flow_01a</bpmn:incoming>
       <bpmn:incoming>TB_Flow_01b</bpmn:incoming>
       <bpmn:incoming>TB_Flow_01c</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_02</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-
-    <!-- ==================== ETAPA: INGRESO Y EVALUACIÓN ==================== -->
     <bpmn:userTask id="TB_Task_EmitirOrden" name="Médico emite orden de exámenes y solicitud de ingreso">
       <bpmn:incoming>TB_Flow_02</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_03</bpmn:outgoing>
     </bpmn:userTask>
-
     <bpmn:userTask id="TB_Task_IngresoOncoTrace" name="Gestora registra paciente en OncoTrace y activa trazabilidad">
       <bpmn:incoming>TB_Flow_03</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_04</bpmn:outgoing>
     </bpmn:userTask>
-
     <bpmn:userTask id="TB_Task_EvaluacionMultidimensional" name="Gestora realiza Evaluación Multidimensional (ECOG, Social, Red)">
       <bpmn:incoming>TB_Flow_04</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_05</bpmn:outgoing>
     </bpmn:userTask>
-
     <bpmn:userTask id="TB_Task_BitacoraAcompanamiento" name="Gestora registra primer contacto en Bitácora de Acompañamiento">
       <bpmn:incoming>TB_Flow_05</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_06</bpmn:outgoing>
     </bpmn:userTask>
-
-    <bpmn:userTask id="TB_Task_PresentarseCAE" name="Paciente asiste a toma de muestras y estudios diagnósticos">
+    <bpmn:userTask id="TB_Task_Admin_Citas" name="Coordinar y agendar horas de toma de muestras y exámenes">
       <bpmn:incoming>TB_Flow_06</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_07</bpmn:outgoing>
     </bpmn:userTask>
-
-    <bpmn:manualTask id="TB_Task_TomarMuestra" name="Ejecución de Biopsia, TAC, RNM o Exámenes LIS">
+    <bpmn:userTask id="TB_Task_PresentarseCAE" name="Paciente asiste a toma de muestras y estudios diagnósticos">
       <bpmn:incoming>TB_Flow_07</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_08</bpmn:outgoing>
-    </bpmn:manualTask>
-
-    <!-- ==================== ETAPA: CONSOLIDACIÓN Y ALERTAS ==================== -->
-    <bpmn:serviceTask id="TB_Task_ConsolidacionAuto" name="OncoTrace consolida e indexa informes de patología e imágenes">
+    </bpmn:userTask>
+    <bpmn:manualTask id="TB_Task_TomarMuestra" name="Ejecución de Biopsia, TAC, RNM o Exámenes LIS">
       <bpmn:incoming>TB_Flow_08</bpmn:incoming>
-      <bpmn:incoming>TB_Flow_CompraRetorno</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_09</bpmn:outgoing>
-    </bpmn:serviceTask>
-
-    <bpmn:serviceTask id="TB_Task_MotorAlertasGES" name="Motor de alertas evalúa plazos GES y riesgo de inactividad">
+    </bpmn:manualTask>
+    <bpmn:serviceTask id="TB_Task_ConsolidacionAuto" name="OncoTrace consolida e indexa informes de patología e imágenes">
       <bpmn:incoming>TB_Flow_09</bpmn:incoming>
+      <bpmn:incoming>TB_Flow_CompraRetorno</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_10</bpmn:outgoing>
     </bpmn:serviceTask>
-
-    <bpmn:userTask id="TB_Task_MonitoreoTablero" name="Gestora monitorea tablero Kanban y revisa resultados consolidados">
+    <bpmn:serviceTask id="TB_Task_MotorAlertasGES" name="Motor de alertas evalúa plazos GES y riesgo de inactividad">
       <bpmn:incoming>TB_Flow_10</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_11</bpmn:outgoing>
-    </bpmn:userTask>
-
-    <bpmn:exclusiveGateway id="TB_GW_Validacion" name="¿Exámenes completos para Comité?">
+    </bpmn:serviceTask>
+    <bpmn:userTask id="TB_Task_GES_Validar" name="Monitorear y validar constancia de garantías GES">
       <bpmn:incoming>TB_Flow_11</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_12</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="TB_Task_SincronizacionMINSAL" name="Sincronización bidireccional con Plataforma MINSAL (TB-11)">
+      <bpmn:incoming>TB_Flow_12</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_13</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="TB_Task_MonitoreoTablero" name="Gestora monitorea tablero Kanban y revisa resultados consolidados">
+      <bpmn:incoming>TB_Flow_13</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_14</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="TB_GW_Validacion" name="¿Exámenes completos para Comité?">
+      <bpmn:incoming>TB_Flow_14</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_Completo</bpmn:outgoing>
       <bpmn:outgoing>TB_Flow_RequiereExt</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-
     <bpmn:userTask id="TB_Task_CompraServicio" name="Gestora gestiona compra de servicio (PET-CT / EBUS)">
       <bpmn:incoming>TB_Flow_RequiereExt</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_EsperaExt</bpmn:outgoing>
     </bpmn:userTask>
-
     <bpmn:userTask id="TB_Task_RecibirResultExt" name="Gestora registra y adjunta resultado externo en OncoTrace">
       <bpmn:incoming>TB_Flow_EsperaExt</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_CompraRetorno</bpmn:outgoing>
     </bpmn:userTask>
-
-    <!-- ==================== ETAPA: COMITÉ ONCOLÓGICO INTELIGENTE ==================== -->
     <bpmn:serviceTask id="TB_Task_GenerarFichaComite" name="OncoTrace compila antecedentes y genera Ficha de Presentación">
       <bpmn:incoming>TB_Flow_Completo</bpmn:incoming>
-      <bpmn:outgoing>TB_Flow_12</bpmn:outgoing>
+      <bpmn:outgoing>TB_Flow_15</bpmn:outgoing>
     </bpmn:serviceTask>
-
     <bpmn:userTask id="TB_Task_ProgramarComite" name="Gestora agenda paciente en tabla de Comité Oncológico">
-      <bpmn:incoming>TB_Flow_12</bpmn:incoming>
-      <bpmn:outgoing>TB_Flow_13</bpmn:outgoing>
+      <bpmn:incoming>TB_Flow_15</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_16</bpmn:outgoing>
     </bpmn:userTask>
-
     <bpmn:userTask id="TB_Task_ComiteDigital" name="Comité evalúa caso y firma Acta Digital con conducta terapéutica">
-      <bpmn:incoming>TB_Flow_13</bpmn:incoming>
-      <bpmn:outgoing>TB_Flow_14</bpmn:outgoing>
+      <bpmn:incoming>TB_Flow_16</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_17</bpmn:outgoing>
     </bpmn:userTask>
-
     <bpmn:exclusiveGateway id="TB_GW_Tratamiento" name="Resolución Terapéutica">
-      <bpmn:incoming>TB_Flow_14</bpmn:incoming>
+      <bpmn:incoming>TB_Flow_17</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_Cirugia</bpmn:outgoing>
       <bpmn:outgoing>TB_Flow_QTHemato</bpmn:outgoing>
-      <bpmn:outgoing>TB_Flow_QTSolida</bpmn:outgoing>
-      <bpmn:outgoing>TB_Flow_Radio</bpmn:outgoing>
+      <bpmn:outgoing>TB_Flow_DerivExterna</bpmn:outgoing>
       <bpmn:outgoing>TB_Flow_Paliativos</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-
-    <!-- ==================== TRATAMIENTOS LOCALES HGF ==================== -->
     <bpmn:userTask id="TB_Task_Cirugia" name="Cirugía Oncológica (Ingreso a Lista de Espera Qx HGF)">
       <bpmn:incoming>TB_Flow_Cirugia</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_QxEsp</bpmn:outgoing>
     </bpmn:userTask>
-
     <bpmn:manualTask id="TB_Task_ListaEsperaQx" name="Paciente en Lista de Espera Quirúrgica y Pabellón">
       <bpmn:incoming>TB_Flow_QxEsp</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_FinQx</bpmn:outgoing>
     </bpmn:manualTask>
-
     <bpmn:userTask id="TB_Task_QTHemato" name="Quimioterapia Hematológica en HGF">
       <bpmn:incoming>TB_Flow_QTHemato</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_FinQTHem</bpmn:outgoing>
     </bpmn:userTask>
-
     <bpmn:userTask id="TB_Task_Paliativos" name="Ingreso a Unidad de Cuidados Paliativos y Alivio del Dolor">
       <bpmn:incoming>TB_Flow_Paliativos</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_FinPal</bpmn:outgoing>
     </bpmn:userTask>
-
-    <!-- ==================== DERIVACIONES EXTERNAS HCVB ==================== -->
-    <bpmn:intermediateThrowEvent id="TB_IntThrow_QTSolida" name="Derivación a Quimioterapia Sólida (HCVB)">
-      <bpmn:incoming>TB_Flow_QTSolida</bpmn:incoming>
-      <bpmn:outgoing>TB_Flow_Deriv1</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="Med_QTSolida" />
-    </bpmn:intermediateThrowEvent>
-
-    <bpmn:intermediateThrowEvent id="TB_IntThrow_Radio" name="Derivación a Radioterapia (HCVB)">
-      <bpmn:incoming>TB_Flow_Radio</bpmn:incoming>
-      <bpmn:outgoing>TB_Flow_Deriv2</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="Med_Radio" />
-    </bpmn:intermediateThrowEvent>
-
-    <bpmn:userTask id="TB_Task_TrazabilidadDerivaciones" name="Gestora realiza seguimiento activo de derivación en OncoTrace">
-      <bpmn:incoming>TB_Flow_Deriv1</bpmn:incoming>
-      <bpmn:incoming>TB_Flow_Deriv2</bpmn:incoming>
-      <bpmn:outgoing>TB_Flow_FinDeriv</bpmn:outgoing>
-    </bpmn:userTask>
-
-    <bpmn:endEvent id="TB_End_Derivado" name="Paciente en Terapia Externa con Trazabilidad Activa">
-      <bpmn:incoming>TB_Flow_FinDeriv</bpmn:incoming>
-    </bpmn:endEvent>
-
-    <!-- ==================== FIN TRATAMIENTO LOCAL ==================== -->
     <bpmn:manualTask id="TB_Task_PacienteTratamiento" name="Paciente recibe tratamiento en HGF con Acompañamiento Continuo">
       <bpmn:incoming>TB_Flow_FinQx</bpmn:incoming>
       <bpmn:incoming>TB_Flow_FinQTHem</bpmn:incoming>
       <bpmn:incoming>TB_Flow_FinPal</bpmn:incoming>
-      <bpmn:outgoing>TB_Flow_FinTrat</bpmn:outgoing>
+      <bpmn:outgoing>TB_Flow_TratToContraRef</bpmn:outgoing>
     </bpmn:manualTask>
-
-    <bpmn:endEvent id="TB_End_Tratamiento" name="Tratamiento Iniciado con Registro Integral en OncoTrace">
-      <bpmn:incoming>TB_Flow_FinTrat</bpmn:incoming>
+    <bpmn:userTask id="TB_Task_ContraRefCierre" name="Coordinar Contrarreferencia a APS y Cierre de Caso">
+      <bpmn:incoming>TB_Flow_TratToContraRef</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_ContraRefToEnd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="TB_End_Tratamiento" name="Tratamiento Iniciado y Caso Cerrado con Registro Integral en OncoTrace">
+      <bpmn:incoming>TB_Flow_ContraRefToEnd</bpmn:incoming>
     </bpmn:endEvent>
-
-    <!-- ==================== SEQUENCE FLOWS ==================== -->
+    <bpmn:userTask id="TB_Task_TENS_DossierDigital" name="Confeccionar dossier digital de derivación">
+      <bpmn:incoming>TB_Flow_DerivExterna</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_DossierToUGAA</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="TB_Task_UGAA_Despachar" name="Despachar y trackear derivación en macrored">
+      <bpmn:incoming>TB_Flow_DossierToUGAA</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_UGAAToEnd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="TB_End_Derivado" name="Paciente en Terapia Externa con Trazabilidad Activa">
+      <bpmn:incoming>TB_Flow_UGAAToEnd</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="TB_Flow_01a" sourceRef="TB_Start_Consulta" targetRef="TB_GW_Inicio" />
     <bpmn:sequenceFlow id="TB_Flow_01b" sourceRef="TB_Start_Comite" targetRef="TB_GW_Inicio" />
     <bpmn:sequenceFlow id="TB_Flow_01c" sourceRef="TB_Start_Traslado" targetRef="TB_GW_Inicio" />
@@ -261,219 +205,383 @@
     <bpmn:sequenceFlow id="TB_Flow_03" sourceRef="TB_Task_EmitirOrden" targetRef="TB_Task_IngresoOncoTrace" />
     <bpmn:sequenceFlow id="TB_Flow_04" sourceRef="TB_Task_IngresoOncoTrace" targetRef="TB_Task_EvaluacionMultidimensional" />
     <bpmn:sequenceFlow id="TB_Flow_05" sourceRef="TB_Task_EvaluacionMultidimensional" targetRef="TB_Task_BitacoraAcompanamiento" />
-    <bpmn:sequenceFlow id="TB_Flow_06" sourceRef="TB_Task_BitacoraAcompanamiento" targetRef="TB_Task_PresentarseCAE" />
-    <bpmn:sequenceFlow id="TB_Flow_07" sourceRef="TB_Task_PresentarseCAE" targetRef="TB_Task_TomarMuestra" />
-    <bpmn:sequenceFlow id="TB_Flow_08" sourceRef="TB_Task_TomarMuestra" targetRef="TB_Task_ConsolidacionAuto" />
-    <bpmn:sequenceFlow id="TB_Flow_09" sourceRef="TB_Task_ConsolidacionAuto" targetRef="TB_Task_MotorAlertasGES" />
-    <bpmn:sequenceFlow id="TB_Flow_10" sourceRef="TB_Task_MotorAlertasGES" targetRef="TB_Task_MonitoreoTablero" />
-    <bpmn:sequenceFlow id="TB_Flow_11" sourceRef="TB_Task_MonitoreoTablero" targetRef="TB_GW_Validacion" />
+    <bpmn:sequenceFlow id="TB_Flow_06" sourceRef="TB_Task_BitacoraAcompanamiento" targetRef="TB_Task_Admin_Citas" />
+    <bpmn:sequenceFlow id="TB_Flow_07" sourceRef="TB_Task_Admin_Citas" targetRef="TB_Task_PresentarseCAE" />
+    <bpmn:sequenceFlow id="TB_Flow_08" sourceRef="TB_Task_PresentarseCAE" targetRef="TB_Task_TomarMuestra" />
+    <bpmn:sequenceFlow id="TB_Flow_09" sourceRef="TB_Task_TomarMuestra" targetRef="TB_Task_ConsolidacionAuto" />
+    <bpmn:sequenceFlow id="TB_Flow_10" sourceRef="TB_Task_ConsolidacionAuto" targetRef="TB_Task_MotorAlertasGES" />
+    <bpmn:sequenceFlow id="TB_Flow_11" sourceRef="TB_Task_MotorAlertasGES" targetRef="TB_Task_GES_Validar" />
+    <bpmn:sequenceFlow id="TB_Flow_12" sourceRef="TB_Task_GES_Validar" targetRef="TB_Task_SincronizacionMINSAL" />
+    <bpmn:sequenceFlow id="TB_Flow_13" sourceRef="TB_Task_SincronizacionMINSAL" targetRef="TB_Task_MonitoreoTablero" />
+    <bpmn:sequenceFlow id="TB_Flow_14" sourceRef="TB_Task_MonitoreoTablero" targetRef="TB_GW_Validacion" />
     <bpmn:sequenceFlow id="TB_Flow_Completo" name="Sí (Completos)" sourceRef="TB_GW_Validacion" targetRef="TB_Task_GenerarFichaComite" />
     <bpmn:sequenceFlow id="TB_Flow_RequiereExt" name="Requiere PET-CT / EBUS" sourceRef="TB_GW_Validacion" targetRef="TB_Task_CompraServicio" />
     <bpmn:sequenceFlow id="TB_Flow_EsperaExt" sourceRef="TB_Task_CompraServicio" targetRef="TB_Task_RecibirResultExt" />
     <bpmn:sequenceFlow id="TB_Flow_CompraRetorno" sourceRef="TB_Task_RecibirResultExt" targetRef="TB_Task_ConsolidacionAuto" />
-    <bpmn:sequenceFlow id="TB_Flow_12" sourceRef="TB_Task_GenerarFichaComite" targetRef="TB_Task_ProgramarComite" />
-    <bpmn:sequenceFlow id="TB_Flow_13" sourceRef="TB_Task_ProgramarComite" targetRef="TB_Task_ComiteDigital" />
-    <bpmn:sequenceFlow id="TB_Flow_14" sourceRef="TB_Task_ComiteDigital" targetRef="TB_GW_Tratamiento" />
+    <bpmn:sequenceFlow id="TB_Flow_15" sourceRef="TB_Task_GenerarFichaComite" targetRef="TB_Task_ProgramarComite" />
+    <bpmn:sequenceFlow id="TB_Flow_16" sourceRef="TB_Task_ProgramarComite" targetRef="TB_Task_ComiteDigital" />
+    <bpmn:sequenceFlow id="TB_Flow_17" sourceRef="TB_Task_ComiteDigital" targetRef="TB_GW_Tratamiento" />
     <bpmn:sequenceFlow id="TB_Flow_Cirugia" name="Cirugía" sourceRef="TB_GW_Tratamiento" targetRef="TB_Task_Cirugia" />
     <bpmn:sequenceFlow id="TB_Flow_QTHemato" name="QT Hemato" sourceRef="TB_GW_Tratamiento" targetRef="TB_Task_QTHemato" />
-    <bpmn:sequenceFlow id="TB_Flow_QTSolida" name="QT Sólida" sourceRef="TB_GW_Tratamiento" targetRef="TB_IntThrow_QTSolida" />
-    <bpmn:sequenceFlow id="TB_Flow_Radio" name="Radioterapia" sourceRef="TB_GW_Tratamiento" targetRef="TB_IntThrow_Radio" />
+    <bpmn:sequenceFlow id="TB_Flow_DerivExterna" name="Derivación Externa (QT Sólida / RT)" sourceRef="TB_GW_Tratamiento" targetRef="TB_Task_TENS_DossierDigital" />
     <bpmn:sequenceFlow id="TB_Flow_Paliativos" name="Paliativos" sourceRef="TB_GW_Tratamiento" targetRef="TB_Task_Paliativos" />
     <bpmn:sequenceFlow id="TB_Flow_QxEsp" sourceRef="TB_Task_Cirugia" targetRef="TB_Task_ListaEsperaQx" />
     <bpmn:sequenceFlow id="TB_Flow_FinQx" sourceRef="TB_Task_ListaEsperaQx" targetRef="TB_Task_PacienteTratamiento" />
     <bpmn:sequenceFlow id="TB_Flow_FinQTHem" sourceRef="TB_Task_QTHemato" targetRef="TB_Task_PacienteTratamiento" />
     <bpmn:sequenceFlow id="TB_Flow_FinPal" sourceRef="TB_Task_Paliativos" targetRef="TB_Task_PacienteTratamiento" />
-    <bpmn:sequenceFlow id="TB_Flow_FinTrat" sourceRef="TB_Task_PacienteTratamiento" targetRef="TB_End_Tratamiento" />
-    <bpmn:sequenceFlow id="TB_Flow_Deriv1" sourceRef="TB_IntThrow_QTSolida" targetRef="TB_Task_TrazabilidadDerivaciones" />
-    <bpmn:sequenceFlow id="TB_Flow_Deriv2" sourceRef="TB_IntThrow_Radio" targetRef="TB_Task_TrazabilidadDerivaciones" />
-    <bpmn:sequenceFlow id="TB_Flow_FinDeriv" sourceRef="TB_Task_TrazabilidadDerivaciones" targetRef="TB_End_Derivado" />
-
+    <bpmn:sequenceFlow id="TB_Flow_TratToContraRef" sourceRef="TB_Task_PacienteTratamiento" targetRef="TB_Task_ContraRefCierre" />
+    <bpmn:sequenceFlow id="TB_Flow_ContraRefToEnd" sourceRef="TB_Task_ContraRefCierre" targetRef="TB_End_Tratamiento" />
+    <bpmn:sequenceFlow id="TB_Flow_DossierToUGAA" sourceRef="TB_Task_TENS_DossierDigital" targetRef="TB_Task_UGAA_Despachar" />
+    <bpmn:sequenceFlow id="TB_Flow_UGAAToEnd" sourceRef="TB_Task_UGAA_Despachar" targetRef="TB_End_Derivado" />
   </bpmn:process>
-
-  <!-- ================================================================== -->
-  <!--  BPMN DIAGRAM INTERCHANGE (BPMNDI)                                  -->
-  <!-- ================================================================== -->
   <bpmndi:BPMNDiagram id="BPMNDiagram_TOBE">
     <bpmndi:BPMNPlane id="BPMNPlane_TOBE" bpmnElement="Collaboration_TOBE">
-
-      <!-- Pool HGF -->
-      <bpmndi:BPMNShape id="Shape_Pool_HGF_TB" bpmnElement="Pool_HGF_TB" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="2200" height="920" />
+      <bpmndi:BPMNShape id="Pool_HGF_TB_di" bpmnElement="Pool_HGF_TB" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="3300" height="1260" />
       </bpmndi:BPMNShape>
-
-      <!-- Lanes -->
-      <bpmndi:BPMNShape id="Shape_Lane_TB_Paciente" bpmnElement="Lane_TB_Paciente" isHorizontal="true">
-        <dc:Bounds x="190" y="80" width="2170" height="170" />
+      <bpmndi:BPMNShape id="Lane_TB_Sistema_di" bpmnElement="Lane_TB_Sistema" isHorizontal="true">
+        <dc:Bounds x="190" y="1190" width="3270" height="150" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_Lane_TB_Gestor" bpmnElement="Lane_TB_Gestor" isHorizontal="true">
-        <dc:Bounds x="190" y="250" width="2170" height="200" />
+      <bpmndi:BPMNShape id="Lane_TB_Comite_di" bpmnElement="Lane_TB_Comite" isHorizontal="true">
+        <dc:Bounds x="190" y="1050" width="3270" height="140" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_Lane_TB_Medico" bpmnElement="Lane_TB_Medico" isHorizontal="true">
-        <dc:Bounds x="190" y="450" width="2170" height="190" />
+      <bpmndi:BPMNShape id="Lane_TB_GES_di" bpmnElement="Lane_TB_GES" isHorizontal="true">
+        <dc:Bounds x="190" y="930" width="3270" height="120" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_Lane_TB_Comite" bpmnElement="Lane_TB_Comite" isHorizontal="true">
-        <dc:Bounds x="190" y="640" width="2170" height="180" />
+      <bpmndi:BPMNShape id="Lane_TB_UGAA_di" bpmnElement="Lane_TB_UGAA" isHorizontal="true">
+        <dc:Bounds x="190" y="810" width="3270" height="120" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_Lane_TB_Sistema" bpmnElement="Lane_TB_Sistema" isHorizontal="true">
-        <dc:Bounds x="190" y="820" width="2170" height="180" />
+      <bpmndi:BPMNShape id="Lane_TB_Admin_di" bpmnElement="Lane_TB_Admin" isHorizontal="true">
+        <dc:Bounds x="190" y="690" width="3270" height="120" />
       </bpmndi:BPMNShape>
-
-      <!-- Pools Externos -->
-      <bpmndi:BPMNShape id="Shape_Pool_HCVB_TB" bpmnElement="Pool_HCVB_TB" isHorizontal="true">
-        <dc:Bounds x="160" y="1030" width="1050" height="120" />
+      <bpmndi:BPMNShape id="Lane_TB_TENS_di" bpmnElement="Lane_TB_TENS" isHorizontal="true">
+        <dc:Bounds x="190" y="570" width="3270" height="120" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_Pool_Privados_TB" bpmnElement="Pool_Privados_TB" isHorizontal="true">
-        <dc:Bounds x="1250" y="1030" width="1110" height="120" />
+      <bpmndi:BPMNShape id="Lane_TB_Gestor_di" bpmnElement="Lane_TB_Gestor" isHorizontal="true">
+        <dc:Bounds x="190" y="370" width="3270" height="200" />
       </bpmndi:BPMNShape>
-
-      <!-- Elementos en Diagrama -->
-      <bpmndi:BPMNShape id="Shape_TB_Start_Consulta" bpmnElement="TB_Start_Consulta">
-        <dc:Bounds x="230" y="480" width="36" height="36" />
+      <bpmndi:BPMNShape id="Lane_TB_Medico_di" bpmnElement="Lane_TB_Medico" isHorizontal="true">
+        <dc:Bounds x="190" y="220" width="3270" height="150" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Start_Comite" bpmnElement="TB_Start_Comite">
-        <dc:Bounds x="230" y="530" width="36" height="36" />
+      <bpmndi:BPMNShape id="Lane_TB_Paciente_di" bpmnElement="Lane_TB_Paciente" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="3270" height="140" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Start_Traslado" bpmnElement="TB_Start_Traslado">
-        <dc:Bounds x="230" y="580" width="36" height="36" />
+      <bpmndi:BPMNShape id="TB_Start_Consulta_di" bpmnElement="TB_Start_Consulta">
+        <dc:Bounds x="232" y="242" width="36" height="36" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_GW_Inicio" bpmnElement="TB_GW_Inicio" isMarkerVisible="true">
-        <dc:Bounds x="300" y="525" width="50" height="50" />
+      <bpmndi:BPMNShape id="TB_Start_Comite_di" bpmnElement="TB_Start_Comite">
+        <dc:Bounds x="232" y="282" width="36" height="36" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_EmitirOrden" bpmnElement="TB_Task_EmitirOrden">
-        <dc:Bounds x="380" y="510" width="120" height="80" />
+      <bpmndi:BPMNShape id="TB_Start_Traslado_di" bpmnElement="TB_Start_Traslado">
+        <dc:Bounds x="232" y="322" width="36" height="36" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_IngresoOncoTrace" bpmnElement="TB_Task_IngresoOncoTrace">
-        <dc:Bounds x="380" y="300" width="120" height="80" />
+      <bpmndi:BPMNShape id="TB_GW_Inicio_di" bpmnElement="TB_GW_Inicio" isMarkerVisible="true">
+        <dc:Bounds x="325" y="275" width="50" height="50" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_EvaluacionMultidimensional" bpmnElement="TB_Task_EvaluacionMultidimensional">
-        <dc:Bounds x="530" y="300" width="130" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_EmitirOrden_di" bpmnElement="TB_Task_EmitirOrden">
+        <dc:Bounds x="420" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_BitacoraAcompanamiento" bpmnElement="TB_Task_BitacoraAcompanamiento">
-        <dc:Bounds x="690" y="300" width="130" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_IngresoOncoTrace_di" bpmnElement="TB_Task_IngresoOncoTrace">
+        <dc:Bounds x="560" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_PresentarseCAE" bpmnElement="TB_Task_PresentarseCAE">
-        <dc:Bounds x="690" y="120" width="130" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_EvaluacionMultidimensional_di" bpmnElement="TB_Task_EvaluacionMultidimensional">
+        <dc:Bounds x="700" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_TomarMuestra" bpmnElement="TB_Task_TomarMuestra">
-        <dc:Bounds x="850" y="120" width="130" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_BitacoraAcompanamiento_di" bpmnElement="TB_Task_BitacoraAcompanamiento">
+        <dc:Bounds x="840" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_ConsolidacionAuto" bpmnElement="TB_Task_ConsolidacionAuto">
-        <dc:Bounds x="850" y="860" width="130" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_Admin_Citas_di" bpmnElement="TB_Task_Admin_Citas">
+        <dc:Bounds x="980" y="710" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_MotorAlertasGES" bpmnElement="TB_Task_MotorAlertasGES">
-        <dc:Bounds x="1010" y="860" width="130" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_PresentarseCAE_di" bpmnElement="TB_Task_PresentarseCAE">
+        <dc:Bounds x="1120" y="110" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_MonitoreoTablero" bpmnElement="TB_Task_MonitoreoTablero">
-        <dc:Bounds x="1010" y="300" width="130" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_TomarMuestra_di" bpmnElement="TB_Task_TomarMuestra">
+        <dc:Bounds x="1260" y="110" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_GW_Validacion" bpmnElement="TB_GW_Validacion" isMarkerVisible="true">
-        <dc:Bounds x="1170" y="315" width="50" height="50" />
+      <bpmndi:BPMNShape id="TB_Task_ConsolidacionAuto_di" bpmnElement="TB_Task_ConsolidacionAuto">
+        <dc:Bounds x="1400" y="1220" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_CompraServicio" bpmnElement="TB_Task_CompraServicio">
-        <dc:Bounds x="1260" y="360" width="130" height="70" />
+      <bpmndi:BPMNShape id="TB_Task_MotorAlertasGES_di" bpmnElement="TB_Task_MotorAlertasGES">
+        <dc:Bounds x="1540" y="1220" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_RecibirResultExt" bpmnElement="TB_Task_RecibirResultExt">
-        <dc:Bounds x="1420" y="360" width="130" height="70" />
+      <bpmndi:BPMNShape id="TB_Task_GES_Validar_di" bpmnElement="TB_Task_GES_Validar">
+        <dc:Bounds x="1680" y="950" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_GenerarFichaComite" bpmnElement="TB_Task_GenerarFichaComite">
-        <dc:Bounds x="1260" y="860" width="130" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_SincronizacionMINSAL_di" bpmnElement="TB_Task_SincronizacionMINSAL">
+        <dc:Bounds x="1820" y="1220" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_ProgramarComite" bpmnElement="TB_Task_ProgramarComite">
-        <dc:Bounds x="1260" y="270" width="130" height="75" />
+      <bpmndi:BPMNShape id="TB_Task_MonitoreoTablero_di" bpmnElement="TB_Task_MonitoreoTablero">
+        <dc:Bounds x="1960" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_ComiteDigital" bpmnElement="TB_Task_ComiteDigital">
-        <dc:Bounds x="1440" y="680" width="140" height="80" />
+      <bpmndi:BPMNShape id="TB_GW_Validacion_di" bpmnElement="TB_GW_Validacion" isMarkerVisible="true">
+        <dc:Bounds x="2105" y="415" width="50" height="50" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_GW_Tratamiento" bpmnElement="TB_GW_Tratamiento" isMarkerVisible="true">
-        <dc:Bounds x="1620" y="695" width="50" height="50" />
+      <bpmndi:BPMNShape id="TB_Task_CompraServicio_di" bpmnElement="TB_Task_CompraServicio">
+        <dc:Bounds x="2190" y="475" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_Cirugia" bpmnElement="TB_Task_Cirugia">
-        <dc:Bounds x="1710" y="470" width="110" height="60" />
+      <bpmndi:BPMNShape id="TB_Task_RecibirResultExt_di" bpmnElement="TB_Task_RecibirResultExt">
+        <dc:Bounds x="2330" y="475" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_QTHemato" bpmnElement="TB_Task_QTHemato">
-        <dc:Bounds x="1710" y="540" width="110" height="60" />
+      <bpmndi:BPMNShape id="TB_Task_GenerarFichaComite_di" bpmnElement="TB_Task_GenerarFichaComite">
+        <dc:Bounds x="2260" y="1220" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_IntThrow_QTSolida" bpmnElement="TB_IntThrow_QTSolida">
-        <dc:Bounds x="1745" y="620" width="36" height="36" />
+      <bpmndi:BPMNShape id="TB_Task_ProgramarComite_di" bpmnElement="TB_Task_ProgramarComite">
+        <dc:Bounds x="2400" y="400" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_IntThrow_Radio" bpmnElement="TB_IntThrow_Radio">
-        <dc:Bounds x="1745" y="680" width="36" height="36" />
+      <bpmndi:BPMNShape id="TB_Task_ComiteDigital_di" bpmnElement="TB_Task_ComiteDigital">
+        <dc:Bounds x="2540" y="1080" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_Paliativos" bpmnElement="TB_Task_Paliativos">
-        <dc:Bounds x="1710" y="740" width="110" height="60" />
+      <bpmndi:BPMNShape id="TB_GW_Tratamiento_di" bpmnElement="TB_GW_Tratamiento" isMarkerVisible="true">
+        <dc:Bounds x="2685" y="1095" width="50" height="50" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_ListaEsperaQx" bpmnElement="TB_Task_ListaEsperaQx">
-        <dc:Bounds x="1870" y="120" width="120" height="70" />
+      <bpmndi:BPMNShape id="TB_Task_Cirugia_di" bpmnElement="TB_Task_Cirugia">
+        <dc:Bounds x="2780" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_TrazabilidadDerivaciones" bpmnElement="TB_Task_TrazabilidadDerivaciones">
-        <dc:Bounds x="1850" y="300" width="140" height="80" />
+      <bpmndi:BPMNShape id="TB_Task_ListaEsperaQx_di" bpmnElement="TB_Task_ListaEsperaQx">
+        <dc:Bounds x="2920" y="110" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_End_Derivado" bpmnElement="TB_End_Derivado">
-        <dc:Bounds x="2040" y="322" width="36" height="36" />
+      <bpmndi:BPMNShape id="TB_Task_QTHemato_di" bpmnElement="TB_Task_QTHemato">
+        <dc:Bounds x="2780" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_Task_PacienteTratamiento" bpmnElement="TB_Task_PacienteTratamiento">
-        <dc:Bounds x="2030" y="120" width="140" height="70" />
+      <bpmndi:BPMNShape id="TB_Task_Paliativos_di" bpmnElement="TB_Task_Paliativos">
+        <dc:Bounds x="2780" y="345" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <bpmndi:BPMNShape id="Shape_TB_End_Tratamiento" bpmnElement="TB_End_Tratamiento">
-        <dc:Bounds x="2210" y="137" width="36" height="36" />
+      <bpmndi:BPMNShape id="TB_Task_PacienteTratamiento_di" bpmnElement="TB_Task_PacienteTratamiento">
+        <dc:Bounds x="3060" y="110" width="100" height="80" />
       </bpmndi:BPMNShape>
-
-      <!-- Conexiones de Mensajes -->
-      <bpmndi:BPMNEdge id="Edge_MF_TB_QTSolida" bpmnElement="MF_TB_QTSolida">
-        <di:waypoint x="1763" y="656" />
-        <di:waypoint x="1763" y="1030" />
+      <bpmndi:BPMNShape id="TB_Task_ContraRefCierre_di" bpmnElement="TB_Task_ContraRefCierre">
+        <dc:Bounds x="3190" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TB_End_Tratamiento_di" bpmnElement="TB_End_Tratamiento">
+        <dc:Bounds x="3332" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TB_Task_TENS_DossierDigital_di" bpmnElement="TB_Task_TENS_DossierDigital">
+        <dc:Bounds x="2850" y="590" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TB_Task_UGAA_Despachar_di" bpmnElement="TB_Task_UGAA_Despachar">
+        <dc:Bounds x="3000" y="830" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TB_End_Derivado_di" bpmnElement="TB_End_Derivado">
+        <dc:Bounds x="3162" y="852" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="TB_Flow_01a_di" bpmnElement="TB_Flow_01a">
+        <di:waypoint x="268" y="260" />
+        <di:waypoint x="296" y="260" />
+        <di:waypoint x="296" y="300" />
+        <di:waypoint x="325" y="300" />
       </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Edge_MF_TB_Radio" bpmnElement="MF_TB_Radio">
-        <di:waypoint x="1763" y="716" />
-        <di:waypoint x="1763" y="1030" />
+      <bpmndi:BPMNEdge id="TB_Flow_01b_di" bpmnElement="TB_Flow_01b">
+        <di:waypoint x="268" y="300" />
+        <di:waypoint x="325" y="300" />
       </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Edge_MF_TB_CompraServ" bpmnElement="MF_TB_CompraServ">
-        <di:waypoint x="1325" y="430" />
-        <di:waypoint x="1325" y="1030" />
+      <bpmndi:BPMNEdge id="TB_Flow_01c_di" bpmnElement="TB_Flow_01c">
+        <di:waypoint x="268" y="340" />
+        <di:waypoint x="296" y="340" />
+        <di:waypoint x="296" y="300" />
+        <di:waypoint x="325" y="300" />
       </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Edge_MF_TB_ResultadosExt" bpmnElement="MF_TB_ResultadosExt">
-        <di:waypoint x="1485" y="1030" />
-        <di:waypoint x="1485" y="430" />
+      <bpmndi:BPMNEdge id="TB_Flow_02_di" bpmnElement="TB_Flow_02">
+        <di:waypoint x="375" y="300" />
+        <di:waypoint x="420" y="300" />
       </bpmndi:BPMNEdge>
-
+      <bpmndi:BPMNEdge id="TB_Flow_03_di" bpmnElement="TB_Flow_03">
+        <di:waypoint x="520" y="300" />
+        <di:waypoint x="540" y="300" />
+        <di:waypoint x="540" y="440" />
+        <di:waypoint x="560" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_04_di" bpmnElement="TB_Flow_04">
+        <di:waypoint x="660" y="440" />
+        <di:waypoint x="700" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_05_di" bpmnElement="TB_Flow_05">
+        <di:waypoint x="800" y="440" />
+        <di:waypoint x="840" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_06_di" bpmnElement="TB_Flow_06">
+        <di:waypoint x="940" y="440" />
+        <di:waypoint x="960" y="440" />
+        <di:waypoint x="960" y="750" />
+        <di:waypoint x="980" y="750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_07_di" bpmnElement="TB_Flow_07">
+        <di:waypoint x="1080" y="750" />
+        <di:waypoint x="1100" y="750" />
+        <di:waypoint x="1100" y="150" />
+        <di:waypoint x="1120" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_08_di" bpmnElement="TB_Flow_08">
+        <di:waypoint x="1220" y="150" />
+        <di:waypoint x="1260" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_09_di" bpmnElement="TB_Flow_09">
+        <di:waypoint x="1360" y="150" />
+        <di:waypoint x="1380" y="150" />
+        <di:waypoint x="1380" y="1260" />
+        <di:waypoint x="1400" y="1260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_10_di" bpmnElement="TB_Flow_10">
+        <di:waypoint x="1500" y="1260" />
+        <di:waypoint x="1540" y="1260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_11_di" bpmnElement="TB_Flow_11">
+        <di:waypoint x="1640" y="1260" />
+        <di:waypoint x="1660" y="1260" />
+        <di:waypoint x="1660" y="990" />
+        <di:waypoint x="1680" y="990" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_12_di" bpmnElement="TB_Flow_12">
+        <di:waypoint x="1780" y="990" />
+        <di:waypoint x="1800" y="990" />
+        <di:waypoint x="1800" y="1260" />
+        <di:waypoint x="1820" y="1260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_13_di" bpmnElement="TB_Flow_13">
+        <di:waypoint x="1920" y="1260" />
+        <di:waypoint x="1940" y="1260" />
+        <di:waypoint x="1940" y="440" />
+        <di:waypoint x="1960" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_14_di" bpmnElement="TB_Flow_14">
+        <di:waypoint x="2060" y="440" />
+        <di:waypoint x="2105" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_Completo_di" bpmnElement="TB_Flow_Completo">
+        <di:waypoint x="2155" y="440" />
+        <di:waypoint x="2207" y="440" />
+        <di:waypoint x="2207" y="1260" />
+        <di:waypoint x="2260" y="1260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_RequiereExt_di" bpmnElement="TB_Flow_RequiereExt">
+        <di:waypoint x="2155" y="440" />
+        <di:waypoint x="2172" y="440" />
+        <di:waypoint x="2172" y="515" />
+        <di:waypoint x="2190" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_EsperaExt_di" bpmnElement="TB_Flow_EsperaExt">
+        <di:waypoint x="2290" y="515" />
+        <di:waypoint x="2330" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_CompraRetorno_di" bpmnElement="TB_Flow_CompraRetorno">
+        <di:waypoint x="2380" y="555" />
+        <di:waypoint x="2380" y="1340" />
+        <di:waypoint x="1450" y="1340" />
+        <di:waypoint x="1450" y="1300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_15_di" bpmnElement="TB_Flow_15">
+        <di:waypoint x="2360" y="1260" />
+        <di:waypoint x="2380" y="1260" />
+        <di:waypoint x="2380" y="440" />
+        <di:waypoint x="2400" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_16_di" bpmnElement="TB_Flow_16">
+        <di:waypoint x="2500" y="440" />
+        <di:waypoint x="2520" y="440" />
+        <di:waypoint x="2520" y="1120" />
+        <di:waypoint x="2540" y="1120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_17_di" bpmnElement="TB_Flow_17">
+        <di:waypoint x="2640" y="1120" />
+        <di:waypoint x="2685" y="1120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_Cirugia_di" bpmnElement="TB_Flow_Cirugia">
+        <di:waypoint x="2735" y="1120" />
+        <di:waypoint x="2757" y="1120" />
+        <di:waypoint x="2757" y="270" />
+        <di:waypoint x="2780" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_QTHemato_di" bpmnElement="TB_Flow_QTHemato">
+        <di:waypoint x="2735" y="1120" />
+        <di:waypoint x="2757" y="1120" />
+        <di:waypoint x="2757" y="330" />
+        <di:waypoint x="2780" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_DerivExterna_di" bpmnElement="TB_Flow_DerivExterna">
+        <di:waypoint x="2735" y="1120" />
+        <di:waypoint x="2792" y="1120" />
+        <di:waypoint x="2792" y="630" />
+        <di:waypoint x="2850" y="630" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_Paliativos_di" bpmnElement="TB_Flow_Paliativos">
+        <di:waypoint x="2735" y="1120" />
+        <di:waypoint x="2757" y="1120" />
+        <di:waypoint x="2757" y="385" />
+        <di:waypoint x="2780" y="385" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_QxEsp_di" bpmnElement="TB_Flow_QxEsp">
+        <di:waypoint x="2880" y="270" />
+        <di:waypoint x="2900" y="270" />
+        <di:waypoint x="2900" y="150" />
+        <di:waypoint x="2920" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_FinQx_di" bpmnElement="TB_Flow_FinQx">
+        <di:waypoint x="3020" y="150" />
+        <di:waypoint x="3060" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_FinQTHem_di" bpmnElement="TB_Flow_FinQTHem">
+        <di:waypoint x="2880" y="330" />
+        <di:waypoint x="2970" y="330" />
+        <di:waypoint x="2970" y="150" />
+        <di:waypoint x="3060" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_FinPal_di" bpmnElement="TB_Flow_FinPal">
+        <di:waypoint x="2880" y="385" />
+        <di:waypoint x="2970" y="385" />
+        <di:waypoint x="2970" y="150" />
+        <di:waypoint x="3060" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_TratToContraRef_di" bpmnElement="TB_Flow_TratToContraRef">
+        <di:waypoint x="3160" y="150" />
+        <di:waypoint x="3175" y="150" />
+        <di:waypoint x="3175" y="440" />
+        <di:waypoint x="3190" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_ContraRefToEnd_di" bpmnElement="TB_Flow_ContraRefToEnd">
+        <di:waypoint x="3290" y="440" />
+        <di:waypoint x="3311" y="440" />
+        <di:waypoint x="3311" y="150" />
+        <di:waypoint x="3332" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_DossierToUGAA_di" bpmnElement="TB_Flow_DossierToUGAA">
+        <di:waypoint x="2950" y="630" />
+        <di:waypoint x="2975" y="630" />
+        <di:waypoint x="2975" y="870" />
+        <di:waypoint x="3000" y="870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_UGAAToEnd_di" bpmnElement="TB_Flow_UGAAToEnd">
+        <di:waypoint x="3100" y="870" />
+        <di:waypoint x="3162" y="870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Pool_HCVB_TB_di" bpmnElement="Pool_HCVB_TB" isHorizontal="true">
+        <dc:Bounds x="160" y="1400" width="1600" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Pool_Privados_TB_di" bpmnElement="Pool_Privados_TB" isHorizontal="true">
+        <dc:Bounds x="1820" y="1400" width="1640" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MF_TB_DerivacionHCVB_di" bpmnElement="MF_TB_DerivacionHCVB">
+        <di:waypoint x="3050" y="910" />
+        <di:waypoint x="3050" y="1370" />
+        <di:waypoint x="960" y="1370" />
+        <di:waypoint x="960" y="1400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1965" y="1345" width="80" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_TB_CompraServ_di" bpmnElement="MF_TB_CompraServ">
+        <di:waypoint x="2221" y="555" />
+        <di:waypoint x="2221" y="1400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2180" y="954" width="86" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_TB_ResultadosExt_di" bpmnElement="MF_TB_ResultadosExt">
+        <di:waypoint x="2390" y="1400" />
+        <di:waypoint x="2390" y="555" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2343" y="954" width="89" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-
 </bpmn:definitions>
