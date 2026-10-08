@@ -1,4 +1,4 @@
-# 🚀 Proceso de negocio rediseñado — TO-BE
+# Proceso de Negocio Rediseñado (TO-BE)
 
 ## 📍 Macro-proceso y proceso específico
 Unidad de Gestión de Casos Oncológicos (UGCO) → Gestión, navegación, trazabilidad, evaluación multidimensional y acompañamiento integral de la persona con cáncer y su cuidador mediante la plataforma **OncoTrace** en el Hospital Dr. Gustavo Fricke (HGF).
@@ -32,7 +32,7 @@ Optimizar y asegurar la continuidad del flujo asistencial a lo largo de las 8 et
 
 ---
 
-## 📊 Diagrama del Proceso TO-BE
+## Diagrama del Proceso TO-BE
 
 ![Proceso TO-BE](./diagramas/to-be.png)
 

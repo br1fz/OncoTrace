@@ -3,7 +3,7 @@
 ## 🗣️ EL-01: Entrevista Semiestructurada en Profundidad
 * **Participante(s):** Gestora Oncológica, Unidad de Gestión de Casos Oncológicos (UGCO) HGF.
 * **Fecha y modalidad:** 15 de septiembre de 2026, presencial.
-* **Evidencia:** Documento adjunto `./evidencia/Transcripcion_Entrevista_Oncologia.txt` en el repositorio.
+* **Evidencia:** Documento adjunto [`./evidencia/Transcripcion_Entrevista_Oncologia.txt`](./evidencia/Transcripcion_Entrevista_Oncologia.txt) en el repositorio.
 
 ### Hallazgos y Nodos Elicitados:
 * 🔍 **[AS-01] Fragmentación de resultados diagnósticos:** La consulta manual a través de distintos visores aislados (Pathology, LIS, PACS) provoca demoras asistenciales de hasta 15 días en la consolidación del diagnóstico inicial.

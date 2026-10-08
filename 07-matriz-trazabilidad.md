@@ -1,4 +1,4 @@
-# 🧭 Matriz Maestra de Trazabilidad End-to-End
+# 🧭 Matriz Maestra de Trazabilidad (End-to-End)
 
 > **Proyecto:** OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico  
 > **Institución:** Hospital Dr. Gustavo Fricke (HGF) – Unidad de Gestión de Casos Oncológicos (UGCO)  
@@ -7,7 +7,7 @@
 
 ---
 
-## 🗺️ Mapa Conceptual de Nomenclatura e Instancias
+## 1. Mapa Conceptual de Nomenclatura e Instancias
 
 ```text
 ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐

@@ -1,4 +1,4 @@
-# 📋 Clasificación de requisitos
+# Clasificación de Requisitos
 
 > **Dominio:** Sistema de Gestión Clínica, Navegación y Trazabilidad Oncológica (Plataforma OncoTrace)  
 > **Institución:** Hospital Dr. Gustavo Fricke (HGF) – Unidad de Gestión de Casos Oncológicos (UGCO)  
@@ -38,7 +38,7 @@
 
 ---
 
-## 🔮 Requisitos Tangentes y Visión Futura (Roadmap)
+## Requisitos de producto
 
 > **Nota de Alcance:** Necesidades elicitadas para mitigar el nodo crítico de interrupciones presenciales (AS-06 / Ley N° 21.258), proyectadas para las siguientes iteraciones del producto.
 

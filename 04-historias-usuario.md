@@ -1,8 +1,8 @@
-# 👤 Historias de usuario
+# Historias de Usuario
 
 > **Resumen Ejecutivo:** Las siguientes historias documentan las funcionalidades requeridas por el equipo multidisciplinario de la Unidad de Gestión de Casos Oncológicos (UGCO) del Hospital Dr. Gustavo Fricke y los pacientes. Cada historia cuenta con trazabilidad formal hacia los nodos críticos del proceso AS-IS, las actividades rediseñadas del modelo TO-BE (8 etapas de la trayectoria), los requisitos funcionales del sistema y las evidencias elicitadas (EL-01, EL-02, EL-03).
 
-| ID Historia | Título | Rol Principal | Prioridad | Nodo AS-IS | Nodo TO-BE | Requisito RF |
+| ID Historia | Título | Rol Principal | Prioridad | Problema AS-IS | Actividad TO-BE Asociada | Requisito RF |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **HU-01** | Tablero de Trazabilidad por Etapas | Gestor/a Oncológico/a | Alta (Must) | **AS-01**, **AS-04** | **TB-01** | **RF-USR-01** |
 | **HU-02** | Evaluación Multidimensional por Dominios | Gestor/a Oncológico/a | Alta (Must) | **AS-05** | **TB-02** | **RF-USR-02** |
@@ -22,10 +22,9 @@
 - **quiero** visualizar un tablero centralizado estructurado según las 8 etapas de la trayectoria oncológica y una línea de tiempo cronológica por paciente,  
 - **para** conocer rápidamente el estado de su atención, monitorizar plazos y realizar seguimiento sin consultar múltiples planillas ni sistemas aislados.
 
-**Trazabilidad:**
-- **Nodo AS-IS mitigado:** **AS-01** (Dispersión de resultados), **AS-04** (Monitoreo manual de plazos)
-- **Nodo TO-BE asociado:** **TB-01** (Tablero Kanban y Timeline Clínico)
-- **Requisito asociado:** **RF-USR-01** | **RNF-SW-01**
+**Actividad TO-BE asociada:** TB-01 (Monitoreo de pacientes en tablero Kanban y timeline clínico)  
+**Requisitos asociados:** RF-USR-01 | RNF-SW-01  
+**Problema AS-IS mitigado:** AS-01 (Dispersión de resultados), AS-04 (Monitoreo manual de plazos)
 
 **Criterios de aceptación:**
 - **HU-01-CA1 — Visualización del tablero por etapas:** Dado que la gestora ingresa al módulo de seguimiento, cuando se carga el tablero, entonces el sistema debe mostrar a los pacientes agrupados según las etapas de la trayectoria oncológica: **Sospecha, Confirmación Diagnóstica, Etapificación, En Comité, Tratamiento, Rehabilitación, Seguimiento y Alta/Cierre**.
@@ -130,10 +129,9 @@
 - **quiero** generar automáticamente la Ficha Resumen de Presentación con los antecedentes clínicos completos del paciente,  
 - **para** suprimir la transcripción manual en Word y agilizar la preparación de la tabla del Comité Oncológico Regional.
 
-**Trazabilidad:**
-- **Nodo AS-IS mitigado:** **AS-02** (Gestión manual de comités oncológicos)
-- **Nodo TO-BE asociado:** **TB-06** (Generación Automática de Ficha de Comité)
-- **Requisito asociado:** **RF-SW-01**
+**Actividad TO-BE asociada:** TB-06 (Generación automatizada de ficha de presentación a comité)  
+**Requisito asociado:** RF-SW-01  
+**Problema AS-IS mitigado:** AS-02 (Gestión manual de comités oncológicos)
 
 **Criterios de aceptación:**
 - **HU-06-CA1 — Programación en tabla de comité:** La gestora debe poder ingresar al paciente a la tabla de una sesión específica del Comité Oncológico (General, Digestivo, Mama, Tórax, Hematología, Tiroides).
@@ -187,10 +185,9 @@
 - **quiero** consultar el estado de avance de mis exámenes e hitos asistenciales en una pantalla táctil mediante la lectura de mi cédula de identidad,  
 - **para** obtener información certera y oportuna de forma autónoma sin necesidad de interrumpir la labor clínica del mesón gestor.
 
-**Trazabilidad:**
-- **Nodo AS-IS mitigado:** **AS-06** (Interrupciones críticas por demanda espontánea)
-- **Nodo TO-BE asociado:** **TB-09** (Tótem de Autoatención en Sala de Espera)
-- **Requisito asociado:** **RF-EXT-01**
+**Actividad TO-BE asociada:** TB-09 (Autoatención presencial en sala de espera y consulta de trámites)  
+**Requisito asociado:** RF-EXT-01  
+**Problema AS-IS mitigado:** AS-06 (Interrupciones críticas por demanda espontánea)
 
 **Criterios de aceptación:**
 - **HU-09-CA1 — Autenticación segura:** El paciente o cuidador acreditado debe autenticarse mediante lector de código de barras de su cédula de identidad o ingresando su RUN con dígito verificador.
@@ -205,10 +202,9 @@
 - **quiero** interactuar con un asistente conversacional que resuelva dudas frecuentes sobre mis derechos y me entregue un turno priorizado si requiero atención humana,  
 - **para** recibir acogida inmediata y ser atendido por la gestora de manera ordenada según la complejidad de mi situación.
 
-**Trazabilidad:**
-- **Nodo AS-IS mitigado:** **AS-06** (Interrupciones críticas por demanda espontánea)
-- **Nodo TO-BE asociado:** **TB-10** (Chatbot de Orientación Institucional y Triage)
-- **Requisito asociado:** **RF-EXT-02**
+**Actividad TO-BE asociada:** TB-10 (Orientación interactiva de derechos, canales asistenciales y triage presencial)  
+**Requisito asociado:** RF-EXT-02  
+**Problema AS-IS mitigado:** AS-06 (Interrupciones críticas por demanda espontánea)
 
 **Criterios de aceptación:**
 - **HU-10-CA1 — Respuestas frecuentes:** El chatbot debe responder consultas comunes sobre trámites del hospital, derechos de la Ley Nacional del Cáncer N° 21.258, ubicación de servicios y preparación para estudios diagnósticos.
