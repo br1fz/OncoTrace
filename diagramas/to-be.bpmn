@@ -142,9 +142,10 @@
       <bpmn:outgoing>TB_Flow_11</bpmn:outgoing>
     </bpmn:serviceTask>
 
-    <!-- Unidad GES valida constancias -->
-    <bpmn:userTask id="TB_Task_GES_Validar" name="Monitorear y validar constancia de garantías GES">
+    <!-- Unidad GES valida constancias y atiende tickets -->
+    <bpmn:userTask id="TB_Task_GES_Validar" name="Gestora atiende ticket priorizado y / o valida constancia de garantías GES en OncoTrace">
       <bpmn:incoming>TB_Flow_11</bpmn:incoming>
+      <bpmn:incoming>TB_Flow_TicketToGestor</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_12</bpmn:outgoing>
     </bpmn:userTask>
 
@@ -293,12 +294,6 @@
       <bpmn:incoming>TB_Flow_RequiereAtencion</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_TicketToGestor</bpmn:outgoing>
     </bpmn:serviceTask>
-    <!-- El ticket priorizado llega al tablero de la gestora como tarea -->
-    <bpmn:userTask id="TB_Task_GES_Validar" name="Gestora atiende ticket priorizado y / o valida constancia de garantías GES en OncoTrace">
-      <bpmn:incoming>TB_Flow_11</bpmn:incoming>
-      <bpmn:incoming>TB_Flow_TicketToGestor</bpmn:incoming>
-      <bpmn:outgoing>TB_Flow_12</bpmn:outgoing>
-    </bpmn:userTask>
 
     <!-- ═══════════════════════════════════════════════════════════
          SEQUENCE FLOWS
