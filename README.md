@@ -33,14 +33,14 @@ Conforme a lo exigido en la evaluación, la distribución de responsabilidades d
 La UGCO cuenta con una dependencia mixta (administrativamente de la *Subdirección de Gestión del Cuidado* y técnicamente de la *Subdirección Médica*), liderando la navegación de las personas con sospecha o confirmación diagnóstica oncológica.
 
 Su objetivo central es garantizar la **trazabilidad continua de punta a punta**, la **evaluación multidimensional** (clínico-terapéutica, psicosocial, informativa y espiritual), el **acompañamiento integral** y la **gestión oportuna** de los pacientes a lo largo de las 8 etapas de su trayectoria asistencial:
-1. **Sospecha:** Ingreso formal desde APS, red SSVQ, Urgencias o por informe crítico de Anatomía Patológica.
+1. **Sospecha:** Ingreso formal desde APS, red SSVQ, Urgencias o por hallazgo crítico en Anatomía Patológica.
 2. **Confirmación Diagnóstica:** Confirmación por especialista, emisión de IPD y constancia GES.
-3. **Etapificación:** Coordinación de estudios internos y gestión de compra de servicios externos (PET-CT, EBUS).
-4. **Tratamiento:** Presentación a Comité Oncológico Regional y asignación a modalidad terapéutica (cirugía en LEIQ, quimioterapia hematológica en HGF, derivación externa o cuidados paliativos).
-5. **Rehabilitación:** Derivación oportuna a equipo multidisciplinario (psicosocial, nutrición, fonoaudiología, kinesiología).
-6. **Cuidados Paliativos y Alivio del Dolor:** Asistencia integral para calidad de vida y soporte familiar.
-7. **Seguimiento y Sobrevivientes:** Controles periódicos y contactabilidad continua entre Gestor y TENS.
-8. **Alta y Cierre de Caso:** Cierre clínico por remisión y contrarreferencia a APS, traslado o fallecimiento.
+3. **Etapificación:** Ejecución de estudios imagenológicos y gestión de compra de servicios externos (PET-CT, EBUS).
+4. **En Comité:** Evaluación colegiada por el Comité Oncológico Regional y emisión de resolución terapéutica (REM 0.7).
+5. **Tratamiento:** Ejecución de la terapia prescrita (cirugía en LEIQ, quimioterapia hematológica en HGF, radioterapia o derivación a red HCVB).
+6. **Rehabilitación:** Derivación oportuna a equipo multidisciplinario (psicosocial, nutrición, fonoaudiología, kinesiología).
+7. **Seguimiento:** Controles médicos periódicos de vigilancia, sobrevivientes y contactabilidad activa por Gestor y TENS.
+8. **Alta y Contrarreferencia:** Cierre clínico y administrativo por remisión completa, traslado de red, fallecimiento o contrarreferencia a APS.
 
 ---
 
@@ -133,7 +133,7 @@ El modelo actual del Hospital Dr. Gustavo Fricke estructura su proceso principal
 | **AS-02** | **Gestión Manual de Comités Oncológicos** | Preparación manual en Word de fichas clínicas y registro de resoluciones en actas en papel físico. | Comité Oncológico, Gestor/a, Médico |
 | **AS-03** | **Pérdida de Trazabilidad en Derivaciones** | Envío de dossiers físicos a través de UGAA hacia el Hospital Carlos Van Buren sin confirmación digital de recepción ni agendamiento. | TENS, Gestor/a, UGAA, Paciente |
 | **AS-04** | **Monitoreo Manual de Plazos GES** | Cálculo y seguimiento de garantías mediante planillas Excel locales, con riesgo legal de incumplimiento. | Gestor/a, Supervisora, Unidad GES |
-| **AS-05** | **Falta de Interoperabilidad con MINSAL** | Uso de plataforma local propia que no interopera con la Plataforma de Seguimiento Oncológico del MINSAL, obligando al doble registro. | Gestor/a, Supervisora UGCO |
+| **AS-05** | **Registro Fragmentado y Falta de Bitácora Estandarizada** | Carencia de un registro unificado para documentar contactos asistenciales, evaluar la vulnerabilidad sociofamiliar y registrar el índice funcional (ECOG). | Gestor/a Oncológico/a, TENS, Paciente y Familia |
 | **AS-06** | **Interrupción Crítica por Demanda Espontánea** | Afluencia no programada de usuarios presenciales en la oficina de gestión exigiendo estados de atención (Ley N° 21.258). | Gestor/a, Paciente y Cuidador |
 
 ---
