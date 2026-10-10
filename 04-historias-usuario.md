@@ -4,16 +4,16 @@
 
 | ID Historia | Título | Rol Principal | Prioridad | Problema AS-IS Mitigado | Actividad TO-BE Asociada | Requisito Funcional |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **HU-01** | Tablero de Trazabilidad por Etapas | Gestor/a Oncológico/a | Alta (Must) | **AS-01**, **AS-04** | **TB-01** | **RF-USR-01** |
-| **HU-02** | Evaluación Multidimensional por Dominios | Gestor/a Oncológico/a | Alta (Must) | **AS-05** | **TB-02** | **RF-USR-02** |
-| **HU-03** | Bitácora de Puntos de Contacto Obligatorios | Gestor/a y TENS UGCO | Alta (Must) | **AS-05**, **AS-06** | **TB-03** | **RF-USR-03** |
-| **HU-04** | Alertas Preventivas de Plazos GES (DS N° 29) | Gestor/a Oncológico/a | Alta (Must) | **AS-04**, **AS-05** | **TB-04** | **RF-SYS-01** |
-| **HU-05** | Consolidación de Biopsias y Valores Críticos | Gestor/a y Médico Tratante | Alta (Must) | **AS-01** | **TB-05** | **RF-SYS-02** |
-| **HU-06** | Generación Ficha Resumen de Comité | Gestor/a Oncológico/a | Alta (Must) | **AS-02** | **TB-06** | **RF-SW-01** |
-| **HU-07** | Acta Digital de Comité y Registro REM 0.7 | Médico Especialista / Comité | Alta (Must) | **AS-02** | **TB-07** | **RF-SW-02** |
-| **HU-08** | Trazabilidad de Derivaciones a la Red (HCVB) | Gestor/a, TENS y UGAA | Alta (Must) | **AS-03** | **TB-08** | **RF-SYS-03** |
-| **HU-09** | Tótem de Autoatención en Sala de Espera | Paciente / Cuidador | Media (Should) | **AS-06** | **TB-09** | **RF-EXT-01** |
-| **HU-10** | Chatbot Institucional y Triage Asistencial (Ley N° 21.258) | Paciente / Gestor/a | Media (Should) | **AS-06** | **TB-10** | **RF-EXT-02** |
+| **HU-01** | Tablero de Trazabilidad por Etapas | Gestor/a Oncológico/a | Alta (Must) | **AS-01**, **AS-04** | **TB-01** | **RF-01** |
+| **HU-02** | Evaluación Multidimensional por Dominios | Gestor/a Oncológico/a | Alta (Must) | **AS-05** | **TB-02** | **RF-02** |
+| **HU-03** | Bitácora de Puntos de Contacto Obligatorios | Gestor/a y TENS UGCO | Alta (Must) | **AS-05**, **AS-06** | **TB-03** | **RF-03** |
+| **HU-04** | Alertas Preventivas de Plazos GES (DS N° 29) | Gestor/a Oncológico/a | Alta (Must) | **AS-04**, **AS-05** | **TB-04** | **RF-04** |
+| **HU-05** | Consolidación de Biopsias y Valores Críticos | Gestor/a y Médico Tratante | Alta (Must) | **AS-01** | **TB-05** | **RF-05** |
+| **HU-06** | Generación Ficha Resumen de Comité | Gestor/a Oncológico/a | Alta (Must) | **AS-02** | **TB-06** | **RF-06** |
+| **HU-07** | Acta Digital de Comité y Registro REM 0.7 | Médico Especialista / Comité | Alta (Must) | **AS-02** | **TB-07** | **RF-07** |
+| **HU-08** | Trazabilidad de Derivaciones a la Red (HCVB) | Gestor/a, TENS y UGAA | Alta (Must) | **AS-03** | **TB-08** | **RF-08** |
+| **HU-09** | Tótem de Autoatención en Sala de Espera | Paciente / Cuidador | Media (Should) | **AS-06** | **TB-09** | **RF-09** |
+| **HU-10** | Chatbot Institucional y Triage Asistencial (Ley N° 21.258) | Paciente / Gestor/a | Media (Should) | **AS-06** | **TB-10** | **RF-10** |
 
 ---
 
@@ -25,7 +25,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-01 (Dispersión de resultados diagnósticos), AS-04 (Monitoreo manual de plazos)
 - **Actividad TO-BE asociada:** TB-01 (Monitoreo de pacientes en tablero Kanban y timeline clínico)
-- **Requisitos asociados:** RF-USR-01 | RNF-SW-01
+- **Requisitos asociados:** RF-01 | RNF-02
 
 **Criterios de aceptación:**
 - **HU-01-CA1 — Visualización del tablero por etapas:** Dado que la gestora ingresa al módulo de seguimiento, cuando se carga el tablero, entonces el sistema debe mostrar a los pacientes agrupados según las etapas de la trayectoria oncológica: **Sospecha, Confirmación Diagnóstica, Etapificación, En Comité, Tratamiento, Rehabilitación, Seguimiento y Alta/Cierre**.
@@ -45,7 +45,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-05 (Falta de interoperabilidad y registro no estandarizado)
 - **Actividad TO-BE asociada:** TB-02 (Evaluación multidimensional estandarizada)
-- **Requisito asociado:** RF-USR-02
+- **Requisito asociado:** RF-02
 
 **Criterios de aceptación:**
 - **HU-02-CA1 — Evaluación funcional:** El sistema debe permitir registrar el estado funcional seleccionando un valor normalizado ECOG / OMS válido entre **0 y 4**.
@@ -66,7 +66,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-05 (Registro fragmentado), AS-06 (Interrupciones y demanda desordenada)
 - **Actividad TO-BE asociada:** TB-03 (Bitácora digital de acompañamiento)
-- **Requisito asociado:** RF-USR-03
+- **Requisito asociado:** RF-03
 
 **Criterios de aceptación:**
 - **HU-03-CA1 — Registro de contacto:** El sistema debe permitir ingresar fecha, tipo de contacto (presencial, telefónico, visita en sala), interlocutor (paciente o cuidador), profesional actuante (Gestor/a o TENS), motivo, resumen de la interacción y acuerdos.
@@ -92,7 +92,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-04 (Monitoreo manual de plazos GES), AS-05 (Riesgo de deserción asistencial)
 - **Actividad TO-BE asociada:** TB-04 (Motor de alertas preventivas GES e inactividad)
-- **Requisito asociado:** RF-SYS-01
+- **Requisitos asociados:** RF-04 | RNF-01
 
 **Criterios de aceptación:**
 - **HU-04-CA1 — Alerta preventiva por proximidad de plazo:** Cuando falten $\le 5$ días hábiles para el vencimiento de una garantía de oportunidad GES en cualquiera de las 21 patologías oncológicas, el sistema debe generar una alerta de criticidad alta (rojo/amarillo).
@@ -113,7 +113,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-01 (Fragmentación y dispersión de resultados diagnósticos)
 - **Actividad TO-BE asociada:** TB-05 (Consolidación automática y alertas críticas)
-- **Requisitos asociados:** RF-SYS-02 | RNF-PROD-01 | RNF-SYS-01
+- **Requisitos asociados:** RF-05 | RNF-04 | RNF-01
 
 **Criterios de aceptación:**
 - **HU-05-CA1 — Indexación por RUN:** El sistema debe capturar informes validados desde los sistemas LIS (laboratorio/biopsias) y PACS (radiología) mediante estándares HL7 FHIR o API REST, asociándolos unívocamente al RUN del paciente.
@@ -133,7 +133,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-02 (Gestión manual de comités oncológicos)
 - **Actividad TO-BE asociada:** TB-06 (Generación automatizada de ficha de presentación a comité)
-- **Requisito asociado:** RF-SW-01
+- **Requisito asociado:** RF-06
 
 **Criterios de aceptación:**
 - **HU-06-CA1 — Programación en tabla de comité:** La gestora debe poder ingresar al paciente a la tabla de una sesión específica del Comité Oncológico (General, Digestivo, Mama, Tórax, Hematología, Tiroides).
@@ -152,7 +152,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-02 (Gestión manual de comités oncológicos)
 - **Actividad TO-BE asociada:** TB-07 (Acta digital de comité y consolidación REM 0.7)
-- **Requisitos asociados:** RF-SW-02 | RNF-SW-02 | REQ-DER-01
+- **Requisitos asociados:** RF-07 | RNF-03 | REQ-DER-01
 
 **Criterios de aceptación:**
 - **HU-07-CA1 — Registro de asistencia:** El sistema debe registrar la asistencia de los médicos especialistas participantes vinculados mediante autenticación Single Sign-On institucional.
@@ -171,7 +171,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-03 (Pérdida de trazabilidad en derivaciones externas)
 - **Actividad TO-BE asociada:** TB-08 (Módulo de dossier digital y trazabilidad de derivaciones)
-- **Requisitos asociados:** RF-SYS-03 | RNF-SYS-01
+- **Requisitos asociados:** RF-08 | RNF-01
 
 **Criterios de aceptación:**
 - **HU-08-CA1 — Confección digital del dossier por TENS:** Dado que el comité resuelve una derivación externa (QT sólida o Radioterapia), cuando el TENS ingresa al módulo de derivaciones, entonces el sistema debe compilar automáticamente el expediente digital unificado con la interconsulta médica, informes de biopsia, imágenes y el acta firmada de comité.
@@ -190,7 +190,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-06 (Interrupciones críticas por demanda espontánea)
 - **Actividad TO-BE asociada:** TB-09 (Autoatención presencial en sala de espera y consulta de trámites)
-- **Requisito asociado:** RF-EXT-01
+- **Requisito asociado:** RF-09
 
 **Criterios de aceptación:**
 - **HU-09-CA1 — Autenticación segura:** El paciente o cuidador acreditado debe autenticarse mediante lector de código de barras de su cédula de identidad o ingresando su RUN con dígito verificador.
@@ -208,7 +208,7 @@
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-06 (Interrupciones críticas por demanda espontánea)
 - **Actividad TO-BE asociada:** TB-10 (Orientación interactiva de derechos, canales asistenciales y triage presencial)
-- **Requisito asociado:** RF-EXT-02
+- **Requisito asociado:** RF-10
 
 **Criterios de aceptación:**
 - **HU-10-CA1 — Respuestas frecuentes:** El chatbot debe responder consultas comunes sobre trámites del hospital, derechos de la Ley Nacional del Cáncer N° 21.258, ubicación de servicios y preparación para estudios diagnósticos.

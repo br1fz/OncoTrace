@@ -21,7 +21,7 @@ La priorización de los atributos de calidad para la plataforma **OncoTrace** re
 Para los tres atributos de mayor criticidad se formalizan las métricas mediante **Escenarios de Calidad (SEI)**, asegurando criterios medibles y verificables:
 
 ### 1. Seguridad (AC-01)
-* **Requisitos no funcionales asociados:** RNF-SW-02 | REQ-DER-01
+* **Requisitos no funcionales asociados:** RNF-03 | REQ-DER-01
 * **Métrica objetivo:** Control de acceso estricto basado en roles (RBAC) e inmutabilidad en la bitácora de auditoría.
 * **Escenario de Calidad:**
   * **Fuente del estímulo:** Usuario del sistema (gestora, médico, administrativo o usuario no autenticado).
@@ -37,7 +37,7 @@ Para los tres atributos de mayor criticidad se formalizan las métricas mediante
 ---
 
 ### 2. Fiabilidad (AC-02)
-* **Requisito no funcional asociado:** RNF-SYS-01
+* **Requisito no funcional asociado:** RNF-01
 * **Métrica objetivo:** Disponibilidad operativa asistencial (Uptime) y Tiempo de Recuperación Objetivo (RTO).
 * **Escenario de Calidad:**
   * **Fuente del estímulo:** Infraestructura interna (fallo imprevisto en nodo primario de base de datos o corte de suministro).
@@ -53,7 +53,7 @@ Para los tres atributos de mayor criticidad se formalizan las métricas mediante
 ---
 
 ### 3. Eficiencia de Desempeño (AC-03)
-* **Requisito no funcional asociado:** RNF-SW-01
+* **Requisito no funcional asociado:** RNF-02
 * **Métrica objetivo:** Latencia de carga y renderizado del tablero Kanban bajo condiciones de concurrencia.
 * **Escenario de Calidad:**
   * **Fuente del estímulo:** Gestor/a oncológico/a o jefatura de unidad.
