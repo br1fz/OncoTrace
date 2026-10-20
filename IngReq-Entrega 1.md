@@ -36,26 +36,26 @@ Su objetivo central es garantizar la **trazabilidad continua de punta a punta**,
 1. **Sospecha:** Ingreso formal desde APS, red SSVQ, Urgencias o por hallazgo crítico en Anatomía Patológica.
 2. **Confirmación Diagnóstica:** Confirmación por especialista, emisión de IPD y constancia GES.
 3. **Etapificación:** Ejecución de estudios imagenológicos y gestión de compra de servicios externos (PET-CT, EBUS).
-4. **En Comité:** Evaluación colegiada por el Comité Oncológico Regional y emisión de resolución terapéutica (REM 0.7).
+4. **En Comité:** Evaluación colegiada por el Comité Oncológico Regional y emisión de resolución terapéutica (REM 7).
 5. **Tratamiento:** Ejecución de la terapia prescrita (cirugía en LEIQ, quimioterapia hematológica en HGF, radioterapia o derivación a red HCVB).
-6. **Rehabilitación:** Derivación oportuna a equipo multidisciplinario (psicosocial, nutrición, fonoaudiología, kinesiología).
-7. **Seguimiento:** Controles médicos periódicos de vigilancia, sobrevivientes y contactabilidad activa por Gestor y TENS.
-8. **Alta y Contrarreferencia:** Cierre clínico y administrativo por remisión completa, traslado de red, fallecimiento o contrarreferencia a APS.
+6. **Rehabilitación y Cuidados Paliativos:** Derivación oportuna a equipo multidisciplinario (psicosocial, nutrición, fonoaudiología, kinesiología, cuidados paliativos).
+7. **Seguimiento:** Controles médicos periódicos de vigilancia activa y contactabilidad por Gestor y TENS.
+8. **Alta, Contrarreferencia y Sobreviviente:** Cierre clínico y administrativo por remisión completa, traslado de red, fallecimiento, contrarreferencia a APS o vigilancia a largo plazo del sobreviviente oncológico.
 
 ---
 
 ## 👥 Perfil de Usuarios y Stakeholders
 
 - **Usuario Principal:** 
-  - **Gestor/a de Casos Oncológicos UGCO (Enfermero/a o Matrón/a):** Profesional responsable de la navegación clínica integral en las 4 dimensiones, ejecución de puntos de contacto obligatorio, preparación de comités y gestión de derivaciones.
+  - **Gestor/a de Casos Oncológicos UGCO (Enfermero/a o Matrón/a):** Profesional responsable de la navegación clínica integral en las 4 dimensiones, ejecución de puntos de contacto obligatorio, preparación de comités, entrega anticipada de instructivo de pasajes y gestión de derivaciones.
 - **Equipo Operativo UGCO:**
   - **Enfermera Supervisora UGCO:** Liderazgo estratégico, asignación de especialidades oncológicas y supervisión del cumplimiento de metas.
   - **Técnico en Enfermería (TENS UGCO):** Confección de dossier físico de derivación, contactabilidad activa telefónica/presencial y soporte al Comité Oncológico.
   - **Administrativo/a UGCO:** Gestión y rescate de fichas clínicas, coordinación de horas con unidades de apoyo y digitación de libros oficiales.
 - **Actores Clínicos y Resolutivos:**
   - **Médico Tratante / Especialista:** Evaluación de sospecha, confirmación diagnóstica, emisión de IPD y presentación formal en comités.
-  - **Comité Oncológico Regional:** Instancia multidisciplinaria colegiada que dicta la conducta terapéutica obligatoria previa al tratamiento (REM 0.7).
-  - **Equipo Multidisciplinario:** Dupla psicosocial (asistente social y psicólogo), nutricionistas, kinesiólogos, oncogeriatras y cuidados paliativos.
+  - **Comité Oncológico Regional:** Instancia multidisciplinaria colegiada que dicta la conducta terapéutica obligatoria previa al tratamiento (REM 7).
+  - **Equipo Multidisciplinario y Apoyo Social:** Dupla psicosocial (asistente social y psicólogo), nutricionistas, kinesiólogos, oncogeriatras, cuidados paliativos y Unidad de Servicio Social (gestión de reembolso de pasajes de locomoción pública por derivación, Anexo 6).
 - **Unidades de Coordinación y Red Asistencial:**
   - **Atención Primaria de Salud (APS) y Red SSVQ:** Origen de interconsultas y destino de la contrarreferencia al alta.
   - **UGDA (Unidad de Gestión de la Demanda Asistencial):** Auditoría de interconsultas y administración de la Lista de Espera Quirúrgica (LEIQ / SIGTE).
@@ -88,9 +88,9 @@ Su objetivo central es garantizar la **trazabilidad continua de punta a punta**,
 
 1. **Tablero de Trazabilidad y Timeline Clínico:** Visualización en tiempo real del estado de cada caso, hitos diagnósticos completados, rescate de exámenes y alertas de tiempos de espera.
 2. **Evaluación Multidimensional y Estratificación:** Pauta estructurada por dominios (clínico-funcional, psicoemocional, familiar/cuidador, socioeconómico, espiritual y comprensión diagnóstica).
-3. **Módulo de Acompañamiento y Contactabilidad Continua:** Coordinación sincronizada entre Gestor y TENS, control de inasistencias, acogida presencial regulada y bitácora de puntos de contacto obligatorio.
-4. **Gestión Digital de Comités Oncológicos:** Consolidación de antecedentes clínicos, eliminación de actas en papel físico y estructuración digital del registro de asistencia y resoluciones (REM 0.7).
-5. **Control de Plazos GES y Trazabilidad de Derivaciones:** Alertas preventivas para evitar vencimiento de garantías y seguimiento con confirmación de entrega de dossiers físicos derivados vía UGAA hacia el Hospital Carlos Van Buren o prestadores privados.
+3. **Módulo de Acompañamiento y Contactabilidad Continua:** Coordinación sincronizada entre Gestor y TENS, control de inasistencias, acogida presencial regulada y bitácora de puntos de contacto obligatorio según el *Patient Journey Map*.
+4. **Gestión Digital de Comités Oncológicos:** Consolidación de antecedentes clínicos, eliminación de actas en papel físico y estructuración digital del registro de asistencia y resoluciones (REM 7).
+5. **Control de Plazos GES, Trazabilidad de Derivaciones y Reembolso de Pasajes:** Alertas preventivas para evitar vencimiento de garantías, seguimiento con confirmación de entrega de dossiers derivados vía UGAA hacia el Hospital Carlos Van Buren o prestadores privados, y emisión del instructivo de reembolso de pasajes ante Servicio Social (Anexo 6).
 
 ---
 
@@ -115,13 +115,13 @@ El modelo actual del Hospital Dr. Gustavo Fricke estructura su proceso principal
 | **6. Administrativo/a UGCO** | Administrativo/a UGCO | Registro de ingreso, verificación de contactos, coordinación y agendamiento de horas de exámenes. |
 | **7. UGAA** | Gestión de Atención Abierta | Despacho y derivación formal de dossiers físicos hacia hospitales de referencia externa. |
 | **8. Unidad GES y registros** | Unidad GES Institucional | Confección, monitoreo y auditoría de constancias GES y cumplimiento de garantías de oportunidad. |
-| **9. Comité Oncológico** | Comité Multidisciplinario | Sesión colegiada de evaluación integral y emisión de actas de resolución terapéutica (REM 0.7). |
+| **9. Comité Oncológico** | Comité Multidisciplinario | Sesión colegiada de evaluación integral y emisión de actas de resolución terapéutica (REM 7). |
 | **10. Unidades de Apoyo Diagnóstico** | Laboratorio / AP / Imágenes | Toma de muestras, procesamiento de estudios y emisión de informes clínicos y de valores críticos. |
 
 #### Correcciones Topológicas Implementadas:
 1. **Etapificación y Compra de Servicios (XOR):** Bifurcación formal mediante compuerta exclusiva tras la solicitud de exámenes. La *Rama Interna* tramita a través de unidades de apoyo del HGF con rescate y notificación de valores críticos; la *Rama Externa* gestiona compras de servicios especializados (PET-CT, EBUS, estudios moleculares) hacia centros privados. Ambas ramas convergen en compuerta exclusiva antes de la entrega de resultados al médico.
 2. **Contactabilidad Simultánea en Seguimiento (AND):** Incorporación de una compuerta paralela que sincroniza las labores clínicas del *Gestor* (controles médicos, sobrevivientes) con las labores de contactabilidad y rescate del *TENS*, convergiendo antes de la evaluación de criterios de cierre de caso.
-3. **Flujo Cerrado de Derivación Externa:** Secuencia estricta y trazable: `GW_DerivExterna` $\rightarrow` `Task_TENS_Dossier` (confección de dossier) $\rightarrow` `Task_UGAA_Derivar` (despacho) $\rightarrow` `MessageFlow` hacia el `Pool_RedExterna` (Hospital Carlos Van Buren).
+3. **Flujo Cerrado de Derivación Externa:** Secuencia estricta y trazable: `GW_DerivExterna` $\rightarrow$ `Task_TENS_Dossier` (confección de dossier) $\rightarrow$ `Task_UGAA_Derivar` (despacho) $\rightarrow$ `MessageFlow` hacia el `Pool_RedExterna` (Hospital Carlos Van Buren).
 
 ---
 

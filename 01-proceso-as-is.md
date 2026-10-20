@@ -8,7 +8,7 @@ Unidad de Gestión de Casos Oncológicos (UGCO) → Acompañamiento integral, na
 ---
 
 ## Objetivo de Negocio del Proceso
-Garantizar el acompañamiento continuo, la coordinación oportuna de estudios diagnósticos y la derivación expedita a tratamiento de las personas con sospecha o confirmación de cáncer, otorgando soporte multidimensional (clínico, informativo, psicosocial y familiar), asegurando el cumplimiento estricto de los plazos legales de garantías GES (Decreto Supremo N° 29) y minimizando el riesgo de abandono asistencial.
+Garantizar el acompañamiento continuo, la coordinación oportuna de estudios diagnósticos y la derivación expedita a tratamiento de las personas con diagnóstico de cáncer y su red de apoyo, otorgando soporte multidimensional (clínico, informativo, psicosocial, familiar y espiritual), asegurando el cumplimiento estricto de los plazos legales de garantías GES (Decreto Supremo N° 29) y minimizando el riesgo de abandono asistencial.
 
 ---
 
@@ -17,11 +17,12 @@ Garantizar el acompañamiento continuo, la coordinación oportuna de estudios di
 | Participante / Actor | Rol y Objetivo en el Proceso |
 | :--- | :--- |
 | **Enfermera Supervisora UGCO** | Liderar la gestión de la unidad, planificar la distribución de carga asistencial, asignar casos y supervisar indicadores de gestión. |
-| **Gestor/a Oncológico/a (Enfermero/a o Matrón/a)** | Realizar el acompañamiento directo, ejecutar los puntos de contacto obligatorio normados, compilar antecedentes para comités y coordinar derivaciones. |
+| **Gestor/a Oncológico/a (Enfermero/a o Matrón/a)** | Realizar el acompañamiento directo, ejecutar los puntos de contacto obligatorio normados, compilar antecedentes para comités, orientar beneficios de traslado y coordinar derivaciones. |
 | **Técnico en Enfermería (TENS UGCO)** | Confeccionar el dossier físico de derivación, apoyar la contactabilidad telefónica de pacientes y asistir operativamente en la coordinación asistencial. |
 | **Administrativo/a UGCO** | Gestionar rescate de fichas clínicas en archivo, coordinar citaciones y apoyar el despacho formal de correspondencia médica hacia unidades de apoyo. |
 | **Médico Tratante / Especialista** | Evaluar la sospecha clínica, confirmar diagnósticos histopatológicos, presentar casos a comités oncológicos y ejecutar indicaciones terapéuticas. |
-| **Equipo Multidisciplinario de Apoyo** | Otorgar soporte complementario (dupla psicosocial, nutrición, cuidados paliativos, oncogeriatría) mediante interconsultas generadas por la gestora. |
+| **Equipo Multidisciplinario de Apoyo** | Otorgar soporte complementario (dupla psicosocial, nutrición, cuidados paliativos, oncogeriatría, kinesiología, fonoaudiología, terapia ocupacional) mediante interconsultas generadas por la gestora. |
+| **Unidad de Servicio Social HGF** | Evaluar la situación socioeconómica, tramitar ayudas técnicas y gestionar el reembolso de pasajes de locomoción pública para pacientes derivados a la red asistencial. |
 | **Comité Oncológico Regional** | Sesionar de forma colegiada y multidisciplinaria para definir la conducta terapéutica consensuada y estadificación TNM previo al tratamiento. |
 | **Unidades de Apoyo Diagnóstico (LIS/PACS)** | Procesar muestras de anatomía patológica (biopsias) y estudios imagenológicos (TAC, resonancias, ecografías), emitiendo informes diagnósticos. |
 | **Hospital Carlos Van Buren (HCVB) / Red** | Centro de referencia de la macrored para ejecutar tratamientos oncológicos de alta complejidad (radioterapia y quimioterapia para tumores sólidos). |
@@ -39,9 +40,9 @@ El flujo del paciente oncológico en el establecimiento se estructura en 8 etapa
 3. **Etapificación:** Ejecución de estudios imagenológicos y de laboratorio para determinar extensión anatómica tumoral.
 4. **En Comité:** Evaluación colegiada por los especialistas del Comité Oncológico y emisión de resolución terapéutica.
 5. **Tratamiento:** Ejecución de la terapia prescrita (cirugía oncológica en pabellón, quimioterapia, radioterapia o terapias sistémicas).
-6. **Rehabilitación:** Derivación oportuna a servicios de kinesiología, terapia ocupacional o fonoaudiología según secuelas asistenciales.
-7. **Seguimiento:** Controles médicos periódicos de vigilancia y monitoreo post-tratamiento activo.
-8. **Alta y Contrarreferencia:** Cierre administrativo y asistencial del caso por remisión completa, traslado de red, fallecimiento o contrarreferencia a APS.
+6. **Rehabilitación y Cuidados Paliativos:** Derivación oportuna a kinesiología, terapia ocupacional, fonoaudiología y unidad de cuidados paliativos/alivio del dolor según secuelas y etapa asistencial.
+7. **Seguimiento:** Controles médicos periódicos de vigilancia activa y monitoreo post-tratamiento.
+8. **Alta, Contrarreferencia y Sobreviviente:** Cierre administrativo y asistencial por remisión completa, contrarreferencia a APS o vigilancia a largo plazo del paciente sobreviviente para manejo de secuelas tardías.
 
 ---
 
@@ -61,7 +62,7 @@ La siguiente tabla resume los nodos críticos levantados en el proceso actual, b
 | :--- | :--- | :--- | :--- | :--- |
 | **AS-01** | **Dispersión de Resultados Diagnósticos** | Búsqueda manual y fragmentada de biopsias e informes imagenológicos distribuidos en sistemas desacoplados (Pathology, LIS, PACS) y archivo en papel. | Gestor/a Oncológico/a, Médico Tratante, Paciente | Retrasos de hasta 15 días en la consolidación del expediente inicial, postergando la presentación a comité y el inicio terapéutico. |
 | **AS-02** | **Gestión Manual de Comités Oncológicos** | Confección manual de fichas de presentación en procesador de texto (Word) y registro de actas de resolución en soporte físico de papel. | Comité Oncológico, Gestor/a Oncológico/a, Médico | Alto consumo de horas administrativas, riesgo de omisión de antecedentes clínicos y falta de incorporación oportuna del acta en la ficha clínica. |
-| **AS-03** | **Pérdida de Trazabilidad en Derivaciones Externas** | Elaboración física del dossier de derivación para despacho manual a través de la UGAA al Hospital Carlos Van Buren, sin confirmación de entrega en línea. | TENS, Gestor/a Oncológico/a, UGAA, Paciente | Generación de "puntos ciegos" en la red; desconocimiento sobre la fecha de recepción, asignación de cita e inicio de radioterapia/quimioterapia externa. |
+| **AS-03** | **Pérdida de Trazabilidad en Derivaciones Externas** | Elaboración física del dossier de derivación para despacho manual a través de la UGAA al Hospital Carlos Van Buren, sin confirmación de entrega en línea ni orientación oportuna sobre reembolso de pasajes ante Servicio Social. | TENS, Gestor/a Oncológico/a, UGAA, Paciente | Generación de "puntos ciegos" en la red; desconocimiento sobre la fecha de recepción/cita en HCVB y pérdida del beneficio económico de traslado por falta de recopilación oportuna de boletos y certificados de asistencia. |
 | **AS-04** | **Monitoreo Manual y Riesgo de Vencimiento GES** | Control y cálculo manual de plazos legales de garantías de oportunidad GES mediante planillas de cálculo locales no integradas. | Gestor/a Oncológico/a, Supervisora UGCO, Paciente | Riesgo inminente de expiración de plazos legales (Decreto Supremo N° 29), exponiendo al hospital a sumarios sanitarios y multas de la Superintendencia. |
 | **AS-05** | **Registro Fragmentado y Falta de Bitácora Estandarizada** | Carencia de un registro unificado para documentar contactos asistenciales, evaluar la vulnerabilidad sociofamiliar y registrar el índice funcional (ECOG). | Gestor/a Oncológico/a, TENS, Paciente y Familia | Dificultad para pesquisar oportunamente factores de claudicación familiar o abandono de tratamiento, sumado al doble registro con plataformas ministeriales. |
 | **AS-06** | **Interrupción Operativa por Demanda Espontánea** | Afluencia desordenada de usuarios al mesón de la UGCO solicitando estado de trámites bajo el marco de la Ley N° 21.258 (Ley Nacional del Cáncer). | Gestor/a Oncológico/a, Paciente y Cuidador | Saturación de la jornada asistencial de las gestoras debido a consultas de orientación general, restando tiempo a la resolución de casos de alta complejidad. |

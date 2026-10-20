@@ -10,8 +10,8 @@
 | **HU-04** | Alertas Preventivas de Plazos GES (DS N° 29) | Gestor/a Oncológico/a | Alta (Must) | **AS-04**, **AS-05** | **TB-04** | **RF-04** |
 | **HU-05** | Consolidación de Biopsias y Valores Críticos | Gestor/a y Médico Tratante | Alta (Must) | **AS-01** | **TB-05** | **RF-05** |
 | **HU-06** | Generación Ficha Resumen de Comité | Gestor/a Oncológico/a | Alta (Must) | **AS-02** | **TB-06** | **RF-06** |
-| **HU-07** | Acta Digital de Comité y Registro REM 0.7 | Médico Especialista / Comité | Alta (Must) | **AS-02** | **TB-07** | **RF-07** |
-| **HU-08** | Trazabilidad de Derivaciones a la Red (HCVB) | Gestor/a, TENS y UGAA | Alta (Must) | **AS-03** | **TB-08** | **RF-08** |
+| **HU-07** | Acta Digital de Comité y Registro REM 7 | Médico Especialista / Comité | Alta (Must) | **AS-02** | **TB-07** | **RF-07** |
+| **HU-08** | Trazabilidad de Derivaciones y Reembolso de Pasajes | Gestor/a, TENS y UGAA | Alta (Must) | **AS-03** | **TB-08** | **RF-08** |
 | **HU-09** | Tótem de Autoatención en Sala de Espera | Paciente / Cuidador | Media (Should) | **AS-06** | **TB-09** | **RF-09** |
 | **HU-10** | Chatbot Institucional y Triage Asistencial (Ley N° 21.258) | Paciente / Gestor/a | Media (Should) | **AS-06** | **TB-10** | **RF-10** |
 
@@ -28,7 +28,7 @@
 - **Requisitos asociados:** RF-01 | RNF-02
 
 **Criterios de aceptación:**
-- **HU-01-CA1 — Visualización del tablero por etapas:** Dado que la gestora ingresa al módulo de seguimiento, cuando se carga el tablero, entonces el sistema debe mostrar a los pacientes agrupados según las etapas de la trayectoria oncológica: **Sospecha, Confirmación Diagnóstica, Etapificación, En Comité, Tratamiento, Rehabilitación, Seguimiento y Alta/Cierre**.
+- **HU-01-CA1 — Visualización del tablero por etapas:** Dado que la gestora ingresa al módulo de seguimiento, cuando se carga el tablero, entonces el sistema debe mostrar a los pacientes agrupados según las etapas de la trayectoria oncológica: **Sospecha, Confirmación Diagnóstica, Etapificación, En Comité, Tratamiento, Rehabilitación, Seguimiento y Alta/Sobrevivientes**.
 - **HU-01-CA2 — Identificación del paciente:** Cada tarjeta del tablero debe mostrar, como mínimo, RUN y nombre del paciente, especialidad asignada, diagnóstico o sospecha CIE-10, etapa actual, fecha del último hito registrado y semáforo de alertas pendientes.
 - **HU-01-CA3 — Acceso a ficha:** Dado que la gestora selecciona un paciente del tablero, cuando hace clic sobre su tarjeta, entonces el sistema debe abrir su ficha integral de seguimiento oncológico.
 - **HU-01-CA4 — Línea de tiempo:** Dado que la gestora accede a la ficha, cuando visualiza la sección de línea de tiempo, entonces el sistema debe mostrar los hitos asistenciales en estricto orden cronológico, indicando para cada uno la fecha, tipo de hito y días transcurridos desde el hito anterior.
@@ -60,7 +60,7 @@
 
 ## 📌 HU-03: Bitácora Digital de Acompañamiento y Puntos de Contacto Obligatorios
 - **Como** Gestor/a o TENS de la UGCO,  
-- **quiero** registrar cada interacción asistencial en una bitácora cronológica que verifique el cumplimiento de los 6 puntos de contacto obligatorio normados,  
+- **quiero** registrar cada interacción asistencial en una bitácora cronológica que verifique el cumplimiento de los 6 puntos de contacto obligatorio normados según la curva de vulnerabilidad del Journey Map,  
 - **para** asegurar la continuidad del cuidado, evitar deserciones y mantener un canal de comunicación unificado en el equipo de salud.
 
 **Trazabilidad:**
@@ -70,13 +70,13 @@
 
 **Criterios de aceptación:**
 - **HU-03-CA1 — Registro de contacto:** El sistema debe permitir ingresar fecha, tipo de contacto (presencial, telefónico, visita en sala), interlocutor (paciente o cuidador), profesional actuante (Gestor/a o TENS), motivo, resumen de la interacción y acuerdos.
-- **HU-03-CA2 — Verificación de puntos de contacto obligatorio:** La bitácora debe permitir etiquetar formalmente si el contacto corresponde a uno de los **6 puntos de contacto obligatorio** normados por la UGCO:
+- **HU-03-CA2 — Verificación de puntos de contacto obligatorio y momentos de vulnerabilidad:** La bitácora debe permitir etiquetar formalmente si el contacto corresponde a uno de los **6 puntos de contacto obligatorio** normados por la UGCO y alineados a la curva de mayor vulnerabilidad del *Patient Journey Map*:
   1. *Ingreso / Sospecha inicial.*
-  2. *Post-confirmación diagnóstica.*
-  3. *Post-resolución de Comité Oncológico.*
-  4. *Al alta de hospitalizaciones o intervenciones.*
-  5. *Al finalizar el tratamiento activo.*
-  6. *Ante derivaciones a prestadores externos.*
+  2. *Post-confirmación diagnóstica (comunicación del diagnóstico y entrega de IPD).*
+  3. *Etapificación / Post-resolución de Comité Oncológico.*
+  4. *Al alta de hospitalizaciones o cirugías.*
+  5. *Al finalizar el tratamiento activo y retorno a la vida cotidiana (manejo de temor a recidiva).*
+  6. *Ante toda derivación a otro establecimiento de la red.*
 - **HU-03-CA3 — Alerta de contacto pendiente:** Si un paciente alcanza el hito clínico correspondiente y transcurren más de 48 horas hábiles sin registro del punto de contacto obligatorio, el sistema debe emitir un recordatorio a la gestora.
 - **HU-03-CA4 — Programación de próxima acción:** El sistema debe permitir agendar la fecha y objetivo del siguiente contacto o seguimiento de exámenes.
 - **HU-03-CA5 — Visualización cronológica:** Los registros deben desplegarse en orden cronológico descendente (más reciente al más antiguo).
@@ -144,41 +144,42 @@
 
 ---
 
-## 📌 HU-07: Formalización de Acta Digital de Comité, Firma Electrónica y REM 0.7
+## 📌 HU-07: Formalización de Acta Digital de Comité, Firma Electrónica y REM 7
 - **Como** Médico Integrante del Comité Oncológico Regional,  
 - **quiero** registrar la conducta terapéutica acordada y suscribir el acta con firma electrónica durante la sesión colegiada,  
-- **para** eliminar las actas en papel físico, garantizar la validez legal de la resolución y generar automáticamente el informe estadístico REM 0.7 exigido por el MINSAL.
+- **para** eliminar las actas en papel físico, garantizar la validez legal de la resolución y generar automáticamente el informe estadístico REM 7 exigido por el MINSAL.
 
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-02 (Gestión manual de comités oncológicos)
-- **Actividad TO-BE asociada:** TB-07 (Acta digital de comité y consolidación REM 0.7)
+- **Actividad TO-BE asociada:** TB-07 (Acta digital de comité y consolidación REM 7)
 - **Requisitos asociados:** RF-07 | RNF-03 | REQ-DER-01
 
 **Criterios de aceptación:**
 - **HU-07-CA1 — Registro de asistencia:** El sistema debe registrar la asistencia de los médicos especialistas participantes vinculados mediante autenticación Single Sign-On institucional.
 - **HU-07-CA2 — Resolución terapéutica estructurada:** Debe permitir seleccionar la modalidad terapéutica acordada: *Cirugía en LEIQ, Quimioterapia hematológica (HGF), Derivación a QT sólida/Radioterapia (HCVB), Cuidados Paliativos u otra modalidad combinada*, registrando la estadificación TNM final.
 - **HU-07-CA3 — Firma electrónica y bloqueo:** Al finalizar la revisión del caso, el acta debe firmarse electrónicamente. Una vez firmada, el documento queda bloqueado contra modificaciones ordinarias y se adjunta a la ficha clínica institucional.
-- **HU-07-CA4 — Generación automática REM 0.7:** OncoTrace debe compilar automáticamente los datos de la sesión para generar la planilla estadística oficial REM 0.7 exigida por el MINSAL, evitando la digitación posterior.
+- **HU-07-CA4 — Generación automática REM 7:** OncoTrace debe compilar automáticamente los datos de la sesión para generar la planilla estadística oficial REM 7 exigida por el MINSAL, evitando la digitación posterior.
 - **HU-07-CA5 — Disparo de tareas de seguimiento:** La firma del acta debe transicionar automáticamente el caso en el tablero Kanban y generar la tarea de agendamiento o derivación según la resolución adoptada.
 
 ---
 
-## 📌 HU-08: Trazabilidad y Tracking de Derivaciones Externas (Circuito TENS / UGAA / HCVB)
+## 📌 HU-08: Trazabilidad y Tracking de Derivaciones Externas y Reembolso de Pasajes (Circuito TENS / UGAA / HCVB)
 - **Como** Gestor/a, TENS o Administrativo/a de la UGAA,  
-- **quiero** gestionar la confección y despacho digital del dossier de derivación y monitorear el estado del paciente en los centros de referencia de la macrored,  
-- **para** erradicar el "punto ciego" asistencial, confirmar la recepción en el Hospital Carlos Van Buren y resguardar la continuidad de la atención.
+- **quiero** gestionar la confección y despacho digital del dossier de derivación, monitorear el estado del paciente en los centros de referencia de la macrored e instruir anticipadamente el beneficio de reembolso de pasajes (Anexo 6),  
+- **para** erradicar el "punto ciego" asistencial, confirmar la recepción en el Hospital Carlos Van Buren y resguardar la continuidad de la atención y la protección financiera del usuario.
 
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-03 (Pérdida de trazabilidad en derivaciones externas)
-- **Actividad TO-BE asociada:** TB-08 (Módulo de dossier digital y trazabilidad de derivaciones)
+- **Actividad TO-BE asociada:** TB-08 (Módulo de dossier digital, trazabilidad de derivaciones y reembolso de pasajes)
 - **Requisitos asociados:** RF-08 | RNF-01
 
 **Criterios de aceptación:**
-- **HU-08-CA1 — Confección digital del dossier por TENS:** Dado que el comité resuelve una derivación externa (QT sólida o Radioterapia), cuando el TENS ingresa al módulo de derivaciones, entonces el sistema debe compilar automáticamente el expediente digital unificado con la interconsulta médica, informes de biopsia, imágenes y el acta firmada de comité.
+- **HU-08-CA1 — Confección digital del dossier por TENS:** Dado que el comité resuelve una derivación externa (QT sólida o Radioterapia), cuando el TENS ingresa al módulo de derivaciones, entonces el sistema debe compilar automáticamente el expediente digital unificado con la interconsulta médica, informes de biopsia, imágenes, acta firmada de comité e información de apoyo social.
 - **HU-08-CA2 — Bandeja de despacho para UGAA:** El dossier digital debe pasar a la bandeja de trabajo de la UGAA, permitiendo al funcionario validar los antecedentes y registrar la fecha y folio formal de derivación externa.
 - **HU-08-CA3 — Workflow de estados de derivación:** La derivación debe avanzar por estados visibles para el equipo: **Dossier Confeccionado $\rightarrow$ Despachado por UGAA $\rightarrow$ Recepcionado en HCVB $\rightarrow$ Cita Asignada $\rightarrow$ Tratamiento Iniciado $\rightarrow$ Contrarreferido con Epicrisis**.
 - **HU-08-CA4 — Acuse de recibo y alerta de rezago:** Si transcurren más de 10 días hábiles desde el despacho de UGAA sin confirmación de recepción o fecha de atención en el HCVB, OncoTrace debe generar una alerta preventiva para gestión interinstitucional.
 - **HU-08-CA5 — Retorno y contrarreferencia:** Al finalizar el tratamiento en el centro externo, el sistema debe permitir adjuntar la epicrisis y contrarreferencia, notificando a la gestora para reintegrar al paciente a la etapa de seguimiento en el HGF.
+- **HU-08-CA6 — Emisión y constancia de instructivo de reembolso de pasajes (Anexo 6):** Dado que se formaliza una derivación a un centro asistencial fuera de Viña del Mar (HCVB o centro nacional), cuando se despacha el dossier, entonces OncoTrace debe generar y adjuntar el instructivo oficial de Reembolso de Pasajes de la Unidad de Servicio Social (Anexo 6), exigiendo al gestor/TENS registrar la constancia de entrega anticipada al paciente/cuidador, informando que solo cubre locomoción pública (microbús, tren, bus interurbano, colectivo; excluyendo expresamente vehículos particulares y aplicaciones de transporte) y alertando sobre la obligación de conservar boletos y certificados de asistencia sin enmiendas de cada atención externa.
 
 ---
 

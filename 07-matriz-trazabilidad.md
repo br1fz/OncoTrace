@@ -41,8 +41,8 @@
 | ID AS-IS | Nodo Crítico AS-IS | Fuente EL | ID TO-BE | Solución TO-BE | Requisito (RF / RNF) | Historia de Usuario | Criterios de Aceptación (CA) | Atributo Calidad / Verificación |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **AS-01** | **Dispersión de Resultados Diagnósticos** en múltiples LIS/PACS y papel | **EL-01** (Entrevista)<br>**EL-03** (Manual UGCO) | **TB-01**<br>**TB-05** | Tablero Kanban y Timeline<br>Indexación y Consolidación automática | **RF-01**<br>**RF-05**<br>**RNF-02**<br>**RNF-04** | [HU-01](./04-historias-usuario.md#hu-01)<br>[HU-05](./04-historias-usuario.md#hu-05) | HU-01-CA1 a HU-01-CA6<br>HU-05-CA1 a HU-05-CA6 | **AC-03** (Eficiencia $\le 2.0$s)<br>**RNF-04** (HL7 FHIR / API REST) |
-| **AS-02** | **Gestión Manual de Comités Oncológicos** (Word/papel sin integración) | **EL-01** (Entrevista)<br>**EL-02** (Normativa)<br>**EL-03** (Manual UGCO) | **TB-06**<br>**TB-07** | Ficha Resumen autogenerada<br>Acta Digital con Firma y REM 0.7 | **RF-06**<br>**RF-07**<br>**RNF-03**<br>**REQ-DER-01** | [HU-06](./04-historias-usuario.md#hu-06)<br>[HU-07](./04-historias-usuario.md#hu-07) | HU-06-CA1 a HU-06-CA5<br>HU-07-CA1 a HU-07-CA5 | **AC-01** (Seguridad y auditoría 100% accesos)<br>**REQ-DER-01** (SSO HGF) |
-| **AS-03** | **Pérdida de Trazabilidad en Derivaciones** (Dossier TENS $\rightarrow$ UGAA $\rightarrow$ HCVB) | **EL-01** (Entrevista)<br>**EL-03** (Manual UGCO) | **TB-08** | Módulo de Dossier Digital y Tracking de Hitos con HCVB y Privados | **RF-08**<br>**RNF-01** | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-CA1 a HU-08-CA5 | **AC-02** (Fiabilidad RTO $\le 5$min)<br>Workflow de estados de derivación |
+| **AS-02** | **Gestión Manual de Comités Oncológicos** (Word/papel sin integración) | **EL-01** (Entrevista)<br>**EL-02** (Normativa)<br>**EL-03** (Manual UGCO) | **TB-06**<br>**TB-07** | Ficha Resumen autogenerada<br>Acta Digital con Firma y REM 7 | **RF-06**<br>**RF-07**<br>**RNF-03**<br>**REQ-DER-01** | [HU-06](./04-historias-usuario.md#hu-06)<br>[HU-07](./04-historias-usuario.md#hu-07) | HU-06-CA1 a HU-06-CA5<br>HU-07-CA1 a HU-07-CA5 | **AC-01** (Seguridad y auditoría 100% accesos)<br>**REQ-DER-01** (SSO HGF) |
+| **AS-03** | **Pérdida de Trazabilidad en Derivaciones** (Dossier TENS $\rightarrow$ UGAA $\rightarrow$ HCVB y falta de pasajes) | **EL-01** (Entrevista)<br>**EL-03** (Manual UGCO v2.0 final) | **TB-08** | Módulo de Dossier Digital, Tracking con HCVB y Reembolso de Pasajes | **RF-08**<br>**RNF-01** | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-CA1 a HU-08-CA6 | **AC-02** (Fiabilidad RTO $\le 5$min)<br>Workflow de estados y entrega Anexo 6 |
 | **AS-04** | **Monitoreo Manual de Plazos GES** (Excel con riesgo de multas institucionales) | **EL-02** (Normativa GES)<br>**EL-03** (DS N° 29 / UGCO) | **TB-01**<br>**TB-04** | Visualización en Kanban<br>Motor de Alertas Preventivas GES | **RF-01**<br>**RF-04**<br>**RNF-01** | [HU-01](./04-historias-usuario.md#hu-01)<br>[HU-04](./04-historias-usuario.md#hu-04) | HU-01-CA2, HU-01-CA4<br>HU-04-CA1 a HU-04-CA7 | **AC-02** (Fiabilidad operativa)<br>Alerta a $\le 5$ días hábiles (DS N° 29) |
 | **AS-05** | **Registro Fragmentado y Falta de Bitácora Estandarizada** | **EL-01** (Entrevista)<br>**EL-02** (Ley 21.258)<br>**EL-03** (Manual UGCO) | **TB-02**<br>**TB-03**<br>**TB-04** | Evaluación por Dominios<br>Bitácora de Contactos Obligatorios<br>Alerta Inactividad $>15$d | **RF-02**<br>**RF-03**<br>**RF-04** | [HU-02](./04-historias-usuario.md#hu-02)<br>[HU-03](./04-historias-usuario.md#hu-03)<br>[HU-04](./04-historias-usuario.md#hu-04) | HU-02-CA1 a HU-02-CA7<br>HU-03-CA1 a HU-03-CA6<br>HU-04-CA3 (Riesgo inactividad) | Escala ECOG (0-4);<br>Inmutabilidad de bitácora;<br>Cumplimiento de 6 contactos |
 | **AS-06** | **Interrupción Crítica por Demanda Espontánea** (Mesón presencial Ley N° 21.258) | **EL-01** (Entrevista)<br>**EL-02** (Ley 21.258)<br>**EL-03** (Manual UGCO) | **TB-09**<br>**TB-10** | Tótem de Autoatención Táctil<br>Asistente Virtual y Triage Presencial | **RF-09**<br>**RF-10** | [HU-09](./04-historias-usuario.md#hu-09)<br>[HU-10](./04-historias-usuario.md#hu-10) | HU-09-CA1 a HU-09-CA4<br>HU-10-CA1 a HU-10-CA4 | Validación RUN / Cédula;<br>Ticket de triage categorizado |
@@ -102,13 +102,13 @@
 
 ### 🔹 Instancia 4: Trazabilidad de la Gestión Colegiada de Comités Oncológicos
 - **Nodo AS-IS:** **AS-02** (Preparación manual en Word y actas físicas en papel sin integración)
-- **Elicitación:** **EL-01** (Entrevista: sobrecarga de preparación), **EL-02** (Normativa GES) y **EL-03** (Manual de Procedimientos: registro estadístico REM 0.7).
+- **Elicitación:** **EL-01** (Entrevista: sobrecarga de preparación), **EL-02** (Normativa GES) y **EL-03** (Manual de Procedimientos v2.0 final: registro estadístico REM 7).
 - **Nodos TO-BE:**
   - **TB-06:** Autogeneración de Ficha Resumen de Presentación a partir de diagnósticos, biopsias, imágenes y ECOG.
-  - **TB-07:** Acta digital colegiada con registro de conducta terapéutica (TNM), firma electrónica vinculante, bloqueo post-firma y exportación REM 0.7.
+  - **TB-07:** Acta digital colegiada con registro de conducta terapéutica (TNM), firma electrónica vinculante, bloqueo post-firma y exportación REM 7.
 - **Requisitos Vinculados:**
   - `RF-06` (Generación Digital de Ficha de Comité)
-  - `RF-07` (Acta Digital de Comité y Registro REM 0.7)
+  - `RF-07` (Acta Digital de Comité y Registro REM 7)
   - `RNF-03` (Seguridad y Confidencialidad Clínica)
   - `REQ-DER-01` (Single Sign-On Institucional con Directorio Activo HGF)
 - **Historias de Usuario:**
@@ -118,16 +118,16 @@
 
 ---
 
-### 🔹 Instancia 5: Trazabilidad de Derivaciones Externas (Circuito TENS / UGAA / HCVB)
-- **Nodo AS-IS:** **AS-03** (Punto ciego y pérdida de trazabilidad en derivaciones físicas a Van Buren y prestadores privados)
-- **Elicitación:** **EL-01** (Entrevista) y **EL-03** (Manual de Procedimientos UGCO: confección de dossier por TENS y despacho por UGAA).
+### 🔹 Instancia 5: Trazabilidad de Derivaciones Externas y Reembolso de Pasajes (Circuito TENS / UGAA / HCVB / Servicio Social)
+- **Nodo AS-IS:** **AS-03** (Punto ciego y pérdida de trazabilidad en derivaciones físicas a Van Buren y desorientación de beneficios de pasajes)
+- **Elicitación:** **EL-01** (Entrevista) y **EL-03** (Manual de Procedimientos UGCO v2.0 final: confección de dossier por TENS, despacho por UGAA e instructivo de Reembolso de Pasajes Anexo 6 de Servicio Social).
 - **Nodos TO-BE:**
-  - **TB-08:** Módulo de dossier digital unificado y trazabilidad de derivaciones con workflow de estados (`Dossier Confeccionado` ➔ `Despachado UGAA` ➔ `Recepcionado HCVB` ➔ `Cita Asignada` ➔ `Tratamiento Iniciado` ➔ `Contrarreferido`).
+  - **TB-08:** Módulo de dossier digital unificado, trazabilidad de derivaciones con workflow de estados (`Dossier Confeccionado` ➔ `Despachado UGAA` ➔ `Recepcionado HCVB` ➔ `Cita Asignada` ➔ `Tratamiento Iniciado` ➔ `Contrarreferido`) y emisión anticipada de instructivo de reembolso de pasajes (Anexo 6).
 - **Requisitos Vinculados:**
-  - `RF-08` (Trazabilidad de Derivaciones Externas y Dossier Digital)
+  - `RF-08` (Trazabilidad de Derivaciones Externas, Dossier Digital y Reembolso de Pasajes)
   - `RNF-01` (Fiabilidad y Disponibilidad $\ge 99.5\%$)
 - **Historias de Usuario:**
-  - [HU-08](./04-historias-usuario.md#hu-08) (Trazabilidad de Derivaciones) ➔ Criterios `HU-08-CA1` a `HU-08-CA5`
+  - [HU-08](./04-historias-usuario.md#hu-08) (Trazabilidad de Derivaciones y Reembolso de Pasajes) ➔ Criterios `HU-08-CA1` a `HU-08-CA6`
 - **Atributos de Calidad Asociados:** **AC-02** (Fiabilidad y RTO $\le 5$ minutos para evitar pérdida de hitos externos).
 
 ---

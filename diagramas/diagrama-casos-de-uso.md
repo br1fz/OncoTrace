@@ -12,9 +12,9 @@
   * **Sistema Externo:** Sistema LIS (Laboratorio / Biopsias) y PACS (Imágenes) institucional vía HL7 FHIR.
   * **Descripción:** Como Gestor/a Oncológico/a, quiero que los resultados de biopsias e imágenes se sincronicen e indexen automáticamente en la ficha del paciente, para eliminar la búsqueda manual en visores aislados.
 
-* **HU-08: Gestión de Dossier Digital y Derivaciones Externas**
-  * **Sistema Externo:** Sistema de Gestión de Red Asistencial (Hospital Carlos Van Buren - HCVB / MINSAL).
-  * **Descripción:** Como TENS / Administrativo UGAA, quiero despachar el dossier clínico digital consolidado y recibir confirmación de recepción y agendamiento desde el centro externo, para erradicar los puntos ciegos asistenciales.
+* **HU-08: Gestión de Dossier Digital, Derivaciones Externas y Reembolso de Pasajes**
+  * **Sistema Externo:** Sistema de Gestión de Red Asistencial (Hospital Carlos Van Buren - HCVB / MINSAL) y Unidad de Servicio Social HGF.
+  * **Descripción:** Como TENS / Administrativo UGAA, quiero despachar el dossier clínico digital consolidado, emitir el instructivo de reembolso de pasajes (Anexo 6) y recibir confirmación de recepción y agendamiento desde el centro externo, para erradicar los puntos ciegos asistenciales y proteger financieramente al paciente.
 
 ---
 
@@ -27,7 +27,7 @@ El modelo sitúa a los actores humanos a la izquierda de la frontera del sistema
 ### Especificación de Casos de Uso:
 * **CU-01:** Indexar Exámenes Automáticamente (Interacción con LIS/PACS).
 * **CU-02:** Notificar Hallazgo Crítico (`<<extend>>` de CU-01 condicionado a resultado positivo de malignidad).
-* **CU-03:** Despachar Dossier a Red Externa (Interacción con HCVB).
+* **CU-03:** Despachar Dossier a Red Externa y Adjuntar Instructivo de Pasajes (Interacción con HCVB / Anexo 6 Servicio Social).
 * **CU-04:** Registrar Acuse de Recibo y Cita (`<<extend>>` de CU-03).
 
 ---

@@ -189,7 +189,7 @@
     </bpmn:userTask>
 
     <!-- TB-07: Acta Digital de Comité -->
-    <bpmn:userTask id="TB_Task_ComiteDigital" name="[TB-07] Comité evalúa caso, registra conducta terapéutica TNM y firma Acta Digital con generación automática REM 0.7">
+    <bpmn:userTask id="TB_Task_ComiteDigital" name="[TB-07] Comité evalúa caso, registra conducta terapéutica TNM y firma Acta Digital con generación automática REM 7">
       <bpmn:incoming>TB_Flow_16</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_17</bpmn:outgoing>
     </bpmn:userTask>

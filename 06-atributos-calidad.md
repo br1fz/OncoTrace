@@ -9,7 +9,7 @@ La priorización de los atributos de calidad para la plataforma **OncoTrace** re
 3. **Eficiencia de Desempeño:** Tiempos de respuesta ágiles en la consulta y renderizado del tablero Kanban y expedientes clínicos, evitando demoras en la atención asistencial.
 4. **Compatibilidad (Interoperabilidad):** Intercambio fluido de datos diagnósticos con sistemas de apoyo (LIS para biopsias, PACS para imagenología) y coordinación de derivaciones hacia el Hospital Carlos Van Buren.
 5. **Usabilidad:** Interfaz intuitiva y accesible para gestoras clínicas, médicos especialistas y pacientes en el módulo de autoatención.
-6. **Idoneidad Funcional:** Cumplimiento riguroso de las reglas asistenciales comprometidas (alertas de plazos GES, confección de actas de comité y reportes estadísticos REM 0.7).
+6. **Idoneidad Funcional:** Cumplimiento riguroso de las reglas asistenciales comprometidas (alertas de plazos GES, confección de actas de comité y reportes estadísticos REM 7).
 7. **Mantenibilidad:** Arquitectura modular desacoplada que permita incorporar nuevas patologías oncológicas o ajustar plazos normativos sin rehacer el sistema.
 8. **Portabilidad:** Compatibilidad multiplataforma en navegadores web estándar utilizados en las estaciones de trabajo institucionales del hospital.
 9. **Protección (Safety):** Resguardo de la persistencia de datos y prevención de inconsistencias clínicas ante contingencias físicas o fallos de infraestructura.

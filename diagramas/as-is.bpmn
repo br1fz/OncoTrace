@@ -98,7 +98,7 @@
     <bpmn:dataObject id="DO_Plataforma" />
     <bpmn:dataObjectReference id="DataObj_Dossier" name="Dossier Físico de Derivación" dataObjectRef="DO_Dossier" />
     <bpmn:dataObject id="DO_Dossier" />
-    <bpmn:dataObjectReference id="DataObj_ActaComite" name="Acta de Comité / REM 0.7" dataObjectRef="DO_Acta" />
+    <bpmn:dataObjectReference id="DataObj_ActaComite" name="Acta de Comité / REM 7" dataObjectRef="DO_Acta" />
     <bpmn:dataObject id="DO_Acta" />
     <bpmn:dataObjectReference id="DataObj_ConstanciaGES" name="Constancia GES / IPD" dataObjectRef="DO_GES" />
     <bpmn:dataObject id="DO_GES" />
@@ -304,7 +304,7 @@
       <bpmn:outgoing>Flow_EvaluaToResol</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_MedToComite" sourceRef="Task_MedPreparaComite" targetRef="Task_ComiteEvalua" />
-    <bpmn:userTask id="Task_ComiteResolucion" name="Dictar resolución terapéutica y registrar acta (REM 0.7)">
+    <bpmn:userTask id="Task_ComiteResolucion" name="Dictar resolución terapéutica y registrar acta (REM 7)">
       <bpmn:documentation>El comité emite su resolución: cirugía, terapia sistémica, radioterapia, cuidados paliativos u otra modalidad. Se registra en acta con asistencia y resolución por paciente.</bpmn:documentation>
       <bpmn:incoming>Flow_EvaluaToResol</bpmn:incoming>
       <bpmn:outgoing>Flow_ResolToGestor</bpmn:outgoing>

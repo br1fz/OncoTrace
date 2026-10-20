@@ -21,25 +21,26 @@
 ### Hallazgos y Nodos Elicitados:
 * ⚖️ **[AS-04] Control de Tiempos de Espera GES:** Determinación de los plazos legales perentorios fijados por el régimen GES para configurar alarmas tempranas (semáforo preventivo a $\le 5$ días hábiles) ante eventuales vencimientos de garantías ([TB-04]).
 * 📜 **[AS-05] Seguimiento y Apoyo Continuo:** Definición de criterios de acompañamiento integral y navegación clínica en conformidad con los mandatos de la Ley Nacional del Cáncer N° 21.258.
-* 📉 **[AS-02] Homologación de Actas de Comité:** Revisión de formatos impresos y normativas de registro estadístico, ratificando la exigencia de digitalizar el proceso y registrar la resolución colegiada vinculada a la estadística nacional REM 0.7 ([TB-06], [TB-07]).
+* 📉 **[AS-02] Homologación de Actas de Comité:** Revisión de formatos impresos y normativas de registro estadístico, ratificando la exigencia de digitalizar el proceso y registrar la resolución colegiada vinculada a la estadística nacional REM 7 ([TB-06], [TB-07]).
 
 ---
 
-## 📚 EL-03: Revisión de Manuales Oficiales UGCO (Versión 2.0)
+## 📚 EL-03: Revisión de Manuales Oficiales UGCO (Versión 2.0 Final)
 * **Participante(s):** Equipo de Ingeniería de Requisitos y contraparte técnica UGCO.
-* **Evidencia:** Documentación oficial entregada por la Unidad de Gestión de Casos Oncológicos:
+* **Evidencia:** Documentación oficial entregada y validada por la Unidad de Gestión de Casos Oncológicos:
   - *Manual de Organización y Funcionamiento UGCO (Versión 2.0)*
-  - *Manual de Procedimientos UGCO (Versión 2.0)*
+  - *Manual de Procedimientos UGCO (Versión 2.0 final, Octubre 2026)*
   - *Manual de Gestión de Casos Oncológicos (GCO)*
-  - Documento de catastro: [`./evidencia/adaptación_modelo_UGCO.md`](./evidencia/adaptación_modelo_UGCO.md)
+  - Documentos de catastro y comparativa: [`./evidencia/adaptación_modelo_UGCO.md`](./evidencia/adaptación_modelo_UGCO.md) y [`./evidencia/diferencias_manual_procedimientos_v2_vs_final.md`](./evidencia/diferencias_manual_procedimientos_v2_vs_final.md)
 
 ### Hallazgos y Nodos Elicitados:
 * 🏛️ **Dependencia y Estructura Organizacional:** La unidad posee una **dependencia mixta**: administrativamente de la Subdirección de Gestión del Cuidado (SDGC) y técnicamente de la Subdirección Médica (SDM). Su dotación oficial está compuesta por Enfermera Supervisora, Gestores por especialidad (Enfermeros/as o Matrones/as), Técnicos en Enfermería (TENS) y Administrativa.
 * 🔄 **Trayectoria Oncológica Normada:** El flujo de atención de la persona con cáncer y su cuidador se rige por **8 etapas secuenciales obligatorias**: 1. Sospecha $\rightarrow$ 2. Confirmación Diagnóstica $\rightarrow$ 3. Etapificación $\rightarrow$ 4. Tratamiento $\rightarrow$ 5. Rehabilitación $\rightarrow$ 6. Cuidados Paliativos $\rightarrow$ 7. Seguimiento y Sobrevivientes $\rightarrow$ 8. Alta y Contrarreferencia.
-* 📞 **Puntos de Contacto Obligatorio:** Se identifican 6 momentos mandatorios de intervención del gestor: al ingreso/sospecha, post-confirmación diagnóstica, post-resolución de comité, al alta de hospitalizaciones, al término del tratamiento activo y ante derivaciones externas.
-* 📑 **Circuito de Derivación Formal (Dossier TENS/UGAA):** El Manual de Procedimientos aclara que el TENS confecciona el "dossier" físico con la documentación completa (interconsulta, informes, biopsias) y lo entrega a la **UGAA (Unidad de Gestión de Atención Abierta)**, quien efectúa el despacho hacia el Hospital Carlos Van Buren ([TB-08]).
+* 🗺️ **Patient Journey Map ("El viaje de la persona con cáncer"):** Incorporación del mapa longitudinal oficial de la experiencia del paciente en el HGF, modelando la curva de intensidad del acompañamiento y priorizando los 4 momentos de mayor vulnerabilidad: comunicación diagnóstica, etapificación, alta hospitalaria y término de tratamiento/retorno a la vida cotidiana ([TB-01], [TB-03]).
+* 📞 **Puntos de Contacto Obligatorio:** Se ratifican 6 momentos mandatorios de intervención del gestor: al ingreso/sospecha, post-confirmación diagnóstica, post-resolución de comité, al alta de hospitalizaciones, al término del tratamiento activo y ante derivaciones externas.
+* 📑 **Circuito de Derivación Formal y Reembolso de Pasajes (Anexo 6):** El TENS compila el expediente digital unificado y UGAA ejecuta el despacho formal a la macrored (HCVB). Asimismo, ante derivaciones fuera de Viña del Mar, se instruye la **entrega anticipada obligatoria del instructivo de Reembolso de Pasajes (Anexo 6)** de la Unidad de Servicio Social del HGF, cubriendo exclusivamente locomoción pública y exigiendo certificados de asistencia sin enmiendas ([TB-08]).
 * 🌐 **Aclaración del Nodo AS-05 (Interoperabilidad MINSAL):** La unidad sí cuenta con una herramienta digital de registro local, pero esta **no interopera con la Plataforma de Seguimiento Oncológico del MINSAL (Salud Digital)**, impidiendo el reporte nacional unificado y obligando a una doble digitación manual ([RNF-04] e integración en [TB-05]).
-* 📋 **Cobertura GES Ampliada:** La unidad gestiona **21 problemas de salud oncológicos y asociados** garantizados por el Régimen GES conforme al Decreto Supremo N° 29 de 2025.
+* 📋 **Cobertura GES Ampliada y REM 7:** La unidad gestiona **21 problemas de salud oncológicos y asociados** garantizados por el Régimen GES (Decreto Supremo N° 29 de 2025) y reporta la estadística oficial de comités en la sección **REM 7** del MINSAL ([TB-07]).
 
 ---
 
