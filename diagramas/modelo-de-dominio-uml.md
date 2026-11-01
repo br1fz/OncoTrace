@@ -1,8 +1,9 @@
 # Modelo de Dominio UML – Sistema de Gestión Oncológica OncoTrace
+
 **Hospital Dr. Gustavo Fricke (HGF) – Red Asistencial SSVQ / Macrored**  
 **Proyecto:** OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico  
 **Fuentes Normativas:** Manual de Organización y Funcionamiento UGCO v2.0, Manual de Procedimientos UGCO v2.0 Final (Octubre 2026), Transcripción de Entrevista Clínica, Ley N° 21.258, Ley N° 20.584, DS N° 29 (GES).  
-**Versión:** 2.0 (Alineada con Evidencias y Manuales Institucionales)
+**Versión:** 2.1 (Corrección de relaciones y responsables)
 
 ---
 
@@ -11,6 +12,7 @@
 El presente documento formaliza el **Modelo de Dominio (Domain Model)** para la gestión clínica, seguimiento y navegación de pacientes en la **Unidad de Gestión de Casos Oncológicos (UGCO)** del **Hospital Dr. Gustavo Fricke (HGF)** y su articulación con la red macro-regional (Servicio de Salud Viña del Mar – Quillota y Hospital Carlos Van Buren).
 
 Basado directamente en los manuales de procedimientos oficiales y la elicitación en terreno, el modelo conceptualiza:
+
 1. **Sujeto de Cuidado:** El binomio indivisible Persona con Cáncer y Cuidador Principal (Leyes N° 21.258, N° 21.168 y N° 21.380), su caracterización socioeconómica y el seguimiento de garantías GES (21 patologías oncológicas y asociadas).
 2. **Equipo Asistencial UGCO y Estructura Organizacional:** Dotación oficial de 9 profesionales con dependencia mixta (Subdirección de Gestión del Cuidado y Subdirección Médica), liderados por la Enfermera Supervisora, Gestores Oncológicos por especialidad, Técnicos en Enfermería (TENS) y Administrativos.
 3. **Equipo Médico y Órganos Resolutivos:** Médicos tratantes especialistas y el Comité Oncológico Regional (confección de Ficha Resumen, firma electrónica de Acta Digital y reporte estadístico ministerial REM 7).
@@ -81,6 +83,7 @@ graph TD
 ## 3. Diagramas de Clases de Dominio (UML)
 
 ### 3.1. Subdominio 1: Sujeto de Cuidado, Cuidador y Acompañamiento
+
 Modela al paciente FONASA (bajo política de copago cero), su cuidador principal evaluado por sobrecarga de Zarit, la pauta de valoración inicial por dominios (Anexo 1 del Manual) y los 6 puntos de contacto obligatorio normados en el *Patient Journey Map*.
 
 ```mermaid
@@ -189,6 +192,7 @@ classDiagram
 ---
 
 ### 3.2. Subdominio 2: Equipo Médico, Roles UGCO y Comités Oncológicos
+
 Modela la dotación oficial de 9 profesionales de la UGCO, la supervisión estratégica, la presentación en comités por tipo de tumor y la interconsulta al equipo multidisciplinario.
 
 ```mermaid
@@ -293,11 +297,11 @@ classDiagram
     ComiteOncologicoRegional "1" *-- "1..*" SesionComite : programa >
     SesionComite "1" *-- "1..*" PresentacionCasoComite : evalua >
     PresentacionCasoComite "1" -- "1" ResolucionComite : genera >
-    
+
     MedicoTratanteEspecialista "1..*" -- "1..*" SesionComite : integraYFirma >
     GestorCasosUGCO "1" -- "0..*" PresentacionCasoComite : preparaFichaPrevia >
     MedicoTratanteEspecialista "1" -- "0..*" PresentacionCasoComite : presentaCaso >
-    
+
     GestorCasosUGCO "1" --> "0..*" InterconsultaMultidisciplinaria : derivaA >
     InterconsultaMultidisciplinaria "0..*" --> "1" MiembroEquipoMultidisciplinario : asignadaA >
 ```
@@ -305,6 +309,7 @@ classDiagram
 ---
 
 ### 3.3. Subdominio 3: Servicios Internos del Hospital Dr. Gustavo Fricke (HGF)
+
 Modela los servicios diagnósticos, la gestión de toma de muestras por parte del gestor (no del paciente), el LIS de anatomía patológica con alerta de valores críticos, el PACS y la lista quirúrgica LEIQ/SIGTE.
 
 ```mermaid
@@ -421,6 +426,7 @@ classDiagram
 ---
 
 ### 3.4. Subdominio 4: Servicios Externos, Red Asistencial y Compra de Servicios
+
 Modela la división territorial de la atención oncológica en Chile (zona norte: tumores sólidos y radioterapia al Hospital Carlos Van Buren; tumores hematológicos en el Fricke), alianzas para procedimientos específicos (EBUS en Tórax/San Borja), compras de servicios privados (PET-CT) y el Reembolso de Pasajes (Anexo 6).
 
 ```mermaid
@@ -499,7 +505,7 @@ classDiagram
     EstablecimientoExterno <|-- HospitalAlianzaColaborativa
     EstablecimientoExterno <|-- CentroAPS_SSVQ
 
-    DossierDigitalDerivacion "1" --> "1" HospitalCarlosVanBuren : despachadoHacia >
+    DossierDigitalDerivacion "0..*" --> "1" HospitalCarlosVanBuren : despachadoHacia >
     DossierDigitalDerivacion "1" *-- "0..1" InstructivoReembolsoPasajes : entregaAnexo6AlInicio >
     DossierDigitalDerivacion "1" -- "0..1" ContraReferenciaEpicrisis : retornaCon >
     OrdenCompraServicioExterna "1" --> "1" CentroSaludPrivadoConvenio : tercerizadaA >
@@ -509,7 +515,10 @@ classDiagram
 ---
 
 ### 3.5. Diagrama de Clases de Dominio Integrado (Master Class Diagram)
-Consolidación integral de extremo a extremo que relaciona pacientes, equipo asistencial, servicios hospitalarios y centros de la macrored alrededor del ciclo de vida del **`CasoOncologico`**:
+
+Consolidación integral de extremo a extremo que relaciona pacientes, equipo asistencial, servicios hospitalarios y centros de la macrored alrededor del ciclo de vida del **`CasoOncologico`**.
+
+Cada caso tiene un gestor y un médico tratante asignados. Un mismo gestor o médico puede estar a cargo de varios casos. Cada registro de contacto tiene un único autor, que debe ser un gestor o TENS autorizado.
 
 ```mermaid
 classDiagram
@@ -544,25 +553,23 @@ classDiagram
         +Date fechaDerivacion
     }
 
-    class EnfermeraSupervisoraUGCO {
+    class ProfesionalSalud {
+        <<abstract>>
         +String run
         +String nombreCompleto
     }
 
+    class EnfermeraSupervisoraUGCO {
+    }
+
     class GestorCasosUGCO {
-        +String run
-        +String nombreCompleto
         +EspecialidadOncologica especialidad
     }
 
     class TensUGCO {
-        +String run
-        +String nombreCompleto
     }
 
     class MedicoTratante {
-        +String run
-        +String nombreCompleto
         +EspecialidadMedica especialidad
     }
 
@@ -658,35 +665,41 @@ classDiagram
         +String resumenTratamiento
     }
 
+    ProfesionalSalud <|-- EnfermeraSupervisoraUGCO
+    ProfesionalSalud <|-- GestorCasosUGCO
+    ProfesionalSalud <|-- TensUGCO
+    ProfesionalSalud <|-- MedicoTratante
+
     EstudioDiagnostico <|-- InformeBiopsia
     EstudioDiagnostico <|-- InformeRadiologico
 
     Paciente "1" -- "0..1" CuidadorPrincipal : apoyadoPor >
     Paciente "1" -- "1..*" CasoOncologico : experimenta >
     CasoOncologico "1" *-- "1" CanalIngreso : seOriginaEn >
-    
+
     EnfermeraSupervisoraUGCO "1" --> "0..*" GestorCasosUGCO : supervisaYAsigna >
-    CasoOncologico "1" --> "1" GestorCasosUGCO : gestionadoPor >
-    CasoOncologico "1" --> "1" MedicoTratante : evaluadoPor >
-    
+    CasoOncologico "0..*" --> "1" GestorCasosUGCO : gestionadoPor >
+    CasoOncologico "0..*" --> "1" MedicoTratante : evaluadoPor >
+
     CasoOncologico "1" *-- "1..*" EvaluacionMultidimensional : contieneAnexo1 >
     CasoOncologico "1" *-- "0..*" BitacoraContacto : documenta >
-    BitacoraContacto "0..*" --> "1" TensUGCO : registradaPor >
-    BitacoraContacto "0..*" --> "1" GestorCasosUGCO : registradaPor >
+    BitacoraContacto "0..*" --> "1" ProfesionalSalud : registradaPor >
+    note for BitacoraContacto "Cada contacto tiene un unico autor, que debe ser GestorCasosUGCO o TensUGCO."
+
     CasoOncologico "1" *-- "0..*" GarantiaGES : vigilaDS29 >
-    
+
     CasoOncologico "1" *-- "0..*" OrdenExamen : solicita >
     OrdenExamen "1" --> "0..1" EstudioDiagnostico : produce >
     CasoOncologico "1" *-- "0..*" SolicitudLEIQ : programaCirugia >
-    
+
     ComiteOncologicoRegional "1" ..> "1..*" CasoOncologico : sesionaSobre >
     ComiteOncologicoRegional "1" *-- "1..*" ResolucionComite : emite >
-    ResolucionComite "1" -- "1" CasoOncologico : defineConductaPara >
+    ResolucionComite "0..*" -- "1" CasoOncologico : defineConductaPara >
 
     CasoOncologico "1" *-- "0..*" DossierDigitalDerivacion : requiereDerivacionExt >
     TensUGCO "1" --> "0..*" DossierDigitalDerivacion : confeccionaExpediente >
     DossierDigitalDerivacion "1" *-- "0..1" InstructivoReembolsoPasajes : entregaAnexo6AlInicio >
-    DossierDigitalDerivacion "1" --> "1" HospitalCarlosVanBuren : despachadoHacia >
+    DossierDigitalDerivacion "0..*" --> "1" HospitalCarlosVanBuren : despachadoHacia >
     DossierDigitalDerivacion "1" -- "0..1" ContraReferenciaEpicrisis : reingresaSeguimientoCon >
 
     EstudioDiagnostico "0..*" --> "0..1" CentroPrivadoConvenio : compraServicioA >
@@ -698,28 +711,30 @@ classDiagram
 
 | Clase de Dominio | Estereotipo / Rol | Atributos Clave | Relaciones Clave | Implicancia en Base de Datos (Modelo Físico) |
 | :--- | :--- | :--- | :--- | :--- |
-| **`Paciente`** | Entidad Raíz (`Entity`) | `run` (PK), `nombres`, `apellidos`, `fechaNacimiento`, `genero`, `direccion`, `comuna`, `telefonoContacto`, `previsionFonasa`, `tramo`, `tieneCopagoCero`, `estadoVital`. | 1:1 con `CuidadorPrincipal`, 1:N con `CasoOncologico`. | Tabla `PACIENTE`. Clave primaria natural `run`. Búsqueda indexada B-Tree para optimización de respuesta $\le 2.0$s (RNF-02). |
-| **`CuidadorPrincipal`** | Entidad de Apoyo | `run` (PK), `nombreCompleto`, `parentesco`, `telefonoContacto`, `conviveConPaciente`, `riesgoSobrecargaZarit`, `informadoDerechosLeyCuidador`. | 1:1 con `Paciente`. | Tabla `CUIDADOR_PRINCIPAL`. Llave foránea `run_paciente` (Unique). Soporta cumplimiento de Leyes N° 21.168 y N° 21.380 (Anexo 3). |
-| **`CasoOncologico`** | Raíz de Agregado (`Aggregate Root`) | `numeroCaso` (PK), `codigoCIE10`, `especialidad`, `etapaActual`, `fechaIngreso`, `fechaCierre`, `motivoCierre`, `riesgoGlobal`, `esSobreviviente`. | N:1 con `Paciente`, N:1 con `GestorCasosUGCO`, N:1 con `MedicoTratante`. | Tabla `CASO_ONCOLOGICO`. Modela el ciclo de 8 etapas. Índice compuesto `(run_paciente, etapa_actual, fecha_ingreso)`. |
+| **`Paciente`** | Entidad Raíz (`Entity`) | `run` (PK), `nombres`, `apellidos`, `fechaNacimiento`, `genero`, `direccion`, `comuna`, `telefonoContacto`, `previsionFonasa`, `tramo`, `tieneCopagoCero`, `estadoVital`. | Cada paciente tiene entre cero y un cuidador principal, y uno o más casos oncológicos. | Tabla `PACIENTE`. Clave primaria natural `run`. Búsqueda indexada B-Tree para optimización de respuesta $\le 2.0$s (RNF-02). |
+| **`CuidadorPrincipal`** | Entidad de Apoyo | `run` (PK), `nombreCompleto`, `parentesco`, `telefonoContacto`, `conviveConPaciente`, `riesgoSobrecargaZarit`, `informadoDerechosLeyCuidador`. | Cada cuidador registrado se vincula a un paciente; el paciente puede no tener cuidador registrado. | Tabla `CUIDADOR_PRINCIPAL`. Llave foránea `run_paciente` (Unique). Soporta cumplimiento de Leyes N° 21.168 y N° 21.380 (Anexo 3). |
+| **`CasoOncologico`** | Raíz de Agregado (`Aggregate Root`) | `numeroCaso` (PK), `codigoCIE10`, `especialidad`, `etapaActual`, `fechaIngreso`, `fechaCierre`, `motivoCierre`, `riesgoGlobal`, `esSobreviviente`. | N:1 con `Paciente`, N:1 con `GestorCasosUGCO`, N:1 con `MedicoTratante`. Un gestor o médico puede atender varios casos. | Tabla `CASO_ONCOLOGICO`. Modela el ciclo de 8 etapas. Índice compuesto `(run_paciente, etapa_actual, fecha_ingreso)`. |
 | **`CanalIngreso`** | Entidad Descriptiva | `idCanal` (PK), `tipoOrigen` (Consulta CAE, Comité, Traslado Red, Urgencia, APS, Hallazgo AP, Espontánea), `fechaDerivacion`, `unidadDerivante`. | 1:1 con `CasoOncologico`. | Tabla `CANAL_INGRESO`. Modela el carácter multicanal evidenciado en la entrevista clínica. |
 | **`EvaluacionMultidimensional`** | Entidad Débil / Historial | `idEvaluacion` (PK), `fechaEvaluacion`, `escalaFuncionalECOG` (0-4), `vulnerabilidadSocial`, `redApoyoFamiliar`, `aspectosEspirituales`, `comprensionDiagnostica`. | N:1 con `CasoOncologico`. | Tabla `EVALUACION_MULTIDIMENSIONAL`. Historial inmutable; implementa el Anexo 1 oficial. Clave foránea `numero_caso`. |
-| **`BitacoraContacto`** | Entidad Auditada | `idContacto` (PK), `fechaHora`, `canalInteraccion`, `hitoNormado` (PC-1 a PC-6), `interlocutor`, `motivo`, `acuerdosCompromisos`, `fechaProximaAccion`. | N:1 con `CasoOncologico`, N:1 con `ProfesionalSalud`. | Tabla `BITACORA_CONTACTO`. Control inmutable; no admite `DELETE`. Cualquier corrección se asocia vía `NOTA_ADENDA`. |
+| **`BitacoraContacto`** | Entidad Auditada | `idContacto` (PK), `fechaHora`, `canalInteraccion`, `hitoNormado` (PC-1 a PC-6), `interlocutor`, `motivo`, `acuerdosCompromisos`, `fechaProximaAccion`. | Cada contacto pertenece a un caso y tiene un único autor, de tipo `GestorCasosUGCO` o `TensUGCO`. | Tabla `BITACORA_CONTACTO`. Control inmutable; no admite `DELETE`. Cualquier corrección se asocia vía `NOTA_ADENDA`. El autor se referencia mediante una única clave foránea a `ProfesionalSalud`, comprobando que tenga un rol autorizado. |
 | **`GarantiaGES`** | Entidad Regulatoria | `idGarantia` (PK), `patologiaAuge` (21 problemas de salud), `etapaGarantia`, `fechaInicio`, `fechaLimiteLegal`, `diasHabilesRestantes`, `estado`. | N:1 con `CasoOncologico`. | Tabla `GARANTIA_GES`. Soporta el motor cron de alertas preventivas (DS N° 29); notifica si `diasHabilesRestantes <= 5`. |
-| **`OrdenExamen`** | Entidad Transaccional | `idOrden` (PK), `tipoEstudio`, `formato` (Papel/Digital), `tramitadoPorGestor` (Default: TRUE), `estado`. | N:1 con `CasoOncologico`, 1:1 con `EstudioDiagnostico`. | Tabla `ORDEN_EXAMEN`. Refleja la regla operativa donde el gestor tramita los exámenes, no el paciente. |
+| **`OrdenExamen`** | Entidad Transaccional | `idOrden` (PK), `tipoEstudio`, `formato` (Papel/Digital), `tramitadoPorGestor` (Default: TRUE), `estado`. | Cada orden pertenece a un caso y puede tener entre cero y un estudio diagnóstico asociado. Cada estudio asociado corresponde a una orden. | Tabla `ORDEN_EXAMEN`. Refleja la regla operativa donde el gestor tramita los exámenes, no el paciente. Una orden puede permanecer pendiente de resultado. |
 | **`InformeBiopsia`** | Entidad Especializada | `numeroBiopsiaLIS` (PK), `tejidoMuestra`, `descripcionMacroscopica`, `diagnosticoHistopatologico`, `gradoDiferenciacion`, `esValorCriticoAlertado`. | N:1 con `CasoOncologico`, N:1 con `UnidadAnatomiaPatologica`. | Tabla `INFORME_BIOPSIA`. Conexión HL7 FHIR con LIS institucional. Trigger activa notificación prioritaria si es valor crítico. |
-| **`ResolucionComite`** | Entidad Resolutiva | `idResolucion` (PK), `conductaAcordada`, `detalleTratamientoPrescrito`, `tnmConsensuado`, `codigoREM7`, `firmaElectronica`, `fechaHoraFirma`. | 1:1 con `PresentacionCasoComite`, N:1 con `CasoOncologico`. | Tabla `RESOLUCION_COMITE`. Inmutable tras la firma; bloquea el acta y genera automáticamente la planilla REM 7. |
-| **`DossierDigitalDerivacion`** | Entidad de Integración | `idDossier` (PK), `folioUGAA`, `fechaConfeccionTENS`, `fechaDespachoUGAA`, `estadoWorkflow`, `fechaRecepcionHCVB`, `fechaCitaHCVB`. | N:1 con `CasoOncologico`, N:1 con `HospitalCarlosVanBuren`. | Tabla `DOSSIER_DERIVACION`. Máquina de estados interinstitucional. Dispara alerta si `diasSinRespuesta > 10`. |
-| **`InstructivoReembolsoPasajes`**| Entidad de Soporte Social | `folioAnexo6` (PK), `fechaEntregaAlInicio`, `medioAutorizado` (Solo locomoción pública), `pacienteInstruido`, `estadoReembolso`. | 1:1 con `DossierDigitalDerivacion`. | Tabla `INSTRUCTIVO_PASAJES_ANEXO6`. Vinculada a Servicio Social HGF. Excluye autos particulares, combustible y apps de transporte. |
-| **`ContraReferenciaEpicrisis`** | Entidad de Cierre Externo | `folioEpicrisis` (PK), `fechaRetornoHGF`, `tratamientoEfectuado`, `esquemaAplicado`, `respuestaClinica`, `planSeguimiento`. | 1:1 con `DossierDigitalDerivacion`. | Tabla `CONTRAREFERENCIA_EPICRISIS`. Reincorpora al paciente desde HCVB al HGF en la etapa de Seguimiento / Sobrevivientes. |
+| **`ResolucionComite`** | Entidad Resolutiva | `idResolucion` (PK), `conductaAcordada`, `detalleTratamientoPrescrito`, `tnmConsensuado`, `codigoREM7`, `firmaElectronica`, `fechaHoraFirma`. | 1:1 con `PresentacionCasoComite`, N:1 con `CasoOncologico`. Cada caso puede tener cero o varias resoluciones de comité. | Tabla `RESOLUCION_COMITE`. Inmutable tras la firma; bloquea el acta y genera automáticamente la planilla REM 7. |
+| **`DossierDigitalDerivacion`** | Entidad de Integración | `idDossier` (PK), `folioUGAA`, `fechaConfeccionTENS`, `fechaDespachoUGAA`, `estadoWorkflow`, `fechaRecepcionHCVB`, `fechaCitaHCVB`. | N:1 con `CasoOncologico`, N:1 con `HospitalCarlosVanBuren`. El hospital puede recibir varios dossiers. | Tabla `DOSSIER_DERIVACION`. Máquina de estados interinstitucional. Dispara alerta si `diasSinRespuesta > 10`. |
+| **`InstructivoReembolsoPasajes`** | Entidad de Soporte Social | `folioAnexo6` (PK), `fechaEntregaAlInicio`, `medioAutorizado` (Solo locomoción pública), `pacienteInstruido`, `estadoReembolso`. | Cada instructivo pertenece a un dossier; el dossier puede tener entre cero y un instructivo. | Tabla `INSTRUCTIVO_PASAJES_ANEXO6`. Vinculada a Servicio Social HGF. Excluye autos particulares, combustible y apps de transporte. La relación opcional contempla los dossiers que aún no tienen instructivo asociado. |
+| **`ContraReferenciaEpicrisis`** | Entidad de Cierre Externo | `folioEpicrisis` (PK), `fechaRetornoHGF`, `tratamientoEfectuado`, `esquemaAplicado`, `respuestaClinica`, `planSeguimiento`. | Cada contrarreferencia pertenece a un dossier; el dossier puede tener entre cero y una contrarreferencia. | Tabla `CONTRAREFERENCIA_EPICRISIS`. Reincorpora al paciente desde HCVB al HGF en la etapa de Seguimiento / Sobrevivientes. La relación opcional permite registrar la derivación antes de recibir la epicrisis. |
 
 ---
 
 ## 5. Mapeo a Patrones de Persistencia y Reglas de Integridad Referencial
 
 ### 5.1. Tablas Asociativas N:M Relevantes
+
 1. **`SESION_ASISTENCIA_MEDICO`**: Asocia `SESION_COMITE` con `MEDICO_TRATANTE_ESPECIALISTA`.
    - Claves foráneas compuestas: `(id_sesion, run_medico)`.
    - Atributos propios: `hora_registro_asistencia`, `hash_firma_sso`.
+
 2. **`DOSSIER_DOCUMENTO`**: Asocia `DOSSIER_DERIVACION` con `ESTUDIO_DIAGNOSTICO`.
    - Claves foráneas compuestas: `(id_dossier, id_estudio)`.
    - Compila dinámicamente informes LIS, imágenes PACS y el acta del comité en el expediente digital hacia HCVB.
@@ -727,10 +742,23 @@ classDiagram
 ### 5.2. Máquinas de Estados Esenciales en el Dominio
 
 #### A. Ciclo de Vida del Caso Oncológico (8 Etapas Normadas)
+
 $$\text{Sospecha} \xrightarrow{\text{Biopsia/IPD}} \text{Confirmación} \xrightarrow{\text{Imágenes/PET-CT}} \text{Etapificación} \xrightarrow{\text{Presentación}} \text{En Comité} \xrightarrow{\text{Resolución}} \text{Tratamiento} \xrightarrow{\text{Rehab/Paliativos}} \text{Seguimiento} \xrightarrow{\text{Remisión/Cierre}} \text{Alta/Sobreviviente}$$
 
 #### B. Ciclo de Vida de la Derivación a Macrored (Circuito TENS $\rightarrow$ UGAA $\rightarrow$ HCVB)
+
 $$\text{Dossier Confeccionado (TENS)} \xrightarrow{\text{Despacho formal}} \text{Despachado UGAA} \xrightarrow{\text{Integración Macrored}} \text{Recepcionado HCVB} \xrightarrow{\text{Agendamiento}} \text{Cita Asignada} \xrightarrow{\text{Atención}} \text{En Tratamiento} \xrightarrow{\text{Epicrisis}} \text{Contrarreferido HGF}$$
+
+### 5.3. Reglas de Relaciones y Responsables
+
+- Cada caso oncológico tiene un gestor y un médico tratante asignados. Ambos pueden estar a cargo de varios casos.
+- Cada registro de contacto tiene un único autor. El autor debe ser un gestor o TENS con permisos para registrar la intervención.
+- El autor del contacto se conserva como parte del registro y no se reemplaza cuando otro integrante añade una corrección.
+- Un caso puede tener varias resoluciones de comité. Cada resolución mantiene su identificación y su relación con el caso correspondiente.
+- El Hospital Carlos Van Buren puede recibir varios dossiers de derivación. Cada dossier conserva su folio y sus fechas de seguimiento.
+- Una orden de examen puede existir antes de que se reciba el estudio diagnóstico.
+- Un dossier puede existir antes de que se adjunte el instructivo de pasajes o se reciba la contrarreferencia. Esto permite registrar el avance de la derivación sin exigir documentos que todavía no se han generado.
+- La posibilidad de que un documento esté pendiente no elimina las condiciones de entrega o despacho establecidas en los criterios de aceptación de HU-08.
 
 ---
 
