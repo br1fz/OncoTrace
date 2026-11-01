@@ -185,19 +185,20 @@
 
 ## 📌 HU-09: Tótem de Autoatención en Sala de Espera con Lectura de RUN (Extensión TO-BE)
 - **Como** Paciente o Cuidador Principal en la sala de espera de la UGCO,  
-- **quiero** consultar el estado de avance de mis exámenes e hitos asistenciales en una pantalla táctil mediante la lectura de mi cédula de identidad,  
+- **quiero** consultar el estado de avance de mis exámenes e hitos asistenciales desde una pantalla táctil,  
 - **para** obtener información certera y oportuna de forma autónoma sin necesidad de interrumpir la labor clínica del mesón gestor.
 
 **Trazabilidad:**
 - **Problema AS-IS mitigado:** AS-06 (Interrupciones críticas por demanda espontánea)
 - **Actividad TO-BE asociada:** TB-09 (Autoatención presencial en sala de espera y consulta de trámites)
-- **Requisito asociado:** RF-09
+- **Requisitos asociados:** RF-09 | RNF-03
 
 **Criterios de aceptación:**
-- **HU-09-CA1 — Autenticación segura:** El paciente o cuidador acreditado debe autenticarse mediante lector de código de barras de su cédula de identidad o ingresando su RUN con dígito verificador.
-- **HU-09-CA2 — Consulta de estado de exámenes:** El sistema debe consultar la API de OncoTrace y desplegar únicamente los estados macro de sus estudios en lenguaje claro: *En proceso en laboratorio, Informe listo para revisión médica, Caso agendado en comité, Próxima cita médica programada*.
-- **HU-09-CA3 — Resguardo de confidencialidad:** El tótem no debe mostrar diagnósticos histopatológicos específicos ni contenidos clínicos sensibles en la pantalla pública (Ley N° 20.584); únicamente orientará sobre la etapa y estado del trámite.
-- **HU-09-CA4 — Cierre automático de sesión:** La sesión debe cerrarse automáticamente tras 30 segundos de inactividad o al pulsar el botón "Salir", borrando cualquier dato de pantalla.
+- **HU-09-CA1 — Verificación de identidad:** Para consultar información, el paciente debe completar el método de verificación definido y autorizado por el hospital. Leer el código de la cédula o ingresar el RUN con dígito verificador no será suficiente por sí solo.
+- **HU-09-CA2 — Acceso de cuidador:** El cuidador solo podrá consultar el estado si su autorización para ese paciente está registrada y vigente.
+- **HU-09-CA3 — Consulta de estado de exámenes:** El sistema debe consultar la API de OncoTrace y desplegar únicamente los estados macro de sus estudios en lenguaje claro: *En proceso en laboratorio, Informe listo para revisión médica, Caso agendado en comité, Próxima cita médica programada*.
+- **HU-09-CA4 — Resguardo de confidencialidad:** El tótem no debe mostrar diagnósticos histopatológicos específicos ni contenidos clínicos sensibles en la pantalla pública (Ley N° 20.584); únicamente orientará sobre la etapa y estado del trámite.
+- **HU-09-CA5 — Cierre automático de sesión:** La sesión debe cerrarse automáticamente tras 30 segundos de inactividad o al pulsar el botón "Salir", borrando cualquier dato de pantalla.
 
 ---
 
