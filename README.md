@@ -165,7 +165,9 @@ OncoTrace/
 ├── 📄 07-matriz-trazabilidad.md        # Matriz maestra de trazabilidad end-to-end
 ├── 📁 diagramas/
 │   ├── 📄 as-is.bpmn                   # Modelo BPMN 2.0 refactorizado del proceso actual (10 carriles)
-│   └── 📄 to-be.bpmn                   # Modelo BPMN del proceso rediseñado (TO-BE)
+│   ├── 📄 to-be.bpmn                   # Modelo BPMN del proceso rediseñado (TO-BE)
+│   ├── 📄 modelo-de-dominio-uml.md     # Modelos de Dominio en formato UML (Clases y Relaciones)
+│   └── 📄 diagrama-casos-de-uso.md     # Diagrama de Casos de Uso UML e integración SSD
 ├── 📁 evidencia/                       # Manuales UGCO Versión 2.0 y minutas de entrevistas
 └── 📁 _backup/                         # Resguardos de versiones previas
 ```
