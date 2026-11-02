@@ -1,179 +1,184 @@
-# 🚀 OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico
+# OncoTrace
 
-**CIN324 – Ingeniería de Requisitos | Entrega 1**  
-*Hospital Dr. Gustavo Fricke (HGF) – Unidad de Gestión de Casos Oncológicos (UGCO)*
+### Documento integrador · Entrega 1
+
+**CIN324 — Ingeniería de Requisitos**  
+**Hospital Dr. Gustavo Fricke (HGF) · Unidad de Gestión de Casos Oncológicos (UGCO)**
 
 ---
 
-## 👥 Equipo de Trabajo
+## 1. Equipo y responsabilidades
 
-- **Bruno Fernandez**
-- **Máximo Torrijo**
-- **Ignacio Jorquera**
-- **Benjamin Carcamo**
+Distribución de responsabilidades del equipo para los entregables de la evaluación:
 
-### 📋 Declaración de Responsabilidades por Integrante
-
-Conforme a lo exigido en la evaluación, la distribución de responsabilidades del equipo sobre los entregables es la siguiente:
-
-| Integrante | Entregable(s) a Cargo |
+| Integrante | Entregables a cargo |
 | :--- | :--- |
-| **Bruno Fernandez** | [`01-proceso-as-is.md`](./01-proceso-as-is.md) y [`05-elicitacion.md`](./05-elicitacion.md)|
+| **Bruno Fernandez** | [`01-proceso-as-is.md`](./01-proceso-as-is.md) y [`05-elicitacion.md`](./05-elicitacion.md) |
 | **Benjamin Carcamo** | [`02-rediseno-to-be.md`](./02-rediseno-to-be.md) |
-| **Máximo Torrijo** | [`03-requisitos.md`](./03-requisitos.md) y [`06-atributos-calidad.md`](./06-atributos-calidad.md)
-| **Ignacio Jorquera** | [`04-historias-usuario.md`](./04-historias-usuario.md)  |
-| **Equipo Completo** | [`07-matriz-trazabilidad.md`](./07-matriz-trazabilidad.md) (Integración Transversal y Trazabilidad) |
+| **Máximo Torrijo** | [`03-requisitos.md`](./03-requisitos.md) y [`06-atributos-calidad.md`](./06-atributos-calidad.md) |
+| **Ignacio Jorquera** | [`04-historias-usuario.md`](./04-historias-usuario.md) |
+| **Equipo completo** | [`07-matriz-trazabilidad.md`](./07-matriz-trazabilidad.md), integración transversal y trazabilidad |
 
 ---
 
-## 🎯 Visión General del Proyecto
+## 2. Visión general del proyecto
 
-**OncoTrace** es una solución tecnológica diseñada específicamente para la **Unidad de Gestión de Casos Oncológicos (UGCO)** y el equipo clínico asistencial del **Hospital Dr. Gustavo Fricke (HGF)**. 
+**OncoTrace** es una plataforma propuesta para apoyar la gestión clínica, navegación y trazabilidad oncológica en la UGCO y el equipo clínico del Hospital Dr. Gustavo Fricke.
 
-La UGCO cuenta con una dependencia mixta (administrativamente de la *Subdirección de Gestión del Cuidado* y técnicamente de la *Subdirección Médica*), liderando la navegación de las personas con sospecha o confirmación diagnóstica oncológica.
+La UGCO depende administrativamente de la *Subdirección de Gestión del Cuidado* y técnicamente de la *Subdirección Médica*. Su trabajo acompaña a las personas desde la sospecha o confirmación diagnóstica oncológica.
 
-Su objetivo central es garantizar la **trazabilidad continua de punta a punta**, la **evaluación multidimensional** en cuatro dominios (clínico-funcional; psicosocial y socioeconómico; familiar y del cuidador; espiritual y comprensión diagnóstica), el **acompañamiento integral** y la **gestión oportuna** de los pacientes a lo largo de las 8 etapas de su trayectoria asistencial:
-1. **Sospecha:** Ingreso formal desde APS, red SSVQ, Urgencias o por hallazgo crítico en Anatomía Patológica.
-2. **Confirmación Diagnóstica:** Confirmación por especialista, emisión de IPD y constancia GES.
-3. **Etapificación:** Ejecución de estudios imagenológicos y gestión de compra de servicios externos (PET-CT, EBUS).
-4. **En Comité:** Evaluación colegiada por el Comité Oncológico Regional y emisión de resolución terapéutica (REM 7).
-5. **Tratamiento:** Ejecución de la terapia prescrita (cirugía en LEIQ, quimioterapia hematológica en HGF, radioterapia o derivación a red HCVB).
-6. **Rehabilitación y Cuidados Paliativos:** Derivación oportuna a equipo multidisciplinario (psicosocial, nutrición, fonoaudiología, kinesiología, cuidados paliativos).
-7. **Seguimiento:** Controles médicos periódicos de vigilancia activa y contactabilidad por Gestor y TENS.
-8. **Alta, Contrarreferencia y Sobreviviente:** Cierre clínico y administrativo por remisión completa, traslado de red, fallecimiento, contrarreferencia a APS o vigilancia a largo plazo del sobreviviente oncológico.
+El objetivo del sistema es asegurar la **trazabilidad de la atención**, la **evaluación multidimensional**, el **acompañamiento integral** y el **seguimiento oportuno** a lo largo de las ocho etapas de la trayectoria asistencial.
 
----
+### Trayectoria asistencial
 
-## 👥 Perfil de Usuarios y Stakeholders
-
-- **Usuario Principal:** 
-  - **Gestor/a de Casos Oncológicos UGCO (Enfermero/a o Matrón/a):** Profesional responsable de la navegación clínica integral en cuatro dominios (clínico-funcional; psicosocial y socioeconómico; familiar y del cuidador; espiritual y comprensión diagnóstica), ejecución de puntos de contacto obligatorio, preparación de comités, entrega anticipada de instructivo de pasajes y gestión de derivaciones.
-- **Equipo Operativo UGCO:**
-  - **Enfermera Supervisora UGCO:** Liderazgo estratégico, asignación de especialidades oncológicas y supervisión del cumplimiento de metas.
-  - **Técnico en Enfermería (TENS UGCO):** Confección de dossiers físicos en el proceso actual, contactabilidad activa telefónica/presencial y soporte al Comité Oncológico. En el rediseño TO-BE, el dossier se digitaliza.
-  - **Administrativo/a UGCO:** Gestión y rescate de fichas clínicas, coordinación de horas con unidades de apoyo y digitación de libros oficiales.
-- **Actores Clínicos y Resolutivos:**
-  - **Médico Tratante / Especialista:** Evaluación de sospecha, confirmación diagnóstica, emisión de IPD y presentación formal en comités.
-  - **Comité Oncológico Regional:** Instancia multidisciplinaria colegiada que dicta la conducta terapéutica obligatoria previa al tratamiento (REM 7).
-  - **Equipo Multidisciplinario y Apoyo Social:** Dupla psicosocial (asistente social y psicólogo), nutricionistas, kinesiólogos, oncogeriatras, cuidados paliativos y Unidad de Servicio Social (gestión de reembolso de pasajes de locomoción pública por derivación, Anexo 6).
-- **Unidades de Coordinación y Red Asistencial:**
-  - **Atención Primaria de Salud (APS) y Red SSVQ:** Origen de interconsultas y destino de la contrarreferencia al alta.
-  - **UGDA (Unidad de Gestión de la Demanda Asistencial):** Auditoría de interconsultas y administración de la Lista de Espera Quirúrgica (LEIQ / SIGTE).
-  - **UGAA (Unidad de Gestión de Atención Abierta):** Unidad encargada de la tramitación y despacho formal del dossier hacia la red externa.
-  - **Unidad GES y Registros:** Monitoreo y fiscalización de los plazos de garantías explícitas (Decreto Supremo N° 29).
-  - **Unidades de Apoyo Diagnóstico:** Laboratorio Clínico, Anatomía Patológica, Imagenología y Procedimientos Médicos.
-  - **Red Externa de Referencia:** Hospital Carlos Van Buren (radioterapia y quimioterapia para tumores sólidos) y prestadores privados (compra de servicios).
-- **Sujeto de Cuidado:**
-  - **Persona con Cáncer y Cuidador Principal:** Acompañamiento binomio ante riesgo de sobrecarga del cuidador.
+| Etapa | Descripción |
+| :--- | :--- |
+| **1. Sospecha** | Ingreso formal desde APS, red SSVQ o Urgencias, o por hallazgo crítico en Anatomía Patológica. |
+| **2. Confirmación diagnóstica** | Confirmación por especialista, emisión de IPD y constancia GES. |
+| **3. Etapificación** | Estudios imagenológicos y gestión de compras de servicios externos, como PET-CT o EBUS. |
+| **4. Comité** | Evaluación por el Comité Oncológico Regional y emisión de la resolución terapéutica (REM 7). |
+| **5. Tratamiento** | Ejecución de la terapia indicada: cirugía en LEIQ, quimioterapia hematológica en HGF, radioterapia o derivación a la red HCVB. |
+| **6. Rehabilitación y cuidados paliativos** | Derivación a equipos de apoyo, como psicosocial, nutrición, fonoaudiología, kinesiología y cuidados paliativos. |
+| **7. Seguimiento** | Controles médicos y contactabilidad a cargo del gestor y TENS. |
+| **8. Alta y contrarreferencia** | Cierre clínico y administrativo por remisión, traslado de red o fallecimiento; contrarreferencia a APS o vigilancia de largo plazo para sobrevivientes. |
 
 ---
 
-## 🧩 Módulos Principales de la Plataforma
+## 3. Usuarios y partes interesadas
 
-```
-ONCOTRACE
-├── Tablero de trazabilidad y timeline clínico
-├── Evaluación multidimensional
-├── Acompañamiento y puntos de contacto
-├── Comités oncológicos
-├── Plazos GES, derivaciones y reembolso
-└── Autoatención y triage asistencial
-```
+### Equipo UGCO
 
-1. **Tablero de Trazabilidad y Timeline Clínico:** Visualización en tiempo real del estado de cada caso, hitos diagnósticos completados, rescate de exámenes y alertas de tiempos de espera.
-2. **Evaluación Multidimensional y Estratificación:** Pauta estructurada en cuatro dominios: clínico-funcional; psicosocial y socioeconómico; familiar y del cuidador; espiritual y comprensión diagnóstica.
-3. **Módulo de Acompañamiento y Contactabilidad Continua:** Coordinación sincronizada entre Gestor y TENS, control de inasistencias, acogida presencial regulada y bitácora de puntos de contacto obligatorio según el *Patient Journey Map*.
-4. **Gestión Digital de Comités Oncológicos:** Consolidación de antecedentes clínicos, eliminación de actas en papel físico y estructuración digital del registro de asistencia y resoluciones (REM 7).
-5. **Control de Plazos GES, Trazabilidad de Derivaciones y Reembolso de Pasajes:** Alertas preventivas para evitar vencimiento de garantías, seguimiento con confirmación de entrega de dossiers derivados vía UGAA hacia el Hospital Carlos Van Buren o prestadores privados, y emisión del instructivo de reembolso de pasajes ante Servicio Social (Anexo 6).
-6. **Autoatención y Orientación Asistencial:** Consulta de estados macro en el tótem mediante el método de verificación de identidad autorizado por el hospital; el acceso de cuidadores requiere autorización vigente. El asistente orienta y prioriza solicitudes sin emitir diagnósticos, deriva posibles urgencias a la Unidad de Emergencia Adultos y ofrece contacto con la UGCO cuando no puede clasificar una solicitud.
+- **Gestor/a de casos oncológicos (enfermero/a o matrón/a):** Responsable de la navegación clínica en cuatro dominios: clínico-funcional; psicosocial y socioeconómico; familiar y del cuidador; espiritual y comprensión diagnóstica. Coordina los puntos de contacto, prepara casos para comité, entrega el instructivo de pasajes y gestiona derivaciones.
+- **Enfermera supervisora UGCO:** Lidera la unidad, asigna especialidades oncológicas y supervisa el cumplimiento de metas.
+- **TENS UGCO:** Confecciona dossiers físicos en el proceso actual, realiza contactabilidad telefónica o presencial y apoya al Comité Oncológico. En el rediseño TO-BE, el dossier se digitaliza.
+- **Administrativo/a UGCO:** Gestiona y rescata fichas clínicas, coordina horas con unidades de apoyo y digita libros oficiales.
+
+### Equipo clínico y de apoyo
+
+- **Médico tratante o especialista:** Evalúa la sospecha, confirma diagnósticos, emite IPD y presenta casos a comité.
+- **Comité Oncológico Regional:** Instancia multidisciplinaria que define la conducta terapéutica previa al tratamiento y registra la resolución en REM 7.
+- **Equipo multidisciplinario y apoyo social:** Incluye dupla psicosocial, nutricionistas, kinesiólogos, oncogeriatras, cuidados paliativos y Unidad de Servicio Social. Esta última gestiona el reembolso de pasajes de locomoción pública por derivación (Anexo 6).
+
+### Red asistencial
+
+- **APS y red SSVQ:** Origen de interconsultas y destino de contrarreferencias al alta.
+- **UGDA (Unidad de Gestión de la Demanda Asistencial):** Audita interconsultas y administra la Lista de Espera Quirúrgica (LEIQ / SIGTE).
+- **UGAA (Unidad de Gestión de Atención Abierta):** Tramita y despacha dossiers hacia la red externa.
+- **Unidad GES y Registros:** Monitorea y fiscaliza los plazos de garantías explícitas (Decreto Supremo N° 29).
+- **Unidades de apoyo diagnóstico:** Laboratorio Clínico, Anatomía Patológica, Imagenología y Procedimientos Médicos.
+- **Red externa de referencia:** Hospital Carlos Van Buren —radioterapia y quimioterapia para tumores sólidos— y prestadores privados de servicios.
+
+### Personas atendidas
+
+- **Persona con cáncer y cuidador principal:** Reciben acompañamiento durante la trayectoria, considerando el riesgo de sobrecarga del cuidador.
 
 ---
 
-## 🗺️ Modelo de Procesos de Negocio BPMN 2.0
+## 4. Módulos principales de la plataforma
 
-El proceso de negocio se encuentra formalmente modelado en BPMN 2.0 estandarizado y libre de errores de sintaxis o nodos huérfanos:
-
-- **Proceso AS-IS:** [`./diagramas/as-is.bpmn`](./diagramas/as-is.bpmn)
-- **Proceso TO-BE:** [`./diagramas/to-be.bpmn`](./diagramas/to-be.bpmn)
-
-### 📐 Arquitectura Topológica del Modelo AS-IS (`as-is.bpmn`)
-
-El modelo actual del Hospital Dr. Gustavo Fricke estructura su proceso principal en **10 carriles (swimlanes)** que reflejan la realidad funcional del establecimiento:
-
-| Carril (Lane) | Participante / Unidad | Responsabilidad Modelada |
+| Módulo | Actividades y requisitos | Función principal |
 | :--- | :--- | :--- |
-| **1. Atención primaria y red asistencial** | APS / Urgencia / Consultas | Generación y emisión de interconsultas de sospecha; recepción de contrarreferencias al alta. |
-| **2. UGDA y lista de espera** | Unidad de Gestión de Demanda | Auditoría de interconsultas y administración de la Lista de Espera Quirúrgica (LEIQ). |
-| **3. Médico Tratante / Especialista** | Especialista Clínico HGF | Evaluación de sospecha, indicación de exámenes, confirmación diagnóstica, IPD y presentación a comité. |
-| **4. Gestor/a de casos UGCO** | Enfermera/o o Matrona/ón UGCO | Asignación, contacto inicial, valoración multidimensional, gestión de exámenes, comités, tratamiento y seguimiento. |
-| **5. TENS UGCO** | Técnico en Enfermería | Confección de dossier físico de derivación externa y mantención de contactabilidad activa y periódica. |
-| **6. Administrativo/a UGCO** | Administrativo/a UGCO | Registro de ingreso, verificación de contactos, coordinación y agendamiento de horas de exámenes. |
-| **7. UGAA** | Gestión de Atención Abierta | Despacho y derivación formal de dossiers físicos hacia hospitales de referencia externa. |
-| **8. Unidad GES y registros** | Unidad GES Institucional | Confección, monitoreo y auditoría de constancias GES y cumplimiento de garantías de oportunidad. |
-| **9. Comité Oncológico** | Comité Multidisciplinario | Sesión colegiada de evaluación integral y emisión de actas de resolución terapéutica (REM 7). |
-| **10. Unidades de Apoyo Diagnóstico** | Laboratorio / AP / Imágenes | Toma de muestras, procesamiento de estudios y emisión de informes clínicos y de valores críticos. |
-
-#### Correcciones Topológicas Implementadas:
-1. **Etapificación y Compra de Servicios (XOR):** Bifurcación formal mediante compuerta exclusiva tras la solicitud de exámenes. La *Rama Interna* tramita a través de unidades de apoyo del HGF con rescate y notificación de valores críticos; la *Rama Externa* gestiona compras de servicios especializados (PET-CT, EBUS, estudios moleculares) hacia centros privados. Ambas ramas convergen en compuerta exclusiva antes de la entrega de resultados al médico.
-2. **Contactabilidad Simultánea en Seguimiento (AND):** Incorporación de una compuerta paralela que sincroniza las labores clínicas del *Gestor* (controles médicos, sobrevivientes) con las labores de contactabilidad y rescate del *TENS*, convergiendo antes de la evaluación de criterios de cierre de caso.
-3. **Flujo Cerrado de Derivación Externa:** Secuencia estricta y trazable: `GW_DerivExterna` $\rightarrow$ `Task_TENS_Dossier` (confección de dossier) $\rightarrow$ `Task_UGAA_Derivar` (despacho) $\rightarrow$ `MessageFlow` hacia el `Pool_RedExterna` (Hospital Carlos Van Buren).
+| **Tablero y trazabilidad** | TB-01 · RF-01 | Muestra en tiempo real la etapa de cada caso, los hitos completados, el rescate de exámenes y las alertas por tiempos de espera. |
+| **Evaluación multidimensional** | TB-02 · RF-02 | Registra cuatro dominios: clínico-funcional (ECOG 0–4); psicosocial y socioeconómico; familiar y del cuidador; espiritual y comprensión diagnóstica. Calcula el riesgo asistencial. |
+| **Acompañamiento y contactos** | TB-03 · RF-03 | Coordina el seguimiento entre gestor y TENS, controla inasistencias, regula la acogida presencial y registra los seis puntos de contacto obligatorios del *Patient Journey Map*. |
+| **Alertas GES e inactividad** | TB-04 · RF-04 | Avisa cuando una garantía está a cinco días hábiles o menos de vencer y detecta casos sin movimiento por más de 15 días corridos. |
+| **Exámenes e interoperabilidad** | TB-05 · RF-05 | Vincula informes de LIS y PACS al RUN del paciente y genera alertas ante hallazgos de malignidad. |
+| **Comités oncológicos** | TB-06 y TB-07 · RF-06 y RF-07 | Genera la ficha de presentación, registra la asistencia y la decisión, permite firmar el acta y prepara la información para REM 7. |
+| **Derivaciones y reembolso** | TB-08 · RF-08 | Gestiona el dossier digital, sigue la derivación a HCVB o prestadores externos y apoya la entrega del instructivo de reembolso (Anexo 6). |
+| **Autoatención y triage** | TB-09 y TB-10 · RF-09 y RF-10 | Permite consultar estados macro en el tótem con el método de identidad autorizado por el hospital. El RUN o la cédula por sí solos no bastan; el cuidador requiere autorización vigente. El asistente orienta y prioriza solicitudes sin diagnosticar, deriva posibles urgencias a la Unidad de Emergencia Adultos y ofrece contacto con la UGCO si no puede clasificar una solicitud. |
 
 ---
 
-## ⚠️ Nodos Críticos Identificados en el Proceso Actual (AS-IS)
+## 5. Procesos de negocio en BPMN 2.0
 
-| ID Nodo | Nombre del Problema | Descripción Operativa | Actores Afectados |
+Los procesos AS-IS y TO-BE están documentados en BPMN 2.0 y se revisaron para evitar errores de sintaxis y nodos huérfanos.
+
+- **Proceso actual:** [`diagramas/as-is.bpmn`](./diagramas/as-is.bpmn)
+- **Proceso rediseñado:** [`diagramas/to-be.bpmn`](./diagramas/to-be.bpmn)
+
+### Estructura del modelo AS-IS
+
+El proceso actual del Hospital Dr. Gustavo Fricke se organiza en diez carriles:
+
+| N.º | Carril | Responsabilidad modelada |
+| :--- | :--- | :--- |
+| **1** | Atención primaria y red asistencial | Emite interconsultas de sospecha y recibe contrarreferencias al alta. |
+| **2** | UGDA y lista de espera | Audita interconsultas y administra la LEIQ. |
+| **3** | Médico tratante / especialista | Evalúa sospechas, indica exámenes, confirma diagnósticos, emite IPD y presenta casos a comité. |
+| **4** | Gestor/a de casos UGCO | Asigna casos, realiza el contacto inicial, valora al paciente y gestiona exámenes, comités, tratamiento y seguimiento. |
+| **5** | TENS UGCO | Confecciona dossiers físicos de derivación externa y realiza contactabilidad activa. |
+| **6** | Administrativo/a UGCO | Registra ingresos, verifica contactos y coordina horas de exámenes. |
+| **7** | UGAA | Despacha dossiers físicos a hospitales de referencia externa. |
+| **8** | Unidad GES y Registros | Confecciona y monitorea constancias GES y garantías de oportunidad. |
+| **9** | Comité Oncológico | Evalúa casos y emite actas de resolución terapéutica (REM 7). |
+| **10** | Unidades de apoyo diagnóstico | Toman muestras, procesan estudios y emiten informes y valores críticos. |
+
+### Ajustes topológicos destacados
+
+- **Etapificación y compra de servicios (XOR):** El flujo se divide después de solicitar los exámenes. La rama interna gestiona estudios en unidades del HGF; la externa tramita servicios especializados —PET-CT, EBUS y estudios moleculares— con centros privados. Ambas ramas vuelven a unirse antes de entregar los resultados al médico.
+- **Contactabilidad durante el seguimiento (AND):** Una compuerta paralela coordina las labores clínicas del gestor —controles médicos y seguimiento de sobrevivientes— con las tareas de contactabilidad y rescate del TENS. Las ramas se unen antes de evaluar el cierre del caso.
+- **Derivación externa:** El flujo conecta `GW_DerivExterna`, la confección del dossier por TENS (`Task_TENS_Dossier`), el despacho por UGAA (`Task_UGAA_Derivar`) y el envío mediante `MessageFlow` a `Pool_RedExterna`, que incluye al Hospital Carlos Van Buren.
+
+---
+
+## 6. Problemas identificados en el proceso AS-IS
+
+| ID | Problema | Descripción | Actores afectados |
 | :--- | :--- | :--- | :--- |
-| **AS-01** | **Dispersión de Resultados Diagnósticos** | Búsqueda manual dispersa en sistemas aislados (Pathology, LIS, PACS) y papel para ubicar biopsias e imágenes. Demoras de hasta 15 días. | Gestor/a, Médico Tratante, Paciente |
-| **AS-02** | **Gestión Manual de Comités Oncológicos** | Preparación manual en Word de fichas clínicas y registro de resoluciones en actas en papel físico. | Comité Oncológico, Gestor/a, Médico |
-| **AS-03** | **Pérdida de Trazabilidad en Derivaciones** | Envío de dossiers físicos a través de UGAA hacia el Hospital Carlos Van Buren sin confirmación digital de recepción ni agendamiento. | TENS, Gestor/a, UGAA, Paciente |
-| **AS-04** | **Monitoreo Manual de Plazos GES** | Cálculo y seguimiento de garantías mediante planillas Excel locales, con riesgo legal de incumplimiento. | Gestor/a, Supervisora, Unidad GES |
-| **AS-05** | **Registro Fragmentado y Falta de Bitácora Estandarizada** | Carencia de un registro unificado para documentar contactos asistenciales, evaluar la vulnerabilidad sociofamiliar y registrar el índice funcional (ECOG). | Gestor/a Oncológico/a, TENS, Paciente y Familia |
-| **AS-06** | **Interrupción Crítica por Demanda Espontánea** | Afluencia no programada de usuarios presenciales en la oficina de gestión exigiendo estados de atención (Ley N° 21.258). | Gestor/a, Paciente y Cuidador |
+| **AS-01** | Dispersión de resultados diagnósticos | Búsqueda manual en sistemas aislados (Pathology, LIS, PACS) y en papel. La demora puede llegar a 15 días. | Gestor/a, médico tratante y paciente |
+| **AS-02** | Gestión manual de comités | Preparación de fichas en Word y registro de resoluciones en actas de papel. | Comité Oncológico, gestor/a y médico |
+| **AS-03** | Pérdida de trazabilidad en derivaciones | Envío de dossiers físicos por UGAA hacia HCVB sin confirmación digital de recepción ni agendamiento. | TENS, gestor/a, UGAA y paciente |
+| **AS-04** | Monitoreo manual de plazos GES | Cálculo y seguimiento de garantías en planillas Excel, con riesgo de incumplimiento. | Gestor/a, supervisora y Unidad GES |
+| **AS-05** | Registro fragmentado y falta de bitácora | No existe un registro unificado de contactos, vulnerabilidad sociofamiliar e índice funcional (ECOG). | Gestor/a, TENS, paciente y familia |
+| **AS-06** | Interrupciones por demanda espontánea | Llegada no programada de personas a la oficina para consultar el estado de su atención (Ley N° 21.258). | Gestor/a, paciente y cuidador |
 
 ---
 
-## 📂 Índice Maestro de Documentos (Entrega 1)
+## 7. Documentos de la Entrega 1
 
-1. [**01. Proceso AS-IS**](./01-proceso-as-is.md) – Caracterización detallada del proceso actual (nodos AS-01 a AS-06).
-2. [**02. Rediseño y Proceso TO-BE**](./02-rediseno-to-be.md) – Rediseño propuesto y mejoras de proceso (nodos TB-01 a TB-10).
-3. [**03. Clasificación de Requisitos**](./03-requisitos.md) – Matriz de requisitos funcionales y no funcionales.
-4. [**04. Historias de Usuario**](./04-historias-usuario.md) – 10 Historias de Usuario con Criterios de Aceptación (HU-xx-CAy).
-5. [**05. Elicitación**](./05-elicitacion.md) – Registro de técnicas y evidencias de elicitación (EL-01 a EL-03).
-6. [**06. Atributos de Calidad**](./06-atributos-calidad.md) – Atributos de calidad y escenarios arquitectónicos (AC-01 a AC-03).
-7. [**07. Matriz de Trazabilidad End-to-End**](./07-matriz-trazabilidad.md) – Matriz maestra de trazabilidad end-to-end.
+| Documento | Contenido |
+| :--- | :--- |
+| [**01. Proceso AS-IS**](./01-proceso-as-is.md) | Proceso actual y problemas AS-01 a AS-06. |
+| [**02. Rediseño TO-BE**](./02-rediseno-to-be.md) | Proceso propuesto y actividades TB-01 a TB-10. |
+| [**03. Clasificación de requisitos**](./03-requisitos.md) | Requisitos funcionales y no funcionales. |
+| [**04. Historias de usuario**](./04-historias-usuario.md) | Diez historias de usuario con criterios de aceptación. |
+| [**05. Elicitación**](./05-elicitacion.md) | Entrevista, revisión normativa y revisión de manuales (EL-01 a EL-03). |
+| [**06. Atributos de calidad**](./06-atributos-calidad.md) | Escenarios de calidad AC-01 a AC-03. |
+| [**07. Matriz de trazabilidad**](./07-matriz-trazabilidad.md) | Trazabilidad entre problemas, actividades, requisitos, historias y criterios. |
 
 ---
 
-## 📁 Estructura del Repositorio
+## 8. Estructura del repositorio
 
-```
+```text
 OncoTrace/
-├── 📄 README.md                        # Vista principal del repositorio en GitHub
-├── 📄 IngReq-Entrega 1.md              # Documento maestro integrador de la Entrega 1
-├── 📄 01-proceso-as-is.md              # Caracterización del proceso actual (AS-IS, nodos AS-01 a AS-06)
-├── 📄 02-rediseno-to-be.md             # Rediseño propuesto y mejoras de proceso (TO-BE, nodos TB-01 a TB-10)
-├── 📄 03-requisitos.md                 # Matriz de requisitos funcionales y no funcionales
-├── 📄 04-historias-usuario.md          # 10 Historias de Usuario con Criterios de Aceptación (HU-xx-CAy)
-├── 📄 05-elicitacion.md                # Registro de técnicas y evidencias de elicitación (EL-01, EL-02)
-├── 📄 06-atributos-calidad.md          # Atributos de calidad y escenarios arquitectónicos (AC-01 a AC-03)
-├── 📄 07-matriz-trazabilidad.md        # Matriz maestra de trazabilidad end-to-end
-├── 📁 diagramas/
-│   ├── 📄 as-is.bpmn                   # Modelo BPMN 2.0 del proceso actual (10 carriles)
-│   ├── 📄 casos-de-uso-integracion.png  # Diagrama de casos de uso e integración
-│   ├── 📄 diagrama-casos-de-uso.md      # Diagrama UML de casos de uso y SSD
-│   ├── 📄 modelo-de-dominio-uml.md      # Modelo de dominio y relaciones UML
-│   ├── 📄 ssd-hu05.png                  # Diagrama SSD de HU-05
-│   ├── 📄 ssd-hu08.png                  # Diagrama SSD de HU-08
-│   └── 📄 to-be.bpmn                    # Modelo BPMN del proceso rediseñado (TO-BE)
-├── 📁 evidencia/                       # Manuales UGCO Versión 2.0 y minutas de entrevistas
-└── 📁 _backup/                         # Resguardos de versiones previas
+├── README.md                       # Página principal del repositorio
+├── IngReq-Entrega 1.md             # Documento integrador de la Entrega 1
+├── 01-proceso-as-is.md             # Descripción del proceso actual
+├── 02-rediseno-to-be.md            # Rediseño del proceso
+├── 03-requisitos.md                # Requisitos de producto y proyecto
+├── 04-historias-usuario.md         # Historias de usuario y criterios
+├── 05-elicitacion.md               # Técnicas y evidencias de elicitación
+├── 06-atributos-calidad.md         # Escenarios de calidad
+├── 07-matriz-trazabilidad.md       # Matriz de trazabilidad
+├── diagramas/
+│   ├── as-is.bpmn                  # Modelo BPMN del proceso actual
+│   ├── casos-de-uso-integracion.png
+│   ├── diagrama-casos-de-uso.md    # Casos de uso y diagramas SSD
+│   ├── modelo-de-dominio-uml.md    # Modelo de dominio UML
+│   ├── ssd-hu05.png                # SSD de HU-05
+│   ├── ssd-hu08.png                # SSD de HU-08
+│   └── to-be.bpmn                  # Modelo BPMN del proceso rediseñado
+├── evidencia/                      # Manuales UGCO y minutas
+└── _backup/                        # Versiones anteriores
 ```
 
 ---
 
-## 🚀 Integración y Marco Normativo
+## 9. Integración y marco normativo
 
-- **Interoperabilidad:** Integración con sistemas institucionales del HGF (Ficha Clínica Electrónica, LIS, RIS/PACS) y puente de datos con la Plataforma Oncológica MINSAL.
-- **Seguridad y Privacidad:** Control de acceso basado en roles (RBAC) y auditoría conforme a la **Ley N° 20.584** (Derechos y Deberes de los Pacientes).
-- **Marco Regulatorio:** Cumplimiento de las Garantías Explícitas en Salud (**GES / Decreto Supremo N° 29**) y de la **Ley Nacional del Cáncer N° 21.258**.
+| Ámbito | Referencia |
+| :--- | :--- |
+| **Interoperabilidad** | Integración con la Ficha Clínica Electrónica, LIS, RIS/PACS institucionales y la Plataforma Oncológica MINSAL. |
+| **Seguridad y privacidad** | Control de acceso basado en roles (RBAC) y auditoría conforme a la Ley N° 20.584, sobre derechos y deberes de los pacientes. |
+| **Marco regulatorio** | Garantías Explícitas en Salud (GES / Decreto Supremo N° 29) y Ley Nacional del Cáncer N° 21.258. |
