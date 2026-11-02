@@ -1,109 +1,155 @@
-# Análisis de Rediseño y Propuesta TO-BE
+# Análisis de rediseño y propuesta TO-BE
 
-## Macro-proceso y Proceso Específico
+## Macroproceso y proceso específico
+
 Unidad de Gestión de Casos Oncológicos (UGCO) → Gestión, navegación, trazabilidad, evaluación multidimensional y acompañamiento integral de la persona con cáncer y su cuidador mediante la plataforma **OncoTrace** en el Hospital Dr. Gustavo Fricke (HGF).
 
-*Nota Institucional: La UGCO posee dependencia mixta, dependiendo administrativamente de la Subdirección de Gestión del Cuidado (SDGC) y técnicamente de la Subdirección Médica (SDM).*
+*Nota institucional: La UGCO tiene dependencia administrativa de la Subdirección de Gestión del Cuidado (SDGC) y dependencia técnica de la Subdirección Médica (SDM).*
 
 ---
 
-## Objetivo de Negocio del Proceso Rediseñado
-Optimizar y asegurar la continuidad del flujo asistencial a lo largo de las 8 etapas de la trayectoria oncológica mediante la centralización de datos clínicos, la consolidación automatizada de estudios diagnósticos (LIS/PACS), la digitalización de las sesiones de comités y actas clínicas (REM 7), el monitoreo proactivo de plazos GES (Decreto Supremo N° 29) y la trazabilidad de derivaciones externas (vía TENS y UGAA hacia el Hospital Carlos Van Buren y prestadores en convenio, incorporando la gestión y entrega anticipada del instructivo de reembolso de pasajes), garantizando el cumplimiento de los puntos de contacto obligatorio normados y liberando tiempo asistencial para un acompañamiento oportuno y multidimensional.
+## Objetivo de negocio del proceso rediseñado
+
+Mejorar la continuidad del flujo asistencial a lo largo de las ocho etapas de la trayectoria oncológica mediante la centralización del seguimiento, la consolidación de estudios diagnósticos, la digitalización de comités y actas, el monitoreo de plazos GES, la trazabilidad de derivaciones externas y el intercambio de información con la Plataforma de Seguimiento Oncológico del MINSAL.
+
+La trayectoria considera estas etapas: sospecha, confirmación diagnóstica, etapificación, tratamiento, rehabilitación, cuidados paliativos y alivio del dolor, seguimiento y sobrevivientes, y alta y contrarreferencia. El comité oncológico forma parte del proceso asistencial, pero no constituye una etapa independiente.
+
+El proceso también contempla los puntos de contacto definidos por la UGCO, la coordinación con el Hospital Carlos Van Buren (HCVB) y otros prestadores en convenio, y la entrega anticipada del instructivo de reembolso de pasajes cuando corresponda.
 
 ---
 
-## Mejoras Identificadas por Participante
+## Mejoras identificadas por participante
 
-| Participante | Objetivo | Problema | Mejora Deseada |
+| Participante | Objetivo | Problema | Mejora propuesta |
 | :--- | :--- | :--- | :--- |
-| **Enfermera Supervisora UGCO** | Coordinar la unidad y asegurar cumplimiento normativo institucional. | Monitoreo ciego en planillas Excel locales con alto riesgo de sumarios por vencimiento de plazos GES. | Panel de control centralizado con semáforos de criticidad y auditoría en tiempo real de garantías vigentes. |
-| **Gestor/a Oncológico/a** | Realizar acompañamiento activo, seguimiento y preparación de casos. | Búsqueda manual de exámenes en sistemas aislados y saturación por consultas espontáneas de mesón. | Tablero Kanban por etapas, consolidación automática de biopsias/imágenes y módulos de autoatención. |
-| **Médico Tratante / Especialista** | Definir conducta terapéutica oportuna y confirmar diagnósticos. | Sesiones de comité con antecedentes incompletos y actas en papel físico desvinculadas de la ficha. | Ficha de presentación pre-cargada con exámenes validados y acta digital con firma electrónica en sesión. |
-| **TENS y Administrativo/a UGCO** | Gestionar trámites de derivación externa y contactabilidad de pacientes. | Confección manual de dossier en papel sin acuse de recibo en la red y desarticulación con beneficios de traslado social. | Compilación digital de antecedentes, tracking de derivación, entrega de instructivo de pasajes y registro estructurado de contactos. |
-| **Persona con Cáncer y Cuidador** | Recibir atención continua, oportuna y respuestas certeras sobre su caso. | Incertidumbre por falta de información sobre exámenes, gastos de traslado imprevistos y esperas prolongadas en ventanilla. | Cumplimiento garantizado de puntos de contacto en momentos de vulnerabilidad, reembolso oportuno de traslados y consulta autónoma en tótem. |
+| **Enfermera supervisora UGCO** | Coordinar la unidad y supervisar el cumplimiento de los plazos institucionales. | Seguimiento en planillas locales, con riesgo de no detectar a tiempo garantías GES próximas a vencer. | Panel centralizado con alertas de plazos, estado de los casos y registro de las acciones realizadas. |
+| **Gestor/a oncológico/a** | Realizar el acompañamiento y seguimiento de los casos. | Búsqueda manual de exámenes en sistemas separados y consultas frecuentes en el mesón. | Tablero de seguimiento por etapas, acceso centralizado a resultados disponibles y canales de autoatención. |
+| **Médico tratante o especialista** | Confirmar diagnósticos y definir conductas terapéuticas. | Antecedentes incompletos para las sesiones de comité y actas en papel desvinculadas de la ficha. | Ficha de presentación con antecedentes disponibles y registro digital de la decisión del comité. |
+| **TENS y administrativo/a UGCO** | Gestionar derivaciones externas y mantener la contactabilidad de los pacientes. | Preparación de dossiers en papel, falta de confirmación de recepción y orientación tardía sobre apoyos de traslado. | Dossier digital, seguimiento de la derivación, registro de contactos y entrega del instructivo de pasajes cuando corresponda. |
+| **Persona con cáncer y cuidador** | Recibir atención continua y orientación sobre su proceso. | Incertidumbre sobre exámenes, gastos de traslado y tiempos de espera en ventanilla. | Registro de los contactos de acompañamiento, orientación sobre el proceso y consulta en tótem con verificación de identidad autorizada. |
 
 ---
 
-## Iniciativas de Rediseño
+## Iniciativas de rediseño
 
-### Iniciativa 1: Centralización y Visualización de la Trayectoria Asistencial (TB-01, TB-02)
-- **Actividad(es) del AS-IS que afecta:** Búsqueda dispersa de información diagnóstica y registro desestructurado de la condición del paciente (Gestora Oncológica).
-- **Heurística aplicada:** Centralización de información e integración de tareas.
-- **Objetivo o mejora que resuelve:** Mitiga los problemas **AS-01** y **AS-05**, unificando la trayectoria clínica en un tablero Kanban alineado al *Patient Journey Map* institucional (sospecha hasta alta y sobrevivientes), con pauta de valoración multidimensional (clínico-funcional ECOG 0-4, psicosocial, cuidador y espiritual).
-- **Efecto esperado (Cuadrángulo del Diablo):**
-  - *Tiempo:* Reducción de horas dedicadas a la búsqueda manual de información dispersa.
-  - *Calidad:* Visión integral del paciente y detección oportuna de sobrecarga del cuidador.
-  - *Flexibilidad:* Adaptación fluida del seguimiento según la patología oncológica del caso.
+### Iniciativa 1: Seguimiento de la trayectoria asistencial (TB-01, TB-02)
 
-### Iniciativa 2: Automatización de Reglas de Negocio y Alertas Preventivas GES (TB-04)
-- **Actividad(es) del AS-IS que afecta:** Cálculo y control manual de fechas de garantías de oportunidad GES en planillas de cálculo (Gestora y Supervisora).
-- **Heurística aplicada:** Automatización de reglas de control y ejecución preventiva.
-- **Objetivo o mejora que resuelve:** Resuelve el nodo crítico **AS-04**, programando un motor de cálculo que alerta ante $\le 5$ días hábiles del vencimiento legal y pesquisa inactividad asistencial $> 15$ días.
-- **Efecto esperado (Cuadrángulo del Diablo):**
-  - *Tiempo:* Detección anticipada de casos en riesgo sin intervención humana manual.
-  - *Costo:* Prevención de multas y sanciones legales de la Superintendencia de Salud.
-  - *Calidad:* 100% de trazabilidad de los plazos normados por el Decreto Supremo N° 29.
+- **Actividad del AS-IS que afecta:** Seguimiento en planillas y registro no estandarizado de las necesidades de la persona con cáncer.
 
-### Iniciativa 3: Interoperabilidad Diagnóstica y Consolidación de Exámenes (TB-05)
-- **Actividad(es) del AS-IS que afecta:** Recolección manual y física de biopsias y estudios radiológicos (Gestora y Médico Tratante).
-- **Heurística aplicada:** Integración tecnológica de interfaces (HL7 FHIR / APIs).
-- **Objetivo o mejora que resuelve:** Resuelve el nodo crítico **AS-01**, vinculando automáticamente los informes emitidos por el LIS (patología) y PACS (imágenes) al RUN del paciente, con alertas ante hallazgos de malignidad.
-- **Efecto esperado (Cuadrángulo del Diablo):**
-  - *Tiempo:* Reducción del ciclo de consolidación diagnóstica de 15 días a disponibilidad inmediata.
-  - *Calidad:* Eliminación del riesgo de traspapelo de biopsias o pérdidas de exámenes críticos.
+- **Heurística aplicada:** Centralización de la información y estandarización del registro.
 
-### Iniciativa 4: Digitalización de Comités Oncológicos y Validación Electrónica (TB-06, TB-07)
-- **Actividad(es) del AS-IS que afecta:** Redacción manual de fichas en Word y suscripción de actas en papel físico (Comité Oncológico y Gestora).
-- **Heurística aplicada:** Eliminación de soportes intermediarios y firma digital vinculante.
-- **Objetivo o mejora que resuelve:** Elimina el cuello de botella **AS-02**, autogenerando la ficha con datos clínicos consolidados y permitiendo la firma electrónica del acta y generación automática del reporte REM 7.
-- **Efecto esperado (Cuadrángulo del Diablo):**
-  - *Tiempo:* Disminución del tiempo de preparación de tablas médicas y redigitación posterior.
-  - *Calidad:* Actas inmutables, trazables y cargadas inmediatamente en el expediente del paciente.
-  - *Costo:* Ahorro en insumos físicos y eliminación de almacenamiento en papel.
+- **Objetivo o mejora propuesta:** Facilitar el seguimiento de los casos en un tablero por etapas y registrar la valoración multidimensional, incluyendo los dominios clínico-funcional, psicosocial, familiar, del cuidador y espiritual. La trayectoria debe respetar las ocho etapas definidas por la UGCO.
 
-### Iniciativa 5: Gestión de Red, Derivaciones Digitales y Reembolso de Pasajes (TB-08)
-- **Actividad(es) del AS-IS que afecta:** Confección de dossier físico y entrega manual a UGAA para envío ciego a la red, omitiendo la orientación anticipada de reembolso de pasajes (TENS, UGAA y Gestor).
-- **Heurística aplicada:** Integración interorganizacional, trazabilidad de extremo a extremo y soporte asistencial-social proactivo.
-- **Objetivo o mejora que resuelve:** Elimina el nodo crítico **AS-03**, permitiendo monitorear el estado de recepción, cita y tratamiento en el Hospital Carlos Van Buren o prestadores en convenio, incorporando en el flujo la entrega anticipada obligatoria del instructivo de **Reembolso de Pasajes por Derivación (Anexo 6)** de la Unidad de Servicio Social del HGF.
-- **Efecto esperado (Cuadrángulo del Diablo):**
-  - *Tiempo:* Reducción de los tiempos de confirmación y agendamiento interinstitucional.
-  - *Calidad:* Supresión de "puntos ciegos" en radioterapia/quimioterapia externa y garantía del acceso efectivo a la restitución de gastos de traslado en locomoción pública.
-  - *Costo:* Protección económica directa al paciente y su familia, reduciendo el riesgo de abandono de tratamiento por barreras financieras.
+- **Efecto esperado (cuadrángulo del diablo):**
+  - *Tiempo:* Menos búsquedas en planillas locales para conocer el estado de un caso.
+  - *Calidad:* Mejor visibilidad de las necesidades de la persona y su cuidador.
+  - *Flexibilidad:* Seguimiento ajustable a la etapa y las necesidades de cada caso.
 
-### Iniciativa 6: Autoatención y Triage Asistencial Descentralizado (TB-09, TB-10)
-- **Actividad(es) del AS-IS que afecta:** Atención presencial de demanda espontánea en el mesón de la UGCO (Gestora Oncológica).
-- **Heurística aplicada:** Autoservicio y priorización de solicitudes, con derivación a personal de la UGCO cuando corresponda.
-- **Objetivo o mejora que resuelve:** Mitiga el nodo crítico **AS-06**. El tótem permite consultar estados macro de trámites y exámenes después de completar el método de verificación de identidad autorizado por el hospital. Leer la cédula o ingresar el RUN no basta por sí solo; el acceso del cuidador requiere autorización vigente. El chatbot orienta y ayuda a ordenar las solicitudes, sin realizar diagnósticos. Si el usuario informa síntomas que podrían requerir atención de emergencia, indica acudir de inmediato a la Unidad de Emergencia Adultos; si no puede clasificar la solicitud, ofrece contacto con personal de la UGCO.
-- **Efecto esperado (Cuadrángulo del Diablo):**
-  - *Tiempo:* Respuesta a consultas generales sin interrumpir al personal clínico.
-  - *Calidad:* Resguardo de datos en el tótem y derivación de posibles urgencias o solicitudes no clasificables a la atención correspondiente.
+### Iniciativa 2: Automatización de alertas preventivas GES (TB-04)
+
+- **Actividad del AS-IS que afecta:** Cálculo y revisión manual de las fechas de las garantías GES.
+
+- **Heurística aplicada:** Automatización de reglas de control y alertas preventivas.
+
+- **Objetivo o mejora propuesta:** Configurar alertas cuando falten cinco días hábiles o menos para el vencimiento de una garantía y detectar casos sin movimiento por más de 15 días corridos.
+
+- **Efecto esperado (cuadrángulo del diablo):**
+  - *Tiempo:* Identificación anticipada de los casos que requieren revisión.
+  - *Calidad:* Registro trazable de alertas, vencimientos y acciones realizadas.
+  - *Flexibilidad:* Ajuste de las reglas ante cambios normativos o institucionales.
+
+### Iniciativa 3: Consolidación de exámenes diagnósticos (TB-05)
+
+- **Actividad del AS-IS que afecta:** Revisión manual de informes de patología y radiología en sistemas separados.
+
+- **Heurística aplicada:** Integración tecnológica de fuentes de información diagnóstica.
+
+- **Objetivo o mejora propuesta:** Consultar e indexar por RUN los informes disponibles en LIS y PACS mediante las interfaces autorizadas por el hospital. El sistema debe facilitar el acceso a los resultados y generar una alerta médica prioritaria ante hallazgos de malignidad, según las reglas que defina el equipo clínico.
+
+- **Efecto esperado (cuadrángulo del diablo):**
+  - *Tiempo:* Menos pasos para localizar los informes una vez publicados e integrados.
+  - *Calidad:* Menor riesgo de extravío o falta de asociación de un informe al caso correspondiente.
+  - *Flexibilidad:* Incorporación de fuentes diagnósticas según las interfaces disponibles en el hospital.
+
+### Iniciativa 4: Digitalización de comités oncológicos (TB-06, TB-07)
+
+- **Actividad del AS-IS que afecta:** Preparación manual de fichas en Word y registro de actas en papel.
+
+- **Heurística aplicada:** Digitalización del registro y reducción de la redigitación.
+
+- **Objetivo o mejora propuesta:** Reunir los antecedentes disponibles en una ficha estandarizada para el comité y registrar digitalmente la conducta acordada. La firma electrónica debe utilizar el mecanismo institucional definido y el acta debe quedar vinculada al expediente clínico con su historial de auditoría.
+
+- **Efecto esperado (cuadrángulo del diablo):**
+  - *Tiempo:* Menos preparación manual de fichas y transcripción posterior de acuerdos.
+  - *Calidad:* Mejor disponibilidad y trazabilidad de las decisiones registradas.
+  - *Costo:* Menor uso de papel y de espacio de almacenamiento físico.
+
+### Iniciativa 5: Gestión de derivaciones y reembolso de pasajes (TB-08)
+
+- **Actividad del AS-IS que afecta:** Preparación de dossiers en papel y envío de derivaciones sin confirmación de recepción.
+
+- **Heurística aplicada:** Trazabilidad de la derivación y coordinación con los equipos involucrados.
+
+- **Objetivo o mejora propuesta:** Permitir que TENS prepare el dossier digital, que UGAA registre el despacho y que el equipo haga seguimiento de la recepción y atención en HCVB u otros prestadores en convenio. Cuando corresponda, el flujo debe incluir la entrega anticipada del instructivo de reembolso de pasajes (Anexo 6) de la Unidad de Servicio Social del HGF, de acuerdo con sus requisitos.
+
+- **Efecto esperado (cuadrángulo del diablo):**
+  - *Tiempo:* Más visibilidad del estado de la derivación y de las respuestas pendientes.
+  - *Calidad:* Menos casos sin confirmación de recepción o agendamiento.
+  - *Costo:* Mejor orientación sobre el proceso de reembolso y sus requisitos, sin asegurar su aprobación.
+
+### Iniciativa 6: Autoatención y orientación asistencial (TB-09, TB-10)
+
+- **Actividad del AS-IS que afecta:** Consultas espontáneas en el mesón de la UGCO sobre trámites y exámenes.
+
+- **Heurística aplicada:** Autoservicio para consultas generales y derivación de solicitudes que requieran atención del equipo.
+
+- **Objetivo o mejora propuesta:** El tótem debe mostrar estados generales después de completar un método de verificación de identidad autorizado por el hospital. Leer la cédula o ingresar el RUN no basta por sí solo. Si consulta un cuidador, su autorización debe estar registrada y vigente. El asistente virtual puede orientar y clasificar solicitudes, pero no debe emitir diagnósticos. Ante una posible urgencia, debe indicar acudir a la Unidad de Emergencia Adultos; si no puede clasificar una solicitud, debe ofrecer contacto con personal de la UGCO.
+
+- **Efecto esperado (cuadrángulo del diablo):**
+  - *Tiempo:* Atención de consultas generales sin interrumpir continuamente al equipo.
+  - *Calidad:* Resguardo de los datos consultados y derivación de solicitudes que necesitan evaluación presencial.
+
+### Iniciativa 7: Interoperabilidad con la Plataforma de Seguimiento Oncológico del MINSAL (TB-11)
+
+- **Actividad del AS-IS que afecta:** Doble digitación y falta de intercambio de información entre el registro local y la Plataforma de Seguimiento Oncológico del MINSAL.
+
+- **Heurística aplicada:** Interoperabilidad institucional y reducción de registros duplicados.
+
+- **Objetivo o mejora propuesta:** Definir un intercambio de datos entre OncoTrace y la plataforma del MINSAL para los antecedentes de seguimiento y reporte que autoricen las instituciones. Antes de implementarlo, HGF y MINSAL deben acordar el mecanismo de integración, los datos que se transmitirán, la periodicidad y las responsabilidades de cada sistema. OncoTrace debe registrar los envíos, las confirmaciones y los errores para permitir su revisión y reintento.
+
+- **Efecto esperado (cuadrángulo del diablo):**
+  - *Tiempo:* Menos digitación duplicada una vez habilitado y validado el intercambio.
+  - *Calidad:* Mayor consistencia entre los datos locales y los reportes nacionales.
+  - *Flexibilidad:* Ajuste del intercambio ante cambios en los datos o mecanismos definidos por las instituciones.
 
 ---
 
-## Diagrama del Proceso TO-BE
+## Diagrama del proceso TO-BE
 
 ![Proceso TO-BE](./diagramas/to-be.png)
 
 *Archivo fuente del modelo:* [`./diagramas/to-be.bpmn`](./diagramas/to-be.bpmn)
 
-> **Nota de especificación BPMN:** El modelo distingue formalmente entre:
-> - **Tarea de Usuario (User Task):** Intervención humana soportada por OncoTrace (ej. aplicar evaluación multidimensional o ingresar a comité).
-> - **Tarea de Servicio (Service Task):** Proceso ejecutado automáticamente por el software (ej. motor cron de alertas GES o indexación HL7 de biopsias).
-> - **Tarea Manual (Manual Task):** Actividad física sin interacción directa con el sistema (ej. toma de muestra biológica o atención médica presencial).
+**Nota de especificación BPMN:** El modelo debe distinguir entre:
+
+- **Tarea de usuario:** Intervención humana realizada con apoyo de OncoTrace, como completar una evaluación o registrar una decisión de comité.
+- **Tarea de servicio:** Proceso ejecutado automáticamente, como calcular alertas, consultar una interfaz diagnóstica o registrar el resultado de un intercambio habilitado.
+- **Tarea manual:** Actividad realizada sin interacción directa con el sistema, como la toma de una muestra o una atención presencial.
 
 ---
 
-## Actividades que Cambian del AS-IS al TO-BE
+## Actividades que cambian del AS-IS al TO-BE
 
-| Actividad en el AS-IS | Actividad en el TO-BE | Qué Cambia |
+| Actividad en el AS-IS | Actividad en el TO-BE | Qué cambia |
 | :--- | :--- | :--- |
-| **Búsqueda dispersa de exámenes y seguimiento en planillas Excel** | **TB-01: Monitoreo en Tablero Kanban y Timeline Clínico** | Se pasa de consultar múltiples sistemas a un tablero centralizado por etapas con línea de tiempo cronológica por paciente (incluyendo alta y sobrevivientes). |
-| **Evaluación clínica y psicosocial no estandarizada** | **TB-02: Evaluación Multidimensional Estandarizada** | Se reemplaza el registro libre por una pauta por dominios (clínico-funcional ECOG, psicosocial, cuidador y espiritual) con cálculo automático de riesgo. |
-| **Registro fragmentado de contactos telefónicos y presenciales** | **TB-03: Bitácora Digital de Acompañamiento** | Registro unificado e inmutable de contactos asistenciales, programando el cumplimiento de los 6 puntos de contacto obligatorio normados según la curva de vulnerabilidad del Journey Map. |
-| **Cálculo manual de fechas y plazos de garantías GES** | **TB-04: Motor de Alertas Preventivas GES e Inactividad** | Automatización del cálculo en días hábiles (DS N° 29), con alertas visuales a $\le 5$ días del vencimiento y detección de inactividad $> 15$ días. |
-| **Revisión manual de informes de patología y radiología** | **TB-05: Consolidación Automática de Exámenes y Alertas Críticas** | Indexación automática por RUN desde LIS/PACS vía HL7 FHIR, previsualización centralizada y alerta médica ante hallazgos de malignidad. |
-| **Elaboración manual de fichas de presentación en Word** | **TB-06: Generación Automatizada de Ficha de Comité** | Extracción automática de antecedentes clínicos consolidados hacia un formato estándar en PDF, validando prerrequisitos antes de sesionar. |
-| **Registro de actas en papel físico y firmas manuscritas** | **TB-07: Acta Digital de Comité y Registro REM 7** | Confección digital durante la sesión, firma electrónica vinculante, bloqueo contra modificaciones y generación automática de la estadística REM 7. |
-| **Confección de dossier en papel, envío sin confirmación y omisión de pasajes** | **TB-08: Módulo de Dossier Digital, Trazabilidad de Derivaciones y Reembolso** | Compilación de expediente digital unificado, emisión/entrega del instructivo de reembolso de pasajes (Anexo 6), workflow de derivación a centros de la red (HCVB) y alertas si no hay respuesta en 10 días hábiles. |
-| **Atención desordenada en mesón por consultas de estado de exámenes** | **TB-09: Autoatención Presencial en Tótem de Sala de Espera** | Consulta de estados macro tras completar un método de verificación de identidad autorizado por el hospital. Leer la cédula o ingresar el RUN no basta por sí solo; si consulta un cuidador, su autorización debe estar vigente. |
-| **Interrupciones continuas al equipo por dudas administrativas** | **TB-10: Orientación Interactiva y Triage Asistencial** | Asistente virtual para orientar y ordenar solicitudes. No realiza diagnósticos, indica acudir de inmediato a la Unidad de Emergencia Adultos ante posibles urgencias y ofrece contacto con personal de la UGCO cuando no puede clasificar una solicitud. |
+| Seguimiento en planillas y búsqueda de antecedentes del caso | **TB-01: Monitoreo en tablero Kanban y timeline clínico** | Se centraliza la visualización de las etapas y de los hitos asistenciales registrados. |
+| Evaluación clínica y psicosocial no estandarizada | **TB-02: Evaluación multidimensional estandarizada** | Se registra la valoración por dominios mediante una pauta definida para el proyecto. |
+| Registro fragmentado de contactos telefónicos y presenciales | **TB-03: Bitácora digital de acompañamiento** | Se unifican los contactos y se facilita el seguimiento de los seis puntos definidos por la UGCO. |
+| Cálculo manual de fechas y plazos de garantías GES | **TB-04: Motor de alertas preventivas GES e inactividad** | Se calculan los plazos en días hábiles y se generan alertas según las reglas acordadas. También se detectan casos sin movimiento por más de 15 días corridos. |
+| Revisión manual de informes de patología y radiología | **TB-05: Consolidación automática de exámenes y alertas críticas** | Se consultan los informes integrados desde LIS y PACS mediante las interfaces autorizadas y se facilita su revisión. |
+| Elaboración manual de fichas de presentación en Word | **TB-06: Generación automatizada de ficha de comité** | Se reúnen los antecedentes disponibles en un formato estandarizado, con validación de los datos requeridos antes de la sesión. |
+| Registro de actas en papel y firmas manuscritas | **TB-07: Acta digital de comité y registro REM 7** | Se registra digitalmente la decisión, se aplica el mecanismo de firma definido por el hospital y se facilita la preparación del reporte REM 7. |
+| Preparación de dossier en papel y envío sin confirmación | **TB-08: Módulo de dossier digital, trazabilidad de derivaciones y reembolso** | Se registra el despacho y el seguimiento de la derivación, junto con la entrega del instructivo de reembolso cuando corresponda. |
+| Consultas de estado de exámenes en el mesón | **TB-09: Autoatención presencial en tótem de sala de espera** | Se habilita la consulta de estados generales después de verificar la identidad con el método autorizado por el hospital. |
+| Consultas administrativas que interrumpen al equipo | **TB-10: Orientación interactiva y triage asistencial** | Se orientan solicitudes generales y se ofrece contacto con la UGCO cuando la solicitud no puede clasificarse. |
+| Digitación local y nacional por separado | **TB-11: Interoperabilidad con la Plataforma de Seguimiento Oncológico del MINSAL** | Se plantea un intercambio de datos sujeto a la definición y autorización del mecanismo institucional. Se registran confirmaciones y errores para su seguimiento. |
