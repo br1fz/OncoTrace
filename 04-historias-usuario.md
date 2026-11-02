@@ -14,27 +14,31 @@
 | **HU-08** | Trazabilidad de Derivaciones y Reembolso de Pasajes | Gestor/a, TENS y UGAA | Alta (Must) | **AS-03** | **TB-08** | **RF-08** |
 | **HU-09** | Tótem de Autoatención en Sala de Espera | Paciente / Cuidador | Media (Should) | **AS-06** | **TB-09** | **RF-09** |
 | **HU-10** | Chatbot Institucional y Triage Asistencial (Ley N° 21.258) | Paciente / Gestor/a | Media (Should) | **AS-06** | **TB-10** | **RF-10** |
+| **HU-11** | Intercambio de Información de Seguimiento con MINSAL | Gestor/a autorizado/a de la UGCO | Por acordar con HGF y MINSAL | **AS-05** | **TB-11** | **RF-11** |
 
 ---
 
 <a name="hu-01"></a>
 
 ## HU-01 — Tablero de trazabilidad y línea de tiempo clínica por etapas
+
 - **Como** Gestor/a de Casos Oncológicos de la UGCO,  
 - **quiero** visualizar un tablero centralizado estructurado según las 8 etapas de la trayectoria oncológica y una línea de tiempo cronológica por paciente,  
 - **para** conocer rápidamente el estado de su atención, monitorear plazos normados y realizar seguimiento activo sin consultar múltiples planillas ni sistemas aislados.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-01 (Dispersión de resultados diagnósticos), AS-04 (Monitoreo manual de plazos)
 - **Actividad TO-BE asociada:** TB-01 (Monitoreo de pacientes en tablero Kanban y timeline clínico)
 - **Requisitos asociados:** RF-01 | RNF-02
 
 **Criterios de aceptación:**
-- **HU-01-CA1 — Visualización del tablero por etapas:** Dado que la gestora ingresa al módulo de seguimiento, cuando se carga el tablero, entonces el sistema debe mostrar a los pacientes agrupados según las etapas de la trayectoria oncológica: **Sospecha, Confirmación Diagnóstica, Etapificación, En Comité, Tratamiento, Rehabilitación, Seguimiento y Alta/Sobrevivientes**.
+
+- **HU-01-CA1 — Visualización del tablero por etapas:** Dado que la gestora ingresa al módulo de seguimiento, cuando se carga el tablero, entonces el sistema debe mostrar a los pacientes agrupados según las ocho etapas de la trayectoria oncológica: **Sospecha; Confirmación diagnóstica; Etapificación; Tratamiento; Rehabilitación; Cuidados paliativos y alivio del dolor; Seguimiento y sobrevivientes; Alta y contrarreferencia**. La presentación y la resolución del comité deben registrarse como hitos del proceso, sin crear una etapa independiente.
 - **HU-01-CA2 — Identificación del paciente:** Cada tarjeta del tablero debe mostrar, como mínimo, RUN y nombre del paciente, especialidad asignada, diagnóstico o sospecha CIE-10, etapa actual, fecha del último hito registrado y semáforo de alertas pendientes.
 - **HU-01-CA3 — Acceso a ficha:** Dado que la gestora selecciona un paciente del tablero, cuando hace clic sobre su tarjeta, entonces el sistema debe abrir su ficha integral de seguimiento oncológico.
 - **HU-01-CA4 — Línea de tiempo:** Dado que la gestora accede a la ficha, cuando visualiza la sección de línea de tiempo, entonces el sistema debe mostrar los hitos asistenciales en estricto orden cronológico, indicando para cada uno la fecha, tipo de hito y días transcurridos desde el hito anterior.
-- **HU-01-CA5 — Actualización del estado:** Cuando se registra un hito clínico que modifica la etapa del paciente (ej. resolución de comité o inicio de tratamiento), el sistema debe actualizar automáticamente su ubicación en el tablero.
+- **HU-01-CA5 — Actualización del estado:** Cuando se registra un evento clínico que confirma el ingreso del paciente a otra etapa, como el inicio de tratamiento, el sistema debe actualizar su ubicación en el tablero y conservar el cambio en la línea de tiempo. La presentación del caso o la firma del acta de comité no deben cambiar la etapa por sí solas.
 - **HU-01-CA6 — Trazabilidad de cambios:** Cada hito y cambio de estado debe conservar su fecha y hora de registro, así como el usuario y rol profesional responsable.
 
 ---
@@ -42,16 +46,19 @@
 <a name="hu-02"></a>
 
 ## HU-02 — Evaluación multidimensional y estratificación por dominios
+
 - **Como** Gestor/a de Casos Oncológicos de la UGCO,  
 - **quiero** aplicar y registrar la pauta de valoración inicial por dominios (clínico-funcional, psicoemocional, familiar/cuidador, socioeconómico, espiritual y comprensión diagnóstica),  
 - **para** identificar factores de riesgo biopsicosocial, pesquisar sobrecarga del cuidador y priorizar derivaciones oportunas al equipo multidisciplinario.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-05 (Falta de interoperabilidad y registro no estandarizado)
 - **Actividad TO-BE asociada:** TB-02 (Evaluación multidimensional estandarizada)
 - **Requisito asociado:** RF-02
 
 **Criterios de aceptación:**
+
 - **HU-02-CA1 — Evaluación funcional:** El sistema debe permitir registrar el estado funcional seleccionando un valor normalizado ECOG / OMS válido entre **0 y 4**.
 - **HU-02-CA2 — Dominio psicosocial y socioeconómico:** El formulario debe incluir campos estructurados para registrar nivel de vulnerabilidad socioeconómica, previsión de salud, situación laboral y necesidad de derivación a trabajo social o psicología.
 - **HU-02-CA3 — Evaluación del cuidador principal:** El formulario debe permitir identificar formalmente al cuidador principal (nombre, parentesco, contacto) y aplicar indicadores de pesquisa de sobrecarga del cuidador.
@@ -65,16 +72,19 @@
 <a name="hu-03"></a>
 
 ## HU-03 — Bitácora digital de acompañamiento y puntos de contacto obligatorios
+
 - **Como** Gestor/a o TENS de la UGCO,  
 - **quiero** registrar cada interacción asistencial en una bitácora cronológica que verifique el cumplimiento de los 6 puntos de contacto obligatorio normados según la curva de vulnerabilidad del Journey Map,  
 - **para** asegurar la continuidad del cuidado, evitar deserciones y mantener un canal de comunicación unificado en el equipo de salud.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-05 (Registro fragmentado), AS-06 (Interrupciones y demanda desordenada)
 - **Actividad TO-BE asociada:** TB-03 (Bitácora digital de acompañamiento)
 - **Requisito asociado:** RF-03
 
 **Criterios de aceptación:**
+
 - **HU-03-CA1 — Registro de contacto:** El sistema debe permitir ingresar fecha, tipo de contacto (presencial, telefónico, visita en sala), interlocutor (paciente o cuidador), profesional actuante (Gestor/a o TENS), motivo, resumen de la interacción y acuerdos.
 - **HU-03-CA2 — Verificación de puntos de contacto obligatorio y momentos de vulnerabilidad:** La bitácora debe permitir etiquetar formalmente si el contacto corresponde a uno de los **6 puntos de contacto obligatorio** normados por la UGCO y alineados a la curva de mayor vulnerabilidad del *Patient Journey Map*:
   1. *Ingreso / Sospecha inicial.*
@@ -93,16 +103,19 @@
 <a name="hu-04"></a>
 
 ## HU-04 — Motor de alertas preventivas de plazos GES e inactividad
+
 - **Como** Gestor/a Oncológico/a de la UGCO,  
 - **quiero** recibir alertas preventivas automatizadas sobre plazos de garantías GES próximos a vencer y casos con inactividad prolongada,  
 - **para** intervenir proactivamente, evitar vencimientos de plazos legales (Decreto Supremo N° 29 / Ley GES) y prevenir el abandono de tratamientos.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-04 (Monitoreo manual de plazos GES), AS-05 (Riesgo de deserción asistencial)
 - **Actividad TO-BE asociada:** TB-04 (Motor de alertas preventivas GES e inactividad)
 - **Requisitos asociados:** RF-04 | RNF-01
 
 **Criterios de aceptación:**
+
 - **HU-04-CA1 — Alerta preventiva por proximidad de plazo:** Cuando falten $\le 5$ días hábiles para el vencimiento de una garantía de oportunidad GES en cualquiera de las 21 patologías oncológicas, el sistema debe generar una alerta preventiva de prioridad alta.
 - **HU-04-CA2 — Regla de días hábiles:** El cálculo debe realizarse considerando automáticamente el calendario nacional de días hábiles y feriados.
 - **HU-04-CA3 — Alerta de riesgo de inactividad:** Si un caso permanece sin registros asistenciales, atenciones médicas ni exámenes durante más de **15 días corridos**, el motor debe clasificarlo en alerta por *"Riesgo de Inactividad/Abandono"*.
@@ -116,16 +129,19 @@
 <a name="hu-05"></a>
 
 ## HU-05 — Consolidación e indexación automática de biopsias y PACS con alertas críticas
+
 - **Como** Gestor/a Oncológico/a y Médico Tratante,  
 - **quiero** que los informes de anatomía patológica, laboratorio e imagenología se indexen automáticamente en la ficha del paciente y alerten de inmediato ante hallazgos críticos,  
 - **para** eliminar la búsqueda manual en múltiples plataformas y acelerar la toma de decisiones clínicas.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-01 (Fragmentación y dispersión de resultados diagnósticos)
 - **Actividad TO-BE asociada:** TB-05 (Consolidación automática y alertas críticas)
 - **Requisitos asociados:** RF-05 | RNF-04 | RNF-01
 
 **Criterios de aceptación:**
+
 - **HU-05-CA1 — Indexación por RUN:** El sistema debe capturar informes validados desde los sistemas LIS (laboratorio/biopsias) y PACS (radiología) mediante estándares HL7 FHIR o API REST, asociándolos unívocamente al RUN del paciente.
 - **HU-05-CA2 — Detección de informes críticos:** Si Anatomía Patológica emite un informe con diagnóstico positivo de malignidad o valor crítico, OncoTrace debe activar una notificación prioritaria inmediata al médico tratante y al gestor.
 - **HU-05-CA3 — Indicador de completitud:** En la ficha y en el tablero se debe contrastar la lista de exámenes solicitados con los recibidos, indicando el porcentaje de completitud para presentación a comité.
@@ -138,16 +154,19 @@
 <a name="hu-06"></a>
 
 ## HU-06 — Generación automática de ficha de presentación a comité oncológico
+
 - **Como** Gestor/a Oncológico/a de la UGCO,  
 - **quiero** generar automáticamente la Ficha Resumen de Presentación con los antecedentes clínicos completos del paciente,  
 - **para** suprimir la transcripción manual en documentos Word externos y agilizar la preparación de la tabla del Comité Oncológico Regional.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-02 (Gestión manual de comités oncológicos)
 - **Actividad TO-BE asociada:** TB-06 (Generación automatizada de ficha de presentación a comité)
 - **Requisito asociado:** RF-06
 
 **Criterios de aceptación:**
+
 - **HU-06-CA1 — Programación en tabla de comité:** La gestora debe poder ingresar al paciente a la tabla de una sesión específica del Comité Oncológico (General, Digestivo, Mama, Tórax, Hematología, Tiroides).
 - **HU-06-CA2 — Compilación automática:** Al seleccionar "Generar Ficha de Comité", OncoTrace debe extraer automáticamente desde la ficha: antecedentes mórbidos, biopsias concluyentes, estudios de imágenes relevantes, estadio clínico propuesto y estado funcional ECOG.
 - **HU-06-CA3 — Validación de prerrequisitos:** El sistema debe alertar si faltan estudios indispensables antes de validar la inclusión del caso en la tabla definitiva.
@@ -159,37 +178,43 @@
 <a name="hu-07"></a>
 
 ## HU-07 — Acta digital de comité, firma electrónica y REM 7
+
 - **Como** Médico Integrante del Comité Oncológico Regional,  
 - **quiero** registrar la conducta terapéutica acordada y suscribir el acta con firma electrónica durante la sesión colegiada,  
 - **para** eliminar las actas en papel físico, garantizar la validez legal de la resolución y generar automáticamente el informe estadístico REM 7 exigido por el MINSAL.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-02 (Gestión manual de comités oncológicos)
 - **Actividad TO-BE asociada:** TB-07 (Acta digital de comité y consolidación REM 7)
 - **Requisitos asociados:** RF-07 | RNF-03 | REQ-DER-01
 
 **Criterios de aceptación:**
+
 - **HU-07-CA1 — Registro de asistencia:** El sistema debe registrar la asistencia de los médicos especialistas participantes vinculados mediante autenticación Single Sign-On institucional.
 - **HU-07-CA2 — Resolución terapéutica estructurada:** Debe permitir seleccionar la modalidad terapéutica acordada: *Cirugía en LEIQ, Quimioterapia hematológica (HGF), Derivación a QT sólida/Radioterapia (HCVB), Cuidados Paliativos u otra modalidad combinada*, registrando la estadificación TNM final.
 - **HU-07-CA3 — Firma electrónica y bloqueo:** Al finalizar la revisión del caso, el acta debe firmarse electrónicamente. Una vez firmada, el documento queda bloqueado contra modificaciones ordinarias y se adjunta a la ficha clínica institucional.
 - **HU-07-CA4 — Generación automática REM 7:** OncoTrace debe compilar automáticamente los datos de la sesión para generar la planilla estadística oficial REM 7 exigida por el MINSAL, evitando la digitación posterior.
-- **HU-07-CA5 — Disparo de tareas de seguimiento:** La firma del acta debe transicionar automáticamente el caso en el tablero Kanban y generar la tarea de agendamiento o derivación según la resolución adoptada.
+- **HU-07-CA5 — Disparo de tareas de seguimiento:** La firma del acta debe registrar la resolución como un hito en la línea de tiempo y generar la tarea de agendamiento o derivación según la decisión adoptada. El cambio de etapa debe realizarse cuando se registre el evento clínico correspondiente, conforme a HU-01-CA5.
 
 ---
 
 <a name="hu-08"></a>
 
 ## HU-08 — Trazabilidad de derivaciones externas y reembolso de pasajes (circuito TENS / UGAA / HCVB)
+
 - **Como** Gestor/a, TENS o Administrativo/a de la UGAA,  
 - **quiero** gestionar la confección y despacho digital del dossier de derivación, monitorear el estado del paciente en los centros de referencia de la macrored e instruir anticipadamente el beneficio de reembolso de pasajes (Anexo 6),  
 - **para** erradicar el "punto ciego" asistencial, confirmar la recepción en el Hospital Carlos Van Buren y resguardar la continuidad de la atención y la protección financiera del usuario.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-03 (Pérdida de trazabilidad en derivaciones externas)
 - **Actividad TO-BE asociada:** TB-08 (Módulo de dossier digital, trazabilidad de derivaciones y reembolso de pasajes)
 - **Requisitos asociados:** RF-08 | RNF-01
 
 **Criterios de aceptación:**
+
 - **HU-08-CA1 — Confección digital del dossier por TENS:** Dado que el comité resuelve una derivación externa (QT sólida o Radioterapia), cuando el TENS ingresa al módulo de derivaciones, entonces el sistema debe compilar automáticamente el expediente digital unificado con la interconsulta médica, informes de biopsia, imágenes, acta firmada de comité e información de apoyo social.
 - **HU-08-CA2 — Bandeja de despacho para UGAA:** El dossier digital debe pasar a la bandeja de trabajo de la UGAA, permitiendo al funcionario validar los antecedentes y registrar la fecha y folio formal de derivación externa.
 - **HU-08-CA3 — Workflow de estados de derivación:** La derivación debe avanzar por estados visibles para el equipo: **Dossier Confeccionado $\rightarrow$ Despachado por UGAA $\rightarrow$ Recepcionado en HCVB $\rightarrow$ Cita Asignada $\rightarrow$ Tratamiento Iniciado $\rightarrow$ Contrarreferido con Epicrisis**.
@@ -202,16 +227,19 @@
 <a name="hu-09"></a>
 
 ## HU-09 — Tótem de autoatención en sala de espera
+
 - **Como** Paciente o Cuidador Principal en la sala de espera de la UGCO,  
 - **quiero** consultar el estado de avance de mis exámenes e hitos asistenciales desde una pantalla táctil,  
 - **para** obtener información certera y oportuna de forma autónoma sin necesidad de interrumpir la labor clínica del mesón gestor.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-06 (Interrupciones críticas por demanda espontánea)
 - **Actividad TO-BE asociada:** TB-09 (Autoatención presencial en sala de espera y consulta de trámites)
 - **Requisitos asociados:** RF-09 | RNF-03
 
 **Criterios de aceptación:**
+
 - **HU-09-CA1 — Verificación de identidad:** Para consultar información, el paciente debe completar el método de verificación definido y autorizado por el hospital. Leer el código de la cédula o ingresar el RUN con dígito verificador no será suficiente por sí solo.
 - **HU-09-CA2 — Acceso de cuidador:** El cuidador solo podrá consultar el estado si su autorización para ese paciente está registrada y vigente.
 - **HU-09-CA3 — Consulta de estado de exámenes:** El sistema debe consultar la API de OncoTrace y desplegar únicamente los estados macro de sus estudios en lenguaje claro: *En proceso en laboratorio, Informe listo para revisión médica, Caso agendado en comité, Próxima cita médica programada*.
@@ -223,18 +251,49 @@
 <a name="hu-10"></a>
 
 ## HU-10 — Chatbot de orientación institucional y triage presencial (Ley N° 21.258)
+
 - **Como** Paciente o usuario que acude de forma espontánea a la UGCO,  
 - **quiero** interactuar con un asistente conversacional que resuelva dudas frecuentes sobre mis derechos y me entregue un turno priorizado si requiero atención humana,  
 - **para** recibir orientación inmediata y ser atendido por la gestora de manera ordenada según la complejidad de mi situación.
 
 **Trazabilidad:**
+
 - **Problema AS-IS mitigado:** AS-06 (Interrupciones críticas por demanda espontánea)
 - **Actividad TO-BE asociada:** TB-10 (Orientación interactiva de derechos, canales asistenciales y triage presencial)
 - **Requisito asociado:** RF-10
 
 **Criterios de aceptación:**
+
 - **HU-10-CA1 — Respuestas frecuentes:** El chatbot debe responder consultas comunes sobre trámites del hospital, derechos de la Ley Nacional del Cáncer N° 21.258, ubicación de servicios y preparación para estudios diagnósticos.
 - **HU-10-CA2 — Priorización de solicitudes:** Si el usuario pide atención presencial, el chatbot debe hacer preguntas breves para asignar una prioridad según criterios revisados por la UGCO: *Prioridad Alta (descompensación, dolor no controlado o crisis emocional), Prioridad Media (resultado crítico pendiente o interconsulta vencida) o Prioridad Administrativa (consulta general de fechas)*. Esta clasificación sirve para ordenar la atención y no reemplaza una evaluación clínica.
 - **HU-10-CA3 — Emisión de ticket digital:** El sistema debe emitir un ticket numerado con categoría y estimación de tiempo, incorporando el requerimiento a la cola de atención del tablero de la gestora.
 - **HU-10-CA4 — Atención de posibles urgencias:** Si el usuario informa síntomas que podrían requerir atención de emergencia, el chatbot debe indicarle que acuda de inmediato a la Unidad de Emergencia Adultos del hospital. No debe dejarlo esperando un ticket de atención de la UGCO.
 - **HU-10-CA5 — Derivación cuando no puede clasificar:** Si las respuestas del usuario no permiten asignar una prioridad con claridad, el chatbot debe ofrecer contacto con personal de la UGCO, sin presentar la clasificación como un diagnóstico.
+
+---
+
+<a name="hu-11"></a>
+
+## HU-11 — Intercambio de información de seguimiento con MINSAL
+
+- **Como** Gestor/a de Casos Oncológicos de la UGCO con permisos para supervisar el intercambio de información,  
+- **quiero** consultar el estado de los envíos de datos de seguimiento a la Plataforma de Seguimiento Oncológico del MINSAL y gestionar los errores,  
+- **para** reducir la doble digitación y detectar envíos pendientes o fallidos.
+
+**Condición de habilitación:** Esta historia aplica cuando HGF y MINSAL hayan acordado y habilitado la integración, con el mecanismo, los datos autorizados, la periodicidad y las responsabilidades definidos. Su prioridad debe acordarse con las instituciones.
+
+**Trazabilidad:**
+
+- **Problema AS-IS mitigado:** AS-05 (Registro fragmentado y falta de interoperabilidad con MINSAL)
+- **Actividad TO-BE asociada:** TB-11 (Interoperabilidad con la Plataforma de Seguimiento Oncológico del MINSAL)
+- **Requisitos asociados:** RF-11 | RNF-04 | RNF-03 | REQ-DER-01
+- **Fuentes de elicitación:** EL-01 (Entrevista) y EL-03 (Manuales UGCO)
+
+**Criterios de aceptación:**
+
+- **HU-11-CA1 — Integración habilitada:** Mientras la integración no esté habilitada según el acuerdo institucional, el sistema debe indicar esa condición y mantener deshabilitado el envío de datos a MINSAL.
+- **HU-11-CA2 — Datos y periodicidad acordados:** Una vez habilitada la integración, el sistema debe enviar únicamente los datos de seguimiento autorizados, mediante el mecanismo y con la periodicidad acordados por HGF y MINSAL. No se presupone un protocolo ni un intercambio bidireccional.
+- **HU-11-CA3 — Seguimiento de envíos:** Cada envío debe contar con un identificador y un registro de fecha y hora, caso o registros de seguimiento asociados, estado y confirmaciones o errores recibidos. El personal autorizado debe poder consultar ese registro.
+- **HU-11-CA4 — Confirmación de recepción:** Un envío solo debe figurar como **Confirmado** cuando exista una confirmación válida según el mecanismo institucional acordado. Si todavía no se recibe, debe mantenerse como **Pendiente de confirmación**, sin presentar el envío como recibido por MINSAL.
+- **HU-11-CA5 — Errores y reintentos:** Ante un envío fallido, el sistema debe registrar el error y permitir que personal autorizado lo revise y reintente. Debe conservar el historial de intentos y su relación con el envío original. Antes de reenviar, debe comprobar el estado mediante el mecanismo acordado para evitar duplicar envíos ya confirmados; la ausencia de confirmación no debe dar lugar a un reenvío sin esa comprobación.
+- **HU-11-CA6 — Acceso y auditoría:** La consulta de registros y la ejecución de reintentos deben restringirse a funcionarios autenticados mediante SSO y con los permisos correspondientes. Estas operaciones deben quedar auditadas conforme a RNF-03, con identificación del responsable, fecha, hora y tipo de operación.
