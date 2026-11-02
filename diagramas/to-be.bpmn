@@ -35,6 +35,7 @@
         <bpmn:flowNodeRef>TB_Task_IngresoOncoTrace</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_EvaluacionMultidimensional</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_BitacoraAcompanamiento</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_GW_ContinuarMonitoreo</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_MonitoreoTablero</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_GW_Validacion</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_CompraServicio</bpmn:flowNodeRef>
@@ -156,14 +157,19 @@
       <bpmn:outgoing>TB_Flow_13</bpmn:outgoing>
       <bpmn:outgoing>TB_Flow_MINSAL_NoHabilitada</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="TB_Task_SincronizacionMINSAL" name="[TB-11] OncoTrace intercambia datos autorizados mediante el mecanismo y la periodicidad acordados; registra estados, confirmaciones y errores para revisión y reintento autorizado">
+    <bpmn:serviceTask id="TB_Task_SincronizacionMINSAL" name="[TB-11] Envía datos autorizados por el mecanismo y la periodicidad acordados; registra estados, confirmaciones y errores para revisión y reintento autorizado">
       <bpmn:incoming>TB_Flow_13</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_MINSAL_Registrada</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="TB_GW_ContinuarMonitoreo" name="Continuar con el monitoreo">
+      <bpmn:incoming>TB_Flow_MINSAL_NoHabilitada</bpmn:incoming>
+      <bpmn:incoming>TB_Flow_MINSAL_Registrada</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_MINSAL_Continuar</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
 
     <!-- TB-01: Monitoreo Tablero Kanban -->
     <bpmn:userTask id="TB_Task_MonitoreoTablero" name="[TB-01] Gestora monitorea Tablero Kanban y Timeline Clínico con resultados consolidados">
-      <bpmn:incoming>TB_Flow_13</bpmn:incoming>
+      <bpmn:incoming>TB_Flow_MINSAL_Continuar</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_14</bpmn:outgoing>
     </bpmn:userTask>
 
@@ -318,10 +324,11 @@
     <bpmn:sequenceFlow id="TB_Flow_09" sourceRef="TB_Task_TomarMuestra" targetRef="TB_Task_ConsolidacionAuto" />
     <bpmn:sequenceFlow id="TB_Flow_10" sourceRef="TB_Task_ConsolidacionAuto" targetRef="TB_Task_MotorAlertasGES" />
     <bpmn:sequenceFlow id="TB_Flow_11" sourceRef="TB_Task_MotorAlertasGES" targetRef="TB_Task_GES_Validar" />
-    <bpmn:sequenceFlow id="TB_Flow_12" sourceRef="TB_Task_GES_Validar" targetRef="TB_Task_SincronizacionMINSAL" />
+    <bpmn:sequenceFlow id="TB_Flow_12" sourceRef="TB_Task_GES_Validar" targetRef="TB_GW_IntegracionMINSAL" />
     <bpmn:sequenceFlow id="TB_Flow_13" name="Sí, acordada y habilitada" sourceRef="TB_GW_IntegracionMINSAL" targetRef="TB_Task_SincronizacionMINSAL" />
-    <bpmn:sequenceFlow id="TB_Flow_MINSAL_NoHabilitada" name="No, pendiente de acuerdo o habilitación" sourceRef="TB_GW_IntegracionMINSAL" targetRef="TB_Task_MonitoreoTablero" />
-    <bpmn:sequenceFlow id="TB_Flow_MINSAL_Registrada" sourceRef="TB_Task_SincronizacionMINSAL" targetRef="TB_Task_MonitoreoTablero" />
+    <bpmn:sequenceFlow id="TB_Flow_MINSAL_NoHabilitada" name="No, pendiente de acuerdo o habilitación" sourceRef="TB_GW_IntegracionMINSAL" targetRef="TB_GW_ContinuarMonitoreo" />
+    <bpmn:sequenceFlow id="TB_Flow_MINSAL_Registrada" sourceRef="TB_Task_SincronizacionMINSAL" targetRef="TB_GW_ContinuarMonitoreo" />
+    <bpmn:sequenceFlow id="TB_Flow_MINSAL_Continuar" sourceRef="TB_GW_ContinuarMonitoreo" targetRef="TB_Task_MonitoreoTablero" />
     <bpmn:sequenceFlow id="TB_Flow_14" sourceRef="TB_Task_MonitoreoTablero" targetRef="TB_GW_Validacion" />
     <bpmn:sequenceFlow id="TB_Flow_Completo" name="Sí (Completos)" sourceRef="TB_GW_Validacion" targetRef="TB_Task_GenerarFichaComite" />
     <bpmn:sequenceFlow id="TB_Flow_RequiereExt" name="Requiere PET-CT / EBUS" sourceRef="TB_GW_Validacion" targetRef="TB_Task_CompraServicio" />
@@ -512,6 +519,9 @@
       <bpmndi:BPMNShape id="TB_Task_SincronizacionMINSAL_di" bpmnElement="TB_Task_SincronizacionMINSAL">
         <dc:Bounds x="2160" y="1430" width="220" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TB_GW_ContinuarMonitoreo_di" bpmnElement="TB_GW_ContinuarMonitoreo" isMarkerVisible="true">
+        <dc:Bounds x="2020" y="525" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TB_Task_GenerarFichaComite_di" bpmnElement="TB_Task_GenerarFichaComite">
         <dc:Bounds x="2420" y="1430" width="160" height="80" />
       </bpmndi:BPMNShape>
@@ -627,17 +637,20 @@
       <bpmndi:BPMNEdge id="TB_Flow_MINSAL_NoHabilitada_di" bpmnElement="TB_Flow_MINSAL_NoHabilitada">
         <di:waypoint x="1980" y="1445" />
         <di:waypoint x="1980" y="1400" />
-        <di:waypoint x="2050" y="1400" />
-        <di:waypoint x="2050" y="480" />
-        <di:waypoint x="2140" y="480" />
-        <di:waypoint x="2140" y="510" />
+        <di:waypoint x="2010" y="1400" />
+        <di:waypoint x="2010" y="550" />
+        <di:waypoint x="2020" y="550" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="TB_Flow_MINSAL_Registrada_di" bpmnElement="TB_Flow_MINSAL_Registrada">
         <di:waypoint x="2380" y="1470" />
-        <di:waypoint x="2400" y="1470" />
-        <di:waypoint x="2400" y="480" />
-        <di:waypoint x="2150" y="480" />
-        <di:waypoint x="2150" y="510" />
+        <di:waypoint x="2390" y="1470" />
+        <di:waypoint x="2390" y="650" />
+        <di:waypoint x="2045" y="650" />
+        <di:waypoint x="2045" y="575" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_MINSAL_Continuar_di" bpmnElement="TB_Flow_MINSAL_Continuar">
+        <di:waypoint x="2070" y="550" />
+        <di:waypoint x="2080" y="550" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="TB_Flow_14_di" bpmnElement="TB_Flow_14">
         <di:waypoint x="2220" y="550" />
@@ -645,7 +658,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="TB_Flow_Completo_di" bpmnElement="TB_Flow_Completo">
         <di:waypoint x="2300" y="575" />
-        <di:waypoint x="2300" y="1470" />
+        <di:waypoint x="2300" y="650" />
+        <di:waypoint x="2405" y="650" />
+        <di:waypoint x="2405" y="1470" />
         <di:waypoint x="2420" y="1470" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="TB_Flow_RequiereExt_di" bpmnElement="TB_Flow_RequiereExt">
