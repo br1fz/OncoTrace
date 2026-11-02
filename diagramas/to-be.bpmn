@@ -62,9 +62,10 @@
         <bpmn:flowNodeRef>TB_Task_ComiteDigital</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_GW_Tratamiento</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_TB_Sistema" name="Sistema OncoTrace (Motor Central Automático) – [TB-04] [TB-05] [TB-06] [TB-10]">
+      <bpmn:lane id="Lane_TB_Sistema" name="Sistema OncoTrace (Motor Central Automático) – [TB-04] [TB-05] [TB-06] [TB-10] [TB-11]">
         <bpmn:flowNodeRef>TB_Task_ConsolidacionAuto</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_MotorAlertasGES</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>TB_GW_IntegracionMINSAL</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_SincronizacionMINSAL</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_GenerarFichaComite</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>TB_Task_AsistenteVirtualTriage</bpmn:flowNodeRef>
@@ -130,7 +131,7 @@
     </bpmn:manualTask>
 
     <!-- TB-05: Consolidación Automática -->
-    <bpmn:serviceTask id="TB_Task_ConsolidacionAuto" name="[TB-05] OncoTrace consolida e indexa informes de patología e imágenes (LIS/PACS – HL7 FHIR) y emite alertas críticas">
+    <bpmn:serviceTask id="TB_Task_ConsolidacionAuto" name="[TB-05] OncoTrace consolida e indexa informes de patología e imágenes de LIS/PACS, según las interfaces disponibles, y emite alertas críticas">
       <bpmn:incoming>TB_Flow_09</bpmn:incoming>
       <bpmn:incoming>TB_Flow_CompraRetorno</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_10</bpmn:outgoing>
@@ -149,10 +150,15 @@
       <bpmn:outgoing>TB_Flow_12</bpmn:outgoing>
     </bpmn:userTask>
 
-    <!-- Sincronización MINSAL (RNF-04 - ya no es TB numerado) -->
-    <bpmn:serviceTask id="TB_Task_SincronizacionMINSAL" name="Sincronización bidireccional con Plataforma MINSAL (RNF-04 – Interoperabilidad Hospitalaria)">
+    <!-- TB-11: Integración condicional con MINSAL -->
+    <bpmn:exclusiveGateway id="TB_GW_IntegracionMINSAL" name="¿Integración con MINSAL acordada y habilitada?">
       <bpmn:incoming>TB_Flow_12</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_13</bpmn:outgoing>
+      <bpmn:outgoing>TB_Flow_MINSAL_NoHabilitada</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="TB_Task_SincronizacionMINSAL" name="[TB-11] OncoTrace intercambia datos autorizados mediante el mecanismo y la periodicidad acordados; registra estados, confirmaciones y errores para revisión y reintento autorizado">
+      <bpmn:incoming>TB_Flow_13</bpmn:incoming>
+      <bpmn:outgoing>TB_Flow_MINSAL_Registrada</bpmn:outgoing>
     </bpmn:serviceTask>
 
     <!-- TB-01: Monitoreo Tablero Kanban -->
@@ -178,7 +184,7 @@
       <bpmn:outgoing>TB_Flow_CompraRetorno</bpmn:outgoing>
     </bpmn:userTask>
 
-    <!-- Etapa 4: En Comité → TB-06 Generar Ficha -->
+    <!-- Hito de comité previo al tratamiento: TB-06 genera la ficha de presentación -->
     <bpmn:serviceTask id="TB_Task_GenerarFichaComite" name="[TB-06] OncoTrace genera automáticamente Ficha de Presentación a Comité (antecedentes, ECOG, biopsias, imágenes)">
       <bpmn:incoming>TB_Flow_Completo</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_15</bpmn:outgoing>
@@ -203,7 +209,7 @@
       <bpmn:outgoing>TB_Flow_Paliativos</bpmn:outgoing>
     </bpmn:exclusiveGateway>
 
-    <!-- Etapa 5: Tratamiento Interno HGF -->
+    <!-- Etapa 4: Tratamiento, según la resolución del comité -->
     <bpmn:userTask id="TB_Task_Cirugia" name="Cirugía Oncológica (Ingreso a Lista de Espera Qx HGF)">
       <bpmn:incoming>TB_Flow_Cirugia</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_QxEsp</bpmn:outgoing>
@@ -216,6 +222,7 @@
       <bpmn:incoming>TB_Flow_QTHemato</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_FinQTHem</bpmn:outgoing>
     </bpmn:userTask>
+    <!-- Etapa 6: Cuidados paliativos y alivio del dolor, según indicación clínica -->
     <bpmn:userTask id="TB_Task_Paliativos" name="Ingreso a Unidad de Cuidados Paliativos y Alivio del Dolor">
       <bpmn:incoming>TB_Flow_Paliativos</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_FinPal</bpmn:outgoing>
@@ -227,7 +234,7 @@
       <bpmn:outgoing>TB_Flow_TratToRehab</bpmn:outgoing>
     </bpmn:manualTask>
 
-    <!-- Etapa 6: Rehabilitación -->
+    <!-- Etapa 5: Rehabilitación -->
     <bpmn:userTask id="TB_Task_DerivarRehabilitacion" name="[TB-03] Gestora deriva a Equipo Multidisciplinario (Psicosocial, Nutrición, Kinesiología, Fonoaudiología) y registra en Bitácora (PC-4)">
       <bpmn:incoming>TB_Flow_TratToRehab</bpmn:incoming>
       <bpmn:outgoing>TB_Flow_RehabToSeguimiento</bpmn:outgoing>
@@ -312,7 +319,9 @@
     <bpmn:sequenceFlow id="TB_Flow_10" sourceRef="TB_Task_ConsolidacionAuto" targetRef="TB_Task_MotorAlertasGES" />
     <bpmn:sequenceFlow id="TB_Flow_11" sourceRef="TB_Task_MotorAlertasGES" targetRef="TB_Task_GES_Validar" />
     <bpmn:sequenceFlow id="TB_Flow_12" sourceRef="TB_Task_GES_Validar" targetRef="TB_Task_SincronizacionMINSAL" />
-    <bpmn:sequenceFlow id="TB_Flow_13" sourceRef="TB_Task_SincronizacionMINSAL" targetRef="TB_Task_MonitoreoTablero" />
+    <bpmn:sequenceFlow id="TB_Flow_13" name="Sí, acordada y habilitada" sourceRef="TB_GW_IntegracionMINSAL" targetRef="TB_Task_SincronizacionMINSAL" />
+    <bpmn:sequenceFlow id="TB_Flow_MINSAL_NoHabilitada" name="No, pendiente de acuerdo o habilitación" sourceRef="TB_GW_IntegracionMINSAL" targetRef="TB_Task_MonitoreoTablero" />
+    <bpmn:sequenceFlow id="TB_Flow_MINSAL_Registrada" sourceRef="TB_Task_SincronizacionMINSAL" targetRef="TB_Task_MonitoreoTablero" />
     <bpmn:sequenceFlow id="TB_Flow_14" sourceRef="TB_Task_MonitoreoTablero" targetRef="TB_GW_Validacion" />
     <bpmn:sequenceFlow id="TB_Flow_Completo" name="Sí (Completos)" sourceRef="TB_GW_Validacion" targetRef="TB_Task_GenerarFichaComite" />
     <bpmn:sequenceFlow id="TB_Flow_RequiereExt" name="Requiere PET-CT / EBUS" sourceRef="TB_GW_Validacion" targetRef="TB_Task_CompraServicio" />
@@ -329,9 +338,9 @@
     <bpmn:sequenceFlow id="TB_Flow_FinQx" sourceRef="TB_Task_ListaEsperaQx" targetRef="TB_Task_PacienteTratamiento" />
     <bpmn:sequenceFlow id="TB_Flow_FinQTHem" sourceRef="TB_Task_QTHemato" targetRef="TB_Task_PacienteTratamiento" />
     <bpmn:sequenceFlow id="TB_Flow_FinPal" sourceRef="TB_Task_Paliativos" targetRef="TB_Task_PacienteTratamiento" />
-    <!-- Etapa 6: Tratamiento → Rehabilitación -->
+    <!-- Transición de la etapa 4 (tratamiento) a la etapa 5 (rehabilitación) -->
     <bpmn:sequenceFlow id="TB_Flow_TratToRehab" sourceRef="TB_Task_PacienteTratamiento" targetRef="TB_Task_DerivarRehabilitacion" />
-    <!-- Etapa 7: Rehabilitación → Seguimiento Médico -->
+    <!-- Transición desde rehabilitación hacia seguimiento activo (etapa 7) -->
     <bpmn:sequenceFlow id="TB_Flow_RehabToSeguimiento" sourceRef="TB_Task_DerivarRehabilitacion" targetRef="TB_Task_ControlSeguimiento" />
     <!-- Seguimiento Médico → Contactabilidad TENS -->
     <bpmn:sequenceFlow id="TB_Flow_SeguimientoToTENS" sourceRef="TB_Task_ControlSeguimiento" targetRef="TB_Task_TENS_Contactabilidad" />
@@ -497,8 +506,11 @@
       <bpmndi:BPMNShape id="TB_Task_MotorAlertasGES_di" bpmnElement="TB_Task_MotorAlertasGES">
         <dc:Bounds x="1590" y="1430" width="150" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TB_GW_IntegracionMINSAL_di" bpmnElement="TB_GW_IntegracionMINSAL" isMarkerVisible="true">
+        <dc:Bounds x="1955" y="1445" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TB_Task_SincronizacionMINSAL_di" bpmnElement="TB_Task_SincronizacionMINSAL">
-        <dc:Bounds x="2000" y="1430" width="160" height="80" />
+        <dc:Bounds x="2160" y="1430" width="220" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TB_Task_GenerarFichaComite_di" bpmnElement="TB_Task_GenerarFichaComite">
         <dc:Bounds x="2420" y="1430" width="160" height="80" />
@@ -604,15 +616,28 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="TB_Flow_12_di" bpmnElement="TB_Flow_12">
         <di:waypoint x="1960" y="1150" />
-        <di:waypoint x="1980" y="1150" />
-        <di:waypoint x="1980" y="1470" />
-        <di:waypoint x="2000" y="1470" />
+        <di:waypoint x="1930" y="1150" />
+        <di:waypoint x="1930" y="1470" />
+        <di:waypoint x="1955" y="1470" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="TB_Flow_13_di" bpmnElement="TB_Flow_13">
+        <di:waypoint x="2005" y="1470" />
         <di:waypoint x="2160" y="1470" />
-        <di:waypoint x="2190" y="1470" />
-        <di:waypoint x="2190" y="550" />
-        <di:waypoint x="2080" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_MINSAL_NoHabilitada_di" bpmnElement="TB_Flow_MINSAL_NoHabilitada">
+        <di:waypoint x="1980" y="1445" />
+        <di:waypoint x="1980" y="1400" />
+        <di:waypoint x="2050" y="1400" />
+        <di:waypoint x="2050" y="480" />
+        <di:waypoint x="2140" y="480" />
+        <di:waypoint x="2140" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="TB_Flow_MINSAL_Registrada_di" bpmnElement="TB_Flow_MINSAL_Registrada">
+        <di:waypoint x="2380" y="1470" />
+        <di:waypoint x="2400" y="1470" />
+        <di:waypoint x="2400" y="480" />
+        <di:waypoint x="2150" y="480" />
+        <di:waypoint x="2150" y="510" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="TB_Flow_14_di" bpmnElement="TB_Flow_14">
         <di:waypoint x="2220" y="550" />
@@ -702,14 +727,14 @@
         <di:waypoint x="3040" y="235" />
         <di:waypoint x="3060" y="235" />
       </bpmndi:BPMNEdge>
-      <!-- Etapa 6: Tratamiento → Rehabilitación -->
+      <!-- Transición de la etapa 4 (tratamiento) a la etapa 5 (rehabilitación) -->
       <bpmndi:BPMNEdge id="TB_Flow_TratToRehab_di" bpmnElement="TB_Flow_TratToRehab">
         <di:waypoint x="3190" y="235" />
         <di:waypoint x="3195" y="235" />
         <di:waypoint x="3195" y="550" />
         <di:waypoint x="3200" y="550" />
       </bpmndi:BPMNEdge>
-      <!-- Etapa 7: Rehabilitación → Seguimiento -->
+      <!-- Transición desde rehabilitación hacia seguimiento activo (etapa 7) -->
       <bpmndi:BPMNEdge id="TB_Flow_RehabToSeguimiento_di" bpmnElement="TB_Flow_RehabToSeguimiento">
         <di:waypoint x="3350" y="550" />
         <di:waypoint x="3395" y="550" />
