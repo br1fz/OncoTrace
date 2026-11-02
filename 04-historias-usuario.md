@@ -1,6 +1,6 @@
 # Historias de Usuario
 
-> **Resumen Ejecutivo:** Las siguientes historias de usuario documentan los requerimientos funcionales y de soporte para el equipo multidisciplinario de la Unidad de Gestión de Casos Oncológicos (UGCO) del Hospital Dr. Gustavo Fricke (HGF) y los pacientes. Cada historia cuenta con trazabilidad formal hacia los problemas del proceso AS-IS, las actividades del modelo rediseñado TO-BE (8 etapas de la trayectoria), los requisitos del sistema y las evidencias elicitadas (EL-01, EL-02, EL-03).
+> **Alcance:** Las historias de usuario describen las necesidades del equipo de la UGCO y de los pacientes. Cada una se vincula con los problemas AS-IS, las actividades TO-BE, los requisitos del sistema y las evidencias de elicitación (EL-01, EL-02 y EL-03).
 
 | ID Historia | Título | Rol Principal | Prioridad | Problema AS-IS Mitigado | Actividad TO-BE Asociada | Requisito Funcional |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -17,7 +17,7 @@
 
 ---
 
-## 📌 HU-01: Tablero de Trazabilidad y Timeline Clínico por Etapas
+## HU-01 — Tablero de trazabilidad y línea de tiempo clínica por etapas
 - **Como** Gestor/a de Casos Oncológicos de la UGCO,  
 - **quiero** visualizar un tablero centralizado estructurado según las 8 etapas de la trayectoria oncológica y una línea de tiempo cronológica por paciente,  
 - **para** conocer rápidamente el estado de su atención, monitorear plazos normados y realizar seguimiento activo sin consultar múltiples planillas ni sistemas aislados.
@@ -37,7 +37,7 @@
 
 ---
 
-## 📌 HU-02: Evaluación Multidimensional y Estratificación por Dominios
+## HU-02 — Evaluación multidimensional y estratificación por dominios
 - **Como** Gestor/a de Casos Oncológicos de la UGCO,  
 - **quiero** aplicar y registrar la pauta de valoración inicial por dominios (clínico-funcional, psicoemocional, familiar/cuidador, socioeconómico, espiritual y comprensión diagnóstica),  
 - **para** identificar factores de riesgo biopsicosocial, pesquisar sobrecarga del cuidador y priorizar derivaciones oportunas al equipo multidisciplinario.
@@ -58,7 +58,7 @@
 
 ---
 
-## 📌 HU-03: Bitácora Digital de Acompañamiento y Puntos de Contacto Obligatorios
+## HU-03 — Bitácora digital de acompañamiento y puntos de contacto obligatorios
 - **Como** Gestor/a o TENS de la UGCO,  
 - **quiero** registrar cada interacción asistencial en una bitácora cronológica que verifique el cumplimiento de los 6 puntos de contacto obligatorio normados según la curva de vulnerabilidad del Journey Map,  
 - **para** asegurar la continuidad del cuidado, evitar deserciones y mantener un canal de comunicación unificado en el equipo de salud.
@@ -84,7 +84,7 @@
 
 ---
 
-## 📌 HU-04: Motor de Alertas Preventivas de Plazos GES (21 Patologías) e Inactividad
+## HU-04 — Motor de alertas preventivas de plazos GES e inactividad
 - **Como** Gestor/a Oncológico/a de la UGCO,  
 - **quiero** recibir alertas preventivas automatizadas sobre plazos de garantías GES próximos a vencer y casos con inactividad prolongada,  
 - **para** intervenir proactivamente, evitar vencimientos de plazos legales (Decreto Supremo N° 29 / Ley GES) y prevenir el abandono de tratamientos.
@@ -95,17 +95,17 @@
 - **Requisitos asociados:** RF-04 | RNF-01
 
 **Criterios de aceptación:**
-- **HU-04-CA1 — Alerta preventiva por proximidad de plazo:** Cuando falten $\le 5$ días hábiles para el vencimiento de una garantía de oportunidad GES en cualquiera de las 21 patologías oncológicas, el sistema debe generar una alerta de criticidad alta (rojo/amarillo).
+- **HU-04-CA1 — Alerta preventiva por proximidad de plazo:** Cuando falten $\le 5$ días hábiles para el vencimiento de una garantía de oportunidad GES en cualquiera de las 21 patologías oncológicas, el sistema debe generar una alerta preventiva de prioridad alta.
 - **HU-04-CA2 — Regla de días hábiles:** El cálculo debe realizarse considerando automáticamente el calendario nacional de días hábiles y feriados.
 - **HU-04-CA3 — Alerta de riesgo de inactividad:** Si un caso permanece sin registros asistenciales, atenciones médicas ni exámenes durante más de **15 días corridos**, el motor debe clasificarlo en alerta por *"Riesgo de Inactividad/Abandono"*.
 - **HU-04-CA4 — Notificación en tablero:** Las alertas deben desplegarse tanto en el panel general de la gestora como en la tarjeta del paciente, con indicación de días restantes y tipo de garantía.
-- **HU-04-CA5 — Resolución de alerta:** Una alerta solo podrá ser cerrada cuando el sistema detecte el hito de cumplimiento (ej. atención efectuada o IPD emitido) o el gestor registre la gestión realizada en la bitácora.
+- **HU-04-CA5 — Estado y cierre de alertas:** Si la gestora registra una acción en la bitácora, pero la garantía aún no se ha cumplido, la alerta debe permanecer visible con estado **En gestión**. Se marcará **Resuelta** cuando el sistema detecte el hito de cumplimiento correspondiente. Si una causa documentada deja sin efecto la garantía, una gestora autorizada debe registrar el motivo, la fecha y su responsabilidad; en ese caso, la alerta debe cerrarse con estado **No aplica**.
 - **HU-04-CA6 — Exportación para Unidad GES:** El sistema debe permitir exportar el reporte consolidado de alertas vigentes para su revisión semanal con la Unidad GES institucional.
 - **HU-04-CA7 — No duplicidad:** El proceso programado no debe generar alertas redundantes mientras la condición original siga activa y pendiente de resolución.
 
 ---
 
-## 📌 HU-05: Consolidación e Indexación Automática de Biopsias y PACS con Alertas Críticas
+## HU-05 — Consolidación e indexación automática de biopsias y PACS con alertas críticas
 - **Como** Gestor/a Oncológico/a y Médico Tratante,  
 - **quiero** que los informes de anatomía patológica, laboratorio e imagenología se indexen automáticamente en la ficha del paciente y alerten de inmediato ante hallazgos críticos,  
 - **para** eliminar la búsqueda manual en múltiples plataformas y acelerar la toma de decisiones clínicas.
@@ -125,7 +125,7 @@
 
 ---
 
-## 📌 HU-06: Generación Automática de Ficha de Presentación a Comité Oncológico
+## HU-06 — Generación automática de ficha de presentación a comité oncológico
 - **Como** Gestor/a Oncológico/a de la UGCO,  
 - **quiero** generar automáticamente la Ficha Resumen de Presentación con los antecedentes clínicos completos del paciente,  
 - **para** suprimir la transcripción manual en documentos Word externos y agilizar la preparación de la tabla del Comité Oncológico Regional.
@@ -144,7 +144,7 @@
 
 ---
 
-## 📌 HU-07: Formalización de Acta Digital de Comité, Firma Electrónica y REM 7
+## HU-07 — Acta digital de comité, firma electrónica y REM 7
 - **Como** Médico Integrante del Comité Oncológico Regional,  
 - **quiero** registrar la conducta terapéutica acordada y suscribir el acta con firma electrónica durante la sesión colegiada,  
 - **para** eliminar las actas en papel físico, garantizar la validez legal de la resolución y generar automáticamente el informe estadístico REM 7 exigido por el MINSAL.
@@ -163,7 +163,7 @@
 
 ---
 
-## 📌 HU-08: Trazabilidad y Tracking de Derivaciones Externas y Reembolso de Pasajes (Circuito TENS / UGAA / HCVB)
+## HU-08 — Trazabilidad de derivaciones externas y reembolso de pasajes (circuito TENS / UGAA / HCVB)
 - **Como** Gestor/a, TENS o Administrativo/a de la UGAA,  
 - **quiero** gestionar la confección y despacho digital del dossier de derivación, monitorear el estado del paciente en los centros de referencia de la macrored e instruir anticipadamente el beneficio de reembolso de pasajes (Anexo 6),  
 - **para** erradicar el "punto ciego" asistencial, confirmar la recepción en el Hospital Carlos Van Buren y resguardar la continuidad de la atención y la protección financiera del usuario.
@@ -183,7 +183,7 @@
 
 ---
 
-## 📌 HU-09: Tótem de Autoatención en Sala de Espera con Lectura de RUN (Extensión TO-BE)
+## HU-09 — Tótem de autoatención en sala de espera
 - **Como** Paciente o Cuidador Principal en la sala de espera de la UGCO,  
 - **quiero** consultar el estado de avance de mis exámenes e hitos asistenciales desde una pantalla táctil,  
 - **para** obtener información certera y oportuna de forma autónoma sin necesidad de interrumpir la labor clínica del mesón gestor.
@@ -202,7 +202,7 @@
 
 ---
 
-## 📌 HU-10: Chatbot de Orientación Institucional y Triage Presencial (Ley N° 21.258)
+## HU-10 — Chatbot de orientación institucional y triage presencial (Ley N° 21.258)
 - **Como** Paciente o usuario que acude de forma espontánea a la UGCO,  
 - **quiero** interactuar con un asistente conversacional que resuelva dudas frecuentes sobre mis derechos y me entregue un turno priorizado si requiero atención humana,  
 - **para** recibir orientación inmediata y ser atendido por la gestora de manera ordenada según la complejidad de mi situación.
