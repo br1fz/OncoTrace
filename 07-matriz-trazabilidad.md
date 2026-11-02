@@ -25,7 +25,7 @@ flowchart TB
 | **EL-xx** | **Fuente de elicitación** | Entrevista, normativa o manual utilizado para levantar y validar una necesidad. |
 | **TB-xx** | **Actividad TO-BE** | Actividad o solución rediseñada para atender una brecha del proceso (TB-01 a TB-10). |
 | **RF-xx** | **Requisito funcional** | Capacidad o servicio que debe ofrecer el sistema (RF-01 a RF-10). |
-| **RNF-xx** | **Requisito no funcional** | Restricción de calidad o técnica, como fiabilidad, eficiencia, seguridad o interoperabilidad (RNF-01 a RNF-04). |
+| **RNF-xx** | **Requisito no funcional** | Restricción de calidad o técnica, como fiabilidad, eficiencia, seguridad o interoperabilidad (RNF-01 a RNF-04). RNF-03 se aplica a las actividades que manejan información clínica (TB-01 a TB-10). |
 | **REQ-DER-xx** | **Requisito derivado** | Necesidad técnica derivada de otro requisito; en este proyecto, REQ-DER-01 define la autenticación institucional mediante SSO. |
 | **RP-xx** | **Requisito de proyecto** | Condición para gestionar el trabajo y sus entregas; RP-01 a RP-03 se describen en `03-requisitos.md`. |
 | **HU-xx** | **Historia de usuario** | Necesidad de un rol del equipo clínico, de gestión o del paciente (HU-01 a HU-10). |
@@ -38,12 +38,12 @@ flowchart TB
 
 | ID AS-IS | Problema AS-IS | Fuente EL | ID TO-BE | Solución TO-BE | Requisito (RF / RNF) | Historia de usuario | Criterios de aceptación (CA) | Atributo de calidad o verificación |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **AS-01** | **Dispersión de resultados diagnósticos** en múltiples LIS/PACS y papel | **EL-01** (Entrevista)<br>**EL-03** (Manual UGCO) | **TB-01**<br>**TB-05** | Tablero Kanban y línea de tiempo<br>Indexación y consolidación automática | **RF-01**<br>**RF-05**<br>**RNF-02**<br>**RNF-04** | [HU-01](./04-historias-usuario.md#hu-01)<br>[HU-05](./04-historias-usuario.md#hu-05) | HU-01-CA1 a HU-01-CA6<br>HU-05-CA1 a HU-05-CA6 | **AC-03** (más de 1.000 pacientes con alertas activas y 50 usuarios: carga ≤ 2,0 s; CPU ≤ 70 %)<br>**RNF-04** (HL7 FHIR / API REST) |
+| **AS-01** | **Dispersión de resultados diagnósticos** en múltiples LIS/PACS y papel | **EL-01** (Entrevista)<br>**EL-03** (Manual UGCO) | **TB-01**<br>**TB-05** | Tablero Kanban y línea de tiempo<br>Indexación y consolidación automática | **RF-01**<br>**RF-05**<br>**RNF-02**<br>**RNF-03**<br>**RNF-04** | [HU-01](./04-historias-usuario.md#hu-01)<br>[HU-05](./04-historias-usuario.md#hu-05) | HU-01-CA1 a HU-01-CA6<br>HU-05-CA1 a HU-05-CA6 | **AC-01** (control de acceso y auditoría)<br>**AC-03** (más de 1.000 pacientes con alertas activas y 50 usuarios: carga ≤ 2,0 s; CPU ≤ 70 %)<br>**RNF-04** (HL7 FHIR / API REST) |
 | **AS-02** | **Gestión manual de comités oncológicos** (Word y papel sin integración) | **EL-01** (Entrevista)<br>**EL-02** (Normativa)<br>**EL-03** (Manual UGCO) | **TB-06**<br>**TB-07** | Ficha resumen autogenerada<br>Acta digital con firma y REM 7 | **RF-06**<br>**RF-07**<br>**RNF-03**<br>**REQ-DER-01** | [HU-06](./04-historias-usuario.md#hu-06)<br>[HU-07](./04-historias-usuario.md#hu-07) | HU-06-CA1 a HU-06-CA5<br>HU-07-CA1 a HU-07-CA5 | **AC-01** (registro del 100 % de accesos e intentos)<br>**REQ-DER-01** (SSO institucional) |
-| **AS-03** | **Pérdida de trazabilidad en derivaciones** (dossier TENS → UGAA → HCVB y falta de información sobre pasajes) | **EL-01** (Entrevista)<br>**EL-03** (Manual UGCO v2.0) | **TB-08** | Dossier digital, seguimiento de la derivación y entrega del instructivo de reembolso | **RF-08** | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-CA1 a HU-08-CA6 | Seguimiento de estados y entrega del Anexo 6 junto a Servicio Social |
-| **AS-04** | **Monitoreo manual de plazos GES** en planillas de cálculo | **EL-02** (Normativa GES)<br>**EL-03** (DS N° 29 / UGCO) | **TB-01**<br>**TB-04** | Visualización en tablero Kanban<br>Motor de alertas preventivas GES | **RF-01**<br>**RF-04**<br>**RNF-01** | [HU-01](./04-historias-usuario.md#hu-01)<br>[HU-04](./04-historias-usuario.md#hu-04) | HU-01-CA2, HU-01-CA4<br>HU-04-CA1 a HU-04-CA7 | **AC-02** (disponibilidad ≥ 99,5 % y RTO ≤ 5 min)<br>Alerta cuando falten 5 días hábiles o menos (DS N° 29) |
-| **AS-05** | **Registro fragmentado y falta de bitácora estandarizada** | **EL-01** (Entrevista)<br>**EL-02** (Ley N° 21.258)<br>**EL-03** (Manual UGCO) | **TB-02**<br>**TB-03**<br>**TB-04** | Evaluación por dominios<br>Bitácora de contactos<br>Alerta por inactividad superior a 15 días | **RF-02**<br>**RF-03**<br>**RF-04** | [HU-02](./04-historias-usuario.md#hu-02)<br>[HU-03](./04-historias-usuario.md#hu-03)<br>[HU-04](./04-historias-usuario.md#hu-04) | HU-02-CA1 a HU-02-CA7<br>HU-03-CA1 a HU-03-CA6<br>HU-04-CA3 (riesgo de inactividad) | Escala ECOG (0–4); cálculo de riesgo; integridad de la bitácora (`HU-03-CA6`); seis puntos de contacto |
-| **AS-06** | **Interrupciones por demanda espontánea** en el mesón presencial | **EL-01** (Entrevista)<br>**EL-02** (Ley N° 21.258)<br>**EL-03** (Manual UGCO) | **TB-09**<br>**TB-10** | Tótem de autoatención<br>Asistente virtual y triage presencial | **RF-09**<br>**RF-10**<br>**RNF-03** | [HU-09](./04-historias-usuario.md#hu-09)<br>[HU-10](./04-historias-usuario.md#hu-10) | HU-09-CA1 a HU-09-CA5<br>HU-10-CA1 a HU-10-CA5 | Verificación de identidad y autorización del cuidador; confidencialidad (`HU-09-CA4`); cierre de sesión (`HU-09-CA5`); orientación ante urgencias y derivación a personal (`HU-10-CA4` y `HU-10-CA5`) |
+| **AS-03** | **Pérdida de trazabilidad en derivaciones** (dossier TENS → UGAA → HCVB y falta de información sobre pasajes) | **EL-01** (Entrevista)<br>**EL-03** (Manual UGCO v2.0) | **TB-08** | Dossier digital, seguimiento de la derivación y entrega del instructivo de reembolso | **RF-08**<br>**RNF-03** | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-CA1 a HU-08-CA6 | **AC-01** (control de acceso y auditoría)<br>Seguimiento de estados y entrega del Anexo 6 junto a Servicio Social |
+| **AS-04** | **Monitoreo manual de plazos GES** en planillas de cálculo | **EL-02** (Normativa GES)<br>**EL-03** (DS N° 29 / UGCO) | **TB-01**<br>**TB-04** | Visualización en tablero Kanban<br>Motor de alertas preventivas GES | **RF-01**<br>**RF-04**<br>**RNF-01**<br>**RNF-03** | [HU-01](./04-historias-usuario.md#hu-01)<br>[HU-04](./04-historias-usuario.md#hu-04) | HU-01-CA2, HU-01-CA4<br>HU-04-CA1 a HU-04-CA7 | **AC-01** (control de acceso y auditoría)<br>**AC-02** (disponibilidad ≥ 99,5 % y RTO ≤ 5 min)<br>Alerta cuando falten 5 días hábiles o menos (DS N° 29) |
+| **AS-05** | **Registro fragmentado y falta de bitácora estandarizada** | **EL-01** (Entrevista)<br>**EL-02** (Ley N° 21.258)<br>**EL-03** (Manual UGCO) | **TB-02**<br>**TB-03**<br>**TB-04** | Evaluación por dominios<br>Bitácora de contactos<br>Alerta por inactividad superior a 15 días | **RF-02**<br>**RF-03**<br>**RF-04**<br>**RNF-03** | [HU-02](./04-historias-usuario.md#hu-02)<br>[HU-03](./04-historias-usuario.md#hu-03)<br>[HU-04](./04-historias-usuario.md#hu-04) | HU-02-CA1 a HU-02-CA7<br>HU-03-CA1 a HU-03-CA6<br>HU-04-CA3 (riesgo de inactividad) | **AC-01** (control de acceso y auditoría)<br>Escala ECOG (0–4); cálculo de riesgo; integridad de la bitácora (`HU-03-CA6`); seis puntos de contacto |
+| **AS-06** | **Interrupciones por demanda espontánea** en el mesón presencial | **EL-01** (Entrevista)<br>**EL-02** (Ley N° 21.258)<br>**EL-03** (Manual UGCO) | **TB-09**<br>**TB-10** | Tótem de autoatención<br>Asistente virtual y triage presencial | **RF-09**<br>**RF-10**<br>**RNF-03** | [HU-09](./04-historias-usuario.md#hu-09)<br>[HU-10](./04-historias-usuario.md#hu-10) | HU-09-CA1 a HU-09-CA5<br>HU-10-CA1 a HU-10-CA5 | **AC-01** (control de acceso y auditoría); verificación de identidad y autorización del cuidador; confidencialidad (`HU-09-CA4`); cierre de sesión (`HU-09-CA5`); orientación ante urgencias y derivación a personal (`HU-10-CA4` y `HU-10-CA5`) |
 
 ---
 
@@ -59,11 +59,12 @@ flowchart TB
   - `RF-01` (Tablero y Trazabilidad por Etapas)
   - `RF-05` (Consolidación Automática de Exámenes y Alertas Críticas)
   - `RNF-02` (eficiencia: mostrar las ocho columnas y completar la carga con más de 1.000 pacientes con alertas activas y 50 usuarios concurrentes en 2,0 segundos o menos; uso de CPU de 70 % o menos)
+  - `RNF-03` (seguridad y confidencialidad clínica en el acceso a información del paciente)
   - `RNF-04` (Interoperabilidad Hospitalaria HL7 FHIR / API REST)
 - **Historias de usuario:**
   - [HU-01](./04-historias-usuario.md#hu-01) (tablero de trazabilidad) → criterios `HU-01-CA1` a `HU-01-CA6`
   - [HU-05](./04-historias-usuario.md#hu-05) (consolidación de biopsias) → criterios `HU-05-CA1` a `HU-05-CA6`
-- **Verificación de calidad:** `AC-03` establece la carga y visualización de las ocho columnas en 2,0 segundos o menos, con más de 1.000 pacientes con alertas activas y 50 usuarios concurrentes; el uso de CPU debe ser de 70 % o menos.
+- **Verificación de calidad:** `AC-01` verifica el control de acceso y la auditoría de la información clínica. `AC-03` establece la carga y visualización de las ocho columnas en 2,0 segundos o menos, con más de 1.000 pacientes con alertas activas y 50 usuarios concurrentes; el uso de CPU debe ser de 70 % o menos.
 
 ---
 
@@ -76,10 +77,11 @@ flowchart TB
 - **Requisitos vinculados:**
   - `RF-02` (evaluación multidimensional por dominios)
   - `RF-03` (bitácora de puntos de contacto)
+  - `RNF-03` (seguridad y confidencialidad clínica en el acceso a información del paciente)
 - **Historias de usuario:**
   - [HU-02](./04-historias-usuario.md#hu-02) (evaluación multidimensional) → criterios `HU-02-CA1` a `HU-02-CA7`
   - [HU-03](./04-historias-usuario.md#hu-03) (bitácora de acompañamiento) → criterios `HU-03-CA1` a `HU-03-CA6`
-- **Verificaciones asociadas:** evaluación ECOG, cálculo de riesgo (`RF-02`) e integridad del registro de contactos (`HU-03-CA6`).
+- **Verificaciones asociadas:** evaluación ECOG, cálculo de riesgo (`RF-02`), integridad del registro de contactos (`HU-03-CA6`) y control de acceso y auditoría (`AC-01`).
 
 ---
 
@@ -91,8 +93,9 @@ flowchart TB
 - **Requisitos vinculados:**
   - `RF-04` (Motor de Alertas Preventivas GES e Inactividad)
   - `RNF-01` (Fiabilidad y Disponibilidad Operativa)
+  - `RNF-03` (seguridad y confidencialidad clínica en el acceso a información del paciente)
 - **Historia de usuario:** [HU-04](./04-historias-usuario.md#hu-04) (alertas de plazos GES e inactividad) → criterios `HU-04-CA1` a `HU-04-CA7`.
-- **Verificación de calidad:** `AC-02` establece disponibilidad mensual de al menos 99,5 % entre las 08:00 y las 18:00, RTO de cinco minutos o menos y RPO = 0 (sin pérdida de transacciones clínicas confirmadas). `HU-04-CA7` verifica que no se generen alertas duplicadas.
+- **Verificación de calidad:** `AC-01` verifica el control de acceso y la auditoría de la información clínica. `AC-02` establece disponibilidad mensual de al menos 99,5 % entre las 08:00 y las 18:00, RTO de cinco minutos o menos y RPO = 0 (sin pérdida de transacciones clínicas confirmadas). `HU-04-CA7` verifica que no se generen alertas duplicadas.
 
 ---
 
@@ -121,8 +124,9 @@ flowchart TB
   - **TB-08:** Dossier digital y seguimiento de estados: `Dossier confeccionado` → `Despachado por UGAA` → `Recepcionado por HCVB` → `Cita asignada` → `Tratamiento iniciado` → `Contrarreferido`. Incluye la entrega del instructivo de reembolso de pasajes (Anexo 6).
 - **Requisitos vinculados:**
   - `RF-08` (derivaciones externas, dossier digital y reembolso de pasajes)
+  - `RNF-03` (seguridad y confidencialidad clínica en el acceso a información del paciente)
 - **Historia de usuario:** [HU-08](./04-historias-usuario.md#hu-08) (trazabilidad de derivaciones y reembolso de pasajes) → criterios `HU-08-CA1` a `HU-08-CA6`.
-- **Verificación asociada:** registro del estado de la derivación y de la entrega del Anexo 6.
+- **Verificación asociada:** registro del estado de la derivación y de la entrega del Anexo 6; `AC-01` verifica el control de acceso y la auditoría de la información clínica.
 
 ---
 
@@ -139,7 +143,7 @@ flowchart TB
 - **Historias de usuario:**
   - [HU-09](./04-historias-usuario.md#hu-09) (tótem de autoatención) → criterios `HU-09-CA1` a `HU-09-CA5`
   - [HU-10](./04-historias-usuario.md#hu-10) (asistente virtual y triage) → criterios `HU-10-CA1` a `HU-10-CA5`
-- **Verificaciones asociadas:** identidad y autorización del cuidador (`HU-09-CA1` y `HU-09-CA2`), confidencialidad (`HU-09-CA4`), cierre de sesión (`HU-09-CA5`), orientación ante urgencias (`HU-10-CA4`) y derivación a personal cuando no se pueda clasificar la solicitud (`HU-10-CA5`).
+- **Verificaciones asociadas:** control de acceso y auditoría (`AC-01`), identidad y autorización del cuidador (`HU-09-CA1` y `HU-09-CA2`), confidencialidad (`HU-09-CA4`), cierre de sesión (`HU-09-CA5`), orientación ante urgencias (`HU-10-CA4`) y derivación a personal cuando no se pueda clasificar la solicitud (`HU-10-CA5`).
 
 ---
 
