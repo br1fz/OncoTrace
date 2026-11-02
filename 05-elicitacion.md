@@ -2,7 +2,7 @@
 
 > **Proyecto:** OncoTrace – Plataforma de Trazabilidad, Gestión, Evaluación y Acompañamiento Oncológico  
 > **Institución:** Hospital Dr. Gustavo Fricke (HGF) · Unidad de Gestión de Casos Oncológicos (UGCO)  
-> **Asignatura:** CIN324 – Ingeniería de Requisitos | Entrega 1
+> **Asignatura:** CIN324 – Ingeniería de Requisitos · Entrega 1
 
 ---
 
@@ -45,6 +45,7 @@
 
 - **Participantes:** Equipo de Ingeniería de Requisitos y contraparte técnica de la UGCO.
 - **Evidencia:** Documentación entregada y validada por la Unidad:
+
   - Manual de Organización y Funcionamiento de la UGCO (versión 2.0).
   - Manual de Procedimientos de la UGCO (versión 2.0 final, octubre de 2026).
   - Manual de Gestión de Casos Oncológicos (GCO).
@@ -56,6 +57,7 @@
 - **Estructura organizacional:** La UGCO depende administrativamente de la Subdirección de Gestión del Cuidado (SDGC) y técnicamente de la Subdirección Médica (SDM). Su equipo incluye enfermera supervisora, gestores por especialidad, TENS y personal administrativo.
 
 - **Trayectoria oncológica formal:** El Manual de Procedimientos establece ocho etapas:
+
   1. Sospecha.
   2. Confirmación diagnóstica.
   3. Etapificación.
@@ -71,7 +73,7 @@
 
 - **AS-03 — Derivaciones y reembolso de pasajes:** El TENS prepara el dossier y la UGAA realiza el despacho formal hacia la macrored, incluido el HCVB. Para derivaciones fuera de Viña del Mar, se indica entregar anticipadamente el instructivo de reembolso de pasajes del Anexo 6. El beneficio cubre locomoción pública y requiere certificados de asistencia sin enmiendas (TB-08).
 
-- **AS-05 — Interoperabilidad con MINSAL:** La unidad cuenta con una plataforma local de registro, pero esta no se comunica con la Plataforma de Seguimiento Oncológico del MINSAL. La doble digitación y la falta de reporte nacional se registran como una brecha de interoperabilidad.
+- **AS-05 — Interoperabilidad con MINSAL:** La unidad cuenta con una plataforma local de registro, pero esta no se comunica con la Plataforma de Seguimiento Oncológico del MINSAL. La doble digitación y la falta de reporte nacional se registran como una brecha de interoperabilidad. Esta necesidad se recoge en TB-11 y RF-11; el mecanismo, los datos y la periodicidad de intercambio quedan sujetos al acuerdo entre el HGF y el MINSAL.
 
 - **AS-04 y AS-02 — GES y REM 7:** La UGCO gestiona 21 problemas de salud oncológicos y asociados cubiertos por GES, según el DS N° 29 de 2025, y reporta la estadística de los comités en el REM 7 (TB-07).
 
@@ -85,5 +87,5 @@
 | **AS-02** | Preparación manual de comités y actas | TB-06 y TB-07 |
 | **AS-03** | Falta de seguimiento de derivaciones y orientación sobre pasajes | TB-08 |
 | **AS-04** | Control manual de plazos GES | TB-04 |
-| **AS-05** | Registro local fragmentado y sin interoperabilidad con MINSAL | La valoración y la bitácora se relacionan con TB-02, TB-03 y TB-04. La integración con MINSAL requiere un requisito y una actividad explícitos; RNF-04/TB-05 se refieren actualmente a LIS y PACS. |
+| **AS-05** | Registro local fragmentado y sin interoperabilidad con MINSAL | TB-02, TB-03 y TB-04 cubren la valoración, la bitácora y las alertas. La integración con MINSAL se especifica en TB-11 y RF-11. |
 | **AS-06** | Alta demanda espontánea en ventanilla | TB-09 y TB-10 |
