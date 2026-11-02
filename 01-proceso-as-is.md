@@ -52,9 +52,7 @@ El Comité Oncológico Regional es una instancia de evaluación y decisión asoc
 
 ## Diagrama del proceso AS-IS
 
-![Proceso AS-IS](./diagramas/as-is.png)
-
-*Archivo fuente del modelo:* [`./diagramas/as-is.bpmn`](./diagramas/as-is.bpmn)
+[Ver diagrama del proceso AS-IS en BPMN 2.0](./diagramas/as-is.bpmn)
 
 ---
 
