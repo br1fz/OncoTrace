@@ -1,0 +1,226 @@
+' MD-01. Tres vistas del mismo modelo conceptual.
+' Las clases repetidas representan los mismos conceptos.
+' El PNG reúne las tres vistas. No son tres modelos distintos.
+
+@startuml vista-seguimiento
+!pragma layout smetana
+hide methods
+hide circle
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classBackgroundColor #F8FAFC
+skinparam classBorderColor #334155
+skinparam classFontColor #0F172A
+skinparam classAttributeFontColor #334155
+skinparam classFontSize 19
+skinparam classAttributeFontSize 16
+skinparam ArrowColor #475569
+skinparam ArrowFontSize 15
+skinparam titleFontSize 23
+skinparam titleFontColor #0F172A
+skinparam defaultFontName SansSerif
+top to bottom direction
+title
+MD-01.A — Seguimiento y alertas
+
+
+end title
+
+class Paciente {
+  run: Texto
+  nombreCompleto: Texto
+}
+
+class CasoOncologico {
+  numeroCaso: Texto
+  especialidad: Texto
+  codigoDiagnosticoOSospecha: Texto
+  etapaActual: EtapaTrayectoria
+  fechaIngreso: Fecha
+}
+
+class HitoAsistencial {
+  tipo: Texto
+  fechaOcurrencia: FechaHora
+  fechaRegistro: FechaHora
+  responsable: Texto
+  rolResponsable: Texto
+}
+
+class GarantiaGES {
+  identificador: Texto
+  tipoGarantia: Texto
+  fechaInicio: Fecha
+  fechaLimite: Fecha
+  estadoCumplimiento: Texto
+}
+
+class AlertaSeguimiento {
+  identificador: Texto
+  tipo: TipoAlerta
+  prioridad: Texto
+  fechaGeneracion: FechaHora
+  estado: EstadoAlerta
+  motivoCierre: Texto
+  fechaCierre: FechaHora
+  responsableCierre: Texto
+}
+
+Paciente "1" -- "1..*" CasoOncologico : presenta
+CasoOncologico "1" -- "0..*" HitoAsistencial : registra
+CasoOncologico "1" -- "0..*" GarantiaGES : tiene
+CasoOncologico "1" -- "0..*" AlertaSeguimiento : presenta
+GarantiaGES "0..1" -- "0..*" AlertaSeguimiento : origina
+HitoAsistencial "0..1" -- "0..*" AlertaSeguimiento : justifica cierre
+
+@enduml
+
+@startuml vista-examenes
+!pragma layout smetana
+hide methods
+hide circle
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classBackgroundColor #F8FAFC
+skinparam classBorderColor #334155
+skinparam classFontColor #0F172A
+skinparam classAttributeFontColor #334155
+skinparam classFontSize 19
+skinparam classAttributeFontSize 16
+skinparam ArrowColor #475569
+skinparam ArrowFontSize 15
+skinparam titleFontSize 23
+skinparam titleFontColor #0F172A
+skinparam defaultFontName SansSerif
+top to bottom direction
+title
+MD-01.B — Exámenes y antecedentes
+
+
+end title
+
+class CasoOncologico {
+  numeroCaso: Texto
+  especialidad: Texto
+  codigoDiagnosticoOSospecha: Texto
+  etapaActual: EtapaTrayectoria
+  fechaIngreso: Fecha
+}
+
+class OrdenExamen {
+  identificador: Texto
+  tipoEstudio: Texto
+  fechaSolicitud: Fecha
+}
+
+class EstudioDiagnostico {
+  identificadorInforme: Texto
+  runInformado: Texto
+  tipoEstudio: Texto
+  origen: Texto
+  fechaInforme: Fecha
+  estadoValidacion: Texto
+  estadoRecepcion: Texto
+  hallazgoCritico: Texto
+}
+
+class DossierDigitalDerivacion {
+  identificador: Texto
+  centroDestino: Texto
+  estado: EstadoDerivacionRed
+  fechaConfeccion: FechaHora
+  folioUGAA: Texto
+  fechaDespacho: FechaHora
+  fechaRecepcion: FechaHora
+  confirmacionRecepcion: Texto
+  fechaCita: FechaHora
+  fechaInicioTratamiento: FechaHora
+}
+
+class ResolucionComite {
+  identificador: Texto
+  conductaAcordada: Texto
+  fechaResolucion: FechaHora
+  fechaFirma: FechaHora
+}
+
+CasoOncologico "1" -- "0..*" OrdenExamen : requiere
+OrdenExamen "0..1" -- "0..1" EstudioDiagnostico : obtiene
+CasoOncologico "1" -- "0..*" ResolucionComite : cuenta con
+CasoOncologico "1" -- "0..*" DossierDigitalDerivacion : tramita
+DossierDigitalDerivacion "0..*" -- "1" ResolucionComite : se basa en
+DossierDigitalDerivacion "0..*" -- "0..*" EstudioDiagnostico : incluye
+
+@enduml
+
+@startuml vista-derivaciones
+!pragma layout smetana
+hide methods
+hide circle
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classBackgroundColor #F8FAFC
+skinparam classBorderColor #334155
+skinparam classFontColor #0F172A
+skinparam classAttributeFontColor #334155
+skinparam classFontSize 19
+skinparam classAttributeFontSize 16
+skinparam ArrowColor #475569
+skinparam ArrowFontSize 15
+skinparam titleFontSize 23
+skinparam titleFontColor #0F172A
+skinparam defaultFontName SansSerif
+top to bottom direction
+title
+MD-01.C — Documentos y rezago de la derivación
+
+
+end title
+
+class DossierDigitalDerivacion {
+  identificador: Texto
+  centroDestino: Texto
+  estado: EstadoDerivacionRed
+  fechaConfeccion: FechaHora
+  folioUGAA: Texto
+  fechaDespacho: FechaHora
+  fechaRecepcion: FechaHora
+  confirmacionRecepcion: Texto
+  fechaCita: FechaHora
+  fechaInicioTratamiento: FechaHora
+}
+
+class InstructivoReembolsoPasajes {
+  referenciaAnexo: Texto
+  mediosCubiertos: Texto
+  exclusiones: Texto
+  requisitos: Texto
+  fechaEntrega: FechaHora
+  destinatario: Texto
+  responsableEntrega: Texto
+}
+
+class ContraReferenciaEpicrisis {
+  identificador: Texto
+  fechaEmision: Fecha
+  fechaRetornoHGF: Fecha
+  resumenTratamiento: Texto
+  planSeguimiento: Texto
+}
+
+class AlertaSeguimiento {
+  identificador: Texto
+  tipo: TipoAlerta
+  prioridad: Texto
+  fechaGeneracion: FechaHora
+  estado: EstadoAlerta
+  motivoCierre: Texto
+  fechaCierre: FechaHora
+  responsableCierre: Texto
+}
+
+DossierDigitalDerivacion "1" -- "0..1" InstructivoReembolsoPasajes : incorpora
+DossierDigitalDerivacion "1" -- "0..1" ContraReferenciaEpicrisis : recibe
+DossierDigitalDerivacion "0..1" -- "0..*" AlertaSeguimiento : origina
+
+@enduml
