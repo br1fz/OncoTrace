@@ -47,4 +47,3 @@ La fuente PlantUML editable contiene ambos diagramas:
 
 - [diagramas-secuencia.puml](./diagramas/diagramas-secuencia.puml)
 - [DSS-01 — HU-05](./diagramas/DSS-01-HU-05.png)
-- [DSS-02 — HU-08](./diagramas/DSS-02-HU-08.png)
