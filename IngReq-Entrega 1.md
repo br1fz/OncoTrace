@@ -32,7 +32,7 @@ Conforme a lo exigido en la evaluación, la distribución de responsabilidades d
 
 La UGCO cuenta con una dependencia mixta (administrativamente de la *Subdirección de Gestión del Cuidado* y técnicamente de la *Subdirección Médica*), liderando la navegación de las personas con sospecha o confirmación diagnóstica oncológica.
 
-Su objetivo central es garantizar la **trazabilidad continua de punta a punta**, la **evaluación multidimensional** (clínico-terapéutica, psicosocial, informativa y espiritual), el **acompañamiento integral** y la **gestión oportuna** de los pacientes a lo largo de las 8 etapas de su trayectoria asistencial:
+Su objetivo central es garantizar la **trazabilidad continua de punta a punta**, la **evaluación multidimensional** en cuatro dominios (clínico-funcional; psicosocial y socioeconómico; familiar y del cuidador; espiritual y comprensión diagnóstica), el **acompañamiento integral** y la **gestión oportuna** de los pacientes a lo largo de las 8 etapas de su trayectoria asistencial:
 1. **Sospecha:** Ingreso formal desde APS, red SSVQ, Urgencias o por hallazgo crítico en Anatomía Patológica.
 2. **Confirmación Diagnóstica:** Confirmación por especialista, emisión de IPD y constancia GES.
 3. **Etapificación:** Ejecución de estudios imagenológicos y gestión de compra de servicios externos (PET-CT, EBUS).
@@ -47,10 +47,10 @@ Su objetivo central es garantizar la **trazabilidad continua de punta a punta**,
 ## 👥 Perfil de Usuarios y Stakeholders
 
 - **Usuario Principal:** 
-  - **Gestor/a de Casos Oncológicos UGCO (Enfermero/a o Matrón/a):** Profesional responsable de la navegación clínica integral en las 4 dimensiones, ejecución de puntos de contacto obligatorio, preparación de comités, entrega anticipada de instructivo de pasajes y gestión de derivaciones.
+  - **Gestor/a de Casos Oncológicos UGCO (Enfermero/a o Matrón/a):** Profesional responsable de la navegación clínica integral en cuatro dominios (clínico-funcional; psicosocial y socioeconómico; familiar y del cuidador; espiritual y comprensión diagnóstica), ejecución de puntos de contacto obligatorio, preparación de comités, entrega anticipada de instructivo de pasajes y gestión de derivaciones.
 - **Equipo Operativo UGCO:**
   - **Enfermera Supervisora UGCO:** Liderazgo estratégico, asignación de especialidades oncológicas y supervisión del cumplimiento de metas.
-  - **Técnico en Enfermería (TENS UGCO):** Confección de dossier físico de derivación, contactabilidad activa telefónica/presencial y soporte al Comité Oncológico.
+  - **Técnico en Enfermería (TENS UGCO):** Confección de dossiers físicos en el proceso actual, contactabilidad activa telefónica/presencial y soporte al Comité Oncológico. En el rediseño TO-BE, el dossier se digitaliza.
   - **Administrativo/a UGCO:** Gestión y rescate de fichas clínicas, coordinación de horas con unidades de apoyo y digitación de libros oficiales.
 - **Actores Clínicos y Resolutivos:**
   - **Médico Tratante / Especialista:** Evaluación de sospecha, confirmación diagnóstica, emisión de IPD y presentación formal en comités.
@@ -71,26 +71,21 @@ Su objetivo central es garantizar la **trazabilidad continua de punta a punta**,
 ## 🧩 Módulos Principales de la Plataforma
 
 ```
-                               ┌──────────────────────────────────────────┐
-                               │               ONCOTRACE                  │
-                               │   Plataforma para Gestión Oncológica     │
-                               └────────────────────┬─────────────────────┘
-                                                    │
-         ┌───────────────────┬──────────────────────┼──────────────────────┬───────────────────┐
-         │                   │                      │                      │                   │
-         ▼                   ▼                      ▼                      ▼                   ▼
-┌─────────────────┐ ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐ ┌─────────────────┐
-│  Trazabilidad   │ │   Evaluación    │    │ Acompañamiento  │    │     Comité      │ │  Derivaciones y │
-│  Integral de    │ │ Multidimensional│    │    Activo y     │    │   Oncológico    │ │   Control GES   │
-│    Pacientes    │ │ (4 Dimensiones) │    │  Contactabilidad│    │  Inteligente    │ │ (Van Buren/UGAA)│
-└─────────────────┘ └─────────────────┘    └─────────────────┘    └─────────────────┘ └─────────────────┘
+ONCOTRACE
+├── Tablero de trazabilidad y timeline clínico
+├── Evaluación multidimensional
+├── Acompañamiento y puntos de contacto
+├── Comités oncológicos
+├── Plazos GES, derivaciones y reembolso
+└── Autoatención y triage asistencial
 ```
 
 1. **Tablero de Trazabilidad y Timeline Clínico:** Visualización en tiempo real del estado de cada caso, hitos diagnósticos completados, rescate de exámenes y alertas de tiempos de espera.
-2. **Evaluación Multidimensional y Estratificación:** Pauta estructurada por dominios (clínico-funcional, psicoemocional, familiar/cuidador, socioeconómico, espiritual y comprensión diagnóstica).
+2. **Evaluación Multidimensional y Estratificación:** Pauta estructurada en cuatro dominios: clínico-funcional; psicosocial y socioeconómico; familiar y del cuidador; espiritual y comprensión diagnóstica.
 3. **Módulo de Acompañamiento y Contactabilidad Continua:** Coordinación sincronizada entre Gestor y TENS, control de inasistencias, acogida presencial regulada y bitácora de puntos de contacto obligatorio según el *Patient Journey Map*.
 4. **Gestión Digital de Comités Oncológicos:** Consolidación de antecedentes clínicos, eliminación de actas en papel físico y estructuración digital del registro de asistencia y resoluciones (REM 7).
 5. **Control de Plazos GES, Trazabilidad de Derivaciones y Reembolso de Pasajes:** Alertas preventivas para evitar vencimiento de garantías, seguimiento con confirmación de entrega de dossiers derivados vía UGAA hacia el Hospital Carlos Van Buren o prestadores privados, y emisión del instructivo de reembolso de pasajes ante Servicio Social (Anexo 6).
+6. **Autoatención y Orientación Asistencial:** Consulta de estados macro en el tótem mediante el método de verificación de identidad autorizado por el hospital; el acceso de cuidadores requiere autorización vigente. El asistente orienta y prioriza solicitudes sin emitir diagnósticos, deriva posibles urgencias a la Unidad de Emergencia Adultos y ofrece contacto con la UGCO cuando no puede clasificar una solicitud.
 
 ---
 
@@ -144,7 +139,7 @@ El modelo actual del Hospital Dr. Gustavo Fricke estructura su proceso principal
 2. [**02. Rediseño y Proceso TO-BE**](./02-rediseno-to-be.md) – Rediseño propuesto y mejoras de proceso (nodos TB-01 a TB-10).
 3. [**03. Clasificación de Requisitos**](./03-requisitos.md) – Matriz de requisitos funcionales y no funcionales.
 4. [**04. Historias de Usuario**](./04-historias-usuario.md) – 10 Historias de Usuario con Criterios de Aceptación (HU-xx-CAy).
-5. [**05. Elicitación**](./05-elicitacion.md) – Registro de técnicas y evidencias de elicitación (EL-01, EL-02).
+5. [**05. Elicitación**](./05-elicitacion.md) – Registro de técnicas y evidencias de elicitación (EL-01 a EL-03).
 6. [**06. Atributos de Calidad**](./06-atributos-calidad.md) – Atributos de calidad y escenarios arquitectónicos (AC-01 a AC-03).
 7. [**07. Matriz de Trazabilidad End-to-End**](./07-matriz-trazabilidad.md) – Matriz maestra de trazabilidad end-to-end.
 
@@ -164,8 +159,13 @@ OncoTrace/
 ├── 📄 06-atributos-calidad.md          # Atributos de calidad y escenarios arquitectónicos (AC-01 a AC-03)
 ├── 📄 07-matriz-trazabilidad.md        # Matriz maestra de trazabilidad end-to-end
 ├── 📁 diagramas/
-│   ├── 📄 as-is.bpmn                   # Modelo BPMN 2.0 refactorizado del proceso actual (10 carriles)
-│   └── 📄 to-be.bpmn                   # Modelo BPMN del proceso rediseñado (TO-BE)
+│   ├── 📄 as-is.bpmn                   # Modelo BPMN 2.0 del proceso actual (10 carriles)
+│   ├── 📄 casos-de-uso-integracion.png  # Diagrama de casos de uso e integración
+│   ├── 📄 diagrama-casos-de-uso.md      # Diagrama UML de casos de uso y SSD
+│   ├── 📄 modelo-de-dominio-uml.md      # Modelo de dominio y relaciones UML
+│   ├── 📄 ssd-hu05.png                  # Diagrama SSD de HU-05
+│   ├── 📄 ssd-hu08.png                  # Diagrama SSD de HU-08
+│   └── 📄 to-be.bpmn                    # Modelo BPMN del proceso rediseñado (TO-BE)
 ├── 📁 evidencia/                       # Manuales UGCO Versión 2.0 y minutas de entrevistas
 └── 📁 _backup/                         # Resguardos de versiones previas
 ```
