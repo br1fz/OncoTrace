@@ -126,11 +126,13 @@ El proceso también contempla los puntos de contacto definidos por la UGCO, la c
 
 ## Diagrama del proceso TO-BE
 
-![Proceso TO-BE](./diagramas/to-be.png)
+[Ver diagrama del proceso TO-BE en BPMN 2.0](./diagramas/to-be.bpmn)
 
-*Archivo fuente del modelo:* [`./diagramas/to-be.bpmn`](./diagramas/to-be.bpmn)
+---
 
-**Nota de especificación BPMN:** El modelo debe distinguir entre:
+## Nota de especificación BPMN
+
+El modelo debe distinguir entre:
 
 - **Tarea de usuario:** Intervención humana realizada con apoyo de OncoTrace, como completar una evaluación o registrar una decisión de comité.
 - **Tarea de servicio:** Proceso ejecutado automáticamente, como calcular alertas, consultar una interfaz diagnóstica o registrar el resultado de un intercambio habilitado.
