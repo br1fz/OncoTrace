@@ -72,11 +72,11 @@ Optimizar y asegurar la continuidad del flujo asistencial a lo largo de las 8 et
 
 ### Iniciativa 6: Autoatención y Triage Asistencial Descentralizado (TB-09, TB-10)
 - **Actividad(es) del AS-IS que afecta:** Atención presencial de demanda espontánea en el mesón de la UGCO (Gestora Oncológica).
-- **Heurística aplicada:** Autoservicio (Self-service) y clasificación por priorización de demanda.
-- **Objetivo o mejora que resuelve:** Mitiga el nodo crítico **AS-06**, entregando al paciente un canal de consulta de estado por tótem y un asistente de orientación con emisión de turnos clasificados por criticidad.
+- **Heurística aplicada:** Autoservicio y priorización de solicitudes, con derivación a personal de la UGCO cuando corresponda.
+- **Objetivo o mejora que resuelve:** Mitiga el nodo crítico **AS-06**. El tótem permite consultar estados macro de trámites y exámenes después de completar el método de verificación de identidad autorizado por el hospital. Leer la cédula o ingresar el RUN no basta por sí solo; el acceso del cuidador requiere autorización vigente. El chatbot orienta y ayuda a ordenar las solicitudes, sin realizar diagnósticos. Si el usuario informa síntomas que podrían requerir atención de emergencia, indica acudir de inmediato a la Unidad de Emergencia Adultos; si no puede clasificar la solicitud, ofrece contacto con personal de la UGCO.
 - **Efecto esperado (Cuadrángulo del Diablo):**
-  - *Tiempo:* Respuesta inmediata a dudas frecuentes sin interrumpir al personal clínico.
-  - *Calidad:* Atención presencial focalizada en pacientes con necesidades de alta complejidad.
+  - *Tiempo:* Respuesta a consultas generales sin interrumpir al personal clínico.
+  - *Calidad:* Resguardo de datos en el tótem y derivación de posibles urgencias o solicitudes no clasificables a la atención correspondiente.
 
 ---
 
@@ -105,5 +105,5 @@ Optimizar y asegurar la continuidad del flujo asistencial a lo largo de las 8 et
 | **Elaboración manual de fichas de presentación en Word** | **TB-06: Generación Automatizada de Ficha de Comité** | Extracción automática de antecedentes clínicos consolidados hacia un formato estándar en PDF, validando prerrequisitos antes de sesionar. |
 | **Registro de actas en papel físico y firmas manuscritas** | **TB-07: Acta Digital de Comité y Registro REM 7** | Confección digital durante la sesión, firma electrónica vinculante, bloqueo contra modificaciones y generación automática de la estadística REM 7. |
 | **Confección de dossier en papel, envío sin confirmación y omisión de pasajes** | **TB-08: Módulo de Dossier Digital, Trazabilidad de Derivaciones y Reembolso** | Compilación de expediente digital unificado, emisión/entrega del instructivo de reembolso de pasajes (Anexo 6), workflow de derivación a centros de la red (HCVB) y alertas si no hay respuesta en 10 días hábiles. |
-| **Atención desordenada en mesón por consultas de estado de exámenes** | **TB-09: Autoatención Presencial en Tótem de Sala de Espera** | Consulta autónoma de avances mediante lectura de cédula de identidad, protegiendo datos sensibles según la Ley N° 20.584. |
-| **Interrupciones continuas al equipo por dudas administrativas** | **TB-10: Orientación Interactiva y Triage Asistencial** | Asistente virtual institucional para consultas de la Ley N° 21.258 y emisión de turnos clasificados por prioridad clínica o administrativa. |
+| **Atención desordenada en mesón por consultas de estado de exámenes** | **TB-09: Autoatención Presencial en Tótem de Sala de Espera** | Consulta de estados macro tras completar un método de verificación de identidad autorizado por el hospital. Leer la cédula o ingresar el RUN no basta por sí solo; si consulta un cuidador, su autorización debe estar vigente. |
+| **Interrupciones continuas al equipo por dudas administrativas** | **TB-10: Orientación Interactiva y Triage Asistencial** | Asistente virtual para orientar y ordenar solicitudes. No realiza diagnósticos, indica acudir de inmediato a la Unidad de Emergencia Adultos ante posibles urgencias y ofrece contacto con personal de la UGCO cuando no puede clasificar una solicitud. |
