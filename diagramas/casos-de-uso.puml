@@ -1,0 +1,203 @@
+' DCU-01. Tres vistas del mismo sistema OncoTrace.
+' Los actores repetidos en la imagen representan el mismo rol.
+' La imagen ordena las asociaciones en tres vistas. La tercera agrupa los cinco
+' casos de derivación, representados aquí en cinco bloques editables.
+
+@startuml casos-seguimiento
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 17
+skinparam titleFontSize 23
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #F1F5F9
+skinparam usecaseBorderColor #475569
+skinparam usecaseFontColor #0F172A
+skinparam rectangleBorderColor #64748B
+skinparam rectangleBackgroundColor white
+skinparam ArrowColor #475569
+skinparam ArrowFontSize 15
+title
+DCU-01.A — Seguimiento y alertas
+
+
+end title
+actor "Gestor/a UGCO" as G
+rectangle "OncoTrace" {
+  usecase "CU-05\nDar seguimiento al\ncaso oncológico" as C5
+  usecase "CU-06\nGestionar alertas\nde seguimiento" as C6
+}
+G -- C5
+G -- C6
+C5 -[hidden]down- C6
+@enduml
+
+@startuml casos-informes
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 17
+skinparam titleFontSize 23
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #F1F5F9
+skinparam usecaseBorderColor #475569
+skinparam usecaseFontColor #0F172A
+skinparam rectangleBorderColor #64748B
+skinparam rectangleBackgroundColor white
+skinparam ArrowColor #475569
+skinparam ArrowFontSize 15
+title
+DCU-01.B — Informes diagnósticos
+
+
+end title
+actor "Gestor/a UGCO" as G
+actor "Médico tratante" as M
+rectangle "OncoTrace" {
+  usecase "CU-01\nConsolidar y consultar\ninformes diagnósticos" as C1
+  usecase "CU-02\nRecibir avisos de\nhallazgos críticos" as C2
+}
+actor "LIS\nSistema externo" as LIS
+actor "PACS\nSistema externo" as PACS
+G -- C1
+M -- C1
+G -- C2
+M -- C2
+C1 -- LIS
+C1 -- PACS
+C2 ..> C1 : <<extend>>\n[hallazgo crítico]
+@enduml
+
+
+@startuml dcuc-preparar
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 17
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #F1F5F9
+skinparam usecaseBorderColor #475569
+skinparam usecaseFontColor #0F172A
+skinparam rectangleBorderColor #64748B
+skinparam rectangleBackgroundColor white
+skinparam ArrowColor #475569
+
+actor "TENS UGCO" as T
+rectangle "OncoTrace" {
+  usecase "CU-07\nConfeccionar dossier\nde derivación" as C
+}
+
+T -- C
+@enduml
+
+@startuml dcuc-instructivo
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 17
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #F1F5F9
+skinparam usecaseBorderColor #475569
+skinparam usecaseFontColor #0F172A
+skinparam rectangleBorderColor #64748B
+skinparam rectangleBackgroundColor white
+skinparam ArrowColor #475569
+
+actor "TENS UGCO" as T
+actor "Gestor/a UGCO" as G
+rectangle "OncoTrace" {
+  usecase "CU-08\nRegistrar entrega del\ninstructivo de pasajes" as C
+}
+
+T -- C
+G -- C
+@enduml
+
+@startuml dcuc-despachar
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 17
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #F1F5F9
+skinparam usecaseBorderColor #475569
+skinparam usecaseFontColor #0F172A
+skinparam rectangleBorderColor #64748B
+skinparam rectangleBackgroundColor white
+skinparam ArrowColor #475569
+
+actor "Funcionario/a UGAA" as U
+rectangle "OncoTrace" {
+  usecase "CU-03\nDespachar derivación\nexterna" as C
+}
+actor "Sistema HCVB\nSistema externo" as H
+C -- H
+U -- C
+@enduml
+
+@startuml dcuc-respuesta
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 17
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #F1F5F9
+skinparam usecaseBorderColor #475569
+skinparam usecaseFontColor #0F172A
+skinparam rectangleBorderColor #64748B
+skinparam rectangleBackgroundColor white
+skinparam ArrowColor #475569
+
+actor "Funcionario/a UGAA" as U
+actor "Gestor/a UGCO" as G
+rectangle "OncoTrace" {
+  usecase "CU-04\nRegistrar recepción\ny cita en HCVB" as C
+}
+actor "Sistema HCVB\nSistema externo" as H
+C -- H
+U -- C
+G -- C
+@enduml
+
+@startuml dcuc-retorno
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 17
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #F1F5F9
+skinparam usecaseBorderColor #475569
+skinparam usecaseFontColor #0F172A
+skinparam rectangleBorderColor #64748B
+skinparam rectangleBackgroundColor white
+skinparam ArrowColor #475569
+
+actor "Gestor/a UGCO" as G
+rectangle "OncoTrace" {
+  usecase "CU-09\nRegistrar retorno\ncon epicrisis" as C
+}
+actor "Sistema HCVB\nSistema externo" as H
+C -- H
+G -- C
+@enduml
