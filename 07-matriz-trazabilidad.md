@@ -45,7 +45,7 @@
 | **AS-03** | **Pérdida de Trazabilidad en Derivaciones** (Dossier TENS $\rightarrow$ UGAA $\rightarrow$ HCVB y falta de pasajes) | **EL-01** (Entrevista)<br>**EL-03** (Manual UGCO v2.0 final) | **TB-08** | Módulo de Dossier Digital, Tracking con HCVB y Reembolso de Pasajes | **RF-08**<br>**RNF-01** | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-CA1 a HU-08-CA6 | **AC-02** (Fiabilidad RTO $\le 5$min)<br>Workflow de estados y entrega Anexo 6 |
 | **AS-04** | **Monitoreo Manual de Plazos GES** (Excel con riesgo de multas institucionales) | **EL-02** (Normativa GES)<br>**EL-03** (DS N° 29 / UGCO) | **TB-01**<br>**TB-04** | Visualización en Kanban<br>Motor de Alertas Preventivas GES | **RF-01**<br>**RF-04**<br>**RNF-01** | [HU-01](./04-historias-usuario.md#hu-01)<br>[HU-04](./04-historias-usuario.md#hu-04) | HU-01-CA2, HU-01-CA4<br>HU-04-CA1 a HU-04-CA7 | **AC-02** (Fiabilidad operativa)<br>Alerta a $\le 5$ días hábiles (DS N° 29) |
 | **AS-05** | **Registro Fragmentado y Falta de Bitácora Estandarizada** | **EL-01** (Entrevista)<br>**EL-02** (Ley 21.258)<br>**EL-03** (Manual UGCO) | **TB-02**<br>**TB-03**<br>**TB-04** | Evaluación por Dominios<br>Bitácora de Contactos Obligatorios<br>Alerta Inactividad $>15$d | **RF-02**<br>**RF-03**<br>**RF-04** | [HU-02](./04-historias-usuario.md#hu-02)<br>[HU-03](./04-historias-usuario.md#hu-03)<br>[HU-04](./04-historias-usuario.md#hu-04) | HU-02-CA1 a HU-02-CA7<br>HU-03-CA1 a HU-03-CA6<br>HU-04-CA3 (Riesgo inactividad) | Escala ECOG (0-4);<br>Inmutabilidad de bitácora;<br>Cumplimiento de 6 contactos |
-| **AS-06** | **Interrupción Crítica por Demanda Espontánea** (Mesón presencial Ley N° 21.258) | **EL-01** (Entrevista)<br>**EL-02** (Ley 21.258)<br>**EL-03** (Manual UGCO) | **TB-09**<br>**TB-10** | Tótem de Autoatención Táctil<br>Asistente Virtual y Triage Presencial | **RF-09**<br>**RF-10** | [HU-09](./04-historias-usuario.md#hu-09)<br>[HU-10](./04-historias-usuario.md#hu-10) | HU-09-CA1 a HU-09-CA4<br>HU-10-CA1 a HU-10-CA4 | Validación RUN / Cédula;<br>Ticket de triage categorizado |
+| **AS-06** | **Interrupción Crítica por Demanda Espontánea** (Mesón presencial Ley N° 21.258) | **EL-01** (Entrevista)<br>**EL-02** (Ley 21.258)<br>**EL-03** (Manual UGCO) | **TB-09**<br>**TB-10** | Tótem de Autoatención Táctil<br>Asistente Virtual y Triage Presencial | **RF-09**<br>**RF-10**<br>**RNF-03** | [HU-09](./04-historias-usuario.md#hu-09)<br>[HU-10](./04-historias-usuario.md#hu-10) | HU-09-CA1 a HU-09-CA5<br>HU-10-CA1 a HU-10-CA5 | Verificación de identidad y autorización del cuidador;<br>confidencialidad (`HU-09-CA4`); cierre de sesión (`HU-09-CA5`); orientación ante urgencias y derivación a personal (`HU-10-CA4` y `HU-10-CA5`) |
 
 ---
 
@@ -136,15 +136,16 @@
 - **Nodo AS-IS:** **AS-06** (Interrupciones críticas por demanda espontánea presencial en oficina de gestión)
 - **Elicitación:** **EL-01** (Entrevista: obligación legal de atención bajo Ley N° 21.258 que colapsa el tiempo asistencial) y **EL-03** (Manual de Organización: acogida continua y alta carga presencial).
 - **Nodos TO-BE:**
-  - **TB-09:** Tótem táctil de autoatención con autenticación por RUN para consultar estado de trámites sin exponer datos sensibles.
-  - **TB-10:** Asistente virtual institucional para orientación de derechos de la Ley del Cáncer y emisión de tickets de triage priorizados según criticidad.
+  - **TB-09:** Tótem de autoatención con el método de verificación de identidad definido por el hospital. La lectura de la cédula o el ingreso del RUN no basta por sí solo; el acceso de cuidadores requiere autorización vigente.
+  - **TB-10:** Asistente virtual institucional para orientar sobre los derechos de la Ley del Cáncer, priorizar solicitudes de atención presencial y emitir tickets. No reemplaza una evaluación clínica.
 - **Requisitos Vinculados:**
   - `RF-09` (Tótem de Autoatención en Sala de Espera)
   - `RF-10` (Asistente Virtual y Triage Asistencial)
+  - `RNF-03` (Seguridad y Confidencialidad Clínica, aplicable al acceso del tótem)
 - **Historias de Usuario:**
-  - [HU-09](./04-historias-usuario.md#hu-09) (Tótem de Autoatención) ➔ Criterios `HU-09-CA1` a `HU-09-CA4`
-  - [HU-10](./04-historias-usuario.md#hu-10) (Asistente Virtual y Triage) ➔ Criterios `HU-10-CA1` a `HU-10-CA4`
-- **Atributos de Calidad Asociados:** Protección de confidencialidad clínica (Ley N° 20.584, `HU-09-CA3`), cierre de sesión automático (`HU-09-CA4`) y categorización de urgencia (`HU-10-CA4`).
+  - [HU-09](./04-historias-usuario.md#hu-09) (Tótem de Autoatención) ➔ Criterios `HU-09-CA1` a `HU-09-CA5`
+  - [HU-10](./04-historias-usuario.md#hu-10) (Asistente Virtual y Triage) ➔ Criterios `HU-10-CA1` a `HU-10-CA5`
+- **Atributos de Calidad Asociados:** Verificación de identidad y autorización del cuidador (`HU-09-CA1` y `HU-09-CA2`), confidencialidad clínica (`HU-09-CA4`), cierre de sesión automático (`HU-09-CA5`), atención de posibles urgencias (`HU-10-CA4`) y derivación a personal cuando no se pueda clasificar (`HU-10-CA5`).
 
 ---
 
