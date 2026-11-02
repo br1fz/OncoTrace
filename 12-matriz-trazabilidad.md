@@ -7,6 +7,15 @@ Esta matriz complementa la [matriz de trazabilidad de la Entrega 1](./07-matriz-
 
 **Referencias:** [Proceso AS-IS](./01-proceso-as-is.md) · [Rediseño TO-BE](./02-rediseno-to-be.md) · [Requisitos](./03-requisitos.md) · [Historias de usuario](./04-historias-usuario.md) · [Criterios de aceptación](./07-criterios-aceptacion.md) · [Modelo de dominio](./08-modelo-dominio.md) · [Casos de uso](./09-casos-de-uso.md) · [Diagramas de secuencia](./10-diagramas-secuencia.md) · [Diagramas de estado](./11-diagramas-estado.md).
 
+## Matriz de trazabilidad consolidada
+
+| Requisito (Entrega 1) | Historia | Caso de uso | Secuencia | Estado | Clases del dominio |
+|-----------------------|----------|-------------|-----------|--------|---------------------|
+| RF-01 · RNF-02 | HU-01 | CU-05 | — | — | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
+| RF-04 · RNF-01 | HU-04 | CU-06 | — | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
+| RF-05 · RNF-01 · RNF-04 | HU-05 | CU-01 | DSS-01 | — | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
+| RF-08 · RNF-01 | HU-08 | CU-03, CU-04, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
+
 ## Trazabilidad de origen
 
 | Historia | Fuentes | Problemas AS-IS | Actividad TO-BE | Requisitos asociados |
