@@ -1,44 +1,53 @@
-# Clasificación de Requisitos
+# Clasificación de requisitos
 
-> **Dominio:** Sistema de Gestión Clínica, Navegación y Trazabilidad Oncológica (Plataforma OncoTrace)  
-> **Institución:** Hospital Dr. Gustavo Fricke (HGF) – Unidad de Gestión de Casos Oncológicos (UGCO)  
-> **Estándar:** Clasificación formal de ingeniería de requisitos y norma ISO/IEC 25010.
-
----
-
-## Requisitos de Producto
-
-| ID | Requisito | Tipo (funcional / no funcional) | Actividad TO-BE Asociada |
-| :--- | :--- | :--- | :--- |
-| **RF-01** | **Tablero y Trazabilidad por Etapas:** Visualización centralizada de pacientes según las 8 etapas oncológicas (desde sospecha hasta alta y sobrevivientes) y línea de tiempo cronológica de hitos asistenciales. | Funcional | TB-01: Monitoreo en Tablero Kanban y Timeline Clínico |
-| **RF-02** | **Evaluación Multidimensional por Dominios:** Registro estructurado de la valoración integral (clínico-funcional ECOG 0-4, psicoemocional, cuidador y espiritual) con cálculo automático de riesgo. | Funcional | TB-02: Evaluación Multidimensional Estandarizada |
-| **RF-03** | **Bitácora de Puntos de Contacto Obligatorio:** Registro cronológico e inmutable de intervenciones, programando el cumplimiento de los 6 contactos normados por la UGCO según la curva de vulnerabilidad. | Funcional | TB-03: Bitácora Digital de Acompañamiento |
-| **RF-04** | **Motor de Alertas GES e Inactividad:** Notificación preventiva automática ante plazos próximos a expirar ($\le 5$ días hábiles, DS N° 29) y detección de casos sin movimiento $> 15$ días corridos. | Funcional | TB-04: Motor de Alertas Preventivas GES e Inactividad |
-| **RF-05** | **Consolidación Automática de Exámenes y Alertas:** Indexación por RUN de informes de biopsias (LIS) y radiología (PACS), con alerta médica prioritaria ante hallazgos de malignidad. | Funcional | TB-05: Consolidación Automática de Exámenes y Alertas Críticas |
-| **RF-06** | **Generación Digital de Ficha de Comité:** Compilación automática de antecedentes clínicos, imágenes y biopsias en una ficha resumen estandarizada para presentación médica. | Funcional | TB-06: Generación Automatizada de Ficha de Comité |
-| **RF-07** | **Acta Digital de Comité y Registro REM 7:** Registro en tiempo real de la conducta terapéutica acordada, firma electrónica del acta y generación automática de la estadística oficial REM 7 para MINSAL. | Funcional | TB-07: Acta Digital de Comité y Registro REM 7 |
-| **RF-08** | **Trazabilidad de Derivaciones Externas y Reembolso de Pasajes:** Confección de dossier digital unificado por TENS, despacho formal por UGAA, seguimiento del estado de atención en el Hospital Carlos Van Buren y soporte para la entrega del instructivo de reembolso de pasajes (Anexo 6) junto a Servicio Social. | Funcional | TB-08: Módulo de Dossier Digital, Trazabilidad de Derivaciones y Reembolso |
-| **RF-09** | **Tótem de Autoatención en Sala de Espera:** Consulta autónoma del estado de trámites y exámenes mediante un método de verificación de identidad definido y autorizado por el hospital. Leer la cédula o ingresar el RUN no basta por sí solo; si consulta un cuidador, su autorización debe estar registrada y vigente. El tótem debe resguardar los datos sensibles. | Funcional | TB-09: Autoatención Presencial en Tótem de Sala de Espera |
-| **RF-10** | **Asistente Virtual y Triage Asistencial:** Orientación automatizada de derechos (Ley N° 21.258) y emisión de turnos clasificados por prioridad para atención presencial con la gestora. | Funcional | TB-10: Orientación Interactiva y Triage Asistencial |
-| **RNF-01** | **Fiabilidad y Disponibilidad:** Disponibilidad operativa del sistema $\ge 99.5\%$ en horario asistencial, con tiempo de recuperación (RTO) $\le 5$ minutos ante caídas. | No funcional (Fiabilidad) | TB-04, TB-05 |
-| **RNF-02** | **Eficiencia de Desempeño:** Tiempo de respuesta y carga completa del tablero con más de 1.000 pacientes activos $\le 2.0$ segundos bajo concurrencia normal. | No funcional (Eficiencia) | TB-01 |
-| **RNF-03** | **Seguridad y Confidencialidad Clínica:** Control de acceso estricto basado en roles (RBAC) y bitácora de auditoría inmutable de accesos según las Leyes N° 20.584 y N° 21.258. | No funcional (Seguridad) | TB-01, TB-07, TB-09 |
-| **RNF-04** | **Interoperabilidad Hospitalaria:** Comunicación mediante estándares de la industria (HL7 FHIR / API REST) con visores y bases de datos LIS y PACS institucionales. | No funcional (Compatibilidad) | TB-05 |
+> **Dominio:** Sistema de Gestión Clínica, Navegación y Trazabilidad Oncológica (OncoTrace)  
+> **Institución:** Hospital Dr. Gustavo Fricke (HGF) · Unidad de Gestión de Casos Oncológicos (UGCO)  
+> **Referencia de calidad:** ISO/IEC 25010
 
 ---
 
-## Requisitos de Proyecto
+## Requisitos de producto
 
-| ID | Requisito | Propósito y Justificación |
+### Requisitos funcionales
+
+| ID | Requisito | Actividad TO-BE asociada |
 | :--- | :--- | :--- |
-| **RP-01** | **Control de Versiones y Repositorio:** Toda la documentación y especificación técnica debe gestionarse en GitHub bajo ramas de trabajo y Conventional Commits. | Asegurar trazabilidad de cambios, auditoría de código y trabajo sincronizado del equipo. |
-| **RP-02** | **Gestión de Tareas e Iteraciones:** Planificación del avance mediante tablero ágil en GitHub Projects, vinculando entregables e incidentes a cada hito evaluativo. | Visibilidad del ciclo de vida y control de compromisos del proyecto. |
-| **RP-03** | **Modelamiento en Notación Estándar:** Todos los diagramas de proceso deben construirse en BPMN 2.0 formal, distinguiendo tareas de usuario, de servicio y manuales. | Cumplimiento de la especificación técnica del curso y estándares de la industria. |
+| **RF-01** | **Tablero y trazabilidad por etapas.** El sistema debe mostrar a los pacientes según las ocho etapas oncológicas, desde la sospecha hasta el alta y el seguimiento de sobrevivientes. También debe presentar una línea de tiempo cronológica de los hitos asistenciales. | TB-01: Monitoreo en tablero Kanban y timeline clínico |
+| **RF-02** | **Evaluación multidimensional por dominios.** El sistema debe registrar la valoración clínico-funcional (ECOG 0–4 para pacientes en seguimiento), psicosocial y socioeconómica, familiar y del cuidador, y espiritual y de comprensión diagnóstica. También debe calcular el riesgo asistencial. | TB-02: Evaluación multidimensional estandarizada |
+| **RF-03** | **Bitácora de puntos de contacto.** El sistema debe mantener un registro cronológico e inmutable de las intervenciones y programar los seis contactos normados por la UGCO según la curva de vulnerabilidad. | TB-03: Bitácora digital de acompañamiento |
+| **RF-04** | **Alertas GES e inactividad.** El sistema debe alertar cuando falten cinco días hábiles o menos para el vencimiento de un plazo, según el DS N° 29. También debe detectar casos sin movimiento por más de 15 días corridos. | TB-04: Motor de alertas preventivas GES e inactividad |
+| **RF-05** | **Consolidación de exámenes y alertas.** El sistema debe indexar por RUN los informes de biopsias del LIS y los informes radiológicos del PACS. Ante hallazgos de malignidad, debe generar una alerta médica prioritaria. | TB-05: Consolidación automática de exámenes y alertas críticas |
+| **RF-06** | **Ficha de presentación a comité.** El sistema debe reunir antecedentes clínicos, imágenes y biopsias en una ficha resumen estandarizada para la presentación médica. | TB-06: Generación automatizada de ficha de comité |
+| **RF-07** | **Acta digital y registro REM 7.** El sistema debe registrar la conducta terapéutica acordada, permitir la firma electrónica del acta y generar la estadística REM 7 para MINSAL. | TB-07: Acta digital de comité y registro REM 7 |
+| **RF-08** | **Derivaciones externas y reembolso de pasajes.** El sistema debe gestionar el dossier digital confeccionado por TENS, registrar su despacho por UGAA y permitir el seguimiento de la atención en el Hospital Carlos Van Buren. También debe apoyar, junto a Servicio Social, la entrega del instructivo de reembolso de pasajes (Anexo 6). | TB-08: Dossier digital, trazabilidad de derivaciones y reembolso |
+| **RF-09** | **Tótem de autoatención.** El sistema debe permitir consultar el estado de trámites y exámenes mediante un método de verificación de identidad autorizado por el hospital. Leer la cédula o ingresar el RUN no basta por sí solo. Si consulta un cuidador, su autorización debe estar registrada y vigente. El tótem debe resguardar los datos sensibles. | TB-09: Autoatención presencial en tótem de sala de espera |
+| **RF-10** | **Asistente virtual y triage asistencial.** El sistema debe orientar sobre los derechos establecidos en la Ley N° 21.258, los trámites, la ubicación de servicios y la preparación para estudios. Si se solicita atención presencial, debe clasificar la prioridad con criterios revisados por la UGCO, emitir un ticket con categoría y tiempo estimado de espera e incorporar la solicitud a la cola de atención. No debe emitir diagnósticos ni reemplazar una evaluación clínica. Ante una posible urgencia, debe indicar acudir de inmediato a la Unidad de Emergencia Adultos. Si no puede clasificar la solicitud, debe ofrecer contacto con personal de la UGCO. | TB-10: Orientación interactiva y triage asistencial |
+
+### Requisitos no funcionales
+
+| ID | Requisito | Actividades TO-BE asociadas |
+| :--- | :--- | :--- |
+| **RNF-01** | **Fiabilidad y disponibilidad.** El sistema debe mantener una disponibilidad operativa de al menos 99,5 % durante el horario asistencial y un RTO de cinco minutos o menos ante caídas. | TB-04, TB-05 |
+| **RNF-02** | **Eficiencia de desempeño.** Con más de 1.000 pacientes registrados con alertas activas y 50 usuarios institucionales concurrentes, el tablero debe permitir paginar y ordenar los registros, mostrar las ocho columnas asistenciales y completar la carga y visualización en 2,0 segundos o menos. El uso de CPU del servidor de aplicaciones debe ser de 70 % o menos bajo esa carga. | TB-01 |
+| **RNF-03** | **Seguridad y confidencialidad clínica.** El sistema debe aplicar control de acceso basado en roles (RBAC) y mantener una bitácora de auditoría inmutable de los accesos a información clínica. El tratamiento y la confidencialidad de esos datos deben ajustarse a la Ley N° 20.584 y a la normativa de protección de datos aplicable, incluidas las disposiciones pertinentes de las Leyes N° 21.258 y N° 19.628. | TB-01, TB-07, TB-09 |
+| **RNF-04** | **Interoperabilidad hospitalaria.** El sistema debe comunicarse mediante HL7 FHIR o API REST con los visores y las bases de datos LIS y PACS institucionales. | TB-05 |
 
 ---
 
-## Requisito Derivado
+## Requisitos de proyecto
 
-* **Requisito origen:** **RNF-03** (Seguridad y Confidencialidad Clínica: el sistema debe restringir el acceso a expedientes oncológicos y asegurar la trazabilidad de usuarios según la Ley N° 20.584).
-* **Requisito derivado:** **REQ-DER-01** (Autenticación federada obligatoria mediante Single Sign-On integrado al Directorio Activo institucional del Hospital Dr. Gustavo Fricke).
-* **Justificación:** Para garantizar el cumplimiento legal de confidencialidad médica (RNF-03) sin obligar a los funcionarios a manejar múltiples claves ni permitir cuentas locales compartidas, se deriva la necesidad técnica de centralizar la validación de identidad en el Directorio Activo del hospital. De este modo, la revocación de permisos ante desvinculaciones o traslados de personal se aplica de forma inmediata en toda la plataforma.
+| ID | Requisito | Propósito y justificación |
+| :--- | :--- | :--- |
+| **RP-01** | **Control de versiones y repositorio.** La documentación y la especificación técnica deben gestionarse en GitHub mediante ramas de trabajo y Conventional Commits. | Mantener la trazabilidad de los cambios, la auditoría del código y el trabajo sincronizado del equipo. |
+| **RP-02** | **Gestión de tareas e iteraciones.** El avance debe planificarse en un tablero de GitHub Projects, vinculando entregables e incidentes con cada hito evaluativo. | Dar visibilidad al avance y facilitar el seguimiento de los compromisos del proyecto. |
+| **RP-03** | **Modelamiento en notación estándar.** Los diagramas de proceso deben construirse en BPMN 2.0 y distinguir las tareas de usuario, de servicio y manuales. | Cumplir la especificación técnica del curso y los estándares de modelamiento definidos para el proyecto. |
+
+---
+
+## Requisito derivado
+
+- **Requisito de origen:** RNF-03, relacionado con el control de acceso a expedientes oncológicos y la trazabilidad de los usuarios.
+
+- **REQ-DER-01:** La autenticación de los funcionarios debe realizarse mediante Single Sign-On integrado al Directorio Activo institucional del Hospital Dr. Gustavo Fricke. La asignación y revocación de permisos debe seguir los roles institucionales y el proceso de actualización de cuentas definido para la integración.
+
+- **Justificación:** La autenticación federada centraliza la validación de identidad y evita el uso de cuentas locales compartidas. Para que los cambios de cargo o las desvinculaciones se reflejen en los permisos de OncoTrace, la integración debe definir cómo se actualizan las cuentas y los roles.
