@@ -6,7 +6,7 @@ Este documento presenta los objetivos de los actores que participan en las histo
 
 ## Actores
 
-| Actor | Tipo | Descripción |
+| Actor | Tipo (humano / sistema externo) | Descripción |
 | :--- | :--- | :--- |
 | Gestor/a UGCO | Humano | Consulta y actualiza el seguimiento del caso dentro de sus permisos, gestiona alertas, consulta informes y coordina el seguimiento de las derivaciones. |
 | Médico tratante | Humano | Consulta informes diagnósticos y recibe avisos de hallazgos críticos para su evaluación clínica. |
@@ -28,7 +28,7 @@ Paciente y cuidador reciben el instructivo a través del personal de la UGCO. No
 
 ![DCU-01 — Casos de uso de OncoTrace](./diagramas/casos-de-uso.png)
 
-Archivo fuente: [casos-de-uso.puml](./diagramas/casos-de-uso.puml).
+Archivo fuente: [`./diagramas/casos-de-uso.puml`](./diagramas/casos-de-uso.puml).
 
 La imagen reúne tres vistas del mismo sistema: seguimiento y alertas, informes diagnósticos y derivaciones externas. En cada vista, el rectángulo delimita OncoTrace y los actores quedan fuera. Un actor repetido representa el mismo rol.
 
@@ -36,7 +36,7 @@ La imagen reúne tres vistas del mismo sistema: seguimiento y alertas, informes 
 
 Los códigos CU-01 a CU-04 conservan las áreas funcionales del modelo de integración de la Entrega 1. Sus nombres y relaciones se precisan aquí para expresar los objetivos de los actores. CU-05 a CU-09 completan el alcance de las historias seleccionadas.
 
-| ID | Caso de uso | Actor principal | Historia de origen | Escenarios de aceptación |
+| ID | Caso de uso (objetivo del actor) | Actor principal | Historia de origen | Escenarios de aceptación |
 | :--- | :--- | :--- | :--- | :--- |
 | CU-01 | Consolidar y consultar informes diagnósticos | Gestor/a UGCO y médico tratante | [HU-05](./04-historias-usuario.md#hu-05) | HU-05-ESC-01, HU-05-ESC-03 y HU-05-ESC-04. |
 | CU-02 | Recibir avisos de hallazgos críticos | Gestor/a UGCO y médico tratante | [HU-05](./04-historias-usuario.md#hu-05) | HU-05-ESC-02. |
