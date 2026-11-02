@@ -1,66 +1,74 @@
-# Atributos de Calidad (ISO/IEC 25010)
+# Atributos de calidad (ISO/IEC 25010:2023)
 
-## Priorización de los Atributos de Primer Nivel
+## Priorización de las características de calidad
 
-La priorización de los atributos de calidad para la plataforma **OncoTrace** responde a la naturaleza crítica de la gestión oncológica en el Hospital Dr. Gustavo Fricke, donde la reserva legal de antecedentes clínicos, la continuidad operativa del servicio y la oportunidad diagnóstica representan los factores de mayor impacto asistencial y normativo.
+La siguiente priorización considera los riesgos de la gestión oncológica en el Hospital Dr. Gustavo Fricke: confidencialidad de los antecedentes clínicos, continuidad de la atención y oportunidad de las decisiones asistenciales.
 
-1. **Seguridad:** Gestión de diagnósticos sensibles y fichas oncológicas bajo estricta reserva legal (cumplimiento Ley N° 20.584 de Derechos y Deberes del Paciente y Ley N° 21.258 Nacional del Cáncer).
-2. **Fiabilidad:** Disponibilidad ininterrumpida de la plataforma durante la jornada hospitalaria y las sesiones colegiadas del Comité Oncológico Regional, garantizando tolerancia a fallos.
-3. **Eficiencia de Desempeño:** Tiempos de respuesta ágiles en la consulta y renderizado del tablero Kanban y expedientes clínicos, evitando demoras en la atención asistencial.
-4. **Compatibilidad (Interoperabilidad):** Intercambio fluido de datos diagnósticos con sistemas de apoyo (LIS para biopsias, PACS para imagenología) y coordinación de derivaciones hacia el Hospital Carlos Van Buren.
-5. **Usabilidad:** Interfaz intuitiva y accesible para gestoras clínicas, médicos especialistas y pacientes en el módulo de autoatención.
-6. **Idoneidad Funcional:** Cumplimiento riguroso de las reglas asistenciales comprometidas (alertas de plazos GES, confección de actas de comité y reportes estadísticos REM 7).
-7. **Mantenibilidad:** Arquitectura modular desacoplada que permita incorporar nuevas patologías oncológicas o ajustar plazos normativos sin rehacer el sistema.
-8. **Portabilidad:** Compatibilidad multiplataforma en navegadores web estándar utilizados en las estaciones de trabajo institucionales del hospital.
-9. **Protección (Safety):** Resguardo de la persistencia de datos y prevención de inconsistencias clínicas ante contingencias físicas o fallos de infraestructura.
+1. **Seguridad de la información:** Protección de diagnósticos y fichas clínicas mediante control de acceso y auditoría. Se consideran la Ley N° 20.584, la Ley N° 21.258 y la normativa de protección de datos personales, incluida la Ley N° 19.628 y sus modificaciones por la [Ley N° 21.719](https://www.bcn.cl/leychile/navegar?idNorma=1209272), vigente desde el 1 de diciembre de 2026.
 
----
+2. **Fiabilidad:** Disponibilidad operativa durante la jornada asistencial y las sesiones del Comité Oncológico Regional, con medidas de recuperación ante fallos.
 
-## Escenarios de Calidad Arquitectónicos para los 3 Atributos Principales
+3. **Eficiencia de desempeño:** Respuesta oportuna al consultar y filtrar el tablero Kanban, incluso con pacientes y usuarios concurrentes.
 
-Para los tres atributos de mayor criticidad se formalizan las métricas mediante **Escenarios de Calidad (SEI)**, asegurando criterios medibles y verificables:
+4. **Compatibilidad:** Intercambio de información diagnóstica con LIS y PACS, y apoyo a la coordinación de derivaciones al Hospital Carlos Van Buren.
 
-### 1. Seguridad (AC-01)
-* **Requisitos no funcionales asociados:** RNF-03 | REQ-DER-01
-* **Métrica objetivo:** Control de acceso estricto basado en roles (RBAC) e inmutabilidad en la bitácora de auditoría.
-* **Escenario de Calidad:**
-  * **Fuente del estímulo:** Usuario del sistema (gestora, médico, administrativo o usuario no autenticado).
-  * **Estímulo:** Intento de consulta, edición o exportación de antecedentes confidenciales de la ficha oncológica.
-  * **Entorno:** Operación normal del sistema en horario asistencial.
-  * **Artefacto:** Módulo de Autenticación, Servicio de Autorización y Bitácora Transaccional.
-  * **Respuesta:** El sistema verifica las credenciales y permisos según el rol asignado antes de autorizar la acción, generando una entrada inmutable de auditoría.
-  * **Medida de respuesta:** 
-    * 100% de los accesos e intentos de modificación registrados con RUN, perfil, timestamp, IP y tipo de operación.
-    * 0% de accesos o derivaciones no autorizadas a datos protegidos.
-    * Tiempo de persistencia del log de auditoría $\le 50$ milisegundos sin bloquear la experiencia de usuario.
+5. **Capacidad de interacción:** Interfaz comprensible y accesible para gestores, médicos y pacientes, incluido el módulo de autoatención.
+
+6. **Idoneidad funcional:** Cumplimiento de las reglas asistenciales definidas, como alertas de plazos GES, actas de comité y reportes REM 7.
+
+7. **Mantenibilidad:** Organización modular que facilite los ajustes de requisitos, plazos y funciones del sistema.
+
+8. **Flexibilidad:** Capacidad de adaptarse a nuevas patologías, cambios normativos y necesidades de la UGCO.
+
+9. **Seguridad operacional (Safety):** Prevención de errores del sistema que puedan producir información clínica incorrecta o decisiones asistenciales inseguras. Ante datos incompletos o no validados, el sistema debe advertir al usuario y permitir la revisión profesional.
 
 ---
 
-### 2. Fiabilidad (AC-02)
-* **Requisito no funcional asociado:** RNF-01
-* **Métrica objetivo:** Disponibilidad operativa asistencial (Uptime) y Tiempo de Recuperación Objetivo (RTO).
-* **Escenario de Calidad:**
-  * **Fuente del estímulo:** Infraestructura interna (fallo imprevisto en nodo primario de base de datos o corte de suministro).
-  * **Estímulo:** Pérdida de conectividad con la instancia principal durante la sesión de un comité médico.
-  * **Entorno:** Horario asistencial pico de atención hospitalaria.
-  * **Artefacto:** Capa de persistencia, base de datos y réplica secundaria de contingencia.
-  * **Respuesta:** Conmutación por error automática (*failover*) hacia la réplica secundaria y aislamiento del nodo afectado.
-  * **Medida de respuesta:** 
-    * Disponibilidad mensual $\ge 99.5\%$ en horario de jornada clínica (08:00 a 18:00 hrs).
-    * Tiempo de recuperación del servicio (RTO) $\le 5$ minutos.
-    * Punto de recuperación objetivo (RPO) = 0 transacciones clínicas confirmadas perdidas.
+## Escenarios de calidad de los tres atributos priorizados
+
+Los siguientes escenarios especifican fuente, estímulo, entorno, artefacto, respuesta y medidas para evaluar seguridad, fiabilidad y eficiencia.
+
+### AC-01 — Seguridad de la información
+
+- **Requisitos asociados:** RNF-03 y REQ-DER-01.
+- **Métrica objetivo:** Control de acceso basado en roles (RBAC) y registro inmutable de las operaciones sobre información clínica.
+- **Fuente del estímulo:** Profesional de la UGCO, administrador del sistema o persona no autenticada.
+- **Estímulo:** Intento de consultar, modificar o exportar antecedentes de una ficha oncológica.
+- **Entorno:** Operación normal del sistema durante la jornada asistencial.
+- **Artefacto:** Módulos de autenticación y autorización, y bitácora de auditoría.
+- **Respuesta:** El sistema valida la identidad y los permisos antes de autorizar la operación. Rechaza los intentos sin autorización y registra los accesos y las operaciones.
+- **Medidas de respuesta:**
+  - El 100 % de los accesos y de los intentos de consulta, modificación o exportación debe quedar registrado con RUN, rol, fecha y hora, dirección IP y tipo de operación.
+  - No debe completarse ningún acceso no autorizado a datos protegidos.
+  - La persistencia de cada registro de auditoría debe tardar 50 milisegundos o menos, sin bloquear la operación del usuario.
 
 ---
 
-### 3. Eficiencia de Desempeño (AC-03)
-* **Requisito no funcional asociado:** RNF-02
-* **Métrica objetivo:** Latencia de carga y renderizado del tablero Kanban bajo condiciones de concurrencia.
-* **Escenario de Calidad:**
-  * **Fuente del estímulo:** Gestor/a oncológico/a o jefatura de unidad.
-  * **Estímulo:** Consulta y filtrado del tablero central de trazabilidad con más de 1.000 pacientes registrados y alertas activas.
-  * **Entorno:** Horario de atención simultánea con una carga concurrente de 50 usuarios institucionales.
-  * **Artefacto:** API de Consulta de Trazabilidad y Módulo Frontend de Seguimiento.
-  * **Respuesta:** La plataforma ejecuta la paginación, ordena los registros y renderiza las 8 columnas asistenciales.
-  * **Medida de respuesta:** 
-    * Tiempo total de respuesta y visualización completa en pantalla $\le 2.0$ segundos.
-    * Tasa de uso de CPU en el servidor de aplicaciones $\le 70\%$ bajo la carga nominal establecida.
+### AC-02 — Fiabilidad
+
+- **Requisito asociado:** RNF-01.
+- **Métrica objetivo:** Disponibilidad durante el horario asistencial y recuperación ante fallos.
+- **Fuente del estímulo:** Infraestructura interna, ante un fallo del nodo principal de base de datos o un corte de suministro.
+- **Estímulo:** Pérdida de conectividad con la instancia principal durante una sesión del comité médico.
+- **Entorno:** Jornada asistencial, entre las 08:00 y las 18:00.
+- **Artefacto:** Capa de persistencia, base de datos y réplica secundaria de contingencia.
+- **Respuesta:** El sistema detecta el fallo, aísla el nodo afectado y activa la instancia de contingencia para restablecer el servicio.
+- **Medidas de respuesta:**
+  - Disponibilidad mensual de al menos 99,5 % durante la jornada asistencial.
+  - Tiempo objetivo de recuperación (RTO) de cinco minutos o menos.
+  - Punto objetivo de recuperación (RPO) igual a cero: no se pierden transacciones clínicas confirmadas.
+
+---
+
+### AC-03 — Eficiencia de desempeño
+
+- **Requisito asociado:** RNF-02.
+- **Métrica objetivo:** Tiempo de respuesta y visualización del tablero bajo condiciones de concurrencia.
+- **Fuente del estímulo:** Gestor/a oncológico/a o jefatura de la unidad.
+- **Estímulo:** Consulta y filtrado del tablero con más de 1.000 pacientes registrados con alertas activas.
+- **Entorno:** Atención simultánea con 50 usuarios institucionales concurrentes.
+- **Artefacto:** API de consulta de trazabilidad y módulo de seguimiento.
+- **Respuesta:** El sistema permite paginar y ordenar los registros, y muestra las ocho columnas asistenciales.
+- **Medidas de respuesta:**
+  - La carga y visualización completa del tablero debe tardar 2,0 segundos o menos.
+  - El uso de CPU del servidor de aplicaciones debe ser de 70 % o menos bajo la carga indicada.
