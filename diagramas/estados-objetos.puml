@@ -1,0 +1,71 @@
+' EST-01: ciclo de vida de alertas de seguimiento.
+@startuml EST-01-AlertaSeguimiento
+!pragma layout smetana
+top to bottom direction
+hide empty description
+skinparam shadowing false
+skinparam backgroundColor #F7F9FC
+skinparam defaultFontName SansSerif
+skinparam stateFontSize 16
+skinparam stateArrowFontSize 14
+skinparam state {
+  BackgroundColor #EAF1F8
+  BorderColor #526B87
+  FontColor #172A40
+  ArrowColor #425B78
+  StartColor #526B87
+  EndColor #526B87
+}
+title EST-01 · Ciclo de vida de una alerta de seguimiento
+
+[*] --> Pendiente : Umbral alcanzado
+state "Pendiente" as Pendiente
+state "En gestión" as EnGestion
+state "Resuelta" as Resuelta
+state "No aplica" as NoAplica
+
+Pendiente --> EnGestion : Gestión registrada
+Pendiente --> Resuelta : Cumple
+EnGestion --> Resuelta : Cumple
+Pendiente --> NoAplica : Sin efecto
+EnGestion --> NoAplica : Sin efecto
+Resuelta --> [*]
+NoAplica --> [*]
+@enduml
+
+' EST-02: estados de seguimiento del dossier de derivación.
+@startuml EST-02-DossierDigitalDerivacion
+!pragma layout smetana
+top to bottom direction
+hide empty description
+skinparam shadowing false
+skinparam backgroundColor #F7F9FC
+skinparam defaultFontName SansSerif
+skinparam stateFontSize 16
+skinparam stateArrowFontSize 14
+skinparam state {
+  BackgroundColor #EAF1F8
+  BorderColor #526B87
+  FontColor #172A40
+  ArrowColor #425B78
+  StartColor #526B87
+  EndColor #526B87
+}
+title EST-02 · Seguimiento de una derivación externa
+
+[*] --> Confeccionado
+state "Dossier Confeccionado" as Confeccionado
+state "Despachado por UGAA" as Despachado
+state "Recepcionado en HCVB" as Recepcionado
+state "Cita Asignada" as Cita
+state "Tratamiento Iniciado" as Tratamiento
+state "Contrarreferido con Epicrisis" as Contrarreferido
+
+Confeccionado --> Despachado : UGAA valida; registra fecha y folio
+Despachado --> Recepcionado : Recepción confirmada por HCVB
+Despachado --> Despachado : 11 días hábiles sin recepción ni cita\n/ generar alerta; mantener estado
+Recepcionado --> Cita : Fecha de atención confirmada
+Cita --> Tratamiento : Inicio efectivo confirmado
+Tratamiento --> Contrarreferido : Incorporar epicrisis y contrarreferencia
+Contrarreferido --> [*]
+@enduml
