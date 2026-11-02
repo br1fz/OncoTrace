@@ -17,6 +17,8 @@
 
 ---
 
+<a name="hu-01"></a>
+
 ## HU-01 — Tablero de trazabilidad y línea de tiempo clínica por etapas
 - **Como** Gestor/a de Casos Oncológicos de la UGCO,  
 - **quiero** visualizar un tablero centralizado estructurado según las 8 etapas de la trayectoria oncológica y una línea de tiempo cronológica por paciente,  
@@ -36,6 +38,8 @@
 - **HU-01-CA6 — Trazabilidad de cambios:** Cada hito y cambio de estado debe conservar su fecha y hora de registro, así como el usuario y rol profesional responsable.
 
 ---
+
+<a name="hu-02"></a>
 
 ## HU-02 — Evaluación multidimensional y estratificación por dominios
 - **Como** Gestor/a de Casos Oncológicos de la UGCO,  
@@ -57,6 +61,8 @@
 - **HU-02-CA7 — Visualización del riesgo:** El nivel de riesgo debe reflejarse mediante un distintivo visual (Alto, Medio, Bajo) en la ficha y en la tarjeta del tablero Kanban.
 
 ---
+
+<a name="hu-03"></a>
 
 ## HU-03 — Bitácora digital de acompañamiento y puntos de contacto obligatorios
 - **Como** Gestor/a o TENS de la UGCO,  
@@ -84,6 +90,8 @@
 
 ---
 
+<a name="hu-04"></a>
+
 ## HU-04 — Motor de alertas preventivas de plazos GES e inactividad
 - **Como** Gestor/a Oncológico/a de la UGCO,  
 - **quiero** recibir alertas preventivas automatizadas sobre plazos de garantías GES próximos a vencer y casos con inactividad prolongada,  
@@ -105,6 +113,8 @@
 
 ---
 
+<a name="hu-05"></a>
+
 ## HU-05 — Consolidación e indexación automática de biopsias y PACS con alertas críticas
 - **Como** Gestor/a Oncológico/a y Médico Tratante,  
 - **quiero** que los informes de anatomía patológica, laboratorio e imagenología se indexen automáticamente en la ficha del paciente y alerten de inmediato ante hallazgos críticos,  
@@ -125,6 +135,8 @@
 
 ---
 
+<a name="hu-06"></a>
+
 ## HU-06 — Generación automática de ficha de presentación a comité oncológico
 - **Como** Gestor/a Oncológico/a de la UGCO,  
 - **quiero** generar automáticamente la Ficha Resumen de Presentación con los antecedentes clínicos completos del paciente,  
@@ -144,6 +156,8 @@
 
 ---
 
+<a name="hu-07"></a>
+
 ## HU-07 — Acta digital de comité, firma electrónica y REM 7
 - **Como** Médico Integrante del Comité Oncológico Regional,  
 - **quiero** registrar la conducta terapéutica acordada y suscribir el acta con firma electrónica durante la sesión colegiada,  
@@ -162,6 +176,8 @@
 - **HU-07-CA5 — Disparo de tareas de seguimiento:** La firma del acta debe transicionar automáticamente el caso en el tablero Kanban y generar la tarea de agendamiento o derivación según la resolución adoptada.
 
 ---
+
+<a name="hu-08"></a>
 
 ## HU-08 — Trazabilidad de derivaciones externas y reembolso de pasajes (circuito TENS / UGAA / HCVB)
 - **Como** Gestor/a, TENS o Administrativo/a de la UGAA,  
@@ -183,6 +199,8 @@
 
 ---
 
+<a name="hu-09"></a>
+
 ## HU-09 — Tótem de autoatención en sala de espera
 - **Como** Paciente o Cuidador Principal en la sala de espera de la UGCO,  
 - **quiero** consultar el estado de avance de mis exámenes e hitos asistenciales desde una pantalla táctil,  
@@ -201,6 +219,8 @@
 - **HU-09-CA5 — Cierre automático de sesión:** La sesión debe cerrarse automáticamente tras 30 segundos de inactividad o al pulsar el botón "Salir", borrando cualquier dato de pantalla.
 
 ---
+
+<a name="hu-10"></a>
 
 ## HU-10 — Chatbot de orientación institucional y triage presencial (Ley N° 21.258)
 - **Como** Paciente o usuario que acude de forma espontánea a la UGCO,  
