@@ -1,4 +1,4 @@
-# Matriz de trazabilidad — Entrega II
+# Matriz de trazabilidad — Entrega 2
 
 > **Proyecto:** OncoTrace · CIN324 Ingeniería de Requisitos  
 > **Alcance:** Relaciona las historias seleccionadas con sus fuentes, requisitos y artefactos de la Entrega 2.
@@ -7,14 +7,18 @@ Esta matriz complementa la [matriz de trazabilidad de la Entrega 1](./07-matriz-
 
 **Referencias:** [Proceso AS-IS](./01-proceso-as-is.md) · [Rediseño TO-BE](./02-rediseno-to-be.md) · [Requisitos](./03-requisitos.md) · [Historias de usuario](./04-historias-usuario.md) · [Criterios de aceptación](./07-criterios-aceptacion.md) · [Modelo de dominio](./08-modelo-dominio.md) · [Casos de uso](./09-casos-de-uso.md) · [Diagramas de secuencia](./10-diagramas-secuencia.md) · [Diagramas de estado](./11-diagramas-estado.md).
 
+---
+
 ## Matriz de trazabilidad consolidada
 
 | Requisito (Entrega 1) | Historia | Caso de uso | Secuencia | Estado | Clases del dominio |
-|-----------------------|----------|-------------|-----------|--------|---------------------|
-| RF-01 · RNF-02 | HU-01 | CU-05 | — | — | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
-| RF-04 · RNF-01 | HU-04 | CU-06 | — | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
-| RF-05 · RNF-01 · RNF-04 | HU-05 | CU-01, CU-02 | DSS-01 | — | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
-| RF-08 · RNF-01 | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **RF-01 · RNF-02** | HU-01 | CU-05 | — | — | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
+| **RF-04 · RNF-01** | HU-04 | CU-06 | — | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
+| **RF-05 · RNF-01 · RNF-04** | HU-05 | CU-01, CU-02 | DSS-01 | — | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
+| **RF-08 · RNF-01** | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
+
+---
 
 ## Trazabilidad de origen
 
@@ -25,7 +29,7 @@ Esta matriz complementa la [matriz de trazabilidad de la Entrega 1](./07-matriz-
 | **HU-05** Informes diagnósticos | EL-01 y EL-03 | AS-01 | TB-05 | RF-05 · RNF-01 · RNF-04 |
 | **HU-08** Derivación y retorno | EL-01 y EL-03 | AS-03 | TB-08 | RF-08 · RNF-01 |
 
-Las fuentes y relaciones de origen se mantienen según la [matriz de la Entrega 1](./07-matriz-trazabilidad.md). RNF-03 y REQ-DER-01 establecen controles transversales de acceso y auditoría para las operaciones de funcionarios, conforme a los criterios de aceptación y casos de uso.
+---
 
 ## Relación entre escenarios y casos de uso
 
@@ -41,34 +45,32 @@ Las fuentes y relaciones de origen se mantienen según la [matriz de la Entrega 
 | HU-08-ESC-05 | CU-06 · Gestionar alertas de seguimiento |
 | HU-08-ESC-06 | CU-09 · Registrar retorno con epicrisis |
 
-Los escenarios describen el comportamiento esperado; su inclusión en esta matriz no demuestra que el sistema esté implementado ni que se hayan ejecutado pruebas.
+---
 
 ## Relación con el modelo de dominio
 
-| Historia | Conceptos de MD-01 |
+| Historia | Conceptos del Modelo de Dominio (`08-modelo-dominio.md`) |
 | :--- | :--- |
 | **HU-01** | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
 | **HU-04** | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
 | **HU-05** | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
 | **HU-08** | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
 
-Estos nombres identifican conceptos del [modelo de dominio](./08-modelo-dominio.md); no representan componentes de software implementados.
+---
 
-## Relación con los diagramas
+## Relación con los diagramas de comportamiento
 
-| Historia | Casos de uso en DCU-01 | Diagrama de secuencia | Diagramas de estado |
+| Historia | Casos de uso en DCU-01 | Diagramas de secuencia de sistema | Diagramas de estado (Clase de dominio) |
 | :--- | :--- | :--- | :--- |
-| **HU-01** | DCU-01.A | — | — |
-| **HU-04** | DCU-01.A | — | EST-01 · Ciclo de vida de una alerta |
-| **HU-05** | DCU-01.B | DSS-01 · Informes diagnósticos | — |
-| **HU-08** | DCU-01.C | DSS-02 · Derivación externa y retorno | EST-01 · Alerta de rezago; EST-02 · Dossier de derivación |
+| **HU-01** | CU-05 | — | — |
+| **HU-04** | CU-06 | — | EST-01 · Ciclo de vida de `AlertaSeguimiento` |
+| **HU-05** | CU-01, CU-02 | DSS-01 · Incorporar y consultar informes diagnósticos | — |
+| **HU-08** | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 · Gestionar derivación externa y retorno | EST-01 · Ciclo de vida de `AlertaSeguimiento`<br>EST-02 · Ciclo de vida de `DossierDigitalDerivacion` |
 
-El guion indica que no se elaboró un diagrama de ese tipo para la historia dentro del alcance modelado. Los diagramas de secuencia están descritos en [10-diagramas-secuencia.md](./10-diagramas-secuencia.md); los de estado, en [11-diagramas-estado.md](./11-diagramas-estado.md).
+---
 
-## Cobertura y límites
+## Observaciones y justificación de celdas vacías («—»)
 
-La Entrega 2 desarrolla en detalle HU-01, HU-04, HU-05 y HU-08, con veinte escenarios de aceptación vinculados a sus casos de uso y conceptos de dominio. Las secuencias corresponden a HU-05 y HU-08. Los diagramas de estado cubren las alertas relacionadas con HU-04 y HU-08 y el ciclo del dossier de HU-08.
-
-La trazabilidad de HU-02, HU-03, HU-06, HU-07, HU-09, HU-10 y HU-11 se conserva en la matriz de la Entrega 1. Este documento no les atribuye nuevos criterios ni diagramas de la Entrega 2.
-
-Las integraciones con LIS, PACS, HCVB y MINSAL dependen de las interfaces, acuerdos y habilitaciones institucionales descritos en los documentos de origen. Las metas de calidad son objetivos especificados, no resultados de pruebas.
+1. **Diagramas de Secuencia (HU-01 y HU-04):** No se elaboraron diagramas DSS para HU-01 ni HU-04 debido a que la pauta exige un mínimo de 2 diagramas enfocados prioritariamente en historias con integración a sistemas externos (LIS/PACS en HU-05 y Sistema HCVB en HU-08).
+2. **Diagramas de Estado (HU-01 y HU-05):** No se diseñaron diagramas de estado para estas historias ya que las clases del dominio involucradas (`OrdenExamen`, `EstudioDiagnostico`) no presentan un ciclo de vida complejo en el alcance del sistema de seguimiento, centrándose la dinámica de estados en la clase `AlertaSeguimiento` (EST-01) y `DossierDigitalDerivacion` (EST-02).
+3. **Consistencia Transversal:** Los nombres de las clases, eventos, actores y casos de uso en esta matriz guardan coincidencia de 1 a 1 con los documentos `07-criterios-aceptacion.md`, `08-modelo-dominio.md`, `09-casos-de-uso.md`, `10-diagramas-secuencia.md` y `11-diagramas-estado.md`.
