@@ -30,45 +30,45 @@ Los siguientes escenarios especifican fuente, estímulo, entorno, artefacto, res
 
 ### AC-01 — Seguridad de la información
 
-- **Requisitos asociados:** RNF-03 y REQ-DER-01.
-- **Métrica objetivo:** Control de acceso basado en roles (RBAC) y registro inmutable de las operaciones sobre información clínica.
-- **Fuente del estímulo:** Profesional de la UGCO, administrador del sistema o persona no autenticada.
-- **Estímulo:** Intento de consultar, modificar o exportar antecedentes de una ficha oncológica.
-- **Entorno:** Operación normal del sistema durante la jornada asistencial.
-- **Artefacto:** Módulos de autenticación y autorización, y bitácora de auditoría.
-- **Respuesta:** El sistema valida la identidad y los permisos antes de autorizar la operación. Rechaza los intentos sin autorización y registra los accesos y las operaciones.
-- **Medidas de respuesta:**
-  - El 100 % de los accesos y de los intentos de consulta, modificación o exportación debe quedar registrado con RUN, rol, fecha y hora, dirección IP y tipo de operación.
-  - No debe completarse ningún acceso no autorizado a datos protegidos.
-  - La persistencia de cada registro de auditoría debe tardar 50 milisegundos o menos, sin bloquear la operación del usuario.
+* **Requisitos asociados:** RNF-03 y REQ-DER-01.
+* **Métrica objetivo:** Control de acceso basado en roles (RBAC) y registro inmutable de las operaciones sobre información clínica.
+* **Fuente del estímulo:** Profesional de la UGCO, administrador del sistema o persona no autenticada.
+* **Estímulo:** Intento de consultar, modificar o exportar antecedentes de una ficha oncológica.
+* **Entorno:** Operación normal del sistema durante la jornada asistencial.
+* **Artefacto:** Módulos de autenticación y autorización, y bitácora de auditoría.
+* **Respuesta:** El sistema valida la identidad y los permisos antes de autorizar la operación. Rechaza los intentos sin autorización y registra los accesos y las operaciones.
+* **Medidas de respuesta:**
+  * El 100 % de los accesos y de los intentos de consulta, modificación o exportación debe quedar registrado con RUN, rol, fecha y hora, dirección IP y tipo de operación.
+  * No debe completarse ningún acceso no autorizado a datos protegidos.
+  * La persistencia de cada registro de auditoría debe tardar 50 milisegundos o menos, sin bloquear la operación del usuario.
 
 ---
 
 ### AC-02 — Fiabilidad
 
-- **Requisito asociado:** RNF-01.
-- **Métrica objetivo:** Disponibilidad durante el horario asistencial y recuperación ante fallos.
-- **Fuente del estímulo:** Infraestructura interna, ante un fallo del nodo principal de base de datos o un corte de suministro.
-- **Estímulo:** Pérdida de conectividad con la instancia principal durante una sesión del comité médico.
-- **Entorno:** Jornada asistencial, entre las 08:00 y las 18:00.
-- **Artefacto:** Capa de persistencia, base de datos y réplica secundaria de contingencia.
-- **Respuesta:** El sistema detecta el fallo, aísla el nodo afectado y activa la instancia de contingencia para restablecer el servicio.
-- **Medidas de respuesta:**
-  - Disponibilidad mensual de al menos 99,5 % durante la jornada asistencial.
-  - Tiempo objetivo de recuperación (RTO) de cinco minutos o menos.
-  - Punto objetivo de recuperación (RPO) igual a cero: no se pierden transacciones clínicas confirmadas.
+* **Requisito asociado:** RNF-01.
+* **Métrica objetivo:** Disponibilidad durante el horario asistencial y recuperación ante fallos.
+* **Fuente del estímulo:** Infraestructura interna, ante un fallo del nodo principal de base de datos o un corte de suministro.
+* **Estímulo:** Pérdida de conectividad con la instancia principal durante una sesión del comité médico.
+* **Entorno:** Jornada asistencial, entre las 08:00 y las 18:00.
+* **Artefacto:** Capa de persistencia, base de datos y réplica secundaria de contingencia.
+* **Respuesta:** El sistema detecta el fallo, aísla el nodo afectado y activa la instancia de contingencia para restablecer el servicio.
+* **Medidas de respuesta:**
+  * Disponibilidad mensual de al menos 99,5 % durante la jornada asistencial.
+  * Tiempo objetivo de recuperación (RTO) de cinco minutos o menos.
+  * Punto objetivo de recuperación (RPO) igual a cero: no se pierden transacciones clínicas confirmadas.
 
 ---
 
 ### AC-03 — Eficiencia de desempeño
 
-- **Requisito asociado:** RNF-02.
-- **Métrica objetivo:** Tiempo de respuesta y visualización del tablero bajo condiciones de concurrencia.
-- **Fuente del estímulo:** Gestor/a oncológico/a o jefatura de la unidad.
-- **Estímulo:** Consulta y filtrado del tablero con más de 1.000 pacientes registrados con alertas activas.
-- **Entorno:** Atención simultánea con 50 usuarios institucionales concurrentes.
-- **Artefacto:** API de consulta de trazabilidad y módulo de seguimiento.
-- **Respuesta:** El sistema permite paginar y ordenar los registros, y muestra las ocho columnas asistenciales.
-- **Medidas de respuesta:**
-  - La carga y visualización completa del tablero debe tardar 2,0 segundos o menos.
-  - El uso de CPU del servidor de aplicaciones debe ser de 70 % o menos bajo la carga indicada.
+* **Requisito asociado:** RNF-02.
+* **Métrica objetivo:** Tiempo de respuesta y visualización del tablero bajo condiciones de concurrencia.
+* **Fuente del estímulo:** Gestor/a oncológico/a o jefatura de la unidad.
+* **Estímulo:** Consulta y filtrado del tablero con más de 1.000 pacientes registrados con alertas activas.
+* **Entorno:** Atención simultánea con 50 usuarios institucionales concurrentes.
+* **Artefacto:** API de consulta de trazabilidad y módulo de seguimiento.
+* **Respuesta:** El sistema permite paginar y ordenar los registros, y muestra las ocho columnas asistenciales.
+* **Medidas de respuesta:**
+  * La carga y visualización completa del tablero debe tardar 2,0 segundos o menos.
+  * El uso de CPU del servidor de aplicaciones debe ser de 70 % o menos bajo la carga indicada.
