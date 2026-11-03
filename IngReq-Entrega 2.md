@@ -28,9 +28,9 @@ Los documentos describen requisitos y diseños propuestos; no representan un sis
 | [11 · Diagramas de estado](./11-diagramas-estado.md) | 5 | Ignacio Jorquera (responsable principal); Bruno Fernández (revisión final) |
 | [12 · Trazabilidad](./12-trazabilidad.md) | 6 | Ignacio Jorquera (responsable principal); Benjamín Carcamo (ajustes); Máximo Torrijo Espinoza (revisión final) |
 
-## Uso de herramientas de inteligencia artificial
+## Herramientas de apoyo
 
-Se utilizó ChatGPT como apoyo para elaborar y revisar la redacción, la estructura y los diagramas de los artefactos 07–12. Las propuestas se contrastaron con la Entrega 1 y la pauta; se corrigieron referencias y reglas del proyecto, y se descartaron sugerencias que suponían acuerdos, integraciones o protocolos no confirmados. El uso de esta herramienta no constituye evidencia de implementación ni de pruebas.
+Se utilizó ChatGPT, un modelo de lenguaje (LLM), para apoyar la organización y revisión de la redacción y los diagramas de los artefactos 07–12. El contenido se contrastó con la Entrega 1 y la pauta; se corrigieron referencias y reglas del proyecto, y se descartaron propuestas que suponían acuerdos, integraciones o protocolos no confirmados.
 
 ## Documentos de la Entrega 2
 
