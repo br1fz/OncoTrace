@@ -108,41 +108,46 @@ OT --> Gestor: Confirmar constancia de entrega asociada al dossier
 UGAA -> OT: Formalizar despacho con fecha y folio UGAA
 OT --> UGAA: Registrar estado Despachado por UGAA
 
-alt Interfaz con HCVB habilitada y autorizada
-  OT -> HCVB: Entregar antecedentes de la derivación por el mecanismo acordado
-  HCVB --> OT: Confirmar recepción y fecha
-else Sin interfaz habilitada; UGAA registra la respuesta recibida
-  UGAA -> OT: Registrar confirmación de recepción emitida por HCVB y fecha
-end
-OT --> Gestor: Mostrar estado Recepcionado en HCVB
-
-opt HCVB confirma una fecha de atención
-  alt Interfaz habilitada
-    HCVB -> OT: Informar fecha de atención confirmada
-  else Confirmación recibida y registrada por UGAA
-    UGAA -> OT: Registrar fecha de atención confirmada por HCVB
-  end
-  OT --> Gestor: Mostrar estado Cita Asignada y fecha
+opt Interfaz con HCVB habilitada y autorizada
+  OT -> HCVB: Enviar antecedentes de la derivación por el mecanismo acordado
 end
 
-opt No hay recepción confirmada ni fecha de atención al cumplir 11 días hábiles
-  OT -> Gestor: Generar alerta preventiva con derivación y tiempo transcurrido
+opt Al cumplirse 11 días hábiles desde el despacho, sigue sin confirmación de recepción ni fecha de atención
+  OT -> Gestor: Notificar alerta preventiva con la derivación y el tiempo transcurrido
   note right of OT: La derivación permanece Despachado por UGAA.
 end
 
-opt Se confirma el inicio efectivo del tratamiento
-  Gestor -> OT: Registrar antecedente confirmado de inicio del tratamiento
-  OT --> Gestor: Mostrar estado Tratamiento Iniciado y conservar el hito
-end
+opt HCVB emite la confirmación de recepción
+  alt Interfaz con HCVB habilitada y autorizada
+    HCVB -> OT: Confirmar recepción y fecha
+  else Sin interfaz habilitada
+    UGAA -> OT: Registrar la confirmación de HCVB y la fecha de recepción
+  end
+  OT --> Gestor: Mostrar estado Recepcionado en HCVB
 
-opt Finaliza la atención externa y están disponibles epicrisis y contrarreferencia
-  Gestor -> OT: Incorporar ambos documentos y registrar el retorno al HGF
-  OT --> Gestor: Mostrar Contrarreferido con Epicrisis y agregar hito al caso
+  opt HCVB confirma la fecha de atención
+    alt Interfaz con HCVB habilitada y autorizada
+      HCVB -> OT: Informar la fecha de atención confirmada
+    else Sin interfaz habilitada
+      UGAA -> OT: Registrar la fecha de atención confirmada por HCVB
+    end
+    OT --> Gestor: Mostrar estado Cita Asignada y fecha de atención
+
+    opt Se confirma el inicio efectivo del tratamiento
+      Gestor -> OT: Registrar el inicio confirmado del tratamiento
+      OT --> Gestor: Mostrar estado Tratamiento Iniciado y conservar el hito
+
+      opt Finaliza la atención externa y se dispone de epicrisis y contrarreferencia
+        Gestor -> OT: Incorporar ambos documentos y registrar el retorno al HGF
+        OT --> Gestor: Mostrar Contrarreferido con Epicrisis y registrar hito de retorno
+        OT -> Gestor: Notificar el retorno para continuar el seguimiento
+      end
+    end
+  end
 end
 
 note over OT,HCVB
-La integración con HCVB es propuesta y depende de que HGF y el centro
-receptor habiliten el mecanismo institucional correspondiente.
-El despacho no equivale a recepción; una cita no equivale a inicio de tratamiento.
+La integración depende de que HGF y HCVB habiliten y autoricen el mecanismo.
+La confirmación de recepción puede llegar después de emitida la alerta.
 end note
 @enduml
