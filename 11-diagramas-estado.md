@@ -1,58 +1,69 @@
 # Diagramas de estado
 
-Este documento describe los estados y transiciones de dos objetos del dominio de OncoTrace: `AlertaSeguimiento` y `DossierDigitalDerivacion`. Los diagramas muestran situaciones del objeto y los hechos que justifican cada cambio, no una secuencia de tareas de los funcionarios.
+Este documento describe los estados y transiciones de dos clases del dominio de OncoTrace con ciclo de vida relevante: `AlertaSeguimiento` y `DossierDigitalDerivacion`. Los diagramas muestran las situaciones del objeto y los hechos que justifican cada cambio, no una secuencia de tareas de los funcionarios.
 
 **Referencias:** [Criterios de aceptación](./07-criterios-aceptacion.md) · [Modelo de dominio](./08-modelo-dominio.md) · [Casos de uso](./09-casos-de-uso.md) · [Diagramas de secuencia](./10-diagramas-secuencia.md) · [Historias de usuario](./04-historias-usuario.md).
 
-## EST-01 — Ciclo de vida de una alerta de seguimiento
+---
 
-**Objeto:** `AlertaSeguimiento`.  
-**Historias relacionadas:** HU-04 y HU-08.  
-**Casos de uso relacionados:** CU-06, Gestionar alertas de seguimiento.
+## EST-01 — Ciclo de vida de AlertaSeguimiento
+
+- Clase del dominio: [`AlertaSeguimiento`](./08-modelo-dominio.md)
+- Diagramas de secuencia relacionados: [DSS-01, DSS-02](./10-diagramas-secuencia.md)
 
 ![EST-01 — Ciclo de vida de una alerta de seguimiento](./diagramas/EST-01-AlertaSeguimiento.png)
 
-La alerta comienza en **Pendiente** cuando se alcanza un umbral y no existe una alerta activa equivalente. El umbral depende del tipo: cinco días hábiles para una garantía GES pendiente; más de quince días corridos de inactividad; u once días hábiles desde el despacho sin recepción confirmada ni fecha de atención. La evaluación repetida no debe generar alertas duplicadas.
+Archivo fuente: [`./diagramas/estados-objetos.puml`](./diagramas/estados-objetos.puml)
 
-| Estado de origen | Evento y condición | Estado de destino | Efecto registrado |
-| :--- | :--- | :--- | :--- |
-| Inicial | Se alcanza el umbral aplicable y no hay alerta activa equivalente. | Pendiente | Se crea la alerta con su caso y, cuando corresponda, su garantía o dossier asociado. |
-| Pendiente | Una gestora autorizada registra una acción de gestión. | En gestión | Se conserva la acción; la alerta sigue abierta. |
-| Pendiente | Se registra el hito que acredita el cumplimiento de una garantía GES. | Resuelta | Se vincula el hito que acredita el cumplimiento. |
-| En gestión | Se registra el hito que acredita el cumplimiento de una garantía GES. | Resuelta | Se vincula el hito y se cierra la alerta. |
-| Pendiente | Se registra una causa documentada que deja sin efecto una garantía GES. | No aplica | Se conservan el motivo, la fecha y la responsable del cierre. |
-| En gestión | Se registra una causa documentada que deja sin efecto una garantía GES. | No aplica | Se conservan el motivo, la fecha y la responsable del cierre. |
-| Resuelta o No aplica | El estado de cierre es terminal para esta alerta. | — | No se define una reapertura en los criterios de aceptación. |
+### Descripción del ciclo de vida
+La alerta comienza en **Pendiente** cuando se alcanza un umbral y no existe una alerta activa equivalente. El umbral depende del tipo: cinco días hábiles para una garantía GES pendiente; más de quince días corridos de inactividad; u once días hábiles desde el despacho sin recepción confirmada ni fecha de atención. La evaluación repetida no genera alertas duplicadas.
 
-Las transiciones a **Resuelta** y **No aplica** con causa GES están limitadas a las alertas de garantías. Los criterios actuales no especifican una regla de cierre para alertas de inactividad o rezago; por eso no se les atribuye una transición de cierre nueva en este diagrama.
+### Tabla de transiciones
 
-## EST-02 — Seguimiento de una derivación externa
+| Estado origen | Evento | Guarda | Acción | Estado destino |
+| :--- | :--- | :--- | :--- | :--- |
+| **Inicial** | Se alcanza el umbral aplicable | [no hay alerta activa equivalente] | Crear alerta vinculada al caso y garantía/dossier | **Pendiente** |
+| **Pendiente** | Registro de gestión por gestora | [gestora autorizada] | Conservar la acción de gestión registrada | **En gestión** |
+| **Pendiente** | Registro de hito de cumplimiento | [cumplimiento de garantía GES] | Vincular hito que acredita cumplimiento | **Resuelta** |
+| **En gestión** | Registro de hito de cumplimiento | [cumplimiento de garantía GES] | Vincular hito y cerrar alerta | **Resuelta** |
+| **Pendiente** | Registro de causa documentada | [deja sin efecto la garantía GES] | Conservar motivo, fecha y responsable de cierre | **No aplica** |
+| **En gestión** | Registro de causa documentada | [deja sin efecto la garantía GES] | Conservar motivo, fecha y responsable de cierre | **No aplica** |
+| **Resuelta** | — | [estado terminal] | — | **—** |
+| **No aplica** | — | [estado terminal] | — | **—** |
 
-**Objeto:** `DossierDigitalDerivacion`.  
-**Historia relacionada:** HU-08.  
-**Casos de uso relacionados:** CU-03, CU-04, CU-06, CU-07, CU-08 y CU-09.
+*Nota:* Las transiciones a **Resuelta** y **No aplica** con causa GES están limitadas a las alertas de garantías. Los criterios actuales no especifican una regla de cierre para alertas de inactividad o rezago.
+
+---
+
+## EST-02 — Ciclo de vida de DossierDigitalDerivacion
+
+- Clase del dominio: [`DossierDigitalDerivacion`](./08-modelo-dominio.md)
+- Diagramas de secuencia relacionados: [DSS-02](./10-diagramas-secuencia.md)
 
 ![EST-02 — Seguimiento de una derivación externa](./diagramas/EST-02-DossierDigitalDerivacion.png)
 
-El dossier avanza por los seis estados definidos para HU-08. El registro de despacho requiere el dossier validado, la constancia de entrega anticipada del instructivo y los datos de despacho de UGAA. La recepción requiere confirmación emitida por HCVB. Si transcurren once días hábiles sin recepción ni fecha de atención, se genera una alerta y el dossier permanece despachado.
+Archivo fuente: [`./diagramas/estados-objetos.puml`](./diagramas/estados-objetos.puml)
 
-| Estado de origen | Evento y condición | Estado de destino | Efecto registrado |
-| :--- | :--- | :--- | :--- |
-| Inicial | Se confecciona el dossier con los antecedentes requeridos y la resolución firmada. | Dossier Confeccionado | Queda disponible para validación y despacho por UGAA. |
-| Dossier Confeccionado | UGAA valida el dossier; la entrega anticipada del instructivo está registrada; se ingresan fecha y folio. | Despachado por UGAA | Se conserva la fecha y el folio del despacho. El despacho no confirma recepción. |
-| Despachado por UGAA | Se registra una confirmación de recepción emitida por HCVB. | Recepcionado en HCVB | Se conservan la confirmación y la fecha de recepción. |
-| Despachado por UGAA | Se cumplen once días hábiles sin recepción confirmada ni fecha de atención. | Despachado por UGAA | Se genera una alerta preventiva; el estado del dossier no cambia. |
-| Recepcionado en HCVB | Se registra la fecha de atención confirmada por el centro receptor. | Cita Asignada | La fecha queda vinculada a la derivación; no representa inicio de tratamiento. |
-| Cita Asignada | Se confirma el inicio efectivo del tratamiento. | Tratamiento Iniciado | Se registra el hito del caso con el antecedente disponible. |
-| Tratamiento Iniciado | Finaliza la atención externa y la gestora incorpora la epicrisis y la contrarreferencia. | Contrarreferido con Epicrisis | Los documentos quedan vinculados al caso y el retorno se registra como hito. |
-| Contrarreferido con Epicrisis | Estado final del circuito definido para HU-08. | — | El seguimiento continúa en el HGF según los antecedentes de retorno. |
+### Descripción del ciclo de vida
+El dossier avanza por los seis estados definidos para HU-08. El registro de despacho requiere el dossier validado, la constancia de entrega anticipada del instructivo y los datos de despacho de UGAA. La recepción requiere confirmación emitida por HCVB. Si transcurren once días hábiles sin recepción ni fecha de atención, se genera una alerta y el dossier permanece en el estado despachado.
 
-El registro de recepción, cita, inicio de tratamiento y retorno puede realizarse a partir de antecedentes confirmados por el centro receptor. La eventual integración entre sistemas queda sujeta a habilitación institucional; el modelo no presupone una interfaz activa.
+### Tabla de transiciones
+
+| Estado origen | Evento | Guarda | Acción | Estado destino |
+| :--- | :--- | :--- | :--- | :--- |
+| **Inicial** | Confección del dossier | [antecedentes requeridos y resolución firmada] | Habilitar para validación y despacho UGAA | **Dossier Confeccionado** |
+| **Dossier Confeccionado** | Validar y despachar por UGAA | [instructivo entregado + fecha y folio ingresados] | Registrar fecha y folio del despacho | **Despachado por UGAA** |
+| **Despachado por UGAA** | Registrar confirmación de recepción | [confirmación emitida por HCVB] | Conservar confirmación y fecha de recepción | **Recepcionado en HCVB** |
+| **Despachado por UGAA** | Evaluación de plazo transcurrido | [11 días hábiles sin recepción ni fecha] | Generar alerta preventiva (el estado no cambia) | **Despachado por UGAA** |
+| **Recepcionado en HCVB** | Registrar fecha de atención confirmada | [cita asignada por centro receptor] | Vincular fecha de atención a la derivación | **Cita Asignada** |
+| **Cita Asignada** | Confirmación de inicio de tratamiento | [antecedente de inicio disponible] | Registrar hito del caso oncológico | **Tratamiento Iniciado** |
+| **Tratamiento Iniciado** | Incorporación de epicrisis y contra-referencia | [atención externa finalizada] | Vincular documentos y registrar hito de retorno | **Contrarreferido con Epicrisis** |
+| **Contrarreferido con Epicrisis** | — | [estado terminal] | Continúa seguimiento en HGF | **—** |
+
+---
 
 ## Fuente editable
 
-El archivo PlantUML contiene ambos diagramas de estado:
+El archivo PlantUML editable que contiene ambos diagramas de estado se encuentra adjunto en el repositorio:
 
-- [estados-objetos.puml](./diagramas/estados-objetos.puml)
-- [EST-01 — AlertaSeguimiento](./diagramas/EST-01-AlertaSeguimiento.png)
-- [EST-02 — DossierDigitalDerivacion](./diagramas/EST-02-DossierDigitalDerivacion.png)
+- Archivo fuente unificado: [`./diagramas/estados-objetos.puml`](./diagramas/estados-objetos.puml)
