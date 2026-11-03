@@ -1,75 +1,75 @@
 # Casos de uso
 
-Este documento presenta los objetivos de los actores que participan en las historias HU-01, HU-04, HU-05 y HU-08. El alcance coincide con los [criterios de aceptación](./07-criterios-aceptacion.md) y el [modelo de dominio](./08-modelo-dominio.md) de la Entrega 2.
+Este documento presenta la especificación de casos de uso del sistema **OncoTrace**, detallando los objetivos de los actores que participan en las historias de usuario **HU-01**, **HU-04**, **HU-05** y **HU-08**. 
+
+El alcance de este artefacto coincide estrictamente con los [criterios de aceptación](./07-criterios-aceptacion.md) y el [modelo de dominio](./08-modelo-dominio.md) definidos para la Entrega 2.
 
 **Requisitos de origen:** RF-01, RF-04, RF-05 y RF-08 de [03-requisitos.md](./03-requisitos.md).
 
-## Actores
+---
+
+## Actores del sistema
 
 | Actor | Tipo (humano / sistema externo) | Descripción |
 | :--- | :--- | :--- |
-| Gestor/a UGCO | Humano | Consulta y actualiza el seguimiento del caso dentro de sus permisos, gestiona alertas, consulta informes y coordina el seguimiento de las derivaciones. |
-| Médico tratante | Humano | Consulta informes diagnósticos y recibe avisos de hallazgos críticos para su evaluación clínica. |
-| TENS UGCO | Humano | Confecciona el dossier y registra la entrega del instructivo de pasajes cuando le corresponde. |
-| Funcionario/a UGAA | Humano | Valida los antecedentes, formaliza el despacho y registra las respuestas de la derivación dentro de sus permisos. |
-| LIS | Sistema externo | Proporciona informes de laboratorio y anatomía patológica y su condición de validación, según las interfaces institucionales disponibles. |
-| PACS | Sistema externo | Proporciona informes radiológicos y su condición de validación, según las interfaces institucionales disponibles. |
-| Sistema HCVB | Sistema externo | Representa el sistema del centro receptor en la integración propuesta para el despacho, la recepción, la cita y el retorno de las derivaciones. |
+| **Gestor/a UGCO** | Humano | Consulta y actualiza el seguimiento del caso oncológico dentro de sus permisos, gestiona alertas de plazo, consulta informes diagnósticos y coordina las derivaciones asistenciales. |
+| **Médico tratante** | Humano | Consulta informes diagnósticos consolidados y recibe avisos prioritarios de hallazgos críticos para su evaluación clínica formal. |
+| **TENS UGCO** | Humano | Confecciona el dossier digital de derivación y registra la entrega formal del instructivo de pasajes (Anexo 6). |
+| **Funcionario/a UGAA** | Humano | Valida los antecedentes clínicos, formaliza el despacho de derivaciones y registra la confirmación de recepción y citas del centro receptor. |
+| **LIS** | Sistema externo | Proporciona informes de laboratorio y anatomía patológica junto con su estado de validación a través de las interfaces institucionales disponibles. |
+| **PACS** | Sistema externo | Proporciona informes radiológicos e imagenológicos y su condición de validación mediante estándares del dominio (HL7/FHIR/DICOM). |
+| **Sistema HCVB** | Sistema externo | Sistema del centro receptor (Hospital Carlos van Buren) que participa en la integración propuesta para el despacho, confirmación de recepción, asignación de cita y retorno con epicrisis. |
 
-Los actores humanos deben estar autenticados y contar con los permisos correspondientes, según RNF-03 y REQ-DER-01. La autenticación y la auditoría son condiciones de los casos de uso, no objetivos separados en este diagrama.
+### Consideraciones sobre los Actores y Fronteras del Sistema
+* **Autenticación y Permisos:** Los actores humanos deben estar autenticados y contar con los permisos del rol asignado (conforme a RNF-03 y REQ-DER-01). La autenticación y la auditoría operan como precondiciones del sistema, no como casos de uso aislados.
+* **Integraciones Condicionadas:** La participación del **Sistema HCVB** describe una integración propuesta sujeta a la disponibilidad de interfaces institucionales. En su ausencia, las interacciones son registradas manualmente por el usuario autorizado (Funcionario/a UGAA).
+* **Actores Indirectos:** Paciente y cuidador reciben asistencia a través del personal de la UGCO. No se representan como usuarios directos de OncoTrace en este alcance (la autoatención de HU-09 y la interoperabilidad con MINSAL de HU-11 quedan fuera de esta entrega).
 
-La participación del Sistema HCVB describe una integración propuesta y condicionada a los mecanismos institucionales disponibles y autorizados. No acredita que exista una interfaz habilitada. El registro de una recepción siempre requiere la confirmación emitida por el centro receptor, conforme a HU-08.
-
-Paciente y cuidador reciben el instructivo a través del personal de la UGCO. No se representan como usuarios directos de OncoTrace en estas cuatro historias. La autoatención de HU-09 y el intercambio con MINSAL de HU-11 quedan fuera del alcance seleccionado.
+---
 
 ## Diagrama de casos de uso
 
-**Identificador:** DCU-01.
+**Identificador del Diagrama:** DCU-01.
 
-![DCU-01 — Casos de uso de OncoTrace](./diagramas/casos-de-uso.png)
+![DCU-01 — Diagrama de Casos de Uso de OncoTrace](./diagramas/casos-de-uso.png)
 
-Archivo fuente: [`./diagramas/casos-de-uso.puml`](./diagramas/casos-de-uso.puml).
+* **Archivo fuente editable:** [`./diagramas/casos-de-uso.puml`](./diagramas/casos-de-uso.puml)
+* **Vista de integración de sistemas:** [`./diagramas/casos-de-uso-integracion.png`](./diagramas/casos-de-uso-integracion.png)
 
-La imagen reúne tres vistas del mismo sistema: seguimiento y alertas, informes diagnósticos y derivaciones externas. En cada vista, el rectángulo delimita OncoTrace y los actores quedan fuera. Un actor repetido representa el mismo rol.
+*Nota de modelado:* El diagrama delimita explícitamente el límite (*boundary*) de OncoTrace. Todos los actores permanecen fuera del rectángulo del sistema. La repetición de un actor en sub-vistas representa el mismo rol del negocio.
+
+---
 
 ## Casos de uso y su origen
 
-Los códigos CU-01 a CU-04 conservan las áreas funcionales del modelo de integración de la Entrega 1. Sus nombres y relaciones se precisan aquí para expresar los objetivos de los actores. CU-05 a CU-09 completan el alcance de las historias seleccionadas.
+La siguiente tabla asocia cada caso de uso con su objetivo del actor, su historia de origen y los escenarios de aceptación correspondientes:
 
-| ID | Caso de uso (objetivo del actor) | Actor principal | Historia de origen | Escenarios de aceptación |
+| ID | Caso de uso (objetivo del actor) | Actor principal | Historia de origen | Escenarios de aceptación cubiertos |
 | :--- | :--- | :--- | :--- | :--- |
-| CU-01 | Consolidar y consultar informes diagnósticos | Gestor/a UGCO y médico tratante | [HU-05](./04-historias-usuario.md#hu-05) | HU-05-ESC-01, HU-05-ESC-03 y HU-05-ESC-04. |
-| CU-02 | Recibir avisos de hallazgos críticos | Gestor/a UGCO y médico tratante | [HU-05](./04-historias-usuario.md#hu-05) | HU-05-ESC-02. |
-| CU-03 | Despachar derivación externa | Funcionario/a UGAA | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-02. |
-| CU-04 | Registrar recepción y cita en HCVB | Funcionario/a UGAA y gestor/a UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-03 y HU-08-ESC-04. |
-| CU-05 | Dar seguimiento al caso oncológico | Gestor/a UGCO | [HU-01](./04-historias-usuario.md#hu-01) | HU-01-ESC-01 a HU-01-ESC-03. |
-| CU-06 | Gestionar alertas de seguimiento | Gestor/a UGCO | [HU-04](./04-historias-usuario.md#hu-04) y [HU-08](./04-historias-usuario.md#hu-08) | HU-04-ESC-01 a HU-04-ESC-07 y HU-08-ESC-05. |
-| CU-07 | Confeccionar dossier de derivación | TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-01. |
-| CU-08 | Registrar entrega del instructivo de pasajes | Gestor/a UGCO o TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-02. |
-| CU-09 | Registrar retorno con epicrisis | Gestor/a UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-06. |
+| **CU-01** | Consolidar y consultar informes diagnósticos | Gestor/a UGCO, Médico tratante | [HU-05](./04-historias-usuario.md#hu-05) | HU-05-ESC-01, HU-05-ESC-03, HU-05-ESC-04 |
+| **CU-02** | Recibir avisos de hallazgos críticos | Gestor/a UGCO, Médico tratante | [HU-05](./04-historias-usuario.md#hu-05) | HU-05-ESC-02 |
+| **CU-03** | Despachar derivación externa | Funcionario/a UGAA | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-02 |
+| **CU-04** | Registrar recepción y cita en HCVB | Funcionario/a UGAA, Gestor/a UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-03, HU-08-ESC-04 |
+| **CU-05** | Dar seguimiento al caso oncológico | Gestor/a UGCO | [HU-01](./04-historias-usuario.md#hu-01) | HU-01-ESC-01 a HU-01-ESC-03 |
+| **CU-06** | Gestionar alertas de seguimiento | Gestor/a UGCO | [HU-04](./04-historias-usuario.md#hu-04), [HU-08](./04-historias-usuario.md#hu-08) | HU-04-ESC-01 a HU-04-ESC-07, HU-08-ESC-05 |
+| **CU-07** | Confeccionar dossier de derivación | TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-01 |
+| **CU-08** | Registrar entrega del instructivo de pasajes | Gestor/a UGCO, TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-02 |
+| **CU-09** | Registrar retorno con epicrisis | Gestor/a UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-06 |
 
-Los identificadores de escenarios corresponden a [07-criterios-aceptacion.md](./07-criterios-aceptacion.md). Un escenario puede intervenir en más de un caso de uso; por ejemplo, el despacho de HU-08-ESC-02 exige que la entrega del instructivo esté registrada.
+---
 
 ## Relaciones entre los casos de uso
 
-- **CU-02 extiende CU-01:** el aviso se produce cuando se incorpora un informe validado, asociado al paciente correcto, que contiene un hallazgo de malignidad o un valor crítico informado por el sistema de origen. El punto de extensión es la incorporación del informe. La flecha `extend` parte de CU-02 y apunta a CU-01.
+* **CU-02 extiende CU-01 (`<<extend>>`):** La notificación de hallazgo crítico se activa cuando un informe validado incorpora un resultado de malignidad o valor de alerta informado por el LIS/PACS de origen. El punto de extensión es la *incorporación del informe*. La relación `<<extend>>` nace en `CU-02` y apunta hacia `CU-01`.
+* **Independencia de CU-04 respecto a CU-03:** La confirmación de recepción y la asignación de cita son eventos asíncronos y posteriores al despacho. Se modelan como casos de uso independientes y no como extensiones obligatorias del despacho.
+* **Independencia de CU-08 respecto a CU-03:** La entrega del instructivo de pasajes se registra de forma anticipada. El despacho (`CU-03`) verifica la existencia de esta entrega como precondición del negocio, sin requerir reejecutar la entrega dentro del flujo.
+* **Ausencia de relaciones `<<include>>` superfluas:** Se evita el uso desmedido de `include` para no sobrecargar el diagrama con pasos procedurales o funciones de software. Cada caso de uso representa un objetivo completo de negocio.
 
-- **CU-04 es independiente de CU-03:** la recepción y la asignación de una cita son hechos posteriores al despacho y pueden registrarse en interacciones distintas. No se modelan como una extensión ejecutada durante el despacho.
+---
 
-- **CU-08 es independiente de CU-03:** la entrega del instructivo puede registrarse anticipadamente. Para despachar a HCVB, su constancia debe existir, según HU-08-ESC-02. Esta condición no obliga a repetir la entrega cada vez que se consulta o formaliza el despacho.
+## Reglas de consistencia con otros artefactos
 
-- No se incorporan relaciones `include`: los casos se mantienen como objetivos identificables y las condiciones compartidas se explican en los criterios de aceptación.
-
-## Reglas que se mantienen entre los artefactos
-
-- **CU-05:** el caso sigue las ocho etapas definidas en el modelo de dominio. El comité es un hito; su resolución no cambia por sí sola la etapa asistencial.
-
-- **CU-06:** las alertas se generan según los umbrales del documento 07. Una gestión registrada no equivale a cumplir una garantía. Las evaluaciones automáticas forman parte del comportamiento de OncoTrace; no se representan como un actor externo.
-
-- **CU-01 y CU-02:** los informes pendientes de validación o con identificación discrepante no se consideran resultados correctamente incorporados. Un aviso de hallazgo crítico comunica un resultado informado por el origen y no sustituye la evaluación del médico.
-
-- **CU-03 y CU-04:** despachar un dossier no acredita su recepción. Tampoco una cita asignada acredita el inicio del tratamiento. Cada avance requiere el antecedente correspondiente.
-
-- **CU-07 y CU-08:** el dossier debe reunir los antecedentes requeridos y la resolución firmada del comité. La entrega del instructivo conserva su destinatario, fecha y responsable, de acuerdo con el modelo de dominio.
-
-- **CU-09:** el retorno requiere la epicrisis y la contrarreferencia vinculadas al caso y deja un hito de seguimiento. No se presupone una transmisión automática desde HCVB.
+1. **Ciclo de vida del Caso (CU-05):** El seguimiento transita por las etapas definidas en el Modelo de Dominio (`08-modelo-dominio.md`). La resolución del comité constituye un hito documental y no altera por sí sola la etapa asistencial del paciente.
+2. **Evaluación de Alertas (CU-06):** Las alertas de 11 días hábiles o vencimiento de plazos son evaluadas internamente por OncoTrace. No se modela un "timer" o "sistema interno" como actor externo.
+3. **Validación de Resultados (CU-01 y CU-02):** Todo informe con inconsistencia de RUN o sin firma de validación queda en estado de revisión y no consolida completitud en el expediente del paciente.
+4. **Trazabilidad de Derivaciones (CU-03, CU-04 y CU-09):** El despacho genera un folio único; la recepción requiere confirmación explícita del centro receptor y el cierre del ciclo exige la carga de la contra-referencia con epicrisis.
