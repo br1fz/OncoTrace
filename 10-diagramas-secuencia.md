@@ -12,7 +12,7 @@ Este documento describe, mediante diagramas de secuencia del sistema (DSS), las 
 - Historia: [HU-05](./04-historias-usuario.md#hu-05)
 - Sistemas externos que participan: LIS / PACS, Servicio Validación RUN
 
-![DSS-01 — Incorporar y consultar informes diagnósticos](./diagramas/ssd-hu05.png)
+![DSS-01 — Incorporar y consultar informes diagnósticos](./diagramas/DSS-01-HU-05.png)
 
 Archivo fuente: [`./diagramas/diagramas-secuencia.puml`](./diagramas/diagramas-secuencia.puml)
 
@@ -37,7 +37,7 @@ El flujo contempla la ingesta automatizada o manual de informes provenientes de 
 - Historia: [HU-08](./04-historias-usuario.md#hu-08)
 - Sistemas externos que participan: Sistema Externo HCVB (Hospital Carlos van Buren)
 
-![DSS-02 — Gestionar derivación externa y retorno](./diagramas/ssd-hu08.png)
+![DSS-02 — Gestionar derivación externa y retorno](./diagramas/DSS-02-HU-08.png)
 
 Archivo fuente: [`./diagramas/diagramas-secuencia.puml`](./diagramas/diagramas-secuencia.puml)
 
