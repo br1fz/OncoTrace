@@ -14,7 +14,7 @@ Esta matriz complementa la [matriz de trazabilidad de la Entrega 1](./07-matriz-
 | RF-01 · RNF-02 | HU-01 | CU-05 | — | — | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
 | RF-04 · RNF-01 | HU-04 | CU-06 | — | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
 | RF-05 · RNF-01 · RNF-04 | HU-05 | CU-01, CU-02 | DSS-01 | — | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
-| RF-08 · RNF-01 | HU-08 | CU-03, CU-04, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
+| RF-08 · RNF-01 | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
 
 ## Trazabilidad de origen
 
