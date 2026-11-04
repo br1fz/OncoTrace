@@ -35,7 +35,7 @@ La gestora consulta los informes y el estado de los exámenes del caso. OncoTrac
 
 **Archivo fuente:** [diagramas-secuencia.puml](./diagramas/diagramas-secuencia.puml).
 
-TENS solicita la confección del dossier. En el flujo representado, la gestora registra la entrega anticipada del instructivo de pasajes del Anexo 6. Con el dossier validado y la constancia de entrega registrada, UGAA formaliza el despacho con su fecha y folio. La derivación queda en estado **Despachado por UGAA**.
+TENS solicita la confección del dossier. En el flujo representado, la gestora registra la entrega anticipada del instructivo de pasajes del Anexo 6. UGAA valida los antecedentes del dossier y, con la constancia de entrega registrada, formaliza el despacho con su fecha y folio. La derivación queda en estado **Despachado por UGAA**.
 
 ### Variantes representadas
 

@@ -23,6 +23,8 @@ La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: 
 
 ### Tabla de transiciones
 
+En el diagrama, cada transición se rotula como `evento [guarda] / acción`, con los mismos términos de esta tabla.
+
 | Estado origen | Evento | Guarda | Acción | Estado destino |
 | :--- | :--- | :--- | :--- | :--- |
 | **Inicial** | Se alcanza el umbral del tipo de alerta | [Para HU-04, no existe una alerta activa equivalente] | Vincular la alerta al caso y, si corresponde, a la garantía GES o al dossier | **Pendiente** |
@@ -56,15 +58,17 @@ La asignación de una cita no acredita el inicio del tratamiento. El estado **Tr
 
 ### Tabla de transiciones
 
+En el diagrama, cada transición se rotula como `evento [guarda] / acción`. Los eventos usan los mismos nombres que los mensajes de [DSS-02](./10-diagramas-secuencia.md); cuando HCVB no tiene interfaz habilitada, UGAA registra la misma confirmación o fecha en su lugar.
+
 | Estado origen | Evento | Guarda | Acción | Estado destino |
 | :--- | :--- | :--- | :--- | :--- |
-| **Inicial** | Confección del dossier | [Antecedentes requeridos y resolución firmada disponibles] | Reunir los antecedentes y dejar el dossier disponible para validación de UGAA | **Dossier Confeccionado** |
-| **Dossier Confeccionado** | UGAA formaliza el despacho | [Dossier completo y validado; instructivo entregado; fecha y folio registrados] | Registrar los datos del despacho y asociar la constancia de entrega | **Despachado por UGAA** |
-| **Despachado por UGAA** | Registro de confirmación de recepción | [Confirmación emitida por HCVB para esa derivación] | Conservar la confirmación y la fecha de recepción | **Recepcionado en HCVB** |
-| **Despachado por UGAA** | Evaluación del plazo transcurrido | [Once días hábiles desde el despacho sin confirmación de recepción ni fecha de atención] | Generar una alerta preventiva vinculada a la derivación; mantener el estado | **Despachado por UGAA** |
-| **Recepcionado en HCVB** | Registro de fecha de atención confirmada | [Fecha confirmada por el centro receptor] | Vincular la fecha de atención a la derivación | **Cita Asignada** |
-| **Cita Asignada** | Confirmación del inicio del tratamiento | [Antecedente que confirma el inicio disponible] | Registrar el hito de inicio en el caso | **Tratamiento Iniciado** |
-| **Tratamiento Iniciado** | Registro del retorno por la gestora | [Atención externa finalizada; epicrisis y contrarreferencia disponibles] | Vincular ambos documentos y registrar el hito de retorno | **Contrarreferido con Epicrisis** |
+| **Inicial** | Solicitar confección del dossier para el caso | [Antecedentes requeridos y resolución firmada disponibles] | Reunir los antecedentes y dejar el dossier disponible para validación de UGAA | **Dossier Confeccionado** |
+| **Dossier Confeccionado** | Formalizar despacho con fecha y folio UGAA | [Dossier completo y validado; instructivo entregado; fecha y folio registrados] | Registrar los datos del despacho y asociar la constancia de entrega | **Despachado por UGAA** |
+| **Despachado por UGAA** | Confirmar recepción y fecha | [Confirmación emitida por HCVB para esa derivación] | Conservar la confirmación y la fecha de recepción | **Recepcionado en HCVB** |
+| **Despachado por UGAA** | Al cumplirse 11 días hábiles desde el despacho | [Once días hábiles desde el despacho sin confirmación de recepción ni fecha de atención] | Generar una alerta preventiva vinculada a la derivación; mantener el estado | **Despachado por UGAA** |
+| **Recepcionado en HCVB** | Informar la fecha de atención confirmada | [Fecha confirmada por el centro receptor] | Vincular la fecha de atención a la derivación | **Cita Asignada** |
+| **Cita Asignada** | Registrar el inicio confirmado del tratamiento | [Antecedente que confirma el inicio disponible] | Registrar el hito de inicio en el caso | **Tratamiento Iniciado** |
+| **Tratamiento Iniciado** | Registrar el retorno al HGF | [Atención externa finalizada; epicrisis y contrarreferencia disponibles] | Vincular ambos documentos y registrar el hito de retorno | **Contrarreferido con Epicrisis** |
 | **Contrarreferido con Epicrisis** | — | [Estado final del ciclo de derivación] | El seguimiento del caso continúa en HGF | **—** |
 
 ---
