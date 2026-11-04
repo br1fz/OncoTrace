@@ -42,4 +42,3 @@ La asignación individual no implica autoría exclusiva ni limita las consultas 
 
 Se utilizó ChatGPT, un modelo de lenguaje (LLM), como apoyo para organizar y revisar la redacción y los diagramas de los artefactos 07–12. El contenido se contrastó con la Entrega 1 y la pauta; se ajustaron referencias y reglas del proyecto, y se descartaron propuestas que suponían acuerdos o integraciones no confirmados.
 
-También se usó Claude (Anthropic) para revisar la entrega contra la rúbrica. De sus propuestas se incorporaron ajustes puntuales de coherencia y notación: el comité como hito en la tabla de etapas de la Entrega 1, la punta de la flecha `<<extend>>` en DCU-01, la validación de UGAA en DSS-02, los rótulos de las transiciones en EST-01 y EST-02, y una fila por requisito en la matriz. Se descartó su propuesta de agregar reglas nuevas de cierre de alertas, porque no estaban definidas en la Entrega 1.
