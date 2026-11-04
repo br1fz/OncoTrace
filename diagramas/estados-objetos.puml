@@ -1,4 +1,5 @@
 ' EST-01: ciclo de vida de alertas de seguimiento.
+' Transiciones en notación UML: evento [guarda] / acción.
 @startuml EST-01-AlertaSeguimiento
 !pragma layout smetana
 top to bottom direction
@@ -7,7 +8,7 @@ skinparam shadowing false
 skinparam backgroundColor #F7F9FC
 skinparam defaultFontName SansSerif
 skinparam stateFontSize 16
-skinparam stateArrowFontSize 14
+skinparam stateArrowFontSize 13
 skinparam state {
   BackgroundColor #EAF1F8
   BorderColor #526B87
@@ -18,22 +19,23 @@ skinparam state {
 }
 title EST-01 · Ciclo de vida de una alerta de seguimiento
 
-[*] --> Pendiente : Umbral alcanzado
+[*] --> Pendiente : Se alcanza el umbral del tipo de alerta\n[no existe una alerta activa equivalente]\n/ vincular al caso y a su origen
 state "Pendiente" as Pendiente
 state "En gestión" as EnGestion
 state "Resuelta" as Resuelta
 state "No aplica" as NoAplica
 
-Pendiente --> EnGestion : Gestión registrada
-Pendiente --> Resuelta : Cumple
-EnGestion --> Resuelta : Cumple
-Pendiente --> NoAplica : Sin efecto
-EnGestion --> NoAplica : Sin efecto
+Pendiente --> EnGestion : Registro de una acción de gestión\n[alerta GES y gestora autorizada]\n/ conservar la acción en la bitácora
+Pendiente --> Resuelta : Registro de hito de cumplimiento\n[cumplimiento de la garantía GES]\n/ vincular el hito
+EnGestion --> Resuelta : Registro de hito de cumplimiento\n[cumplimiento de la garantía GES]\n/ vincular el hito y cerrar la alerta
+Pendiente --> NoAplica : Registro de causa documentada\n[la causa deja sin efecto la garantía GES]\n/ conservar motivo, fecha y responsable
+EnGestion --> NoAplica : Registro de causa documentada\n[la causa deja sin efecto la garantía GES]\n/ conservar motivo, fecha y responsable
 Resuelta --> [*]
 NoAplica --> [*]
 @enduml
 
 ' EST-02: estados de seguimiento del dossier de derivación.
+' Los eventos usan los mismos nombres que los mensajes de DSS-02.
 @startuml EST-02-DossierDigitalDerivacion
 !pragma layout smetana
 top to bottom direction
@@ -42,7 +44,7 @@ skinparam shadowing false
 skinparam backgroundColor #F7F9FC
 skinparam defaultFontName SansSerif
 skinparam stateFontSize 16
-skinparam stateArrowFontSize 14
+skinparam stateArrowFontSize 13
 skinparam state {
   BackgroundColor #EAF1F8
   BorderColor #526B87
@@ -53,7 +55,7 @@ skinparam state {
 }
 title EST-02 · Seguimiento de una derivación externa
 
-[*] --> Confeccionado
+[*] --> Confeccionado : Solicitar confección del dossier para el caso\n[antecedentes requeridos y resolución firmada disponibles]\n/ reunir los antecedentes
 state "Dossier Confeccionado" as Confeccionado
 state "Despachado por UGAA" as Despachado
 state "Recepcionado en HCVB" as Recepcionado
@@ -61,11 +63,11 @@ state "Cita Asignada" as Cita
 state "Tratamiento Iniciado" as Tratamiento
 state "Contrarreferido con Epicrisis" as Contrarreferido
 
-Confeccionado --> Despachado : UGAA valida; registra fecha y folio
-Despachado --> Recepcionado : Recepción confirmada por HCVB
-Despachado --> Despachado : 11 días hábiles sin recepción ni cita\n/ generar alerta; mantener estado
-Recepcionado --> Cita : Fecha de atención confirmada
-Cita --> Tratamiento : Inicio efectivo confirmado
-Tratamiento --> Contrarreferido : Incorporar epicrisis y contrarreferencia
+Confeccionado --> Despachado : Formalizar despacho con fecha y folio UGAA\n[dossier validado; instructivo entregado]\n/ registrar el despacho y la constancia de entrega
+Despachado --> Recepcionado : Confirmar recepción y fecha\n[confirmación emitida por HCVB]\n/ conservar la confirmación y la fecha
+Despachado --> Despachado : Al cumplirse 11 días hábiles desde el despacho\n[sin confirmación de recepción ni fecha de atención]\n/ notificar alerta preventiva; mantener estado
+Recepcionado --> Cita : Informar la fecha de atención confirmada\n[fecha confirmada por el centro receptor]\n/ vincular la fecha a la derivación
+Cita --> Tratamiento : Registrar el inicio confirmado del tratamiento\n[inicio efectivo acreditado]\n/ registrar el hito de inicio
+Tratamiento --> Contrarreferido : Registrar el retorno al HGF\n[epicrisis y contrarreferencia disponibles]\n/ vincular documentos, registrar hito y notificar
 Contrarreferido --> [*]
 @enduml

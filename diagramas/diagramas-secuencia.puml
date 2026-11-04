@@ -107,6 +107,8 @@ end note
 OT --> TENS: Dejar dossier en estado Dossier Confeccionado
 Gestor -> OT: Registrar entrega anticipada del instructivo Anexo 6
 OT --> Gestor: Confirmar constancia de entrega asociada al dossier
+UGAA -> OT: Validar antecedentes del dossier
+OT --> UGAA: Confirmar dossier validado
 UGAA -> OT: Formalizar despacho con fecha y folio UGAA
 OT --> UGAA: Registrar estado Despachado por UGAA
 
