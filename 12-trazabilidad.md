@@ -25,9 +25,17 @@ Cada fila muestra un vínculo entre un requisito de producto y una historia del 
 | **RF-08** | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
 | **RNF-01** | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
 
-En `03-requisitos.md`, los requisitos **RP-01 a RP-03** corresponden a la gestión del proyecto, no a objetivos funcionales de estas historias. Por eso esta matriz relaciona los requisitos de producto RF y RNF asociados al alcance seleccionado.
+**RNF-03** y **REQ-DER-01** son condiciones transversales para el acceso y la auditoría de las operaciones de funcionarios. Se detallan en [03-requisitos.md](./03-requisitos.md), los [criterios de aceptación](./07-criterios-aceptacion.md) y los [casos de uso](./09-casos-de-uso.md).
 
-**RNF-03** y **REQ-DER-01** son condiciones transversales para el acceso y la auditoría de las operaciones de funcionarios; se detallan en [03-requisitos.md](./03-requisitos.md), los [criterios de aceptación](./07-criterios-aceptacion.md) y los [casos de uso](./09-casos-de-uso.md).
+### Requisitos de proyecto de la Entrega 1
+
+Los requisitos RP-01 a RP-03 regulan el trabajo del equipo y la documentación del proyecto. Por su alcance, las columnas de historia, caso de uso, secuencia, estado y clases del dominio no aplican a estas tres filas.
+
+| Requisito | Evidencia o referencia | Aplicación en el proyecto |
+| :--- | :--- | :--- |
+| **RP-01 · Control de versiones y repositorio** | [Historial de cambios del repositorio](https://github.com/br1fz/OncoTrace/commits/main/) | Versionado de los documentos y las fuentes de los diagramas. |
+| **RP-02 · Gestión de tareas e iteraciones** | [Definición del requisito en la Entrega 1](./03-requisitos.md#requisitos-de-proyecto) | Planificación y seguimiento de tareas e hitos en GitHub Projects. |
+| **RP-03 · Modelamiento en notación estándar** | [Proceso AS-IS](./01-proceso-as-is.md) y [proceso TO-BE](./02-rediseno-to-be.md) | Modelamiento de los procesos de la Entrega 1 en BPMN 2.0. |
 
 ---
 
