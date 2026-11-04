@@ -11,25 +11,35 @@ Esta matriz complementa la [matriz de trazabilidad de la Entrega 1](./07-matriz-
 
 ## Matriz de trazabilidad consolidada
 
-Cada fila muestra un vínculo entre un requisito de producto y una historia del alcance. Por eso RNF-01 aparece en más de una fila: se asocia a varias historias.
+La matriz tiene una fila por cada requisito de la Entrega 1 ([03-requisitos.md](./03-requisitos.md)). Los requisitos que no pertenecen a las historias desarrolladas en esta entrega quedan con «—», y el motivo se explica en las [observaciones](#observaciones-y-alcance).
 
-| Requisito de producto | Historia | Caso(s) de uso | Secuencia | Estado | Clases del dominio |
+| Requisito (Entrega 1) | Historia | Caso(s) de uso | Secuencia | Estado | Clases del dominio |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **RF-01** | HU-01 | CU-05 | — | — | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
-| **RNF-02** | HU-01 | CU-05 | — | — | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
-| **RF-04** | HU-04 | CU-06 | — | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
-| **RNF-01** | HU-04 | CU-06 | — | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
-| **RF-05** | HU-05 | CU-01, CU-02 | DSS-01 | — | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
-| **RNF-01** | HU-05 | CU-01, CU-02 | DSS-01 | — | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
-| **RNF-04** | HU-05 | CU-01, CU-02 | DSS-01 | — | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
-| **RF-08** | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
-| **RNF-01** | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
+| **RF-01** · Tablero y trazabilidad por etapas | HU-01 | CU-05 | — | — | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
+| **RF-02** · Evaluación multidimensional por dominios | HU-02 | — | — | — | — |
+| **RF-03** · Bitácora de puntos de contacto | HU-03 | — | — | — | — |
+| **RF-04** · Alertas GES e inactividad | HU-04 | CU-06 | — | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
+| **RF-05** · Consolidación de exámenes y alertas | HU-05 | CU-01, CU-02 | DSS-01 | — | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
+| **RF-06** · Ficha de presentación a comité | HU-06 | — | — | — | — |
+| **RF-07** · Acta digital y registro REM 7 | HU-07 | — | — | — | — |
+| **RF-08** · Derivaciones externas y reembolso de pasajes | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
+| **RF-09** · Tótem de autoatención | HU-09 | — | — | — | — |
+| **RF-10** · Asistente virtual y triage asistencial | HU-10 | — | — | — | — |
+| **RF-11** · Intercambio de información con MINSAL | HU-11 | — | — | — | — |
+| **RNF-01** · Fiabilidad y disponibilidad | HU-04, HU-05, HU-08 | CU-01 a CU-04, CU-06 a CU-09 | DSS-01, DSS-02 | EST-01, EST-02 | `AlertaSeguimiento`, `EstudioDiagnostico`, `DossierDigitalDerivacion` |
+| **RNF-02** · Eficiencia de desempeño | HU-01 | CU-05 | — | — | `CasoOncologico`, `HitoAsistencial` |
+| **RNF-03** · Seguridad y confidencialidad clínica | HU-07, HU-09, HU-11 (transversal a las historias de esta entrega) | Precondición de acceso de todos los actores humanos | Nota de autorización en DSS-01 y DSS-02 | — | Atributos de responsable en `HitoAsistencial`, `AlertaSeguimiento` e `InstructivoReembolsoPasajes` |
+| **RNF-04** · Interoperabilidad hospitalaria | HU-05, HU-11 | CU-01, CU-02 | DSS-01 | — | `EstudioDiagnostico` |
+| **REQ-DER-01** · SSO institucional (derivado de RNF-03) | HU-07, HU-11 (transversal) | Autenticación de todos los actores humanos | Nota de autorización en DSS-01 y DSS-02 | — | — |
+| **RP-01** · Control de versiones y repositorio | — | — | — | — | — |
+| **RP-02** · Gestión de tareas e iteraciones | — | — | — | — | — |
+| **RP-03** · Modelamiento en notación estándar | — | — | — | — | — |
 
-**RNF-03** y **REQ-DER-01** son condiciones transversales para el acceso y la auditoría de las operaciones de funcionarios. Se detallan en [03-requisitos.md](./03-requisitos.md), los [criterios de aceptación](./07-criterios-aceptacion.md) y los [casos de uso](./09-casos-de-uso.md).
+RNF-03 y REQ-DER-01 son condiciones transversales para el acceso y la auditoría de las operaciones de funcionarios. Se detallan en [03-requisitos.md](./03-requisitos.md), los [criterios de aceptación](./07-criterios-aceptacion.md) y los [casos de uso](./09-casos-de-uso.md).
 
 ### Requisitos de proyecto de la Entrega 1
 
-Los requisitos RP-01 a RP-03 regulan el trabajo del equipo y la documentación del proyecto. Por su alcance, las columnas de historia, caso de uso, secuencia, estado y clases del dominio no aplican a estas tres filas.
+Los requisitos RP-01 a RP-03 regulan el trabajo del equipo y la documentación del proyecto, no el comportamiento de OncoTrace. Por eso sus filas en la matriz quedan con «—»; su evidencia es la siguiente:
 
 | Requisito | Evidencia o referencia | Aplicación en el proyecto |
 | :--- | :--- | :--- |
@@ -104,6 +114,10 @@ Las relaciones entre historias y diagramas son de muchos a muchos: por ejemplo, 
 
 3. **Cobertura:** la Entrega 2 desarrolla HU-01, HU-04, HU-05 y HU-08, con veinte escenarios de aceptación relacionados con sus casos de uso y conceptos del dominio. Las secuencias corresponden a HU-05 y HU-08; los estados, a las alertas de HU-04/HU-08 y al dossier de HU-08.
 
-4. **Historias restantes:** HU-02, HU-03, HU-06, HU-07, HU-09, HU-10 y HU-11 conservan la trazabilidad documentada en la matriz de la Entrega 1. Este documento no les atribuye nuevos criterios ni diagramas de la Entrega 2.
+4. **Requisitos e historias restantes:** RF-02, RF-03, RF-06, RF-07, RF-09, RF-10 y RF-11 (historias HU-02, HU-03, HU-06, HU-07, HU-09, HU-10 y HU-11) no forman parte del alcance de la Entrega 2, por eso sus celdas quedan con «—». Conservan la trazabilidad documentada en la [matriz de la Entrega 1](./07-matriz-trazabilidad.md) y este documento no les atribuye nuevos criterios ni diagramas.
 
 5. **Integraciones y límites:** las comunicaciones con LIS y PACS dependen de las interfaces institucionales autorizadas. La integración con HCVB es propuesta y condicionada a su habilitación; si no está disponible, UGAA puede registrar la confirmación emitida por el centro receptor. La matriz documenta requisitos y diseños, no acredita implementación ni pruebas.
+
+6. **Requisitos de calidad:** RNF-01, RNF-02 y RNF-04 se verifican con los escenarios de [06-atributos-calidad.md](./06-atributos-calidad.md). En la matriz se indican los artefactos donde aplican, pero no se representan como estados ni casos de uso propios.
+
+7. **Coherencia de nombres:** los eventos de EST-02 usan los mismos nombres que los mensajes de DSS-02 (por ejemplo, *Formalizar despacho con fecha y folio UGAA*, *Confirmar recepción y fecha* y *Registrar el retorno al HGF*), y los seis estados son los de HU-08-CA3 de la Entrega 1. Los eventos de EST-01 para alertas GES provienen de HU-04-ESC-05 a HU-04-ESC-07, porque HU-04 no tiene diagrama de secuencia. Las ocho etapas de `CasoOncologico` son las de RF-01 y del proceso TO-BE; el comité es un hito, no una etapa.
