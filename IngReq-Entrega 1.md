@@ -35,11 +35,11 @@ El objetivo del sistema es asegurar la **trazabilidad de la atención**, la **ev
 | :--- | :--- |
 | **1. Sospecha** | Ingreso formal desde APS, red SSVQ o Urgencias, o por hallazgo crítico en Anatomía Patológica. |
 | **2. Confirmación diagnóstica** | Confirmación por especialista, emisión de IPD y constancia GES. |
-| **3. Etapificación** | Estudios imagenológicos y gestión de compras de servicios externos, como PET-CT o EBUS. |
-| **4. Comité** | Evaluación por el Comité Oncológico Regional y emisión de la resolución terapéutica (REM 7). |
-| **5. Tratamiento** | Ejecución de la terapia indicada: cirugía en LEIQ, quimioterapia hematológica en HGF, radioterapia o derivación a la red HCVB. |
-| **6. Rehabilitación y cuidados paliativos** | Derivación a equipos de apoyo, como psicosocial, nutrición, fonoaudiología, kinesiología y cuidados paliativos. |
-| **7. Seguimiento** | Controles médicos y contactabilidad a cargo del gestor y TENS. |
+| **3. Etapificación** | Estudios imagenológicos y gestión de compras de servicios externos, como PET-CT o EBUS. La presentación al Comité Oncológico Regional y su resolución terapéutica (REM 7) se registran como hito de esta etapa, previo al tratamiento. |
+| **4. Tratamiento** | Ejecución de la terapia indicada: cirugía en LEIQ, quimioterapia hematológica en HGF, radioterapia o derivación a la red HCVB. |
+| **5. Rehabilitación** | Derivación a equipos de apoyo, como psicosocial, nutrición, fonoaudiología y kinesiología. |
+| **6. Cuidados paliativos y alivio del dolor** | Atención por el equipo de cuidados paliativos y manejo del dolor cuando corresponde. |
+| **7. Seguimiento y sobrevivientes** | Controles médicos y contactabilidad a cargo del gestor y TENS, incluida la vigilancia de sobrevivientes. |
 | **8. Alta y contrarreferencia** | Cierre clínico y administrativo por remisión, traslado de red o fallecimiento; contrarreferencia a APS o vigilancia de largo plazo para sobrevivientes. |
 
 ---
@@ -163,11 +163,6 @@ OncoTrace/
 ├── 07-matriz-trazabilidad.md       # Matriz de trazabilidad
 ├── diagramas/
 │   ├── as-is.bpmn                  # Modelo BPMN del proceso actual
-│   ├── casos-de-uso-integracion.png
-│   ├── diagrama-casos-de-uso.md    # Casos de uso y diagramas SSD
-│   ├── modelo-de-dominio-uml.md    # Modelo de dominio UML
-│   ├── ssd-hu05.png                # SSD de HU-05
-│   ├── ssd-hu08.png                # SSD de HU-08
 │   └── to-be.bpmn                  # Modelo BPMN del proceso rediseñado
 ├── evidencia/                      # Manuales UGCO y minutas
 └── _backup/                        # Versiones anteriores
