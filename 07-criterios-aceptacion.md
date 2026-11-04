@@ -50,7 +50,7 @@ Característica: Seguimiento de casos oncológicos por etapas e hitos
 
 ---
 
-## HU-04 — Alertas preventivas de plazos GES e inactividad
+## HU-04 — Motor de alertas preventivas de plazos GES e inactividad
 
 **Historia de origen:** [HU-04](./04-historias-usuario.md#hu-04).
 
@@ -112,7 +112,7 @@ Característica: Detección y gestión de alertas de seguimiento
 
 ---
 
-## HU-05 — Consolidación de informes diagnósticos y alertas críticas
+## HU-05 — Consolidación e indexación automática de biopsias y PACS con alertas críticas
 
 **Historia de origen:** [HU-05](./04-historias-usuario.md#hu-05).
 
@@ -161,7 +161,7 @@ Característica: Incorporación de informes al caso oncológico correspondiente
 
 ---
 
-## HU-08 — Derivaciones externas y orientación sobre reembolso de pasajes
+## HU-08 — Trazabilidad de derivaciones externas y reembolso de pasajes (circuito TENS / UGAA / HCVB)
 
 **Historia de origen:** [HU-08](./04-historias-usuario.md#hu-08).
 
