@@ -45,15 +45,17 @@ PACS --> OT: Entregar informes disponibles, RUN, validación y hallazgos
 
 alt Informe validado y RUN asociado inequívocamente al caso
   OT --> Gestor: Mostrar informe incorporado y estado de recepción
-  Gestor -> OT: Solicitar copia del informe
-  OT --> Gestor: Entregar copia en PDF
+  opt El origen informa un hallazgo crítico en el informe validado
+    OT -> Gestor: Notificar hallazgo crítico con referencia al caso y al informe
+    OT -> Medico: Notificar hallazgo crítico para evaluación clínica
+  end
   note over Gestor,OT
   Si el caso tiene dos exámenes solicitados y solo uno se recibe,
   la completitud queda en 50 % y el otro examen sigue pendiente.
   end note
-  opt El origen informa un hallazgo crítico
-    OT -> Gestor: Notificar hallazgo crítico con referencia al caso y al informe
-    OT -> Medico: Notificar hallazgo crítico para evaluación clínica
+  opt La gestora solicita una copia del informe
+    Gestor -> OT: Solicitar copia del informe
+    OT --> Gestor: Entregar copia en PDF
   end
 else El RUN no permite identificar inequívocamente al paciente
   OT --> Gestor: Informar excepción pendiente de revisión; mantener examen pendiente
@@ -151,3 +153,4 @@ La integración depende de que HGF y HCVB habiliten y autoricen el mecanismo.
 La confirmación de recepción puede llegar después de emitida la alerta.
 end note
 @enduml
+
