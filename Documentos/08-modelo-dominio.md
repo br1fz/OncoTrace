@@ -8,9 +8,9 @@ El modelo describe los conceptos del negocio necesarios para las historias HU-01
 
 **Identificador:** MD-01.
 
-![MD-01 — Modelo de dominio de OncoTrace](./diagramas/modelo-dominio.png)
+![MD-01 — Modelo de dominio de OncoTrace](../diagramas/modelo-dominio.png)
 
-Archivo fuente: [modelo-dominio.puml](./diagramas/modelo-dominio.puml).
+Archivo fuente: [modelo-dominio.puml](../diagramas/modelo-dominio.puml).
 
 ## Descripción de las clases
 

@@ -126,7 +126,7 @@ El proceso también contempla los puntos de contacto definidos por la UGCO, la c
 
 ## Diagrama del proceso TO-BE
 
-[Ver diagrama del proceso TO-BE en BPMN 2.0](./diagramas/to-be.bpmn)
+[Ver diagrama del proceso TO-BE en BPMN 2.0](../diagramas/to-be.bpmn)
 
 ---
 

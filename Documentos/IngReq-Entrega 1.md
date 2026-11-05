@@ -93,8 +93,8 @@ El objetivo del sistema es asegurar la **trazabilidad de la atención**, la **ev
 
 Los procesos AS-IS y TO-BE están documentados en BPMN 2.0 y se revisaron para evitar errores de sintaxis y nodos huérfanos.
 
-- **Proceso actual:** [`diagramas/as-is.bpmn`](./diagramas/as-is.bpmn)
-- **Proceso rediseñado:** [`diagramas/to-be.bpmn`](./diagramas/to-be.bpmn)
+- **Proceso actual:** [`diagramas/as-is.bpmn`](../diagramas/as-is.bpmn)
+- **Proceso rediseñado:** [`diagramas/to-be.bpmn`](../diagramas/to-be.bpmn)
 
 ### Estructura del modelo AS-IS
 

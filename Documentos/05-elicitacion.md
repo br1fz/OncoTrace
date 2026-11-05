@@ -10,7 +10,7 @@
 
 - **Participante:** Gestora Oncológica de la Unidad de Gestión de Casos Oncológicos (UGCO) del HGF.
 - **Fecha y modalidad:** 15 de septiembre de 2026, presencial.
-- **Evidencia:** [Transcripción de la entrevista](./evidencia/Transcripcion_Entrevista_Oncologia.txt).
+- **Evidencia:** [Transcripción de la entrevista](../evidencia/Transcripcion_Entrevista_Oncologia.txt).
 
 ### Hallazgos
 
@@ -49,8 +49,8 @@
   - Manual de Organización y Funcionamiento de la UGCO (versión 2.0).
   - Manual de Procedimientos de la UGCO (versión 2.0 final, octubre de 2026).
   - Manual de Gestión de Casos Oncológicos (GCO).
-  - [Catastro de cambios para la adaptación al modelo UGCO](./evidencia/adaptación_modelo_UGCO.md).
-  - [Comparación entre las versiones del Manual de Procedimientos](./evidencia/diferencias_manual_procedimientos_v2_vs_final.md).
+  - [Catastro de cambios para la adaptación al modelo UGCO](../evidencia/adaptación_modelo_UGCO.md).
+  - [Comparación entre las versiones del Manual de Procedimientos](../evidencia/diferencias_manual_procedimientos_v2_vs_final.md).
 
 ### Hallazgos
 

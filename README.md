@@ -12,8 +12,8 @@ OncoTrace es una propuesta académica para apoyar el seguimiento de pacientes, l
 
 | Entrega | Alcance | Documento integrador |
 | :--- | :--- | :--- |
-| **Entrega 1** | Proceso actual, rediseño, requisitos e historias de usuario. | [Consultar Entrega 1](./IngReq-Entrega%201.md) |
-| **Entrega 2** | Criterios de aceptación, modelo de dominio, casos de uso, diagramas y trazabilidad. | [Consultar Entrega 2](./IngReq-Entrega%202.md) |
+| **Entrega 1** | Proceso actual, rediseño, requisitos e historias de usuario. | [Consultar Entrega 1](./Documentos/IngReq-Entrega%201.md) |
+| **Entrega 2** | Criterios de aceptación, modelo de dominio, casos de uso, diagramas y trazabilidad. | [Consultar Entrega 2](./Documentos/IngReq-Entrega%202.md) |
 
 [Documentos de la Entrega 1](#entrega-1) · [Documentos de la Entrega 2](#entrega-2) · [Diagramas y fuentes](#diagramas-y-fuentes-editables) · [Equipo](#equipo-de-trabajo)
 
@@ -25,13 +25,13 @@ Documentación del proceso actual y de la propuesta de mejora, con sus requisito
 
 | Documento | Contenido |
 | :--- | :--- |
-| [01 · Proceso AS-IS](./01-proceso-as-is.md) | Proceso actual y problemas identificados. |
-| [02 · Rediseño TO-BE](./02-rediseno-to-be.md) | Proceso propuesto y actividades de mejora. |
-| [03 · Requisitos](./03-requisitos.md) | Requisitos funcionales, no funcionales y de proyecto. |
-| [04 · Historias de usuario](./04-historias-usuario.md) | Historias de usuario y requisitos asociados. |
-| [05 · Elicitación](./05-elicitacion.md) | Fuentes de elicitación EL-01 a EL-03. |
-| [06 · Atributos de calidad](./06-atributos-calidad.md) | Escenarios de calidad AC-01 a AC-03. |
-| [07 · Matriz de trazabilidad](./07-matriz-trazabilidad.md) | Relaciones entre problemas, actividades, requisitos e historias. |
+| [01 · Proceso AS-IS](./Documentos/01-proceso-as-is.md) | Proceso actual y problemas identificados. |
+| [02 · Rediseño TO-BE](./Documentos/02-rediseno-to-be.md) | Proceso propuesto y actividades de mejora. |
+| [03 · Requisitos](./Documentos/03-requisitos.md) | Requisitos funcionales, no funcionales y de proyecto. |
+| [04 · Historias de usuario](./Documentos/04-historias-usuario.md) | Historias de usuario y requisitos asociados. |
+| [05 · Elicitación](./Documentos/05-elicitacion.md) | Fuentes de elicitación EL-01 a EL-03. |
+| [06 · Atributos de calidad](./Documentos/06-atributos-calidad.md) | Escenarios de calidad AC-01 a AC-03. |
+| [07 · Matriz de trazabilidad](./Documentos/07-matriz-trazabilidad.md) | Relaciones entre problemas, actividades, requisitos e historias. |
 
 ## Entrega 2
 
@@ -39,14 +39,14 @@ Especificación de las historias **HU-01 · Seguimiento del caso**, **HU-04 · A
 
 | Documento | Contenido |
 | :--- | :--- |
-| [07 · Criterios de aceptación](./07-criterios-aceptacion.md) | Escenarios Gherkin para las cuatro historias seleccionadas. |
-| [08 · Modelo de dominio](./08-modelo-dominio.md) | Clases del dominio, atributos y asociaciones. |
-| [09 · Casos de uso](./09-casos-de-uso.md) | Actores, objetivos y relaciones representados en DCU-01. |
-| [10 · Diagramas de secuencia](./10-diagramas-secuencia.md) | DSS-01 para HU-05 y DSS-02 para HU-08. |
-| [11 · Diagramas de estado](./11-diagramas-estado.md) | EST-01 para `AlertaSeguimiento` y EST-02 para `DossierDigitalDerivacion`. |
-| [12 · Matriz de trazabilidad](./12-trazabilidad.md) | Relaciones entre requisitos, historias, criterios y artefactos. |
+| [07 · Criterios de aceptación](./Documentos/07-criterios-aceptacion.md) | Escenarios Gherkin para las cuatro historias seleccionadas. |
+| [08 · Modelo de dominio](./Documentos/08-modelo-dominio.md) | Clases del dominio, atributos y asociaciones. |
+| [09 · Casos de uso](./Documentos/09-casos-de-uso.md) | Actores, objetivos y relaciones representados en DCU-01. |
+| [10 · Diagramas de secuencia](./Documentos/10-diagramas-secuencia.md) | DSS-01 para HU-05 y DSS-02 para HU-08. |
+| [11 · Diagramas de estado](./Documentos/11-diagramas-estado.md) | EST-01 para `AlertaSeguimiento` y EST-02 para `DossierDigitalDerivacion`. |
+| [12 · Matriz de trazabilidad](./Documentos/12-trazabilidad.md) | Relaciones entre requisitos, historias, criterios y artefactos. |
 
-La elaboración, las colaboraciones, las responsabilidades individuales y el uso de IA generativa se detallan en el [documento integrador de la Entrega 2](./IngReq-Entrega%202.md).
+La elaboración, las colaboraciones, las responsabilidades individuales y el uso de IA generativa se detallan en el [documento integrador de la Entrega 2](./Documentos/IngReq-Entrega%202.md).
 
 ## Diagramas y fuentes editables
 
@@ -54,12 +54,12 @@ Los documentos explican el alcance de cada modelo. Las imágenes permiten consul
 
 | Modelo | Documento | Imagen | Fuente editable |
 | :--- | :--- | :--- | :--- |
-| Proceso actual | [01 · AS-IS](./01-proceso-as-is.md) | — | [BPMN](./diagramas/as-is.bpmn) |
-| Proceso propuesto | [02 · TO-BE](./02-rediseno-to-be.md) | — | [BPMN](./diagramas/to-be.bpmn) |
-| Modelo de dominio | [08 · Modelo de dominio](./08-modelo-dominio.md) | [UML](./diagramas/modelo-dominio.png) | [PlantUML](./diagramas/modelo-dominio.puml) |
-| Casos de uso | [09 · Casos de uso](./09-casos-de-uso.md) | [DCU-01](./diagramas/casos-de-uso.png) | [PlantUML](./diagramas/casos-de-uso.puml) |
-| Secuencias del sistema | [10 · Diagramas de secuencia](./10-diagramas-secuencia.md) | [DSS-01](./diagramas/DSS-01-HU-05.png) · [DSS-02](./diagramas/DSS-02-HU-08.png) | [PlantUML](./diagramas/diagramas-secuencia.puml) |
-| Estados de objetos | [11 · Diagramas de estado](./11-diagramas-estado.md) | [EST-01](./diagramas/EST-01-AlertaSeguimiento.png) · [EST-02](./diagramas/EST-02-DossierDigitalDerivacion.png) | [PlantUML](./diagramas/estados-objetos.puml) |
+| Proceso actual | [01 · AS-IS](./Documentos/01-proceso-as-is.md) | — | [BPMN](./diagramas/as-is.bpmn) |
+| Proceso propuesto | [02 · TO-BE](./Documentos/02-rediseno-to-be.md) | — | [BPMN](./diagramas/to-be.bpmn) |
+| Modelo de dominio | [08 · Modelo de dominio](./Documentos/08-modelo-dominio.md) | [UML](./diagramas/modelo-dominio.png) | [PlantUML](./diagramas/modelo-dominio.puml) |
+| Casos de uso | [09 · Casos de uso](./Documentos/09-casos-de-uso.md) | [DCU-01](./diagramas/casos-de-uso.png) | [PlantUML](./diagramas/casos-de-uso.puml) |
+| Secuencias del sistema | [10 · Diagramas de secuencia](./Documentos/10-diagramas-secuencia.md) | [DSS-01](./diagramas/DSS-01-HU-05.png) · [DSS-02](./diagramas/DSS-02-HU-08.png) | [PlantUML](./diagramas/diagramas-secuencia.puml) |
+| Estados de objetos | [11 · Diagramas de estado](./Documentos/11-diagramas-estado.md) | [EST-01](./diagramas/EST-01-AlertaSeguimiento.png) · [EST-02](./diagramas/EST-02-DossierDigitalDerivacion.png) | [PlantUML](./diagramas/estados-objetos.puml) |
 
 ---
 
@@ -97,7 +97,7 @@ La presentación y resolución del Comité Oncológico se registra como hito pre
 | **Plataforma de Seguimiento Oncológico del MINSAL** | Intercambio sujeto al acuerdo entre HGF y MINSAL sobre los datos autorizados, el mecanismo y la periodicidad. |
 | **Seguridad y privacidad** | Control de acceso por roles, autenticación institucional y registro de auditoría de las operaciones con información clínica. |
 
-Los requisitos y las condiciones de acceso se desarrollan en la [especificación de requisitos](./03-requisitos.md) y en los [criterios de aceptación](./07-criterios-aceptacion.md).
+Los requisitos y las condiciones de acceso se desarrollan en la [especificación de requisitos](./Documentos/03-requisitos.md) y en los [criterios de aceptación](./Documentos/07-criterios-aceptacion.md).
 
 </details>
 
@@ -117,7 +117,7 @@ Los requisitos y las condiciones de acceso se desarrollan en la [especificación
 
 El detalle de las responsabilidades y contribuciones se encuentra en los documentos integradores de cada entrega.
 
-[Responsabilidades de la Entrega 1](./IngReq-Entrega%201.md#1-equipo-y-responsabilidades) · [Responsabilidades de la Entrega 2](./IngReq-Entrega%202.md#responsabilidades-individuales)
+[Responsabilidades de la Entrega 1](./Documentos/IngReq-Entrega%201.md#1-equipo-y-responsabilidades) · [Responsabilidades de la Entrega 2](./Documentos/IngReq-Entrega%202.md#responsabilidades-individuales)
 
 ## Referencias normativas y de calidad
 

@@ -12,9 +12,9 @@ Este documento describe las interacciones de los actores con OncoTrace para las 
 - **Historia:** [HU-05](./04-historias-usuario.md#hu-05).
 - **Sistemas externos:** LIS y PACS.
 
-![DSS-01 — Incorporar y consultar informes diagnósticos](./diagramas/DSS-01-HU-05.png)
+![DSS-01 — Incorporar y consultar informes diagnósticos](../diagramas/DSS-01-HU-05.png)
 
-**Archivo fuente:** [diagramas-secuencia.puml](./diagramas/diagramas-secuencia.puml).
+**Archivo fuente:** [diagramas-secuencia.puml](../diagramas/diagramas-secuencia.puml).
 
 La gestora consulta los informes y el estado de los exámenes del caso. OncoTrace obtiene los antecedentes disponibles de LIS y PACS a través de las interfaces institucionales habilitadas. Si el informe está validado y el RUN permite asociarlo inequívocamente al caso, OncoTrace lo incorpora y deja disponible su copia en PDF. En HU-05-ESC-01, al recibir uno de los dos exámenes solicitados, la completitud queda en 50 % y el otro examen sigue pendiente.
 
@@ -31,9 +31,9 @@ La gestora consulta los informes y el estado de los exámenes del caso. OncoTrac
 - **Historia:** [HU-08](./04-historias-usuario.md#hu-08).
 - **Sistema externo:** Sistema del Hospital Carlos Van Buren (HCVB), sujeto a la habilitación y autorización de la interfaz institucional.
 
-![DSS-02 — Gestionar derivación externa y retorno](./diagramas/DSS-02-HU-08.png)
+![DSS-02 — Gestionar derivación externa y retorno](../diagramas/DSS-02-HU-08.png)
 
-**Archivo fuente:** [diagramas-secuencia.puml](./diagramas/diagramas-secuencia.puml).
+**Archivo fuente:** [diagramas-secuencia.puml](../diagramas/diagramas-secuencia.puml).
 
 TENS solicita la confección del dossier. En el flujo representado, la gestora registra la entrega anticipada del instructivo de pasajes del Anexo 6. UGAA valida los antecedentes del dossier y, con la constancia de entrega registrada, formaliza el despacho con su fecha y folio. La derivación queda en estado **Despachado por UGAA**.
 

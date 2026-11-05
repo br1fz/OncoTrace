@@ -13,9 +13,9 @@ Este documento describe los estados y transiciones de dos clases del dominio de 
 - **Caso de uso relacionado:** [CU-06 — Gestionar alertas de seguimiento](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
 - **Diagrama de secuencia relacionado:** [DSS-02 — Derivación externa y retorno](./10-diagramas-secuencia.md).
 
-![EST-01 — Ciclo de vida de una alerta de seguimiento](./diagramas/EST-01-AlertaSeguimiento.png)
+![EST-01 — Ciclo de vida de una alerta de seguimiento](../diagramas/EST-01-AlertaSeguimiento.png)
 
-**Archivo fuente:** [estados-objetos.puml](./diagramas/estados-objetos.puml).
+**Archivo fuente:** [estados-objetos.puml](../diagramas/estados-objetos.puml).
 
 ### Descripción del ciclo de vida
 
@@ -46,9 +46,9 @@ Los rótulos del diagrama resumen las transiciones en el formato `evento [guarda
 - **Historia relacionada:** [HU-08](./04-historias-usuario.md#hu-08).
 - **Diagrama de secuencia relacionado:** [DSS-02 — Derivación externa y retorno](./10-diagramas-secuencia.md).
 
-![EST-02 — Seguimiento de una derivación externa](./diagramas/EST-02-DossierDigitalDerivacion.png)
+![EST-02 — Seguimiento de una derivación externa](../diagramas/EST-02-DossierDigitalDerivacion.png)
 
-**Archivo fuente:** [estados-objetos.puml](./diagramas/estados-objetos.puml).
+**Archivo fuente:** [estados-objetos.puml](../diagramas/estados-objetos.puml).
 
 ### Descripción del ciclo de vida
 
@@ -79,4 +79,4 @@ Los eventos asociados a interacciones corresponden a los mensajes de [DSS-02](./
 
 El archivo PlantUML editable que contiene ambos diagramas de estado se encuentra en el repositorio:
 
-- [estados-objetos.puml](./diagramas/estados-objetos.puml)
+- [estados-objetos.puml](../diagramas/estados-objetos.puml)

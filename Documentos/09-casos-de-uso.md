@@ -30,9 +30,9 @@ En las historias seleccionadas, el paciente o cuidador recibe orientación y el 
 
 **Identificador:** DCU-01.
 
-![DCU-01 — Casos de uso de OncoTrace](./diagramas/casos-de-uso.png)
+![DCU-01 — Casos de uso de OncoTrace](../diagramas/casos-de-uso.png)
 
-**Archivo fuente:** [casos-de-uso.puml](./diagramas/casos-de-uso.puml).
+**Archivo fuente:** [casos-de-uso.puml](../diagramas/casos-de-uso.puml).
 
 El diagrama se organiza en tres vistas: seguimiento y alertas, informes diagnósticos y derivaciones externas. En cada vista, el rectángulo delimita OncoTrace y los actores se ubican fuera. Cuando un actor aparece en más de una vista, representa el mismo rol.
 
