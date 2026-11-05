@@ -224,3 +224,131 @@ DossierDigitalDerivacion "1" -- "0..1" ContraReferenciaEpicrisis : recibe
 DossierDigitalDerivacion "0..1" -- "0..*" AlertaSeguimiento : origina
 
 @enduml
+
+@startuml vista-valoracion-comites-canales
+!pragma layout smetana
+hide methods
+hide circle
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam classBackgroundColor #F8FAFC
+skinparam classBorderColor #334155
+skinparam classFontColor #0F172A
+skinparam classAttributeFontColor #334155
+skinparam classFontSize 19
+skinparam classAttributeFontSize 16
+skinparam ArrowColor #475569
+skinparam ArrowFontSize 15
+skinparam titleFontSize 23
+skinparam titleFontColor #0F172A
+skinparam defaultFontName SansSerif
+top to bottom direction
+
+title
+MD-01.D — Valoración integral, bitácora, comités, canales y MINSAL
+end title
+
+class CasoOncologico {
+  numeroCaso: Texto
+  especialidad: Texto
+  codigoDiagnosticoOSospecha: Texto
+  etapaActual: EtapaTrayectoria
+}
+
+class EvaluacionMultidimensional {
+  identificador: Texto
+  fechaEvaluacion: FechaHora
+  puntajeClinicoFuncional: Entero
+  puntajePsicoemocional: Entero
+  escalaZaritCuidador: Entero
+  nivelVulnerabilidad: Texto
+  profesionalEvaluador: Texto
+}
+
+class DominioValoracion {
+  tipoDominio: Texto
+  descripcionHallazgo: Texto
+  requiereDerivacion: Booleano
+  especialidadDerivada: Texto
+}
+
+class EntradaBitacora {
+  identificador: Texto
+  puntoContactoNormado: Texto
+  fechaContacto: FechaHora
+  canalContacto: Texto
+  resumenInteraccion: Texto
+  acuerdosEstablecidos: Texto
+  responsableRegistro: Texto
+  estadoContacto: Texto
+}
+
+class FichaPresentacionComite {
+  folioFicha: Texto
+  resumenClinico: Texto
+  etapificacionTNM: Texto
+  biopsiaValidadaReferencia: Texto
+  propuestaConducta: Texto
+  fechaGeneracion: FechaHora
+}
+
+class ActaComite {
+  numeroActa: Texto
+  fechaSesion: FechaHora
+  quorumAsistentes: Texto
+  resolucionAcordada: Texto
+  estadoFirma: Texto
+}
+
+class FirmaElectronica {
+  runFirmante: Texto
+  nombreFirmante: Texto
+  rolFirmante: Texto
+  estampaTiempo: FechaHora
+  hashIntegridad: Texto
+}
+
+class RegistroREM7 {
+  periodoMes: Texto
+  seccion: Texto
+  codigoPrestacion: Texto
+  totalCasos: Entero
+}
+
+class InteraccionCanalUsuario {
+  identificadorSesion: Texto
+  canal: Texto
+  runUsuario: Texto
+  fechaHora: FechaHora
+  tipoConsulta: Texto
+}
+
+class TicketTriagePresencial {
+  numeroTurno: Texto
+  nivelPrioridad: Texto
+  motivoConsulta: Texto
+  fechaEmision: FechaHora
+  estadoAtencion: Texto
+}
+
+class RegistroIntercambioMINSAL {
+  identificadorMensaje: Texto
+  tipoEvento: Texto
+  fechaEnvio: FechaHora
+  estadoSincronizacion: Texto
+  codigoRespuesta: Texto
+  folioTransaccionMINSAL: Texto
+}
+
+CasoOncologico "1" -- "0..*" EvaluacionMultidimensional : registra
+EvaluacionMultidimensional "1" -- "1..*" DominioValoracion : evalúa
+CasoOncologico "1" -- "0..*" EntradaBitacora : documenta
+CasoOncologico "1" -- "0..*" FichaPresentacionComite : sustenta
+FichaPresentacionComite "1" -- "0..1" ActaComite : presenta a
+ActaComite "1" -- "1..*" FirmaElectronica : suscribe con
+ActaComite "0..*" -- "1" RegistroREM7 : tributa a
+CasoOncologico "1" -- "0..*" InteraccionCanalUsuario : consulta en
+InteraccionCanalUsuario "0..1" -- "0..1" TicketTriagePresencial : emite
+CasoOncologico "1" -- "0..*" RegistroIntercambioMINSAL : reporta a
+
+@enduml

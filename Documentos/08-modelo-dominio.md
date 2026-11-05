@@ -1,6 +1,6 @@
 # Modelo de dominio
 
-El modelo describe los conceptos del negocio necesarios para las historias HU-01, HU-04, HU-05 y HU-08: seguimiento de casos, alertas, informes diagnósticos y derivaciones externas. Sus clases y asociaciones sirven de referencia para los demás artefactos de la Entrega 2.
+El modelo describe los conceptos del negocio necesarios para el conjunto completo de historias de OncoTrace (HU-01 a HU-11): seguimiento de casos, alertas, informes diagnósticos, derivaciones de red, valoración multidimensional, bitácora de acompañamiento, comités oncológicos colegiados, canales de usuario y sincronización ministerial. Sus clases y asociaciones sirven de referencia para los demás artefactos de la Entrega 2.
 
 **Referencias:** [Criterios de aceptación](./07-criterios-aceptacion.md) · [Historias de usuario](./04-historias-usuario.md) · [Requisitos](./03-requisitos.md) · [Proceso TO-BE](./02-rediseno-to-be.md).
 
@@ -27,6 +27,16 @@ Archivo fuente: [modelo-dominio.puml](../diagramas/modelo-dominio.puml).
 | `DossierDigitalDerivacion` | Expediente preparado para una derivación externa y su seguimiento hasta el retorno. | identificador, centroDestino, estado, fechaConfeccion, folioUGAA, fechaDespacho, fechaRecepcion, confirmacionRecepcion, fechaCita, fechaInicioTratamiento |
 | `InstructivoReembolsoPasajes` | Ejemplar del instructivo asociado a un dossier, con su constancia de entrega. | referenciaAnexo, mediosCubiertos, exclusiones, requisitos, fechaEntrega, destinatario, responsableEntrega |
 | `ContraReferenciaEpicrisis` | Antecedentes de cierre de la atención externa y del retorno al HGF. | identificador, fechaEmision, fechaRetornoHGF, resumenTratamiento, planSeguimiento |
+| `EvaluacionMultidimensional` | Pauta de valoración integral aplicada al paciente para determinar riesgo biopsicosocial y derivaciones. | identificador, fechaEvaluacion, puntajeClinicoFuncional, puntajePsicoemocional, escalaZaritCuidador, nivelVulnerabilidad, profesionalEvaluador |
+| `DominioValoracion` | Dimensión específica evaluada (clínico-funcional, psicoemocional, cuidador, social, espiritual, cognitivo). | tipoDominio, descripcionHallazgo, requiereDerivacion, especialidadDerivada |
+| `EntradaBitacora` | Registro cronológico individual de contacto asistencial normado según el Journey Map de navegación. | identificador, puntoContactoNormado, fechaContacto, canalContacto, resumenInteraccion, acuerdosEstablecidos, responsableRegistro, estadoContacto |
+| `FichaPresentacionComite` | Expediente sintético consolidado automáticamente para la deliberación médica en el Comité Regional. | folioFicha, resumenClinico, etapificacionTNM, biopsiaValidadaReferencia, propuestaConducta, fechaGeneracion |
+| `ActaComite` | Documento legal colegiado que formaliza el acuerdo terapéutico adoptado durante la sesión. | numeroActa, fechaSesion, quorumAsistentes, resolucionAcordada, estadoFirma |
+| `FirmaElectronica` | Evidencia criptográfica de suscripción vinculante del acta por un médico especialista. | runFirmante, nombreFirmante, rolFirmante, estampaTiempo, hashIntegridad |
+| `RegistroREM7` | Agrupación estadística mensual de decisiones terapéuticas para consolidación ministerial. | periodoMes, seccion, codigoPrestacion, totalCasos |
+| `InteraccionCanalUsuario` | Sesión de consulta efectuada por el paciente o cuidador en canal público (tótem o chatbot). | identificadorSesion, canal, runUsuario, fechaHora, tipoConsulta |
+| `TicketTriagePresencial` | Turno de atención clasificado por riesgo clínico o administrativo emitido hacia la consola del mesón UGCO. | numeroTurno, nivelPrioridad, motivoConsulta, fechaEmision, estadoAtencion |
+| `RegistroIntercambioMINSAL` | Mensaje interoperable de seguimiento transmitido hacia la Plataforma Oncológica Central. | identificadorMensaje, tipoEvento, fechaEnvio, estadoSincronizacion, codigoRespuesta, folioTransaccionMINSAL |
 
 `Texto`, `Fecha` y `FechaHora` describen el significado de los datos. Los atributos de fecha, confirmación o cierre se completan cuando ocurre el hecho correspondiente; no se exige que existan al crear el caso o el dossier.
 
@@ -51,6 +61,16 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | recibe | `DossierDigitalDerivacion` — `ContraReferenciaEpicrisis` | Un dossier: 0..1 contrarreferencia con epicrisis. Una contrarreferencia: 1 dossier. | El retorno se incorpora cuando finaliza la atención externa. |
 | origina | `DossierDigitalDerivacion` — `AlertaSeguimiento` | Un dossier: 0..* alertas. Una alerta: 0..1 dossier. | Una alerta de rezago identifica la derivación que requiere seguimiento. |
 | justifica cierre | `HitoAsistencial` — `AlertaSeguimiento` | Un hito: 0..* alertas. Una alerta: 0..1 hito de cumplimiento. | Cuando una garantía se cumple, se conserva el hito que permite resolver su alerta. |
+| registra | `CasoOncologico` — `EvaluacionMultidimensional` | Un caso: 0..* evaluaciones. Una evaluación: 1 caso. | El caso puede recibir una evaluación basal y revaluaciones periódicas. |
+| evalúa | `EvaluacionMultidimensional` — `DominioValoracion` | Una evaluación: 1..* dominios. Un dominio evaluado: 1 evaluación. | La valoración se compone obligatoriamente de los dominios biopsicosociales normados. |
+| documenta | `CasoOncologico` — `EntradaBitacora` | Un caso: 0..* entradas. Una entrada: 1 caso. | La bitácora registra cronológicamente cada interacción y punto de contacto. |
+| sustenta | `CasoOncologico` — `FichaPresentacionComite` | Un caso: 0..* fichas. Una ficha: 1 caso. | Un caso puede presentarse en una o más ocasiones ante el comité. |
+| presenta a | `FichaPresentacionComite` — `ActaComite` | Una ficha: 0..1 acta. Un acta: 1 ficha. | Cada presentación a sesión de comité concluye formalmente en su respectiva acta. |
+| suscribe con | `ActaComite` — `FirmaElectronica` | Un acta: 1..* firmas. Una firma: 1 acta. | Todo dictamen colegiado requiere la firma de los médicos especialistas asistentes. |
+| tributa a | `ActaComite` — `RegistroREM7` | Un acta: 0..* registros. Un registro REM 7: 0..* actas. | Las decisiones terapéuticas de las actas alimentan los consolidados estadísticos mensuales. |
+| consulta en | `CasoOncologico` — `InteraccionCanalUsuario` | Un caso: 0..* interacciones. Una interacción: 0..1 caso. | Los pacientes consultan el avance de su caso en tótems o chatbots institucionales. |
+| emite | `InteraccionCanalUsuario` — `TicketTriagePresencial` | Una interacción: 0..1 ticket. Un ticket: 1 interacción. | Una consulta presencial desorientada o con síntomas genera un turno categorizado. |
+| reporta a | `CasoOncologico` — `RegistroIntercambioMINSAL` | Un caso: 0..* registros MINSAL. Un registro: 1 caso. | Cada hito clínico genera un mensaje interoperable de sincronización ministerial. |
 
 ## Decisiones de modelado
 

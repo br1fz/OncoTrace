@@ -52,7 +52,102 @@ El Comité Oncológico Regional es una instancia de evaluación y decisión asoc
 
 ## Diagrama del proceso AS-IS
 
-[Ver diagrama del proceso AS-IS en BPMN 2.0](../diagramas/as-is.bpmn)
+El modelo formal y ejecutable del proceso actual se encuentra especificado en notación estándar BPMN 2.0:
+
+* [Archivo de definición formal BPMN 2.0 (Camunda Modeler)](../diagramas/as-is.bpmn)
+
+> [!TIP]
+> **Visualización del archivo .bpmn:** Puede abrirse e inspeccionarse interactivamente mediante [bpmn.io/viewer](https://demo.bpmn.io/), con el modelador de escritorio *Camunda Modeler* (versión 5.51+) o instalando la extensión *BPMN Viewer* en VS Code.
+
+### Representación visual del flujo macro AS-IS (Líneas de responsabilidad y nodos críticos)
+
+Para facilitar la revisión inmediata del flujo sin requerir herramientas externas de renderizado BPMN, el siguiente diagrama sintetiza la interacción entre los 10 carriles (lanes/pools) y ubica con precisión los 6 nodos críticos identificados:
+
+```mermaid
+flowchart TD
+  subgraph APS [Atención Primaria / Red Asistencial]
+    A1([Sospecha Oncológica APS/Urgencia]) --> A2[Emisión de Interconsulta SIC]
+  end
+
+  subgraph UGDA [UGDA - Gestión de Demanda HGF]
+    U1[Recepción y priorización en lista de espera LEIQ]
+  end
+
+  subgraph Medico [Médico Tratante / Especialista]
+    M1[Evaluación clínica inicial]
+    M2[Emisión de órdenes de biopsia e imágenes]
+    M3[Confirmación diagnóstica y emisión IPD]
+    M4[Confección manual de ficha de presentación a comité en Word]
+  end
+
+  subgraph ApoyoDx [Unidades de Apoyo Diagnóstico - LIS / PACS / Privados]
+    D1[Toma de muestra y procesamiento histopatológico]
+    D2[Informes en sistemas aislados Pathology/PACS]
+  end
+
+  subgraph UGCO [UGCO - Gestora de Casos y TENS]
+    G1[Asignación manual del caso]
+    G2[Contacto telefónico inicial y orientación]
+    G3[Búsqueda activa y presencial de biopsias e informes]
+    G4[Armado de dossier físico en papel con carpetas]
+    G5[Atención de demanda espontánea en mesón]
+  end
+
+  subgraph Comite [Comité Oncológico Regional]
+    C1[Sesión clínica y revisión de casos]
+    C2[Redacción de acta física en papel y firma manuscrita]
+  end
+
+  subgraph UGAA [UGAA - Gestión de Red y Derivaciones]
+    R1[Recepción de dossier físico]
+    R2[Despacho físico de derivación hacia HCVB]
+  end
+
+  subgraph RedExt [Red Externa / HCVB / Convenios]
+    E1[Recepción física de expediente y asignación de cupo]
+    E2[Inicio de radioterapia o quimioterapia compleja]
+    E3[Emisión de contrarreferencia física / epicrisis]
+  end
+
+  subgraph Paciente [Paciente y Cuidador Principal]
+    P1[Acude a citas y exámenes]
+    P2[Consulta presencial desorientada en mesón de UGCO]
+  end
+
+  %% Conexiones de flujo
+  A1 --> A2 --> U1 --> M1 --> M2 --> D1 --> D2
+  D2 -.->|AS-01: Dispersión de resultados| G3
+  G3 --> M3 --> M4
+  M1 --> G1 --> G2
+  P2 -.->|AS-06: Interrupciones en mesón| G5
+  M4 -.->|AS-02: Ficha Word manual| C1
+  C1 --> C2 --> G4
+  G4 -.->|AS-04: Falta orientación Anexo 6| R1
+  R1 --> R2 --> E1
+  R2 -.->|AS-03: Pérdida de trazabilidad y plazos| E1
+  E1 --> E2 --> E3 -.-> G1
+  G2 --> P1
+
+  %% Destacar problemas críticos
+  classDef alert fill:#fee2e2,stroke:#ef4444,stroke-width:2px;
+  class D2,M4,C2,R2,G4,P2 alert;
+```
+
+### Estructura de carriles (Lanes) del modelo BPMN AS-IS
+
+| Carril / Pool en `as-is.bpmn` | Actor institucional | Rol principal en el flujo actual | Principales problemas asociados |
+| :--- | :--- | :--- | :--- |
+| `Lane_APS` | APS y Red Asistencial | Origen de sospecha e interconsultas | Derivaciones con datos clínicos incompletos |
+| `Lane_UGDA` | Adm. Demanda y LEIQ | Gestión de lista de espera quirúrgica/consulta | Desconocimiento del gestor sobre tiempos de espera |
+| `Lane_Medico` | Médico tratante | Diagnóstico, IPD y solicitud de comité | Transcripción manual en Word para comités (**AS-02**) |
+| `Lane_Apoyo` | Laboratorio, AP y Radiología | Procesamiento de biopsias e imágenes | Resultados dispersos en Pathology/PACS sin aviso (**AS-01**) |
+| `Lane_Gestor` | Gestora de casos UGCO | Seguimiento activo y navegación clínica | Registro manual en cuadernos y planillas (**AS-05**) |
+| `Lane_TENS` | TENS UGCO | Confección de expedientes y rescate | Rescate físico de antecedentes y confección manual de carpetas |
+| `Lane_Admin` | Administrativo UGCO | Citaciones y archivo | Rescate en archivo papel de fichas |
+| `Lane_Comite` | Comité Oncológico Regional | Decisión terapéutica multidisciplinaria | Actas en papel y firma manuscrita con actas en físico (**AS-02**) |
+| `Lane_UGAA` | UGAA | Tramitación y despacho de derivaciones | Despacho físico a HCVB con rezago y plazos ciegos (**AS-03**) |
+| `Pool_Paciente` | Paciente y cuidador | Usuario del sistema de salud | Desorientación sobre traslados (**AS-04**) y demanda en mesón (**AS-06**) |
+| `Pool_RedExterna` | HCVB y Clínicas en convenio | Prestación de alta complejidad | Retorno tardío de contrarreferencias y epicrisis |
 
 ---
 

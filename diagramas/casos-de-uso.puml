@@ -201,3 +201,56 @@ actor "Sistema HCVB\nSistema externo" as H
 C -- H
 G -- C
 @enduml
+
+@startuml casos-valoracion-comites-canales
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 17
+skinparam titleFontSize 23
+skinparam actorBorderColor #334155
+skinparam actorFontColor #0F172A
+skinparam usecaseBackgroundColor #F1F5F9
+skinparam usecaseBorderColor #475569
+skinparam usecaseFontColor #0F172A
+skinparam rectangleBorderColor #64748B
+skinparam rectangleBackgroundColor white
+skinparam ArrowColor #475569
+skinparam ArrowFontSize 15
+
+title
+DCU-01.D — Valoración multidimensional, comités, canales y MINSAL
+end title
+
+actor "Gestor/a UGCO" as G
+actor "TENS UGCO" as T
+actor "Médico Comité" as MC
+actor "Paciente / Cuidador" as P
+actor "Sistema MINSAL\nSistema externo" as MINSAL
+
+rectangle "OncoTrace" {
+  usecase "CU-10\nAplicar evaluación\nmultidimensional" as C10
+  usecase "CU-11\nRegistrar interacción en\nbitácora de acompañamiento" as C11
+  usecase "CU-12\nGenerar ficha de\npresentación a comité" as C12
+  usecase "CU-13\nRegistrar acta de comité,\nfirma y consolidar REM 7" as C13
+  usecase "CU-14\nConsultar estado en\ntótem de autoatención" as C14
+  usecase "CU-15\nOrientar derechos y\nclasificar triage presencial" as C15
+  usecase "CU-16\nMonitorear sincronización\ncon plataforma MINSAL" as C16
+}
+
+G -- C10
+G -- C11
+T -- C11
+G -- C12
+MC -- C13
+P -- C14
+P -- C15
+G -- C16
+C16 -- MINSAL
+
+C15 ..> C14 : <<extend>>\n[requiere orientación]
+C12 ..> C13 : <<include>>\n[antecedentes para sesión]
+
+@enduml

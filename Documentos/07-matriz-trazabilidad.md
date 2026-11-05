@@ -5,6 +5,9 @@
 > **Asignatura:** CIN324 – Ingeniería de Requisitos | Entrega 1  
 > **Alcance:** Relaciona los problemas AS-IS con sus fuentes de elicitación, actividades TO-BE, requisitos de producto, historias de usuario, criterios de aceptación y escenarios de calidad. Los requisitos de proyecto se documentan por separado en 03-requisitos.md.
 
+> [!NOTE]
+> **Nota de vigencia metodologica (Entrega 1 vs Entrega 2):** Esta matriz representa la linea base historica consolidada al cierre de la **Entrega 1**. Para la **Entrega 2** y el proceso de desarrollo asistido con OpenCode / OpenSpec, la fuente canonica, vinculante y completa de trazabilidad (que incluye casos de uso CU-01 a CU-16, escenarios Gherkin, modelo de dominio, diagramas de secuencia DSS y diagramas de estados EST) es [12-trazabilidad.md](./12-trazabilidad.md).
+
 **Documentos de referencia:** [AS-IS](./01-proceso-as-is.md) · [TO-BE](./02-rediseno-to-be.md) · [Requisitos](./03-requisitos.md) · [Historias de usuario](./04-historias-usuario.md) · [Elicitación](./05-elicitacion.md) · [Calidad](./06-atributos-calidad.md).
 
 ---

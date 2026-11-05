@@ -26,6 +26,10 @@ En las historias seleccionadas, el paciente o cuidador recibe orientación y el 
 
 ---
 
+- **Médico integrante del Comité Oncológico:** Especialista que participa en la sesión colegiada para deliberar la conducta terapéutica consensuada y suscribir el acta con firma electrónica.
+- **Paciente y cuidador:** Personas que consultan el avance de su proceso asistencial mediante canales de autoatención (tótem) o asistentes interactivos (chatbot de derechos y triage).
+- **Sistema Central MINSAL (Sistema externo):** Plataforma nacional del Ministerio de Salud con la que OncoTrace intercambia datos estructurados de seguimiento oncológico.
+
 ## Diagrama de casos de uso
 
 **Identificador:** DCU-01.
@@ -51,6 +55,13 @@ El diagrama se organiza en tres vistas: seguimiento y alertas, informes diagnós
 | **CU-07** | Confeccionar dossier de derivación | TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-01 |
 | **CU-08** | Registrar entrega del instructivo de pasajes | Gestor/a UGCO o TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-02 |
 | **CU-09** | Registrar retorno con epicrisis | Gestor/a UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-06 |
+| **CU-10** | Aplicar evaluación multidimensional y estratificar riesgo | Gestor/a UGCO | [HU-02](./04-historias-usuario.md#hu-02) | HU-02-ESC-01 a HU-02-ESC-03 |
+| **CU-11** | Registrar interacción en bitácora de acompañamiento | Gestor/a UGCO y TENS UGCO | [HU-03](./04-historias-usuario.md#hu-03) | HU-03-ESC-01 a HU-03-ESC-03 |
+| **CU-12** | Generar ficha de presentación a comité | Gestor/a UGCO y médico tratante | [HU-06](./04-historias-usuario.md#hu-06) | HU-06-ESC-01 a HU-06-ESC-03 |
+| **CU-13** | Registrar acta de comité, firma y consolidar REM 7 | Médico integrante del comité | [HU-07](./04-historias-usuario.md#hu-07) | HU-07-ESC-01 a HU-07-ESC-03 |
+| **CU-14** | Consultar estado en tótem de autoatención | Paciente y cuidador principal | [HU-09](./04-historias-usuario.md#hu-09) | HU-09-ESC-01 a HU-09-ESC-03 |
+| **CU-15** | Orientar derechos y clasificar triage presencial | Paciente, cuidador y gestor/a UGCO | [HU-10](./04-historias-usuario.md#hu-10) | HU-10-ESC-01 a HU-10-ESC-03 |
+| **CU-16** | Monitorear sincronización con plataforma MINSAL | Gestor/a UGCO y Sistema MINSAL | [HU-11](./04-historias-usuario.md#hu-11) | HU-11-ESC-01 a HU-11-ESC-03 |
 
 ---
 
@@ -62,6 +73,11 @@ El diagrama se organiza en tres vistas: seguimiento y alertas, informes diagnós
 
 ---
 
+
+- **CU-12 se incluye en CU-13 (`<<include>>`).** Para formalizar el acta y deliberar en comité (CU-13), la sesión colegiada requiere la disponibilidad de la Ficha Resumen de Presentación generada y consolidada previamente (CU-12).
+- **CU-15 extiende a CU-14 (`<<extend>>`).** El paciente que consulta en el tótem de autoatención (CU-14) puede solicitar orientación interactiva de derechos o triage presencial (CU-15) si presenta desorientación o síntomas de descompensación asistencial.
+- **CU-11 actualiza los hitos de CU-05.** Cada punto de contacto normado registrado en la bitácora impacta cronológicamente la línea de tiempo del caso oncológico.
+
 ## Reglas de consistencia con otros artefactos
 
 1. **Seguimiento del caso (CU-05).** El caso sigue las ocho etapas del modelo de dominio. La resolución firmada del comité se registra como hito. El cambio a la etapa de tratamiento requiere que se registre el inicio efectivo del tratamiento.
@@ -69,3 +85,6 @@ El diagrama se organiza en tres vistas: seguimiento y alertas, informes diagnós
 3. **Validación e identificación de informes (CU-01 y CU-02).** Si el RUN no permite asociar el informe al paciente con certeza, OncoTrace lo conserva como una excepción pendiente de revisión, registra la discrepancia para auditoría y mantiene el examen pendiente. Si el informe sigue pendiente de validación en LIS o PACS, el examen permanece pendiente de recibir un informe validado.
 4. **Preparación y despacho (CU-07, CU-08 y CU-03).** TENS confecciona el dossier con los antecedentes requeridos, incluida el acta firmada del comité. Para el despacho a HCVB debe constar la entrega anticipada del instructivo del Anexo 6 al paciente o cuidador. Al formalizar el despacho, UGAA registra la fecha y el folio.
 5. **Recepción, cita y retorno (CU-04 y CU-09).** El despacho deja la derivación en estado **Despachado por UGAA**. Para pasar a **Recepcionado en HCVB**, se registra la confirmación emitida por el centro receptor. La fecha de atención confirmada permite registrar **Cita Asignada**. El inicio del tratamiento se registra cuando se confirma que ocurrió. Al retorno, la gestora incorpora la epicrisis y la contrarreferencia, las vincula al caso y deja un hito en la línea de tiempo.
+6. **Evaluación multidimensional y bitácora (CU-10 y CU-11).** La valoración inicial exige el registro del estado funcional basal ECOG y la estratificación de vulnerabilidad biopsicosocial. Los 6 puntos de contacto normados deben registrarse cronológicamente en la bitácora; el rezago superior a 5 días hábiles en hitos clave (como inicio de tratamiento) genera alertas en CU-06.
+7. **Comités oncológicos y REM 7 (CU-12 y CU-13).** La ficha de presentación exige informe de biopsia validado en LIS/Pathology. El acta firmada electrónicamente por los especialistas es legalmente vinculante, inmutable tras la sesión (Ley N° 20.584 y DS N° 29), y aporta la información estadística consolidada para el REM 7 ministerial.
+8. **Autoatención, triage e interoperabilidad (CU-14, CU-15 y CU-16).** Los canales públicos de consulta resguardan la confidencialidad omitiendo términos patológicos sensibles en pantalla pública. Las consultas de triage con dolor o urgencia generan tickets prioritarios sincronizados con el mesón gestor. La sincronización MINSAL reporta eventos en HL7 FHIR manteniendo encolamiento de reintentos ante fallas técnicas.

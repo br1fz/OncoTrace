@@ -1,6 +1,6 @@
 # Criterios de aceptación (Gherkin)
 
-Este documento especifica el comportamiento esperado de las historias HU-01, HU-04, HU-05 y HU-08 de OncoTrace. Los escenarios describen condiciones de aceptación; no acreditan implementación ni ejecución de pruebas.
+Este documento especifica el comportamiento esperado de las historias de usuario de OncoTrace (HU-01 a HU-11), proporcionando criterios de aceptación formales en notación Gherkin para la derivación rigurosa de pruebas y código verificable. Los escenarios describen condiciones de aceptación; no acreditan implementación ni ejecución de pruebas.
 
 **Referencias:** [Historias de usuario](./04-historias-usuario.md) · [Requisitos](./03-requisitos.md) · [Proceso TO-BE](./02-rediseno-to-be.md).
 
@@ -224,4 +224,238 @@ Característica: Seguimiento de la derivación a la red externa
     Y la epicrisis y contrarreferencia quedan vinculadas al caso
     Y se notifica a la gestora responsable para continuar el seguimiento
     Y el retorno queda registrado como hito de la línea de tiempo
+```
+
+---
+
+## HU-02 — Evaluación multidimensional y estratificación por dominios
+
+**Historia de origen:** [HU-02](./04-historias-usuario.md#hu-02).
+
+**Historia:** Como Gestor/a de Casos Oncológicos de la UGCO, quiero aplicar y registrar la pauta de valoración inicial por dominios (clínico-funcional, psicoemocional, familiar/cuidador, socioeconómico, espiritual y comprensión diagnóstica), para identificar factores de riesgo biopsicosocial, pesquisar sobrecarga del cuidador y priorizar derivaciones oportunas al equipo multidisciplinario.
+
+**Requisito asociado:** RF-02.
+
+```gherkin
+Característica: Evaluación multidimensional y estratificación de vulnerabilidad
+
+  Escenario: HU-02-ESC-01 Registro de evaluación inicial y cálculo de vulnerabilidad
+    Dado un caso oncológico en etapa de sospecha o confirmación diagnóstica
+    Y una gestora UGCO autorizada aplicando la pauta inicial de valoración
+    Cuando la gestora registra los puntajes de los seis dominios (clínico-funcional ECOG, psicoemocional, cuidador Zarit, socioeconómico, espiritual y comprensión diagnóstica)
+    Entonces OncoTrace almacena la evaluación vinculada al caso y paciente
+    Y calcula el índice integral de vulnerabilidad clasificando el caso en Bajo, Medio o Alto
+    Y genera sugerencias de derivación al equipo psicosocial si el dominio psicoemocional o socioeconómico presenta alteración crítica
+
+  Escenario: HU-02-ESC-02 Detección de sobrecarga severa en cuidador principal
+    Dado un caso oncológico con cuidador principal identificado
+    Cuando la gestora registra en la pauta un puntaje de escala Zarit superior a 56 puntos
+    Entonces OncoTrace emite una alerta prioritaria para la Unidad de Servicio Social
+    Y exige el registro de una solicitud formal de apoyo o intervención psicosocial para el cuidador
+
+  Escenario: HU-02-ESC-03 Exigencia de índice funcional clínico mínimo
+    Dado un paciente oncológico sin registro de rendimiento funcional previo
+    Cuando la gestora intenta guardar la evaluación multidimensional sin ingresar el valor ECOG (0-4)
+    Entonces el sistema rechaza el registro indicando el campo clínico obligatorio
+    Y mantiene el caso en su estado previo sin alterar la estratificación
+```
+
+---
+
+## HU-03 — Bitácora digital de acompañamiento y puntos de contacto obligatorios
+
+**Historia de origen:** [HU-03](./04-historias-usuario.md#hu-03).
+
+**Historia:** Como Gestor/a o TENS de la UGCO, quiero registrar cada interacción asistencial en una bitácora cronológica que verifique el cumplimiento de los 6 puntos de contacto obligatorio normados según la curva de vulnerabilidad del Journey Map, para asegurar la continuidad del cuidado, evitar deserciones y mantener un canal de comunicación unificado en el equipo de salud.
+
+**Requisito asociado:** RF-03.
+
+```gherkin
+Característica: Bitácora digital de acompañamiento y puntos de contacto
+
+  Escenario: HU-03-ESC-01 Registro de punto de contacto normado según Journey Map
+    Dado un caso oncológico asignado a una gestora de la UGCO
+    Y que el paciente alcanza uno de los seis hitos obligatorios del Journey Map (P1: Ingreso, P2: Confirmación, P3: Comité, P4: Inicio Tratamiento, P5: Seguimiento Intermedio, P6: Fin Tratamiento o Paliativos)
+    Cuando la gestora o TENS registra la interacción asistencial con su fecha, canal, resumen y acuerdos
+    Entonces OncoTrace marca el punto de contacto correspondiente como cumplido
+    Y añade el evento a la bitácora cronológica del caso con identificación del funcionario responsable
+    Y actualiza el indicador de contactabilidad del paciente
+
+  Escenario: HU-03-ESC-02 Alerta por punto de contacto obligatorio no realizado en plazo
+    Dado un caso oncológico que transitó a la etapa de tratamiento hace más de cinco días hábiles
+    Y que el punto de contacto P4 (Inicio Tratamiento) no ha sido registrado en la bitácora
+    Cuando el motor de monitoreo de OncoTrace evalúa la trayectoria del paciente
+    Entonces genera una alerta preventiva de inactividad de contacto dirigida a la gestora asignada
+    Y registra la advertencia en el tablero para evitar el desenganche asistencial
+
+  Escenario: HU-03-ESC-03 Registro de intento fallido y protocolo de contactabilidad
+    Dado un paciente que no responde al contacto telefónico programado de la UGCO
+    Cuando el funcionario registra el resultado No contactable en la bitácora
+    Entonces OncoTrace contabiliza el intento fallido
+    Y si se alcanzan tres intentos fallidos consecutivos, genera una alerta para activar búsqueda activa o coordinación con APS
+```
+
+---
+
+## HU-06 — Generación automática de ficha de presentación a comité oncológico
+
+**Historia de origen:** [HU-06](./04-historias-usuario.md#hu-06).
+
+**Historia:** Como Gestor/a Oncológico/a de la UGCO, quiero generar automáticamente la Ficha Resumen de Presentación con los antecedentes clínicos completos del paciente, para suprimir la transcripción manual en documentos Word externos y agilizar la preparación de la tabla del Comité Oncológico Regional.
+
+**Requisito asociado:** RF-06.
+
+```gherkin
+Característica: Generación automatizada de ficha de presentación a comité
+
+  Escenario: HU-06-ESC-01 Generación automática de la ficha resumen
+    Dado un caso oncológico con confirmación diagnóstica, informe de biopsia validado y etapificación preliminar
+    Cuando la gestora oncológica solicita generar la Ficha de Presentación a Comité
+    Entonces OncoTrace consolida antecedentes demográficos, diagnóstico CIE-10, biopsia validada, TNM preliminar e imágenes indexadas
+    Y asigna a la ficha un folio digital único correlativo
+    Y habilita el campo de propuesta terapéutica para el médico tratante
+
+  Escenario: HU-06-ESC-02 Bloqueo de generación ante biopsia no validada
+    Dado un caso oncológico cuya orden de biopsia continúa en estado pendiente o sin validación en LIS
+    Cuando la gestora solicita generar la Ficha de Presentación a Comité
+    Entonces el sistema bloquea la emisión del documento oficial
+    Y emite un mensaje notificando que se requiere informe histopatológico validado o justificación médica excepcional de urgencia
+
+  Escenario: HU-06-ESC-03 Inclusión en la tabla de sesión del Comité Regional
+    Dada una Ficha Resumen validada por el médico tratante
+    Cuando la gestora programa el caso para la próxima sesión del Comité Oncológico Regional
+    Entonces OncoTrace añade el caso a la tabla oficial de la sesión
+    Y deja el expediente digital disponible para la revisión previa del equipo médico participante
+```
+
+---
+
+## HU-07 — Acta digital de comité, firma electrónica y REM 7
+
+**Historia de origen:** [HU-07](./04-historias-usuario.md#hu-07).
+
+**Historia:** Como Médico Integrante del Comité Oncológico Regional, quiero registrar la conducta terapéutica acordada y suscribir el acta con firma electrónica durante la sesión colegiada, para eliminar las actas en papel físico, garantizar la validez legal de la resolución y generar automáticamente el informe estadístico REM 7 exigido por el MINSAL.
+
+**Requisitos asociados:** RF-07, RNF-03 y REQ-DER-01.
+
+```gherkin
+Característica: Acta digital de comité, firma electrónica y REM 7
+
+  Escenario: HU-07-ESC-01 Deliberación colegiada y suscripción con firma electrónica
+    Dada una sesión del Comité Oncológico Regional con quórum médico normado y un caso en tabla
+    Cuando los médicos integrantes registran la conducta acordada y suscriben con su firma electrónica
+    Entonces OncoTrace formaliza el Acta Digital de Comité
+    Y estampa la firma electrónica de los participantes con fecha, hora, rol y código de validación
+    Y registra la resolución como hito formal en la línea de tiempo del caso oncológico
+
+  Escenario: HU-07-ESC-02 Sellado e inmutabilidad del acta tras la firma
+    Dada un Acta Digital debidamente suscrita por los médicos del comité
+    Cuando un usuario intenta editar o anular el texto de la resolución
+    Entonces el sistema bloquea cualquier alteración garantizando la inmutabilidad legal (Ley N° 20.584 y DS N° 29)
+    Y exige una nueva presentación a comité si se requiere modificar la conducta consensuada
+
+  Escenario: HU-07-ESC-03 Consolidación automática para reporte ministerial REM 7
+    Dadas las actas de comités oncológicos cerradas durante el mes calendario
+    Cuando un usuario autorizado solicita el consolidado de producción del comité
+    Entonces OncoTrace totaliza los casos por localización anatómica, histología, etapa clínica y conducta acordada
+    Y genera el informe consolidado correspondiente a la serie REM 7 del MINSAL sin requerir doble digitación manual
+```
+
+---
+
+## HU-09 — Tótem de autoatención en sala de espera
+
+**Historia de origen:** [HU-09](./04-historias-usuario.md#hu-09).
+
+**Historia:** Como Paciente o Cuidador Principal en la sala de espera de la UGCO, quiero consultar el estado de avance de mis exámenes e hitos asistenciales desde una pantalla táctil, para obtener información certera y oportuna de forma autónoma sin necesidad de interrumpir la labor clínica del mesón gestor.
+
+**Requisitos asociados:** RF-09 y RNF-03.
+
+```gherkin
+Característica: Tótem de autoatención en sala de espera
+
+  Escenario: HU-09-ESC-01 Consulta de estado de exámenes y trámites
+    Dado un paciente o cuidador en la sala de espera de la UGCO
+    Cuando ingresa su RUN o escanea la cédula de identidad en el tótem de autoatención
+    Entonces la interfaz presenta el listado de estudios diagnósticos e hitos asistenciales con su estado general
+    Y muestra la fecha y ubicación de su próxima citación programada en la red
+
+  Escenario: HU-09-ESC-02 Protección y anonimización de hallazgos patológicos sensibles
+    Dado un paciente consultando su caso en el tótem táctil de la sala de espera
+    Cuando el sistema despliega el resultado de un estudio anatomopatológico o imagenológico
+    Entonces omite términos diagnósticos reservados o descripciones de malignidad en la interfaz pública
+    Y orienta al paciente a acudir con su gestora o médico tratante para la entrega de resultados clínicos
+
+  Escenario: HU-09-ESC-03 Expiración de sesión por inactividad
+    Dada una consulta abierta en la pantalla del tótem de autoatención
+    Cuando transcurren sesenta segundos continuos sin interacción táctil
+    Entonces el sistema cierra automáticamente la sesión y borra la información de pantalla
+    Y retorna al inicio de bienvenida resguardando la privacidad del paciente frente a terceros
+```
+
+---
+
+## HU-10 — Chatbot de orientación institucional y triage presencial (Ley N° 21.258)
+
+**Historia de origen:** [HU-10](./04-historias-usuario.md#hu-10).
+
+**Historia:** Como Paciente o usuario que acude de forma espontánea a la UGCO, quiero interactuar con un asistente conversacional que resuelva dudas frecuentes sobre mis derechos y me entregue un turno priorizado si requiero atención humana, para recibir orientación inmediata y ser atendido por la gestora de manera ordenada según la complejidad de mi situación.
+
+**Requisito asociado:** RF-10.
+
+```gherkin
+Característica: Chatbot de orientación de derechos y triage presencial
+
+  Escenario: HU-10-ESC-01 Consulta guiada de derechos y canales asistenciales
+    Dado un usuario interactuando con el asistente conversacional institucional
+    Cuando consulta sobre garantías de la Ley Nacional del Cáncer N° 21.258, plazos GES o traslados
+    Entonces el chatbot responde en lenguaje accesible citando los derechos legales y conductos regulares
+    Y ofrece opciones para resolver consultas frecuentes de navegación clínica
+
+  Escenario: HU-10-ESC-02 Triage de demanda espontánea y detección de urgencia
+    Dado un paciente con dolor oncológico severo o descompensación clínica interactuando con el triage
+    Cuando responde las preguntas del cuestionario clínico guiado
+    Entonces el sistema clasifica la situación con prioridad Alta
+    Y genera un aviso urgente hacia la enfermera gestora orientando además la derivación al Servicio de Urgencia si procede
+
+  Escenario: HU-10-ESC-03 Emisión de turno y sincronización con mesón de la UGCO
+    Dado un usuario que solicita atención personalizada en el mesón de la UGCO
+    Cuando completa el triage con el asistente
+    Entonces el chatbot emite un ticket digital con su número de turno y prioridad
+    Y transmite la solicitud a la pantalla del mesón de la gestora oncológica para gestionar la espera de forma ordenada
+```
+
+---
+
+## HU-11 — Intercambio de información de seguimiento con MINSAL
+
+**Historia de origen:** [HU-11](./04-historias-usuario.md#hu-11).
+
+**Historia:** Como Gestor/a de Casos Oncológicos de la UGCO con permisos para supervisar el intercambio de información, quiero consultar el estado de los envíos de datos de seguimiento a la Plataforma de Seguimiento Oncológico del MINSAL y gestionar los errores, para reducir la doble digitación y detectar envíos pendientes o fallidos.
+
+**Requisito asociado:** RF-11.
+
+```gherkin
+Característica: Interoperabilidad de seguimiento con la plataforma del MINSAL
+
+  Escenario: HU-11-ESC-01 Transmisión exitosa de hito de seguimiento
+    Dado un caso oncológico con un hito clínico confirmado en la línea de tiempo
+    Y habilitada la integración con los servicios centrales del MINSAL
+    Cuando OncoTrace ejecuta la sincronización del evento clínico
+    Entonces transmite el mensaje interoperable con los datos requeridos
+    Y al recibir la respuesta satisfactoria del MINSAL, marca el hito como Sincronizado
+    Y almacena el identificador de transacción y fecha de confirmación ministerial
+
+  Escenario: HU-11-ESC-02 Detección de error de transmisión y encolamiento para reintento
+    Dado un envío de hito oncológico que es rechazado por indisponibilidad del MINSAL o discrepancia de esquema
+    Cuando OncoTrace procesa la respuesta fallida
+    Entonces registra el evento con estado Pendiente de Reintento
+    Y conserva el detalle del error en la bitácora de interoperabilidad sin suspender la operación local
+    Y programa el reintento automático según las políticas de conectividad definidas
+
+  Escenario: HU-11-ESC-03 Auditoría y supervisión de intercambios institucionales
+    Dado un usuario con permisos de supervisión de interoperabilidad
+    Cuando accede al panel de monitoreo de intercambios MINSAL
+    Entonces visualiza el consolidado de mensajes transmitidos, exitosos y pendientes
+    Y puede filtrar por fecha o caso clínico para auditar la trazabilidad de los envíos
 ```

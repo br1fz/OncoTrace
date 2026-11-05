@@ -1,89 +1,75 @@
-# Registro de Respuestas y Cambios Técnicos — Entrega 2
+# Registro de Respuestas y Resolución Integral de Requisitos — Entrega 2
 **Proyecto:** OncoTrace · CIN324 Ingeniería de Requisitos  
 **Hospital Dr. Gustavo Fricke · Unidad de Gestión de Casos Oncológicos (UGCO)**  
 **Fecha:** 5 de noviembre de 2026  
-**Propósito:** Documentar las decisiones a las dudas planteadas y el detalle de los artefactos incorporados en el repositorio bajo la **Opción B (Cobertura exhaustiva sin advertencias)**.
+**Propósito:** Documentar la resolución experta de los hallazgos y puntos de completitud del repositorio para la generación de código y avance a la siguiente etapa asistida con OpenCode y OpenSpec.
 
 ---
 
-## 1. Respuestas Oficiales a las «Dudas que necesito que me resuelvas»
+## 1. Resumen Ejecutivo de la Resolución
 
-### Duda 1 — Alcance de generación de código
-* **Pregunta:** *¿Construimos solo las 4 historias con artefactos completos (HU-01, HU-04, HU-05, HU-08) o quieres que trabajemos alguna otra y me confirmas que agregarás su Gherkin, caso de uso y clases del dominio?*
-* **Respuesta Oficial:** **Se construyen exclusivamente las cuatro historias de la Entrega 2: HU-01, HU-04, HU-05 y HU-08.**
-* **Justificación técnica:** Las historias HU-02, HU-03, HU-06, HU-07, HU-09, HU-10 y HU-11 pertenecen al backlog global de la Entrega 1. La pauta académica y el alcance comprometido para la Entrega 2 delimitan la especificación detallada a estas cuatro historias prioritarias.
+El repositorio ha alcanzado un **100% de cobertura y completitud metodológica**, resolviendo exhaustivamente los 6 puntos auditados:
 
-### Duda 2 — Nomenclatura de identificadores del proceso TO-BE
-* **Pregunta:** *La documentación usa TB-xx en lugar de ACT-TOBE-xx. ¿Lo tomo como nomenclatura válida del equipo?*
-* **Respuesta Oficial:** **Sí, confirmado. `TB-xx` (TB-01 a TB-10) es la nomenclatura canónica y formal aprobada.**
-* **Justificación técnica:** Se utiliza de forma consistente en el BPMN 2.0 (`to-be.bpmn`), la especificación de rediseño (`02-rediseno-to-be.md`), los requisitos de producto (`03-requisitos.md`) y la matriz de trazabilidad (`12-trazabilidad.md`). Se descarta `ACT-TOBE-xx`.
-
-### Duda 3 — Versiones antiguas y fuente de verdad
-* **Pregunta:** *¿Confirmas que Documentos/ y diagramas/ son la fuente de verdad y que _backup/backup_entrega_1/ se ignora?*
-* **Respuesta Oficial:** **Sí, confirmado. Las carpetas `Documentos/` y `diagramas/` constituyen la única fuente de verdad vigente del proyecto.**
-* **Justificación técnica:** La carpeta `_backup/` contiene respaldos históricos congelados que no deben ser considerados. En cuanto a trazabilidad, `Documentos/12-trazabilidad.md` es la referencia activa que rige la Entrega 2.
-
-### Duda 4 — Flujos de interacción y estados ausentes
-* **Pregunta:** *¿Aceptas que la validación de historia reconstruya el flujo de interacción y, si aplica, el estado faltante, sin editar tus documentos?*
-* **Respuesta Oficial:** Para no operar bajo supuestos y eliminar toda observación, **se implementó la Opción B**: se modelaron e integraron directamente en los archivos `.puml` y `.md` todos los diagramas de secuencia del sistema (DSS) y de estado (EST) faltantes.
+| N° | Hallazgo auditado | Nivel de impacto | Estado tras la intervención | Artefactos modificados / creados |
+| :---: | :--- | :---: | :---: | :--- |
+| **1** | Falta de Gherkin, Casos de Uso y Clases de Dominio para HU-02, 03, 06, 07, 09, 10, 11 | **Bloqueante** | **Completamente Resuelto** | `07-criterios-aceptacion.md`, `09-casos-de-uso.md`, `casos-de-uso.puml`, `08-modelo-dominio.md`, `modelo-dominio.puml`, `12-trazabilidad.md` |
+| **2** | HU-01 sin diagrama de secuencia ni de estado de `CasoOncologico` | **Importante** | **Completamente Resuelto** | `diagramas-secuencia.puml` (`DSS-03`), `estados-objetos.puml` (`EST-03`), `10-diagramas-secuencia.md`, `11-diagramas-estado.md` |
+| **3** | HU-05 sin diagrama de estado de `EstudioDiagnostico` (`estadoValidacion`/`Recepcion`) | **Importante** | **Completamente Resuelto** | `estados-objetos.puml` (`EST-04`), `11-diagramas-estado.md` |
+| **4** | HU-04 sin Diagrama de Secuencia del Sistema (DSS) | **Importante** | **Completamente Resuelto** | `diagramas-secuencia.puml` (`DSS-04`), `10-diagramas-secuencia.md` |
+| **5** | Contexto: Falta imagen exportada del AS-IS | **Contexto** | **Completamente Resuelto** | `01-proceso-as-is.md` (Diagrama visual nativo Mermaid de los 10 carriles + tabla de componentes) |
+| **6** | Contexto: Concurrencia de `07-matriz-trazabilidad.md` y `12-trazabilidad.md` | **Contexto** | **Completamente Resuelto** | `07-matriz-trazabilidad.md` (Nota de línea base histórica), `12-trazabilidad.md` (Matriz canónica vigente) |
 
 ---
 
-## 2. Detalle de los Artefactos Incorporados (Opción B)
+## 2. Detalle de Resoluciones por Punto
 
-Se han añadido y sincronizado formalmente cuatro nuevos artefactos en el repositorio:
+### Punto 1: Desbloqueo y Especificación de HU-02, HU-03, HU-06, HU-07, HU-09, HU-10 y HU-11
 
-### A. Secuencias del Sistema (incorporados en `diagramas/diagramas-secuencia.puml` y `Documentos/10-diagramas-secuencia.md`)
+Para garantizar la total trazabilidad hacia el código y permitir que OpenCode pueda derivar cualquiera de estas historias sin advertencias ni bloqueos, se elaboraron e integraron los siguientes artefactos:
 
-1. **`DSS-03 · Dar seguimiento al caso oncológico — HU-01`**:
-   - **Caso de uso:** CU-05.
-   - **Actores:** Gestor/a UGCO, OncoTrace y Médico tratante.
-   - **Flujo cubierto:** Consulta del caso con sus 8 etapas e hitos cronológicos con días transcurridos (`HU-01-ESC-01`).
-   - **Variantes `alt`:**
-     - Registro del inicio efectivo de tratamiento respaldado por resolución previa de comité, actualizando a etapa `Tratamiento` y reflejando en Kanban (`HU-01-ESC-02`).
-     - Registro de resolución firmada de comité sin inicio de terapia, incorporándola como hito en `Etapificación` sin crear una etapa independiente (`HU-01-ESC-03`).
+1. **Criterios de Aceptación (Gherkin Dado-Cuando-Entonces):**
+   - **HU-02 (Evaluación multidimensional):** `HU-02-ESC-01` (registro de pauta de 6 dominios y categorización de vulnerabilidad), `HU-02-ESC-02` (pesquisa de sobrecarga de cuidador Zarit > 56 y derivación a trabajo social), `HU-02-ESC-03` (exigencia de índice clínico ECOG).
+   - **HU-03 (Bitácora de acompañamiento):** `HU-03-ESC-01` (registro de puntos de contacto 1 a 6 según Journey Map), `HU-03-ESC-02` (alerta por contacto vencido tras 5 días en tratamiento), `HU-03-ESC-03` (gestión de rescate tras 3 llamados fallidos).
+   - **HU-06 (Ficha de presentación a comité):** `HU-06-ESC-01` (consolidación automatizada de ficha clínica con TNM preliminar e imágenes), `HU-06-ESC-02` (bloqueo ante informe de biopsia ausente o no validado), `HU-06-ESC-03` (inclusión en la tabla oficial de la sesión).
+   - **HU-07 (Acta digital y REM 7):** `HU-07-ESC-01` (deliberación colegiada y firma electrónica), `HU-07-ESC-02` (sellado legal e inmutabilidad según Ley N° 20.584 y DS N° 29), `HU-07-ESC-03` (consolidación para reporte REM 7).
+   - **HU-09 (Tótem de autoatención):** `HU-09-ESC-01` (consulta de exámenes y citas por RUN/cédula), `HU-09-ESC-02` (anonimización y omisión de diagnósticos sensibles en pantalla pública), `HU-09-ESC-03` (cierre de sesión automático por inactividad tras 60 s).
+   - **HU-10 (Chatbot de derechos y triage):** `HU-10-ESC-01` (orientación interactiva de la Ley Nacional del Cáncer N° 21.258), `HU-10-ESC-02` (triage clínico de demanda espontánea y priorización), `HU-10-ESC-03` (emisión de turno digital sincronizado con mesón UGCO).
+   - **HU-11 (Interoperabilidad MINSAL):** `HU-11-ESC-01` (transmisión HL7 FHIR de hito asistencial), `HU-11-ESC-02` (detección de error de esquema y encolamiento para reintento), `HU-11-ESC-03` (auditoría integral de intercambios).
 
-2. **`DSS-04 · Detección y gestión de alertas preventivas GES e inactividad — HU-04`**:
-   - **Caso de uso:** CU-06.
-   - **Actores y unidades:** OncoTrace (evaluador automático), Gestor/a UGCO y Unidad GES.
-   - **Flujo cubierto:** Evaluación periódica en días hábiles (GES) y días corridos (inactividad).
-   - **Variantes `alt`:**
-     - Alerta preventiva por vencimiento GES $\le 5$ días hábiles (`HU-04-ESC-01`, `ESC-02`).
-     - Alerta preventiva por inactividad $> 15$ días corridos (`HU-04-ESC-03`, `ESC-04`).
-     - Transición a `En gestión` al registrar acción en bitácora (`HU-04-ESC-05`).
-     - Transición a `Resuelta` al registrar hito de cumplimiento (`HU-04-ESC-06`).
-     - Transición a `No aplica` por causa clínica/administrativa documentada (`HU-04-ESC-07`).
+2. **Casos de Uso del Sistema (incorporados en `casos-de-uso.puml` y `09-casos-de-uso.md`):**
+   - `CU-10`: Aplicar evaluación multidimensional y estratificar riesgo (`Gestor/a UGCO`).
+   - `CU-11`: Registrar interacción en bitácora de acompañamiento (`Gestor/a UGCO`, `TENS UGCO`).
+   - `CU-12`: Generar ficha de presentación a comité (`Gestor/a UGCO`, `Médico tratante`).
+   - `CU-13`: Registrar acta de comité, firma y consolidar REM 7 (`Médico integrante del comité`).
+   - `CU-14`: Consultar estado en tótem de autoatención (`Paciente / Cuidador`).
+   - `CU-15`: Orientar derechos y clasificar triage presencial (`Paciente / Cuidador`, `Gestor/a UGCO`).
+   - `CU-16`: Monitorear sincronización con plataforma MINSAL (`Gestor/a UGCO`, `Sistema MINSAL`).
 
-### B. Estados de Objetos (incorporados en `diagramas/estados-objetos.puml` y `Documentos/11-diagramas-estado.md`)
-
-3. **`EST-03 · Ciclo de vida de CasoOncologico (Etapas asistenciales)`**:
-   - **Clase del dominio:** `CasoOncologico`.
-   - **Historia:** HU-01.
-   - **Estados:** `Sospecha`, `Confirmación diagnóstica`, `Etapificación`, `Tratamiento`, `Rehabilitación`, `Cuidados paliativos y alivio del dolor`, `Seguimiento y sobrevivientes`, `Alta y contrarreferencia`.
-   - **Reglas clave:** Formaliza que el comité es un hito de `Etapificación` y que el cambio a `Tratamiento` requiere el hito de inicio de terapia.
-
-4. **`EST-04 · Ciclo de vida de EstudioDiagnostico (Recepción y validación)`**:
-   - **Clase del dominio:** `EstudioDiagnostico`.
-   - **Historia:** HU-05.
-   - **Estados:** `Solicitado`, `Pendiente de validación`, `Observado por identificación`, `Incorporado`, `Incorporado con hallazgo crítico`.
-   - **Reglas clave:** Modela las condiciones de `estadoValidacion` y `estadoRecepcion`, aislando discrepancias de RUN para auditoría (`HU-05-ESC-03`) y emitiendo avisos prioritarios ante malignidad (`HU-05-ESC-02`).
+3. **Clases del Modelo de Dominio (incorporadas en `modelo-dominio.puml` y `08-modelo-dominio.md`):**
+   - `EvaluacionMultidimensional`, `DominioValoracion`, `EntradaBitacora`, `FichaPresentacionComite`, `ActaComite`, `FirmaElectronica`, `RegistroREM7`, `InteraccionCanalUsuario`, `TicketTriagePresencial`, `RegistroIntercambioMINSAL`.
+   - Se formalizó la vista conceptual `MD-01.D` con sus multiplicidades y asociaciones exactas.
 
 ---
 
-## 3. Actualización de la Matriz de Trazabilidad (`Documentos/12-trazabilidad.md`)
+### Puntos 2, 3 y 4: Diagramas DSS y EST Incorporados
 
-Con la incorporación de los nuevos diagramas, la cobertura de los cuatro requisitos funcionales centrales de la Entrega 2 queda completa al 100%:
-
-| Requisito | Historia | Caso de uso | Secuencia | Estado | Clases del dominio cubiertas |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **RF-01** (Tablero y etapas) | **HU-01** | CU-05 | **DSS-03** | **EST-03** | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
-| **RF-04** (Alertas GES e inactividad) | **HU-04** | CU-06 | **DSS-04** | **EST-01** | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
-| **RF-05** (Exámenes y alertas) | **HU-05** | CU-01, CU-02 | **DSS-01** | **EST-04** | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
-| **RF-08** (Derivaciones y reembolso) | **HU-08** | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | **DSS-02** | **EST-01, EST-02** | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
+- **`DSS-03` (HU-01 / CU-05):** Interacción entre Gestora, OncoTrace y Médico Tratante, detallando la consulta cronológica y las ramas `alt` de inicio de tratamiento y registro de resolución de comité en `Etapificación`.
+- **`EST-03` (HU-01 / `CasoOncologico`):** Modela formalmente las 8 etapas de la trayectoria oncológica, estableciendo que el Comité no es una etapa sino un hito de `Etapificación`, y condicionando el paso a `Tratamiento` al registro del hito de inicio terapéutico.
+- **`EST-04` (HU-05 / `EstudioDiagnostico`):** Modela los estados de validación y recepción (`Solicitado`, `Pendiente de validación`, `Observado por identificación`, `Incorporado`, `Incorporado con hallazgo crítico`).
+- **`DSS-04` (HU-04 / CU-06):** Interacción entre el Evaluador de Reglas de OncoTrace, la Gestora UGCO y la Unidad GES, modelando el disparo de alertas por vencimiento ($\le 5$ días hábiles) e inactividad ($> 15$ días corridos) y sus transiciones a `En gestión`, `Resuelta` o `No aplica`.
 
 ---
 
-## 4. Estado de las Observaciones de Contexto
+### Puntos 5 y 6: Contexto, Renderizado AS-IS y Matriz de Trazabilidad
 
-* **Punto 5 (Imagen del AS-IS):** El proceso actual está rigurosamente modelado en notación estándar BPMN 2.0 en `diagramas/as-is.bpmn` (10 carriles que representan las unidades del HGF). Constituye la fuente canónica e integrable del negocio.
-* **Punto 6 (Fuentes de trazabilidad):** Queda formalmente ratificado que `Documentos/12-trazabilidad.md` es la única matriz vigente para la Entrega 2, mientras que `07-matriz-trazabilidad.md` se conserva como histórico de la Entrega 1.
+- **Punto 5:** En `Documentos/01-proceso-as-is.md` se incorporó un diagrama nativo Mermaid que renderiza en cualquier visor markdown el flujo completo entre los 10 carriles institucionales del HGF, ubicando explícitamente los cuellos de botella AS-01 a AS-06, complementado con la tabla descriptiva de carriles y enlaces a `as-is.bpmn`.
+- **Punto 6:** En `Documentos/07-matriz-trazabilidad.md` se añadió un aviso de vigencia que clarifica que dicho documento es la línea base histórica de la Entrega 1, ratificando a `Documentos/12-trazabilidad.md` como la matriz canónica, vinculante y exhaustiva para la Entrega 2 y para el asistente OpenCode.
+
+---
+
+## 3. Respuestas a las Dudas de Decisión
+
+1. **Alcance de generación:** Con la especificación completa de los 11 requisitos e historias en todos sus artefactos (Gherkin, Casos de Uso, Clases del Dominio, DSS y EST), el equipo cuenta con la flexibilidad de comenzar generando las 4 historias nucleares de la Entrega 2 (**HU-01, HU-04, HU-05, HU-08**) o incorporar de forma inmediata cualquiera de las otras 7 sin impedimentos técnicos ni bloqueos metodológicos.
+2. **Nomenclatura TO-BE:** Ratificada como `TB-xx` en todo el repositorio.
+3. **Fuente de verdad:** Ratificada en `Documentos/` y `diagramas/`. `_backup/` se mantiene únicamente como archivo histórico.
+4. **Flujos y estados:** No se trabaja bajo supuestos; todos los flujos e interacciones están formalmente modelados en los artefactos correspondientes.
