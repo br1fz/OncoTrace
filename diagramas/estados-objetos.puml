@@ -90,3 +90,104 @@ legend top
   y la resolución firmada de derivación disponibles.
 endlegend
 @enduml
+
+
+@startuml EST-03-CasoOncologico
+!pragma layout smetana
+hide empty description
+skinparam shadowing false
+skinparam dpi 144
+skinparam backgroundColor #F7F9FC
+skinparam defaultFontName SansSerif
+skinparam titleFontSize 18
+skinparam titleFontColor #172A40
+skinparam stateFontSize 16
+skinparam stateArrowFontSize 13
+skinparam legendBackgroundColor #EDF3FA
+skinparam legendBorderColor #B7C9DD
+skinparam legendFontColor #172A40
+skinparam state {
+  BackgroundColor #EAF1F8
+  BorderColor #526B87
+  FontColor #172A40
+  ArrowColor #425B78
+  StartColor #526B87
+  EndColor #526B87
+}
+
+title EST-03 · Ciclo de vida de CasoOncologico (Etapas asistenciales)
+
+state "Sospecha" as S
+state "Confirmación diagnóstica" as CD
+state "Etapificación" as E
+state "Tratamiento" as T
+state "Rehabilitación" as R
+state "Cuidados paliativos y alivio del dolor" as CP
+state "Seguimiento y sobrevivientes" as SS
+state "Alta y contrarreferencia" as AC #E7F4EC
+
+[*] -down-> S : / Ingreso del caso por sospecha\n  o hallazgo clínico
+S -down-> CD : Confirmación diagnóstica\n[diagnóstico histopatológico o clínico]\n/ Emisión IPD si aplica
+CD -down-> E : Indicación de etapificación\n/ Solicitud de estudios diagnósticos
+E --> E : Resolución firmada de comité\n[sin evento clínico de inicio]\n/ Registrar hito en etapificación
+E -down-> T : Inicio del tratamiento registrado\n[resolución de comité registrada]\n/ Registrar hito y cambio de etapa
+T -down-> R : Finalización de terapia activa\n/ Derivación a rehabilitación
+T -right-> CP : Indicación médica de soporte\n/ Ingreso a cuidados paliativos
+R -down-> SS : Controles periódicos\n/ Vigilancia activa de sobreviviente
+CP -down-> AC : Cierre asistencial documentado\n/ Registro de egreso del caso
+SS -down-> AC : Cumplimiento de vigilancia o remisión\n/ Contrarreferencia formal a APS
+AC -down-> [*]
+
+legend top
+  **Trayectoria oncológica de 8 etapas (HU-01).**
+  La resolución de comité se incorpora como hito de Etapificación (HU-01-ESC-03)
+  y el cambio a Tratamiento requiere registrar el inicio efectivo (HU-01-ESC-02).
+endlegend
+@enduml
+
+@startuml EST-04-EstudioDiagnostico
+!pragma layout smetana
+hide empty description
+skinparam shadowing false
+skinparam dpi 144
+skinparam backgroundColor #F7F9FC
+skinparam defaultFontName SansSerif
+skinparam titleFontSize 18
+skinparam titleFontColor #172A40
+skinparam stateFontSize 16
+skinparam stateArrowFontSize 13
+skinparam legendBackgroundColor #EDF3FA
+skinparam legendBorderColor #B7C9DD
+skinparam legendFontColor #172A40
+skinparam state {
+  BackgroundColor #EAF1F8
+  BorderColor #526B87
+  FontColor #172A40
+  ArrowColor #425B78
+  StartColor #526B87
+  EndColor #526B87
+}
+
+title EST-04 · Ciclo de vida de EstudioDiagnostico (Recepción y validación)
+
+state "Solicitado" as S
+state "Pendiente de validación" as PV
+state "Observado por identificación" as OI #FFF2F2
+state "Incorporado" as I #E7F4EC
+state "Incorporado con hallazgo crítico" as IHC #FDE8E8
+
+[*] -down-> S : / Emisión de OrdenExamen\n  vinculada al caso
+S -down-> PV : Informe preliminar disponible en LIS/PACS\n/ Mantener recepción pendiente
+PV -down-> OI : Discrepancia de RUN detectada\n[RUN no identifica inequívocamente]\n/ Registrar excepción y mantener orden pendiente
+OI -right-> I : Subsanación de RUN y validación confirmada\n/ Incorporar copia PDF
+PV -down-> I : Informe validado y RUN asociado\n[sin hallazgo crítico]\n/ Incorporar copia PDF y actualizar completitud
+PV -right-> IHC : Informe validado y RUN asociado\n[con hallazgo de malignidad o valor crítico]\n/ Incorporar copia PDF y notificar de inmediato\n  a médico tratante y gestora
+I -down-> [*]
+IHC -down-> [*]
+
+legend top
+  **Validación y recepción de exámenes (HU-05).**
+  Los informes no incorporados o con discrepancia mantienen pendiente
+  el examen en la completitud diagnóstica del caso (HU-05-ESC-01 y ESC-03).
+endlegend
+@enduml

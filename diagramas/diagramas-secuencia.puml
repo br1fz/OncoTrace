@@ -156,3 +156,110 @@ La confirmación de recepción puede llegar después de emitida la alerta.
 end note
 @enduml
 
+
+
+@startuml DSS-03-HU-01
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam backgroundColor #F7F9FC
+skinparam defaultFontName SansSerif
+skinparam sequence {
+  ArrowColor #425B78
+  LifeLineBorderColor #8295AA
+  LifeLineBackgroundColor #F0F4F8
+  ParticipantBorderColor #526B87
+  ParticipantBackgroundColor #E8EFF7
+  ParticipantFontColor #172A40
+  ActorBorderColor #526B87
+  ActorBackgroundColor #E8EFF7
+  ActorFontColor #172A40
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #F8FAFC
+  GroupBorderColor #7C91A8
+  GroupBackgroundColor #F1F5F9
+  GroupHeaderFontColor #172A40
+  ResponseMessageBelowArrow true
+}
+title DSS-03 · Dar seguimiento al caso oncológico — HU-01
+actor "Gestor/a UGCO" as Gestor
+participant "OncoTrace" as OT
+actor "Médico tratante" as Medico
+
+note over Gestor,OT
+La gestora cuenta con autorización para consultar el caso (RNF-03 y REQ-DER-01).
+Las operaciones se auditan y conservan usuario, fecha y rol del responsable.
+end note
+
+Gestor -> OT: Consultar seguimiento y línea de tiempo del caso
+OT --> Gestor: Entregar RUN y nombre del paciente, especialidad, diagnóstico CIE-10,\netapa actual, último hito, alertas activas y línea de tiempo cronológica con días transcurridos
+
+alt Profesional autorizado registra inicio de tratamiento con resolución previa (HU-01-ESC-02)
+  Gestor -> OT: Registrar inicio del tratamiento con antecedentes de respaldo
+  OT --> Gestor: Actualizar etapa a Tratamiento, registrar hito con fecha/hora/usuario/rol\ny reflejar ubicación del paciente en el tablero Kanban
+else Se registra resolución firmada del comité sin inicio efectivo de tratamiento (HU-01-ESC-03)
+  Medico -> OT: Registrar resolución firmada del comité oncológico
+  OT --> Medico: Incorporar resolución como hito en línea de tiempo; mantener caso en Etapificación
+  note right of OT
+  La resolución de comité es un hito de etapificación;
+  no se crea una etapa independiente denominada Comité.
+  end note
+end
+@enduml
+
+@startuml DSS-04-HU-04
+hide footbox
+autonumber
+skinparam shadowing false
+skinparam backgroundColor #F7F9FC
+skinparam defaultFontName SansSerif
+skinparam sequence {
+  ArrowColor #425B78
+  LifeLineBorderColor #8295AA
+  LifeLineBackgroundColor #F0F4F8
+  ParticipantBorderColor #526B87
+  ParticipantBackgroundColor #E8EFF7
+  ParticipantFontColor #172A40
+  ActorBorderColor #526B87
+  ActorBackgroundColor #E8EFF7
+  ActorFontColor #172A40
+  BoxBorderColor #CBD5E1
+  BoxBackgroundColor #F8FAFC
+  GroupBorderColor #7C91A8
+  GroupBackgroundColor #F1F5F9
+  GroupHeaderFontColor #172A40
+  ResponseMessageBelowArrow true
+}
+title DSS-04 · Detección y gestión de alertas preventivas GES e inactividad — HU-04
+actor "Gestor/a UGCO" as Gestor
+participant "OncoTrace" as OT
+actor "Unidad GES" as GES
+
+note over OT
+Evaluación automática periódica según calendario nacional de días hábiles (GES)
+y días corridos (inactividad). No genera alertas redundantes activas.
+end note
+
+alt Garantía GES pendiente a <= 5 días hábiles del vencimiento sin alerta activa (HU-04-ESC-01, ESC-02)
+  OT -> OT: Generar alerta preventiva (prioridad Alta, estado Pendiente)
+  OT -> Gestor: Notificar alerta GES con caso, tipo de garantía y días restantes
+  OT -> GES: Notificar alerta para monitoreo institucional de garantías
+else Inactividad asistencial superior a 15 días corridos (HU-04-ESC-03, ESC-04)
+  OT -> OT: Generar alerta por Riesgo de Inactividad/Abandono (estado Pendiente)
+  OT -> Gestor: Notificar alerta de inactividad con caso y período transcurrido
+end
+
+Gestor -> OT: Consultar alertas pendientes y acceder al caso
+OT --> Gestor: Mostrar alertas activas, prioridad, días restantes y opciones de gestión
+
+alt Gestora registra acción en bitácora sin que se cumpla la garantía (HU-04-ESC-05)
+  Gestor -> OT: Registrar acción de gestión en bitácora de acompañamiento
+  OT --> Gestor: Actualizar alerta a estado En gestión; mantener disponible para seguimiento
+else Se registra hito que acredita cumplimiento de la garantía GES (HU-04-ESC-06)
+  Gestor -> OT: Registrar hito de cumplimiento de la garantía
+  OT --> Gestor: Vincular hito a la alerta, cambiar estado a Resuelta y cerrar alerta
+else Se documenta causa que deja sin efecto la garantía GES (HU-04-ESC-07)
+  Gestor -> OT: Documentar causa justificada de cierre con responsable
+  OT --> Gestor: Cambiar estado a No aplica y registrar cierre definitivo
+end
+@enduml

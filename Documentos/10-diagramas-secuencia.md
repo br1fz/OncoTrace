@@ -1,6 +1,6 @@
 # Diagramas de secuencia del sistema
 
-Este documento describe las interacciones de los actores con OncoTrace para las historias HU-05 y HU-08. Los diagramas representan el sistema como una caja negra y muestran los mensajes y resultados que observan sus participantes.
+Este documento describe las interacciones de los actores con OncoTrace para las historias de la Entrega 2 (**HU-01**, **HU-04**, **HU-05** y **HU-08**). Los diagramas representan el sistema como una caja negra y muestran los mensajes y resultados que observan sus participantes.
 
 **Referencias:** [Criterios de aceptación](./07-criterios-aceptacion.md) · [Modelo de dominio](./08-modelo-dominio.md) · [Casos de uso](./09-casos-de-uso.md) · [Historias de usuario](./04-historias-usuario.md).
 
@@ -46,9 +46,49 @@ TENS solicita la confección del dossier. En el flujo representado, la gestora r
 
 ---
 
+## DSS-03 — Dar seguimiento al caso oncológico
+
+- **Caso de uso:** [CU-05](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
+- **Historia:** [HU-01](./04-historias-usuario.md#hu-01).
+- **Actores participantes:** Gestor/a UGCO y médico tratante.
+
+**Archivo fuente:** [diagramas-secuencia.puml](../diagramas/diagramas-secuencia.puml) (`@startuml DSS-03-HU-01`).
+
+La gestora consulta el seguimiento y la línea de tiempo de un paciente. OncoTrace retorna los datos demográficos (RUN, nombre), especialidad oncológica asignada, diagnóstico o sospecha CIE-10, etapa actual de la trayectoria asistencial (dentro de las 8 normadas), último hito registrado, alertas activas y el historial cronológico de hitos con indicación de días transcurridos entre ellos ([HU-01-ESC-01](./07-criterios-aceptacion.md#hu-01-esc-01-consulta-del-seguimiento-de-un-caso)).
+
+### Variantes representadas
+
+- **`alt` — Registro de inicio de tratamiento.** Cuando un profesional autorizado registra el inicio efectivo de la terapia (quirúrgica, quimioterapia o derivación) respaldada por una resolución de comité previa, el caso transiciona a la etapa de **Tratamiento**, se conserva el hito en la línea de tiempo con fecha, hora, usuario y rol responsable, y se actualiza el tablero Kanban ([HU-01-ESC-02](./07-criterios-aceptacion.md#hu-01-esc-02-cambio-de-etapa-por-inicio-del-tratamiento)).
+- **`else` — Resolución de comité sin inicio de tratamiento.** Si se registra la resolución firmada del comité pero aún no se confirma el inicio efectivo de la terapia, la resolución se incorpora como hito asistencial de la etapa de **Etapificación**; el caso permanece en dicha etapa y no se crea una etapa independiente denominada "Comité" ([HU-01-ESC-03](./07-criterios-aceptacion.md#hu-01-esc-03-resolucion-de-comite-sin-inicio-del-tratamiento)).
+
+---
+
+## DSS-04 — Detección y gestión de alertas preventivas GES e inactividad
+
+- **Caso de uso:** [CU-06](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
+- **Historia:** [HU-04](./04-historias-usuario.md#hu-04).
+- **Actores y unidades participantes:** Gestor/a UGCO y Unidad GES institucional.
+
+**Archivo fuente:** [diagramas-secuencia.puml](../diagramas/diagramas-secuencia.puml) (`@startuml DSS-04-HU-04`).
+
+OncoTrace ejecuta una evaluación automática periódica calculando días hábiles (según calendario nacional y feriados para garantías GES) y días corridos (para inactividad del caso). No genera alertas duplicadas activas para una misma condición.
+
+### Variantes representadas
+
+- **`alt` — Proximidad de vencimiento GES.** Si faltan $\le 5$ días hábiles para el vencimiento de una garantía GES y no existe una alerta activa para ella, se genera una alerta preventiva de prioridad Alta en estado **Pendiente**, notificando a la gestora y a la Unidad GES ([HU-04-ESC-01](./07-criterios-aceptacion.md#hu-04-esc-01-garantia-pendiente-a-cinco-dias-habiles-del-vencimiento)). Si faltan 6 o más días hábiles, no se genera alerta ([HU-04-ESC-02](./07-criterios-aceptacion.md#hu-04-esc-02-garantia-fuera-del-umbral-preventivo)).
+- **`else` — Riesgo de Inactividad/Abandono.** Si transcurren más de 15 días corridos (16 o más) sin registros asistenciales, atenciones ni exámenes, se genera una alerta por inactividad ([HU-04-ESC-03](./07-criterios-aceptacion.md#hu-04-esc-03-inactividad-superior-a-quince-dias-corridos)). Con 15 días exactos o menos, no se genera alerta ([HU-04-ESC-04](./07-criterios-aceptacion.md#hu-04-esc-04-inactividad-que-aun-no-supera-el-umbral)).
+- **Gestión y resolución:**
+  - Si la gestora registra una acción en la bitácora sin cumplir la garantía, la alerta pasa a **En gestión** ([HU-04-ESC-05](./07-criterios-aceptacion.md#hu-04-esc-05-gestion-registrada-sin-cumplimiento-de-la-garantia)).
+  - Si se registra el hito que acredita el cumplimiento de la garantía, la alerta pasa a **Resuelta** y se cierra ([HU-04-ESC-06](./07-criterios-aceptacion.md#hu-04-esc-06-resolucion-por-cumplimiento-de-la-garantia)).
+  - Si se documenta una causa clínica o administrativa justificada que deja sin efecto la garantía, pasa a **No aplica** ([HU-04-ESC-07](./07-criterios-aceptacion.md#hu-04-esc-07-cierre-por-causa-documentada)).
+
+---
+
 ## Correspondencia con la Entrega 2
 
 | Diagrama | Escenarios de aceptación | Casos de uso | Participantes externos a OncoTrace | Conceptos del modelo de dominio |
 | :--- | :--- | :--- | :--- | :--- |
 | **DSS-01** | HU-05-ESC-01 a HU-05-ESC-04 | CU-01 y CU-02 | Gestor/a UGCO, médico tratante, LIS y PACS | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
 | **DSS-02** | HU-08-ESC-01 a HU-08-ESC-06 | CU-03, CU-04, CU-06, CU-07, CU-08 y CU-09 | TENS UGCO, funcionario/a UGAA, gestor/a UGCO y Sistema HCVB | `CasoOncologico`, `DossierDigitalDerivacion`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
+| **DSS-03** | HU-01-ESC-01 a HU-01-ESC-03 | CU-05 | Gestor/a UGCO y médico tratante | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
+| **DSS-04** | HU-04-ESC-01 a HU-04-ESC-07 | CU-06 | Gestor/a UGCO y Unidad GES | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
