@@ -1,14 +1,18 @@
-' EST-01: ciclo de vida de alertas de seguimiento.
-' Transiciones en notación UML: evento [guarda] / acción.
+' Los rótulos breves se desarrollan en las tablas del documento 11.
 @startuml EST-01-AlertaSeguimiento
 !pragma layout smetana
-top to bottom direction
 hide empty description
 skinparam shadowing false
+skinparam dpi 144
 skinparam backgroundColor #F7F9FC
 skinparam defaultFontName SansSerif
+skinparam titleFontSize 18
+skinparam titleFontColor #172A40
 skinparam stateFontSize 16
 skinparam stateArrowFontSize 13
+skinparam legendBackgroundColor #EDF3FA
+skinparam legendBorderColor #B7C9DD
+skinparam legendFontColor #172A40
 skinparam state {
   BackgroundColor #EAF1F8
   BorderColor #526B87
@@ -17,34 +21,43 @@ skinparam state {
   StartColor #526B87
   EndColor #526B87
 }
+
 title EST-01 · Ciclo de vida de una alerta de seguimiento
 
-[*] --> Pendiente : Se alcanza el umbral del tipo de alerta\n[no existe una alerta activa equivalente]\n/ vincular al caso y a su origen
-state "Pendiente" as Pendiente
-state "En gestión" as EnGestion
-state "Resuelta" as Resuelta
-state "No aplica" as NoAplica
+state "Pendiente" as P
+state "En gestión" as G
+state "Resuelta" as R #E7F4EC
+state "No aplica" as N #F0F2F5
 
-Pendiente --> EnGestion : Registro de una acción de gestión\n[alerta GES y gestora autorizada]\n/ conservar la acción en la bitácora
-Pendiente --> Resuelta : Registro de hito de cumplimiento\n[cumplimiento de la garantía GES]\n/ vincular el hito
-EnGestion --> Resuelta : Registro de hito de cumplimiento\n[cumplimiento de la garantía GES]\n/ vincular el hito y cerrar la alerta
-Pendiente --> NoAplica : Registro de causa documentada\n[la causa deja sin efecto la garantía GES]\n/ conservar motivo, fecha y responsable
-EnGestion --> NoAplica : Registro de causa documentada\n[la causa deja sin efecto la garantía GES]\n/ conservar motivo, fecha y responsable
-Resuelta --> [*]
-NoAplica --> [*]
+[*] -down-> P : / Vincular al caso y a su origen
+P -down-> G : Gestión registrada\n[GES, gestora autorizada]\n/ Guardar en bitácora
+P -down-> R : Hito registrado\n[GES cumplida] / Vincular hito
+P -down-> N : Causa documentada\n[GES sin efecto] / Registrar cierre
+G -left-> R : Hito registrado\n[GES cumplida] / Vincular hito y cerrar
+G -right-> N : Causa documentada\n[GES sin efecto] / Registrar cierre
+R -down-> [*]
+N -down-> [*]
+
+legend top
+  **Creación.** Se alcanza el umbral aplicable.
+  En HU-04 se requiere que no haya una alerta equivalente activa.
+endlegend
 @enduml
 
-' EST-02: estados de seguimiento del dossier de derivación.
-' Los eventos usan los mismos nombres que los mensajes de DSS-02.
 @startuml EST-02-DossierDigitalDerivacion
 !pragma layout smetana
-top to bottom direction
 hide empty description
 skinparam shadowing false
+skinparam dpi 144
 skinparam backgroundColor #F7F9FC
 skinparam defaultFontName SansSerif
+skinparam titleFontSize 18
+skinparam titleFontColor #172A40
 skinparam stateFontSize 16
 skinparam stateArrowFontSize 13
+skinparam legendBackgroundColor #EDF3FA
+skinparam legendBorderColor #B7C9DD
+skinparam legendFontColor #172A40
 skinparam state {
   BackgroundColor #EAF1F8
   BorderColor #526B87
@@ -53,21 +66,27 @@ skinparam state {
   StartColor #526B87
   EndColor #526B87
 }
+
 title EST-02 · Seguimiento de una derivación externa
 
-[*] --> Confeccionado : Solicitar confección del dossier para el caso\n[antecedentes requeridos y resolución firmada disponibles]\n/ reunir los antecedentes
-state "Dossier Confeccionado" as Confeccionado
-state "Despachado por UGAA" as Despachado
-state "Recepcionado en HCVB" as Recepcionado
-state "Cita Asignada" as Cita
-state "Tratamiento Iniciado" as Tratamiento
-state "Contrarreferido con Epicrisis" as Contrarreferido
+state "Dossier Confeccionado" as C
+state "Despachado por UGAA" as D
+state "Recepcionado en HCVB" as R
+state "Cita Asignada" as A
+state "Tratamiento Iniciado" as T
+state "Contrarreferido con Epicrisis" as E #E7F4EC
 
-Confeccionado --> Despachado : Formalizar despacho con fecha y folio UGAA\n[dossier validado; instructivo entregado]\n/ registrar el despacho y la constancia de entrega
-Despachado --> Recepcionado : Confirmar recepción y fecha\n[confirmación emitida por HCVB]\n/ conservar la confirmación y la fecha
-Despachado --> Despachado : Al cumplirse 11 días hábiles desde el despacho\n[sin confirmación de recepción ni fecha de atención]\n/ notificar alerta preventiva; mantener estado
-Recepcionado --> Cita : Informar la fecha de atención confirmada\n[fecha confirmada por el centro receptor]\n/ vincular la fecha a la derivación
-Cita --> Tratamiento : Registrar el inicio confirmado del tratamiento\n[inicio efectivo acreditado]\n/ registrar el hito de inicio
-Tratamiento --> Contrarreferido : Registrar el retorno al HGF\n[epicrisis y contrarreferencia disponibles]\n/ vincular documentos, registrar hito y notificar
-Contrarreferido --> [*]
+[*] -down-> C : / Reunir antecedentes y dejar\n  disponible para validación
+C -down-> D : Formalizar despacho\n[dossier validado, constancia de entrega,\nfecha y folio informados]\n/ Registrar despacho y asociar constancia
+D -down-> R : Confirmar recepción\n[acuse de HCVB]\n/ Guardar recepción
+D --> D : Al cumplirse 11 días hábiles\n[sin recepción ni fecha de atención]\n/ Generar y notificar alerta
+R -right-> A : Fecha confirmada\n[por HCVB]\n/ Vincular fecha
+A -up-> T : Registrar inicio de tratamiento\n[inicio acreditado]\n/ Registrar hito
+T -up-> E : Registrar retorno al HGF\n[atención finalizada, epicrisis\n y contrarreferencia disponibles]\n/ Vincular documentos, registrar\n  hito y notificar a la gestora
+E -up-> [*]
+
+legend top
+  **Creación.** TENS solicita el dossier con los antecedentes
+  y la resolución firmada de derivación disponibles.
+endlegend
 @enduml
