@@ -233,3 +233,4 @@ if (process.argv[1] && process.argv[1].endsWith('seed.ts')) {
     process.exit(1);
   }
 }
+

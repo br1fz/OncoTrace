@@ -148,3 +148,4 @@ export function evaluarTransicionHito(
     esInicioTratamiento: false
   };
 }
+

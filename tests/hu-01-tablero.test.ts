@@ -259,3 +259,4 @@ describe('HU-01 — Tablero de trazabilidad y línea de tiempo clínica por etap
     });
   });
 });
+

@@ -10,3 +10,4 @@ app.listen(PORT, () => {
   console.log(`🚀 OncoTrace activo en http://localhost:${PORT}`);
   console.log(`📋 Entorno: ${process.env.NODE_ENV || 'desarrollo'} | Base de datos: SQLite`);
 });
+

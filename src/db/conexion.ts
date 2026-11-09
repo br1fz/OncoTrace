@@ -75,3 +75,4 @@ export function aplicarMigraciones(db: DatabaseType): void {
     }
   }
 }
+

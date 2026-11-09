@@ -37,7 +37,7 @@
 ## Historias
 | Historia | Estado | Cambio de OpenSpec | Fecha | Observaciones |
 |----------|--------|--------------------|-------|----------------|
-| HU-01 | implementada — lista para validar | hu-01-tablero-trazabilidad | 2026-11-09 | Must. 11/11 pruebas pasando. Ficha: `.cin324/historias/HU-01.md` |
+| HU-01 | hecha | hu-01-tablero-trazabilidad | 2026-11-09 | Must. 11/11 pruebas pasando. Archivado como `2026-11-09-hu-01-tablero-trazabilidad`. Ficha: `.cin324/historias/HU-01.md` |
 | HU-02 | pendiente | — | — | Must |
 | HU-03 | pendiente | — | — | Must |
 | HU-04 | pendiente | — | — | Must |

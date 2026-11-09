@@ -47,3 +47,4 @@ CREATE TABLE IF NOT EXISTS alerta_seguimiento (
   estado TEXT NOT NULL,
   fecha_generacion TEXT NOT NULL
 );
+

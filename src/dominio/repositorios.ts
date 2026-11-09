@@ -223,3 +223,4 @@ export class RepositorioOncologico {
     return Number(res.lastInsertRowid);
   }
 }
+

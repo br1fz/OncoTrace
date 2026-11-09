@@ -108,3 +108,4 @@ export function crearRutasSeguimiento(db: Database): Router {
 
   return router;
 }
+
