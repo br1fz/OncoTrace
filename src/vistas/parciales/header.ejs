@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= titulo %> — OncoTrace</title>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+    header { background: #0f172a; color: white; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: white; }
+    .brand-logo { background: var(--primary); color: white; font-weight: 800; padding: 0.35rem 0.65rem; border-radius: 6px; font-size: 1.1rem; }
+    .brand-title { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
+    .brand-subtitle { font-size: 0.75rem; color: #94a3b8; display: block; }
+    .header-actions { display: flex; align-items: center; gap: 1.25rem; }
+    .role-form { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; background: #1e293b; padding: 0.35rem 0.75rem; border-radius: 6px; }
+    .role-select { background: transparent; color: white; border: 1px solid #475569; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem; }
+    .role-badge { background: #334155; color: #38bdf8; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.8rem; }
+    .nav-link { color: #cbd5e1; text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .nav-link:hover { color: white; }
+    main { padding: 1.5rem; max-width: 1600px; margin: 0 auto; }
+    .alert-banner { padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+    .alert-banner.error { background: #fee2e2; border: 1px solid #f87171; color: #991b1b; }
+    .alert-banner.success { background: #dcfce7; border: 1px solid #4ade80; color: #166534; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="brand">
+      <div class="brand-logo">OT</div>
+      <div>
+        <span class="brand-title">OncoTrace</span>
+        <span class="brand-subtitle">Hospital Dr. Gustavo Fricke · UGCO</span>
+      </div>
+    </a>
+    <div class="header-actions">
+      <a href="/" class="nav-link">Tablero por Etapas</a>
+      <form action="/rol" method="POST" class="role-form">
+        <label for="rolSelect">Rol activo:</label>
+        <select name="rol" id="rolSelect" class="role-select" onchange="this.form.submit()">
+          <option value="gestora" <%= rolActual === 'Gestor/a UGCO' ? 'selected' : '' %>>Gestor/a UGCO</option>
+          <option value="medico" <%= rolActual === 'Médico tratante' ? 'selected' : '' %>>Médico tratante</option>
+        </select>
+        <span class="role-badge"><%= rolActual %></span>
+      </form>
+    </div>
+  </header>
+  <main>

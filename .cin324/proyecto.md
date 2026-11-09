@@ -26,12 +26,18 @@
 - 2026-11-09 — Consistencia resuelta para HU-09: se alineó el método de verificación de identidad (cédula + serie/factor de autenticación secundario; RUN o cédula solos no bastan), la verificación obligatoria de autorización vigente para cuidadores (`CuidadorAutorizado`), el timeout de 30 segundos (o botón Salir) y los 4 estados macro en `07-criterios-aceptacion.md`, `08-modelo-dominio.md`, `09-casos-de-uso.md` y `12-trazabilidad.md`.
 
 ## Stack (se define una sola vez)
-- Sin definir todavía (se elige al implementar la primera historia).
+- Lenguaje y framework: TypeScript estricto + Express + EJS
+- Base de datos: SQLite con `better-sqlite3` — archivo `data/app.db`; migraciones SQL numeradas en `src/db/migrations/` (tabla `schema_migrations`)
+- Pruebas: Vitest + supertest (una prueba por escenario Gherkin)
+- Cómo instalar: `npm install`
+- Cómo ejecutar: `npm run db:seed` y `npm run dev` — URL: `http://localhost:3000`
+- Cómo probar: `npm test`
+- Decisión confirmada por el estudiante: 2026-11-09 (Opción A)
 
 ## Historias
 | Historia | Estado | Cambio de OpenSpec | Fecha | Observaciones |
 |----------|--------|--------------------|-------|----------------|
-| HU-01 | pendiente | — | — | Must |
+| HU-01 | implementada — lista para validar | hu-01-tablero-trazabilidad | 2026-11-09 | Must. 11/11 pruebas pasando. Ficha: `.cin324/historias/HU-01.md` |
 | HU-02 | pendiente | — | — | Must |
 | HU-03 | pendiente | — | — | Must |
 | HU-04 | pendiente | — | — | Must |

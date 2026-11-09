@@ -1,0 +1,162 @@
+<%- include('parciales/header') %>
+
+<div style="margin-bottom: 1rem;">
+  <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>" style="color: #0284c7; text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+    &larr; Volver a la Ficha del Caso <%= caso.numeroCaso %>
+  </a>
+</div>
+
+<% if (typeof error !== 'undefined' && error) { %>
+  <div class="alert-banner error">
+    <span style="font-size: 1.1rem; font-weight: 700;">⚠️ Error de validación clínica:</span> <%= error %>
+  </div>
+<% } %>
+
+<div class="form-container">
+  <div class="form-header">
+    <h1 style="font-size: 1.4rem; font-weight: 800; color: #0f172a;">Registrar Nuevo Hito Asistencial</h1>
+    <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
+      Caso: <strong><%= caso.numeroCaso %></strong> · Paciente: <strong><%= caso.nombreCompleto %></strong> · Etapa actual: <span style="color: #0284c7; font-weight: 700;"><%= caso.etapaActual %></span>
+    </p>
+  </div>
+
+  <form action="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/hitos" method="POST" class="hito-form">
+    <div class="form-group">
+      <label for="tipoHito" class="form-label">Tipo de hito asistencial *</label>
+      <select name="tipo" id="tipoHito" class="form-control" required onchange="toggleConductaComite(this.value)">
+        <option value="">-- Seleccione el hito clínico a registrar --</option>
+        <option value="Resolución de comité oncológico">Resolución de comité oncológico (Conserva etapa en Etapificación)</option>
+        <option value="Inicio efectivo de tratamiento">Inicio efectivo de tratamiento (Requiere resolución previa; pasa a Tratamiento)</option>
+        <option value="Ingreso de sospecha desde APS">Ingreso de sospecha desde APS</option>
+        <option value="Confirmación histopatológica">Confirmación histopatológica</option>
+        <option value="Estudios de etapificación e imágenes completados">Estudios de etapificación e imágenes completados</option>
+        <option value="Contacto de seguimiento y navegación asistencial">Contacto de seguimiento y navegación asistencial</option>
+        <option value="Evaluación multidisciplinaria de soporte">Evaluación multidisciplinaria de soporte</option>
+      </select>
+      <span class="field-hint">EST-03: Solo el inicio de tratamiento respaldado por comité cambia la etapa a Tratamiento.</span>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="fechaOcurrencia" class="form-label">Fecha de ocurrencia del hito *</label>
+        <input type="date" name="fechaOcurrencia" id="fechaOcurrencia" class="form-control" value="<%= hoy %>" required>
+        <span class="field-hint">La fecha y hora de registro en el sistema se asignan automáticamente.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="rolResponsable" class="form-label">Rol del responsable *</label>
+        <select name="rolResponsable" id="rolResponsable" class="form-control" required>
+          <option value="Gestor/a UGCO" <%= rolActual === 'Gestor/a UGCO' ? 'selected' : '' %>>Gestor/a UGCO</option>
+          <option value="Médico tratante" <%= rolActual === 'Médico tratante' ? 'selected' : '' %>>Médico tratante</option>
+          <option value="Médico Comité">Médico Comité</option>
+          <option value="TENS UGCO">TENS UGCO</option>
+          <option value="Patólogo/a">Patólogo/a</option>
+          <option value="Radiólogo/a">Radiólogo/a</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="responsable" class="form-label">Nombre del profesional responsable *</label>
+      <input type="text" name="responsable" id="responsable" class="form-control" placeholder="Ej: Dra. Carmen Gloria Loyola / Enf. Patricia Soto" required value="<%= rolActual === 'Médico tratante' ? 'Dr. Fernando Bravo' : 'Enf. Patricia Soto' %>">
+    </div>
+
+    <div class="form-group" id="grupoConductaComite" style="display: none;">
+      <label for="conductaAcordada" class="form-label">Conducta terapéutica acordada en Comité Oncológico</label>
+      <textarea name="conductaAcordada" id="conductaAcordada" rows="3" class="form-control" placeholder="Consigne la resolución consensuada por los especialistas (ej: Quimioterapia neoadyuvante, Cirugía radical, etc.)"></textarea>
+      <span class="field-hint">Este texto se formaliza en el acta digital y habilita el posterior inicio de tratamiento.</span>
+    </div>
+
+    <div class="form-actions">
+      <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>" class="btn-cancel">Cancelar</a>
+      <button type="submit" class="btn-primary">Registrar e incorporar a la línea de tiempo</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function toggleConductaComite(valor) {
+    const grupo = document.getElementById('grupoConductaComite');
+    if (valor.toLowerCase().includes('comite') || valor.toLowerCase().includes('resolucion')) {
+      grupo.style.display = 'block';
+    } else {
+      grupo.style.display = 'none';
+    }
+  }
+</script>
+
+<style>
+  .form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+  }
+  .form-header {
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .hito-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .form-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+  .form-control {
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: #0f172a;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  }
+  .field-hint {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  .btn-cancel {
+    padding: 0.5rem 1rem;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+  }
+  .btn-cancel:hover {
+    color: #0f172a;
+  }
+</style>
+
+<%- include('parciales/footer') %>

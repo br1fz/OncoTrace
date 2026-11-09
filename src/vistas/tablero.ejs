@@ -1,0 +1,240 @@
+<%- include('parciales/header') %>
+
+<div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
+  <div>
+    <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172A; letter-spacing: -0.02em;">Tablero de Trazabilidad Oncológica</h1>
+    <p style="color: #64748b; font-size: 0.95rem;">Monitoreo activo de la trayectoria clínica estructurada en las 8 etapas normadas por la UGCO (Total: <%= tablero.totalCasos %> casos)</p>
+  </div>
+</div>
+
+<div class="kanban-board">
+  <% tablero.etapas.forEach((etapa, idx) => { %>
+    <div class="kanban-column">
+      <div class="column-header">
+        <span class="column-step"><%= idx + 1 %></span>
+        <h2 class="column-title"><%= etapa.nombre %></h2>
+        <span class="column-count"><%= etapa.casos.length %></span>
+      </div>
+
+      <div class="column-body">
+        <% if (etapa.casos.length === 0) { %>
+          <div class="empty-column-msg">Sin casos en esta etapa</div>
+        <% } else { %>
+          <% etapa.casos.forEach(caso => { %>
+            <div class="caso-card" onclick="window.location.href='/casos/<%= encodeURIComponent(caso.numeroCaso) %>'">
+              <div class="card-top">
+                <span class="caso-id"><%= caso.numeroCaso %></span>
+                <span class="riesgo-tag"><%= caso.marcadorRiesgo %></span>
+              </div>
+              <h3 class="paciente-nombre"><%= caso.nombreCompleto %></h3>
+              <p class="paciente-run">RUN: <%= caso.run %></p>
+              
+              <div class="card-details">
+                <p><strong>Especialidad:</strong> <%= caso.especialidad %></p>
+                <p><strong>CIE-10:</strong> <%= caso.codigoDiagnosticoOSospecha %></p>
+                <p><strong>Etapa actual:</strong> <span class="badge-etapa"><%= caso.etapaActual %></span></p>
+                <% if (caso.ultimoHito) { %>
+                  <p class="ultimo-hito">
+                    <strong>Último hito:</strong> <%= caso.ultimoHito.tipo %> 
+                    <span class="hito-fecha">(<%= caso.ultimoHito.fechaOcurrencia %>)</span>
+                  </p>
+                <% } else { %>
+                  <p class="ultimo-hito text-muted"><em>Sin hitos registrados</em></p>
+                <% } %>
+              </div>
+
+              <div class="card-footer">
+                <% if (caso.alertasPendientes > 0) { %>
+                  <span class="semaforo-alerta alerta-<%= caso.alertaMaximaPrioridad ? caso.alertaMaximaPrioridad.toLowerCase() : 'alta' %>">
+                    ⚠️ <%= caso.alertasPendientes %> <%= caso.alertasPendientes === 1 ? 'alerta' : 'alertas' %> (<%= caso.alertaMaximaPrioridad %>)
+                  </span>
+                <% } else { %>
+                  <span class="semaforo-alerta sin-alertas">
+                    ✓ Sin alertas pendientes
+                  </span>
+                <% } %>
+                <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>" class="btn-ver-caso">Ver ficha &rarr;</a>
+              </div>
+            </div>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+  <% }); %>
+</div>
+
+<style>
+  .kanban-board {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(280px, 1fr));
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1.5rem;
+  }
+  .kanban-column {
+    background: #f1f5f9;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;
+    border: 1px solid #cbd5e1;
+  }
+  .column-header {
+    background: #e2e8f0;
+    padding: 0.75rem 1rem;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid #cbd5e1;
+  }
+  .column-step {
+    background: #0284c7;
+    color: white;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .column-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+    flex: 1;
+    line-height: 1.2;
+  }
+  .column-count {
+    background: white;
+    padding: 0.15rem 0.45rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+  }
+  .column-body {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+  }
+  .empty-column-msg {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem 0.5rem;
+    background: rgba(255,255,255,0.4);
+    border-radius: 6px;
+    border: 1px dashed #cbd5e1;
+  }
+  .caso-card {
+    background: white;
+    border-radius: 6px;
+    padding: 0.85rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .caso-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    border-color: #93c5fd;
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+  }
+  .caso-id {
+    font-size: 0.75rem;
+    font-family: monospace;
+    font-weight: 700;
+    color: #0284c7;
+  }
+  .riesgo-tag {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .paciente-nombre {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.15rem;
+  }
+  .paciente-run {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  .card-details {
+    font-size: 0.78rem;
+    color: #334155;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .badge-etapa {
+    color: #0369a1;
+    font-weight: 600;
+  }
+  .ultimo-hito {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+  }
+  .hito-fecha {
+    color: #64748b;
+  }
+  .card-footer {
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+  }
+  .semaforo-alerta {
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.7rem;
+  }
+  .alerta-alta {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #f87171;
+  }
+  .alerta-media {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fcd34d;
+  }
+  .sin-alertas {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .btn-ver-caso {
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .btn-ver-caso:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<%- include('parciales/footer') %>

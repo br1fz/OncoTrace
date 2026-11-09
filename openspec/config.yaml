@@ -1,32 +1,33 @@
 schema: spec-driven
 
-# Project context (optional)
-# Add only constraints that should guide OpenSpec artifacts and workflows.
-# Include constraints an agent cannot infer by reading the code.
-# Keep general project documentation and discoverable codebase facts out.
-# Example:
-#   context: |
-#     Designs and tasks must cover Windows, macOS, and Linux
-#     Write all artifacts in Spanish
+context: |
+  Proyecto del curso CIN 324 (Ingeniería de Requisitos): aplicación web sencilla
+  generada historia por historia desde la documentación del repositorio OncoTrace
+  (UGCO del Hospital Dr. Gustavo Fricke).
+  Idioma: escribe todos los artefactos de OpenSpec y los textos de la interfaz en español.
+  Stack: TypeScript estricto + Express + EJS + better-sqlite3 + Vitest + supertest.
+  Base de datos: SQLite en data/app.db. Migraciones SQL numeradas en src/db/migrations,
+  registradas en la tabla schema_migrations.
+  Artefactos del curso (fuente de verdad, no modificar sin permiso del estudiante):
+  historias en Documentos/04-historias-usuario.md; Gherkin en Documentos/07-criterios-aceptacion.md;
+  requisitos en Documentos/03-requisitos.md; modelo de dominio en diagramas/modelo-dominio.puml
+  y Documentos/08-modelo-dominio.md; casos de uso en Documentos/09-casos-de-uso.md;
+  diagramas de secuencia en Documentos/10-diagramas-secuencia.md; diagramas de estado en
+  Documentos/11-diagramas-estado.md y diagramas/estados-objetos.puml.
+  Fichas confirmadas de cada historia en .cin324/historias/HU-xx.md: son el insumo de cada propuesta.
+  Alcance: una historia por cambio. No se implementan requisitos no funcionales ni autenticación
+  real (usar selector de rol de demostración). Los sistemas externos se simulan mediante adaptadores.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always state what is out of scope
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
-
-# Per-operation guidance (optional)
-# Add advisory guidance for how apply and archive work should be conducted.
-# This is separate from artifact rules above.
-# Example:
-#   operations:
-#     apply:
-#       guidance:
-#         - Keep test summaries concise
-#     archive:
-#       guidance:
-#         - Summarize the archive outcome before finishing
+rules:
+  proposal:
+    - "Citar la historia (HU-xx), la actividad del TO-BE y el caso de uso de origen."
+    - "Indicar explícitamente qué queda fuera del alcance."
+  specs:
+    - "Un requisito por cada regla del Gherkin y un escenario por cada escenario Gherkin, con el mismo vocabulario del dominio."
+    - "Los nombres de entidades, estados y mensajes deben coincidir con el modelo de dominio y los diagramas."
+  design:
+    - "Derivar tablas del modelo de dominio, transiciones del diagrama de estado y rutas del diagrama de secuencia."
+    - "Declarar qué integraciones externas se simulan y cómo."
+  tasks:
+    - "Tareas pequeñas y verificables, que incluyan datos de ejemplo, lógica, pantallas y una prueba por escenario Gherkin."
+    - "Como última tarea, actualizar el README con cómo instalar, ejecutar y probar."

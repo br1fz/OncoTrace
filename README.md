@@ -122,3 +122,54 @@ El detalle de las responsabilidades y contribuciones se encuentra en los documen
 ## Referencias normativas y de calidad
 
 El proyecto considera la Ley N° 20.584, la Ley Nacional del Cáncer N° 21.258, la normativa de garantías GES asociada al Decreto Supremo N° 29 y la norma ISO/IEC 25010:2023.
+
+---
+
+## Aplicación prototipo (HU-01 · Tablero de trazabilidad)
+
+Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se implementó el primer incremento del sistema para la historia **HU-01: Tablero de trazabilidad y línea de tiempo clínica**.
+
+### Stack tecnológico
+- **Lenguaje / Entorno:** Node.js (TypeScript estricto con `NodeNext`).
+- **Framework web:** Express.js + EJS (interfaz accesible, ligera y multi-dispositivo).
+- **Base de datos:** SQLite local (`better-sqlite3` con modo WAL y claves foráneas).
+- **Pruebas:** Vitest + Supertest (pruebas unitarias de dominio y pruebas de integración de rutas vinculadas a los escenarios Gherkin).
+
+### Requisitos previos
+- Node.js versión 20 o superior.
+- npm versión 9 o superior.
+
+### Puesta en marcha
+
+1. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
+
+2. **Inicializar y poblar la base de datos de demostración:**
+   ```bash
+   npm run db:seed
+   ```
+   *Crea automáticamente la base de datos SQLite en `data/app.db`, aplica migraciones y carga 4 casos ficticios en Sospecha, Confirmación diagnóstica, Etapificación (con resolución de comité) y Tratamiento.*
+
+3. **Ejecutar la suite de pruebas automatizadas:**
+   ```bash
+   npm test
+   ```
+   *Ejecuta 11 pruebas automatizadas que verifican los escenarios Gherkin de HU-01 (tablero por 8 etapas, consulta de línea de tiempo con días transcurridos, resolución de comité sin cambio de etapa, transición a tratamiento y rechazo por falta de resolución previa).*
+
+4. **Iniciar el servidor en modo desarrollo:**
+   ```bash
+   npm run dev
+   ```
+   *La aplicación quedará disponible en [http://localhost:3000](http://localhost:3000).*
+
+### Recorrido de prueba guiado (Demostración)
+1. **Tablero general (`/`):** Observa las 8 columnas de la trayectoria asistencial (`Sospecha` hasta `Alta y contrarreferencia`). Verás tarjetas de pacientes con su RUN anonimizado, especialidad oncológica, CIE-10, último hito y semáforo de plazos.
+2. **Selector de rol:** En la barra superior, cambia entre `Enfermera gestora UGCO`, `Médico tratante` y `Secretaria comités` para simular operaciones según perfil.
+3. **Ficha y línea de tiempo (`/casos/HGF-ONCO-2026-0003`):** Ingresa al caso en Etapificación. Verás sus antecedentes clínicos, la resolución del Comité Oncológico registrada y la línea de tiempo con los días transcurridos entre hitos consecutivos.
+4. **Registro de hito y transición (`/casos/HGF-ONCO-2026-0003/hitos/nuevo`):** 
+   - Registra el hito `Inicio de tratamiento`.
+   - La regla de negocio (guarda EST-03) validará que existe la resolución previa y cambiará atómicamente la etapa del caso a `Tratamiento`.
+   - Al volver al tablero, el paciente figurará automáticamente en la columna de Tratamiento.
+5. **Rechazo por regla clínica (`/casos/HGF-ONCO-2026-0002`):** Intenta registrar `Inicio de tratamiento` para un caso en Confirmación o Etapificación sin resolución previa; el sistema rechazará la transición cumpliendo con la regla de consistencia institucional.
