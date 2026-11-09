@@ -277,10 +277,22 @@ class EntradaBitacora {
   puntoContactoNormado: Texto
   fechaContacto: FechaHora
   canalContacto: Texto
+  interlocutor: Texto
+  motivoContacto: Texto
   resumenInteraccion: Texto
   acuerdosEstablecidos: Texto
   responsableRegistro: Texto
   estadoContacto: Texto
+  esAdenda: Booleano
+}
+
+class CuidadorAutorizado {
+  runCuidador: Texto
+  nombreCompleto: Texto
+  parentesco: Texto
+  telefonoContacto: Texto
+  autorizacionVigente: Booleano
+  fechaRegistroAutorizacion: Fecha
 }
 
 class FichaPresentacionComite {
@@ -319,8 +331,13 @@ class InteraccionCanalUsuario {
   identificadorSesion: Texto
   canal: Texto
   runUsuario: Texto
+  tipoUsuarioConsultante: Texto
+  runPacienteConsultado: Texto
+  autorizacionCuidadorVigente: Booleano
+  metodoVerificacion: Texto
   fechaHora: FechaHora
   tipoConsulta: Texto
+  tiempoExpiracionSegundos: Entero
 }
 
 class TicketTriagePresencial {
@@ -347,6 +364,8 @@ CasoOncologico "1" -- "0..*" FichaPresentacionComite : sustenta
 FichaPresentacionComite "1" -- "0..1" ActaComite : presenta a
 ActaComite "1" -- "1..*" FirmaElectronica : suscribe con
 ActaComite "0..*" -- "1" RegistroREM7 : tributa a
+Paciente "1" -- "0..1" CuidadorAutorizado : autoriza
+CuidadorAutorizado "0..1" -- "0..*" InteraccionCanalUsuario : realiza consulta en
 CasoOncologico "1" -- "0..*" InteraccionCanalUsuario : consulta en
 InteraccionCanalUsuario "0..1" -- "0..1" TicketTriagePresencial : emite
 CasoOncologico "1" -- "0..*" RegistroIntercambioMINSAL : reporta a

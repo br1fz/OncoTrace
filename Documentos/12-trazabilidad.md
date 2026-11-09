@@ -16,16 +16,16 @@ La matriz tiene una fila por cada requisito de la Entrega 1 ([03-requisitos.md](
 | Requisito (Entrega 1) | Historia | Caso(s) de uso | Secuencia | Estado | Clases del dominio |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **RF-01** · Tablero y trazabilidad por etapas | HU-01 | CU-05 | DSS-03 | EST-03 | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
-| **RF-02** · Evaluación multidimensional por dominios | HU-02 | CU-10 | Flujo guiado | Pauta basal | `EvaluacionMultidimensional`, `DominioValoracion`, `CasoOncologico` |
-| **RF-03** · Bitácora de puntos de contacto | HU-03 | CU-11 | Flujo asistencial | Puntos 1-6 | `EntradaBitacora`, `CasoOncologico`, `HitoAsistencial` |
+| **RF-02** · Evaluación multidimensional por dominios | HU-02 | CU-10 | — | — | `EvaluacionMultidimensional`, `DominioValoracion`, `CasoOncologico` |
+| **RF-03** · Bitácora de puntos de contacto | HU-03 | CU-11 | — | — | `EntradaBitacora`, `CasoOncologico`, `HitoAsistencial` |
 | **RF-04** · Alertas GES e inactividad | HU-04 | CU-06 | DSS-04 | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
 | **RF-05** · Consolidación de exámenes y alertas | HU-05 | CU-01, CU-02 | DSS-01 | EST-04 | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
-| **RF-06** · Ficha de presentación a comité | HU-06 | CU-12 | Autoconsolidación | Tabla comité | `FichaPresentacionComite`, `CasoOncologico`, `EstudioDiagnostico` |
-| **RF-07** · Acta digital y registro REM 7 | HU-07 | CU-13 | Sesión colegiada | Sellado legal | `ActaComite`, `FirmaElectronica`, `RegistroREM7`, `ResolucionComite` |
+| **RF-06** · Ficha de presentación a comité | HU-06 | CU-12 | — | — | `FichaPresentacionComite`, `CasoOncologico`, `EstudioDiagnostico` |
+| **RF-07** · Acta digital y registro REM 7 | HU-07 | CU-13 | — | — | `ActaComite`, `FirmaElectronica`, `RegistroREM7`, `ResolucionComite` |
 | **RF-08** · Derivaciones externas y reembolso de pasajes | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
-| **RF-09** · Tótem de autoatención | HU-09 | CU-14 | Consulta táctil | Sesión 60s | `InteraccionCanalUsuario`, `Paciente`, `CasoOncologico` |
-| **RF-10** · Asistente virtual y triage asistencial | HU-10 | CU-15 | Diálogo interactivo | Triage 1-3 | `InteraccionCanalUsuario`, `TicketTriagePresencial`, `Paciente` |
-| **RF-11** · Intercambio de información con MINSAL | HU-11 | CU-16 | Sincronización HL7 | Cola reintentos | `RegistroIntercambioMINSAL`, `CasoOncologico`, `HitoAsistencial` |
+| **RF-09** · Tótem de autoatención | HU-09 | CU-14 | — | — | `InteraccionCanalUsuario`, `Paciente`, `CuidadorAutorizado`, `CasoOncologico` |
+| **RF-10** · Asistente virtual y triage asistencial | HU-10 | CU-15 | — | — | `InteraccionCanalUsuario`, `TicketTriagePresencial`, `Paciente` |
+| **RF-11** · Intercambio de información con MINSAL | HU-11 | CU-16 | — | — | `RegistroIntercambioMINSAL`, `CasoOncologico`, `HitoAsistencial` |
 | **RNF-01** · Fiabilidad y disponibilidad | HU-04, HU-05, HU-08 | CU-01 a CU-04, CU-06 a CU-09 | DSS-01, DSS-02, DSS-04 | EST-01, EST-02, EST-04 | `AlertaSeguimiento`, `EstudioDiagnostico`, `DossierDigitalDerivacion` |
 | **RNF-02** · Eficiencia de desempeño | HU-01 | CU-05 | DSS-03 | EST-03 | `CasoOncologico`, `HitoAsistencial` |
 | **RNF-03** · Seguridad y confidencialidad clínica | HU-07, HU-09, HU-11 (transversal a las historias de esta entrega) | Precondición de acceso de todos los actores humanos | Nota de autorización en DSS-01 a DSS-04 | — | Atributos de responsable en `HitoAsistencial`, `AlertaSeguimiento` e `InstructivoReembolsoPasajes` |

@@ -274,25 +274,31 @@ Característica: Evaluación multidimensional y estratificación de vulnerabilid
 Característica: Bitácora digital de acompañamiento y puntos de contacto
 
   Escenario: HU-03-ESC-01 Registro de punto de contacto normado según Journey Map
-    Dado un caso oncológico asignado a una gestora de la UGCO
-    Y que el paciente alcanza uno de los seis hitos obligatorios del Journey Map (P1: Ingreso, P2: Confirmación, P3: Comité, P4: Inicio Tratamiento, P5: Seguimiento Intermedio, P6: Fin Tratamiento o Paliativos)
-    Cuando la gestora o TENS registra la interacción asistencial con su fecha, canal, resumen y acuerdos
+    Dado un caso oncológico asignado a una gestora o TENS de la UGCO
+    Y que el paciente alcanza uno de los seis hitos obligatorios del Journey Map (P1: Ingreso/Sospecha inicial, P2: Post-confirmación diagnóstica con IPD, P3: Etapificación/Post-resolución de comité, P4: Al alta de hospitalización o cirugía, P5: Al finalizar tratamiento activo y retorno a vida cotidiana, P6: Ante toda derivación a otro establecimiento de la red)
+    Cuando la gestora o TENS registra la interacción con fecha, tipo de contacto, interlocutor (paciente o cuidador), motivo, resumen de interacción y acuerdos
     Entonces OncoTrace marca el punto de contacto correspondiente como cumplido
-    Y añade el evento a la bitácora cronológica del caso con identificación del funcionario responsable
-    Y actualiza el indicador de contactabilidad del paciente
+    Y añade el evento a la bitácora cronológica del caso con identificación del funcionario responsable en orden descendente
+    Y actualiza el indicador de contactabilidad del paciente sin permitir la eliminación física del registro
 
-  Escenario: HU-03-ESC-02 Alerta por punto de contacto obligatorio no realizado en plazo
-    Dado un caso oncológico que transitó a la etapa de tratamiento hace más de cinco días hábiles
-    Y que el punto de contacto P4 (Inicio Tratamiento) no ha sido registrado en la bitácora
+  Escenario: HU-03-ESC-02 Alerta preventiva por punto de contacto obligatorio pendiente
+    Dado un caso oncológico que alcanzó un hito asistencial normado hace más de 48 horas hábiles
+    Y que el punto de contacto obligatorio correspondiente no ha sido registrado en la bitácora
     Cuando el motor de monitoreo de OncoTrace evalúa la trayectoria del paciente
-    Entonces genera una alerta preventiva de inactividad de contacto dirigida a la gestora asignada
-    Y registra la advertencia en el tablero para evitar el desenganche asistencial
+    Entonces genera una alerta preventiva de contacto pendiente dirigida a la gestora asignada
+    Y destaca la advertencia en el tablero para evitar el desenganche y la deserción asistencial
 
-  Escenario: HU-03-ESC-03 Registro de intento fallido y protocolo de contactabilidad
-    Dado un paciente que no responde al contacto telefónico programado de la UGCO
-    Cuando el funcionario registra el resultado No contactable en la bitácora
+  Escenario: HU-03-ESC-03 Registro de intento fallido y protocolo de búsqueda activa
+    Dado un paciente programado para contacto de acompañamiento que no responde tras la llamada de la UGCO
+    Cuando el funcionario registra el resultado No contactable indicando interlocutor y motivo en la bitácora
     Entonces OncoTrace contabiliza el intento fallido
-    Y si se alcanzan tres intentos fallidos consecutivos, genera una alerta para activar búsqueda activa o coordinación con APS
+    Y si se alcanzan tres intentos fallidos consecutivos, genera una alerta para activar el protocolo de búsqueda activa y coordinación con APS
+
+  Escenario: HU-03-ESC-04 Registro de corrección mediante adenda inmutable
+    Dado un registro previo en la bitácora de acompañamiento que requiere aclaración o rectificación
+    Cuando el profesional responsable ingresa una corrección asistencial
+    Entonces el sistema conserva intacto el registro original
+    Y genera una nota de adenda vinculada con fecha, hora, usuario y motivo de la enmienda
 ```
 
 ---
@@ -374,23 +380,34 @@ Característica: Acta digital de comité, firma electrónica y REM 7
 ```gherkin
 Característica: Tótem de autoatención en sala de espera
 
-  Escenario: HU-09-ESC-01 Consulta de estado de exámenes y trámites
-    Dado un paciente o cuidador en la sala de espera de la UGCO
-    Cuando ingresa su RUN o escanea la cédula de identidad en el tótem de autoatención
-    Entonces la interfaz presenta el listado de estudios diagnósticos e hitos asistenciales con su estado general
-    Y muestra la fecha y ubicación de su próxima citación programada en la red
+  Escenario: HU-09-ESC-01 Consulta de estado de exámenes por paciente con verificación autorizada
+    Dado un paciente en la sala de espera de la UGCO ante el tótem de autoatención
+    Cuando completa el método de verificación de identidad autorizado por el hospital mediante escaneo de cédula de identidad y factor de autenticación secundario válido
+    Entonces la interfaz despliega los estados macro de sus estudios en lenguaje claro: En proceso en laboratorio, Informe listo para revisión médica, Caso agendado en comité o Próxima cita médica programada
+    Y el sistema no permite el acceso mediante el ingreso exclusivo del RUN ni con el escaneo simple de la cédula sin validación secundaria
 
-  Escenario: HU-09-ESC-02 Protección y anonimización de hallazgos patológicos sensibles
-    Dado un paciente consultando su caso en el tótem táctil de la sala de espera
-    Cuando el sistema despliega el resultado de un estudio anatomopatológico o imagenológico
-    Entonces omite términos diagnósticos reservados o descripciones de malignidad en la interfaz pública
-    Y orienta al paciente a acudir con su gestora o médico tratante para la entrega de resultados clínicos
+  Escenario: HU-09-ESC-02 Consulta de trámites por cuidador con autorización vigente
+    Dado un cuidador principal con autorización registrada y vigente para un paciente
+    Cuando completa la verificación de identidad autorizada en el tótem de autoatención
+    Entonces el sistema reconoce el vínculo vigente y presenta los estados macro de los trámites del paciente
 
-  Escenario: HU-09-ESC-03 Expiración de sesión por inactividad
-    Dada una consulta abierta en la pantalla del tótem de autoatención
-    Cuando transcurren sesenta segundos continuos sin interacción táctil
-    Entonces el sistema cierra automáticamente la sesión y borra la información de pantalla
-    Y retorna al inicio de bienvenida resguardando la privacidad del paciente frente a terceros
+  Escenario: HU-09-ESC-03 Bloqueo de consulta a cuidador sin autorización vigente
+    Dado un usuario que se presenta en el tótem como cuidador de un paciente
+    Cuando intenta consultar y el sistema detecta que no posee autorización registrada o que se encuentra expirada
+    Entonces el tótem bloquea la visualización de la información asistencial
+    Y despliega un mensaje orientando a acudir al mesón de la UGCO para tramitar la autorización formal
+
+  Escenario: HU-09-ESC-04 Resguardo de confidencialidad y anonimización de diagnósticos
+    Dado un paciente o cuidador autorizado consultando en el tótem táctil de la sala de espera
+    Cuando el sistema presenta el avance de estudios de anatomía patológica o imagenología
+    Entonces omite diagnósticos histopatológicos específicos, descripciones de biopsia y contenidos clínicos sensibles en la pantalla pública
+    Y orienta a consultar directamente con el médico tratante o gestora UGCO para la entrega del informe clínico
+
+  Escenario: HU-09-ESC-05 Cierre de sesión por inactividad de 30 segundos o botón Salir
+    Dada una sesión activa de consulta en la pantalla del tótem de autoatención
+    Cuando transcurren treinta segundos continuos sin interacción táctil o el usuario presiona el botón Salir
+    Entonces el sistema cierra inmediatamente la sesión, borra cualquier dato del paciente de la pantalla
+    Y retorna a la interfaz inicial de bienvenida para proteger la privacidad frente a terceros
 ```
 
 ---

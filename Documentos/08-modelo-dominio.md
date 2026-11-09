@@ -29,12 +29,13 @@ Archivo fuente: [modelo-dominio.puml](../diagramas/modelo-dominio.puml).
 | `ContraReferenciaEpicrisis` | Antecedentes de cierre de la atención externa y del retorno al HGF. | identificador, fechaEmision, fechaRetornoHGF, resumenTratamiento, planSeguimiento |
 | `EvaluacionMultidimensional` | Pauta de valoración integral aplicada al paciente para determinar riesgo biopsicosocial y derivaciones. | identificador, fechaEvaluacion, puntajeClinicoFuncional, puntajePsicoemocional, escalaZaritCuidador, nivelVulnerabilidad, profesionalEvaluador |
 | `DominioValoracion` | Dimensión específica evaluada (clínico-funcional, psicoemocional, cuidador, social, espiritual, cognitivo). | tipoDominio, descripcionHallazgo, requiereDerivacion, especialidadDerivada |
-| `EntradaBitacora` | Registro cronológico individual de contacto asistencial normado según el Journey Map de navegación. | identificador, puntoContactoNormado, fechaContacto, canalContacto, resumenInteraccion, acuerdosEstablecidos, responsableRegistro, estadoContacto |
+| `EntradaBitacora` | Registro cronológico individual de contacto asistencial normado según el Journey Map de navegación, con soporte de adendas inmutables. | identificador, puntoContactoNormado, fechaContacto, canalContacto, interlocutor, motivoContacto, resumenInteraccion, acuerdosEstablecidos, responsableRegistro, estadoContacto, esAdenda |
+| `CuidadorAutorizado` | Persona de apoyo acreditada con autorización formal vigente para consultar el estado del paciente en canales de autoatención. | runCuidador, nombreCompleto, parentesco, telefonoContacto, autorizacionVigente, fechaRegistroAutorizacion |
 | `FichaPresentacionComite` | Expediente sintético consolidado automáticamente para la deliberación médica en el Comité Regional. | folioFicha, resumenClinico, etapificacionTNM, biopsiaValidadaReferencia, propuestaConducta, fechaGeneracion |
 | `ActaComite` | Documento legal colegiado que formaliza el acuerdo terapéutico adoptado durante la sesión. | numeroActa, fechaSesion, quorumAsistentes, resolucionAcordada, estadoFirma |
 | `FirmaElectronica` | Evidencia criptográfica de suscripción vinculante del acta por un médico especialista. | runFirmante, nombreFirmante, rolFirmante, estampaTiempo, hashIntegridad |
 | `RegistroREM7` | Agrupación estadística mensual de decisiones terapéuticas para consolidación ministerial. | periodoMes, seccion, codigoPrestacion, totalCasos |
-| `InteraccionCanalUsuario` | Sesión de consulta efectuada por el paciente o cuidador en canal público (tótem o chatbot). | identificadorSesion, canal, runUsuario, fechaHora, tipoConsulta |
+| `InteraccionCanalUsuario` | Sesión de consulta efectuada por el paciente o cuidador en canal público (tótem o chatbot), con verificación institucional y timeout de 30s. | identificadorSesion, canal, runUsuario, tipoUsuarioConsultante, runPacienteConsultado, autorizacionCuidadorVigente, metodoVerificacion, fechaHora, tipoConsulta, tiempoExpiracionSegundos |
 | `TicketTriagePresencial` | Turno de atención clasificado por riesgo clínico o administrativo emitido hacia la consola del mesón UGCO. | numeroTurno, nivelPrioridad, motivoConsulta, fechaEmision, estadoAtencion |
 | `RegistroIntercambioMINSAL` | Mensaje interoperable de seguimiento transmitido hacia la Plataforma Oncológica Central. | identificadorMensaje, tipoEvento, fechaEnvio, estadoSincronizacion, codigoRespuesta, folioTransaccionMINSAL |
 
@@ -68,7 +69,9 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | presenta a | `FichaPresentacionComite` — `ActaComite` | Una ficha: 0..1 acta. Un acta: 1 ficha. | Cada presentación a sesión de comité concluye formalmente en su respectiva acta. |
 | suscribe con | `ActaComite` — `FirmaElectronica` | Un acta: 1..* firmas. Una firma: 1 acta. | Todo dictamen colegiado requiere la firma de los médicos especialistas asistentes. |
 | tributa a | `ActaComite` — `RegistroREM7` | Un acta: 0..* registros. Un registro REM 7: 0..* actas. | Las decisiones terapéuticas de las actas alimentan los consolidados estadísticos mensuales. |
-| consulta en | `CasoOncologico` — `InteraccionCanalUsuario` | Un caso: 0..* interacciones. Una interacción: 0..1 caso. | Los pacientes consultan el avance de su caso en tótems o chatbots institucionales. |
+| autoriza | `Paciente` — `CuidadorAutorizado` | Un paciente: 0..1 cuidador. Un cuidador: 1 paciente. | Respalda la acreditación y vigencia legal para consultar información en canales de autoatención. |
+| realiza consulta en | `CuidadorAutorizado` — `InteraccionCanalUsuario` | Un cuidador: 0..* interacciones. Una interacción: 0..1 cuidador. | Registra las consultas efectuadas por el cuidador previa validación de autorización. |
+| consulta en | `CasoOncologico` — `InteraccionCanalUsuario` | Un caso: 0..* interacciones. Una interacción: 0..1 caso. | Los pacientes y cuidadores consultan el avance de su caso en tótems o chatbots institucionales. |
 | emite | `InteraccionCanalUsuario` — `TicketTriagePresencial` | Una interacción: 0..1 ticket. Un ticket: 1 interacción. | Una consulta presencial desorientada o con síntomas genera un turno categorizado. |
 | reporta a | `CasoOncologico` — `RegistroIntercambioMINSAL` | Un caso: 0..* registros MINSAL. Un registro: 1 caso. | Cada hito clínico genera un mensaje interoperable de sincronización ministerial. |
 

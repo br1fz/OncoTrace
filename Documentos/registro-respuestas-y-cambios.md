@@ -73,3 +73,35 @@ Para garantizar la total trazabilidad hacia el código y permitir que OpenCode p
 2. **Nomenclatura TO-BE:** Ratificada como `TB-xx` en todo el repositorio.
 3. **Fuente de verdad:** Ratificada en `Documentos/` y `diagramas/`. `_backup/` se mantiene únicamente como archivo histórico.
 4. **Flujos y estados:** No se trabaja bajo supuestos; todos los flujos e interacciones están formalmente modelados en los artefactos correspondientes.
+
+---
+
+## 4. Resolución de Inconsistencias de HU-03 y HU-09 (Auditoría 2026-11-09)
+
+En la auditoría del 9 de noviembre de 2026 se registraron dudas de consistencia metodológica en las historias **HU-03** y **HU-09**, las cuales fueron analizadas y resueltas integralmente en todos los artefactos del repositorio:
+
+### A. Correcciones de consistencia en HU-03 (Bitácora de acompañamiento):
+1. **Puntos de contacto normados:** En `07-criterios-aceptacion.md` (`HU-03-ESC-01`), se eliminaron las etiquetas genéricas y se restablecieron con total fidelidad los **6 puntos de contacto obligatorios** del Journey Map normados en `04-historias-usuario.md` (`HU-03-CA2`):
+   - *P1: Ingreso / Sospecha inicial.*
+   - *P2: Post-confirmación diagnóstica (comunicación y entrega de IPD).*
+   - *P3: Etapificación / Post-resolución de Comité Oncológico.*
+   - *P4: Al alta de hospitalizaciones o cirugías.*
+   - *P5: Al finalizar el tratamiento activo y retorno a la vida cotidiana (manejo de temor a recidiva).*
+   - *P6: Ante toda derivación a otro establecimiento de la red.*
+2. **Plazo de alerta por contacto pendiente:** En `HU-03-ESC-02` y en la regla 6 de `09-casos-de-uso.md`, se corrigió el umbral erróneo de 5 días hábiles al plazo normado de **48 horas hábiles** establecido en `HU-03-CA3`.
+3. **Atributos del dominio `EntradaBitacora`:** En `diagramas/modelo-dominio.puml` y `08-modelo-dominio.md`, se agregaron los atributos exigidos por `HU-03-CA1` y `HU-03-CA6`:
+   - `interlocutor: Texto` (Paciente o Cuidador).
+   - `motivoContacto: Texto`.
+   - `esAdenda: Booleano` (soporte de inmutabilidad y notas de adenda).
+4. **Escenario de inmutabilidad (HU-03-CA6):** Se incorporó el escenario formal `HU-03-ESC-04` que modela la prohibición de eliminación física y el registro de correcciones asistenciales mediante adendas vinculadas con trazabilidad de autor, fecha y motivo.
+
+### B. Correcciones de consistencia en HU-09 (Tótem de autoatención):
+1. **Método de verificación de identidad:** En `HU-09-ESC-01` y regla 8 de `09-casos-de-uso.md`, se corrigió la contradicción donde el RUN o cédula bastaban por sí solos. Se alineó con la regla estricta de `HU-09-CA1`, `TB-09` y `RF-09`: exige el método institucional autorizado (lectura de cédula de identidad junto con factor de autenticación secundario válido; RUN o cédula solos no permiten acceso).
+2. **Validación obligatoria de autorización del cuidador:** Se agregaron los escenarios `HU-09-ESC-02` (consulta exitosa por cuidador con autorización registrada y vigente) y `HU-09-ESC-03` (bloqueo inmediato de acceso y derivación al mesón gestor si el cuidador no posee autorización o está vencida), dando estricto cumplimiento a `HU-09-CA2`.
+3. **Tiempo de expiración y cierre de sesión:** En `HU-09-ESC-05` y `08-modelo-dominio.md`, se corrigió el timeout de 60 segundos a **30 segundos de inactividad**, incorporando además el cierre inmediato mediante el botón "Salir", según mandata `HU-09-CA5`.
+4. **Estados macro normalizados:** En `HU-09-ESC-01`, se reemplazaron los estados genéricos por los 4 estados macro literales de `HU-09-CA3`:
+   - *En proceso en laboratorio*
+   - *Informe listo para revisión médica*
+   - *Caso agendado en comité*
+   - *Próxima cita médica programada*
+5. **Entidad `CuidadorAutorizado`:** En `diagramas/modelo-dominio.puml` y `08-modelo-dominio.md`, se incorporó la clase `CuidadorAutorizado` asociada al `Paciente` y a `InteraccionCanalUsuario` (`runCuidador, nombreCompleto, parentesco, telefonoContacto, autorizacionVigente, fechaRegistroAutorizacion`), permitiendo verificar programáticamente la vigencia de la autorización antes de desplegar datos en el tótem.
