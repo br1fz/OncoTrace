@@ -22,6 +22,7 @@
 ## Supuestos acordados (por elementos faltantes o dudosos)
 - 2026-11-09 — Fuente de verdad: `Documentos/` y `diagramas/`. `_backup/` es archivo histórico y no se usa para generar código.
 - 2026-11-09 — Consistencia resuelta para HU-03: los 6 puntos normados del Journey Map, el umbral de alerta preventiva de 48 horas hábiles, los atributos de `interlocutor`, `motivoContacto` y la regla de inmutabilidad (adendas) quedaron 100% alineados entre `04-historias-usuario.md`, `07-criterios-aceptacion.md`, `08-modelo-dominio.md`, `modelo-dominio.puml` y `09-casos-de-uso.md`.
+- 2026-11-09 — Las integraciones con LIS, PACS, HCVB y MINSAL se implementarán simuladas (interfaz + versión falsa), según la regla del taller; se avisará en cada historia que las use.
 - 2026-11-09 — Consistencia resuelta para HU-09: se alineó el método de verificación de identidad (cédula + serie/factor de autenticación secundario; RUN o cédula solos no bastan), la verificación obligatoria de autorización vigente para cuidadores (`CuidadorAutorizado`), el timeout de 30 segundos (o botón Salir) y los 4 estados macro en `07-criterios-aceptacion.md`, `08-modelo-dominio.md`, `09-casos-de-uso.md` y `12-trazabilidad.md`.
 
 ## Stack (se define una sola vez)
