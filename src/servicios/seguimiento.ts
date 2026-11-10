@@ -141,7 +141,9 @@ export class ServicioSeguimiento {
     }
 
     // 2. Validar consistencia temporal de fechas (HU-01-ESC-04 y HU-01-ESC-05)
-    const fechaHoy = new Date().toISOString().split('T')[0];
+    // Se usa fecha local (Chile / entorno) para evitar desfase UTC entre 21:00 y 23:59
+    const d = new Date();
+    const fechaHoy = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     if (input.fechaOcurrencia.trim() > fechaHoy) {
       return { ok: false, error: 'La fecha de ocurrencia no puede ser futura' };
     }

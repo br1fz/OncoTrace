@@ -3,6 +3,11 @@ import { Router, type Request, type Response } from 'express';
 import type { Database } from 'better-sqlite3';
 import { ServicioSeguimiento } from '../servicios/seguimiento.js';
 
+function obtenerFechaLocalHoy(): string {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+}
+
 export function crearRutasSeguimiento(db: Database): Router {
   const router = Router();
   const servicio = new ServicioSeguimiento(db);
@@ -61,7 +66,7 @@ export function crearRutasSeguimiento(db: Database): Router {
     }
 
     const rolActual = obtenerRol(req);
-    const hoy = new Date().toISOString().split('T')[0];
+    const hoy = obtenerFechaLocalHoy();
 
     res.render('hito-nuevo', {
       caso,
@@ -90,7 +95,7 @@ export function crearRutasSeguimiento(db: Database): Router {
       return res.status(400).render('hito-nuevo', {
         caso: caso || { numeroCaso, nombreCompleto: '' },
         rolActual: obtenerRol(req),
-        hoy: fechaOcurrencia || new Date().toISOString().split('T')[0],
+        hoy: fechaOcurrencia || obtenerFechaLocalHoy(),
         error: resultado.error,
         titulo: `Error al registrar hito — ${numeroCaso}`
       });

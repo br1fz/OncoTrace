@@ -37,7 +37,7 @@
 ## Historias
 | Historia | Estado | Cambio de OpenSpec | Fecha | Observaciones |
 |----------|--------|--------------------|-------|----------------|
-| HU-01 | hecha | hu-01-tablero-trazabilidad + ajuste-hu-01-consistencia-temporal | 2026-11-10 | Must. 13/13 pruebas pasando y `npm run build` sin errores. Archivado como `2026-11-10-ajuste-hu-01-consistencia-temporal`. Ficha: `.cin324/historias/HU-01.md` |
+| HU-01 | hecha | hu-01-tablero-trazabilidad + ajuste-hu-01-consistencia-temporal | 2026-11-10 | Must. 13/13 pruebas pasando y `npm run build` sin errores. Archivado como `2026-11-10-ajuste-hu-01-consistencia-temporal`. Ficha: `.cin324/historias/HU-01.md`. Validación cerrada el 2026-11-10 (`VAL-HU-01-3`). |
 | HU-02 | pendiente | — | — | Must |
 | HU-03 | pendiente | — | — | Must |
 | HU-04 | pendiente | — | — | Must |
@@ -54,6 +54,7 @@
 |----------|---------|--------|-------|
 | HU-01 | `.cin324/validaciones/VAL-HU-01-1.md` | verificado en el sistema (observaciones resueltas en la vuelta 2) | 2026-11-10 |
 | HU-01 | `.cin324/validaciones/VAL-HU-01-2.md` | verificado en el sistema (ajuste implementado y probado con 13/13 tests) | 2026-11-10 |
+| HU-01 | `.cin324/validaciones/VAL-HU-01-3.md` | **verificado en el sistema — HU-01 cerrada** (ESC-04 y ESC-05 comprobados; queda 1 mejora menor pendiente: «hoy» en UTC) | 2026-11-10 |
 
 ## Cambios posteriores
 | Cambio | Historia afectada | Motivo | Fecha |
