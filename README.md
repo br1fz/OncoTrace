@@ -166,10 +166,10 @@ Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se
 
 ### Recorrido de prueba guiado (Demostración)
 1. **Tablero general (`/`):** Observa las 8 columnas de la trayectoria asistencial (`Sospecha` hasta `Alta y contrarreferencia`). Verás tarjetas de pacientes con su RUN anonimizado, especialidad oncológica, CIE-10, último hito y semáforo de plazos.
-2. **Selector de rol:** En la barra superior, cambia entre `Enfermera gestora UGCO`, `Médico tratante` y `Secretaria comités` para simular operaciones según perfil.
-3. **Ficha y línea de tiempo (`/casos/HGF-ONCO-2026-0003`):** Ingresa al caso en Etapificación. Verás sus antecedentes clínicos, la resolución del Comité Oncológico registrada y la línea de tiempo con los días transcurridos entre hitos consecutivos.
-4. **Registro de hito y transición (`/casos/HGF-ONCO-2026-0003/hitos/nuevo`):** 
+2. **Selector de rol:** En la barra superior, cambia entre `Gestor/a UGCO` y `Médico tratante` para simular operaciones según perfil.
+3. **Ficha y línea de tiempo (`/casos/CASO-2026-003`):** Ingresa al caso en Etapificación. Verás sus antecedentes clínicos, la resolución del Comité Oncológico registrada y la línea de tiempo con los días transcurridos entre hitos consecutivos.
+4. **Registro de hito y transición (`/casos/CASO-2026-003/hitos/nuevo`):** 
    - Registra el hito `Inicio de tratamiento`.
    - La regla de negocio (guarda EST-03) validará que existe la resolución previa y cambiará atómicamente la etapa del caso a `Tratamiento`.
    - Al volver al tablero, el paciente figurará automáticamente en la columna de Tratamiento.
-5. **Rechazo por regla clínica (`/casos/HGF-ONCO-2026-0002`):** Intenta registrar `Inicio de tratamiento` para un caso en Confirmación o Etapificación sin resolución previa; el sistema rechazará la transición cumpliendo con la regla de consistencia institucional.
+5. **Rechazo por regla clínica (`/casos/CASO-2026-002`):** Intenta registrar `Inicio de tratamiento` para un caso en Confirmación diagnóstica sin resolución previa; el sistema rechazará la transición cumpliendo con la regla de consistencia institucional.

@@ -27,7 +27,7 @@ export function crearRutasSeguimiento(db: Database): Router {
   // GET /casos/:numeroCaso - Ficha del caso y línea de tiempo clínica
   router.get('/casos/:numeroCaso', (req: Request, res: Response) => {
     const { numeroCaso } = req.params;
-    const caso = servicio.obtenerFichaCaso(numeroCaso);
+    const caso = servicio.obtenerFichaCaso(String(numeroCaso));
 
     if (!caso) {
       return res.status(404).render('404', {
@@ -50,7 +50,7 @@ export function crearRutasSeguimiento(db: Database): Router {
   // GET /casos/:numeroCaso/hitos/nuevo - Formulario de registro de hito
   router.get('/casos/:numeroCaso/hitos/nuevo', (req: Request, res: Response) => {
     const { numeroCaso } = req.params;
-    const caso = servicio.obtenerFichaCaso(numeroCaso);
+    const caso = servicio.obtenerFichaCaso(String(numeroCaso));
 
     if (!caso) {
       return res.status(404).render('404', {
@@ -77,7 +77,7 @@ export function crearRutasSeguimiento(db: Database): Router {
     const { numeroCaso } = req.params;
     const { tipo, fechaOcurrencia, responsable, rolResponsable, conductaAcordada } = req.body;
 
-    const resultado = servicio.registrarHito(numeroCaso, {
+    const resultado = servicio.registrarHito(String(numeroCaso), {
       tipo,
       fechaOcurrencia,
       responsable,
@@ -86,7 +86,7 @@ export function crearRutasSeguimiento(db: Database): Router {
     });
 
     if (!resultado.ok) {
-      const caso = servicio.obtenerFichaCaso(numeroCaso);
+      const caso = servicio.obtenerFichaCaso(String(numeroCaso));
       return res.status(400).render('hito-nuevo', {
         caso: caso || { numeroCaso, nombreCompleto: '' },
         rolActual: obtenerRol(req),
@@ -96,7 +96,7 @@ export function crearRutasSeguimiento(db: Database): Router {
       });
     }
 
-    res.redirect(`/casos/${encodeURIComponent(numeroCaso)}?exito=Hito+registrado+exitosamente`);
+    res.redirect(`/casos/${encodeURIComponent(String(numeroCaso))}?exito=Hito+registrado+exitosamente`);
   });
 
   // POST /rol - Selector de rol de demostración (Gestora / Médico)

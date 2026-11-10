@@ -37,7 +37,7 @@
 ## Historias
 | Historia | Estado | Cambio de OpenSpec | Fecha | Observaciones |
 |----------|--------|--------------------|-------|----------------|
-| HU-01 | hecha | hu-01-tablero-trazabilidad | 2026-11-09 | Must. 11/11 pruebas pasando. Archivado como `2026-11-09-hu-01-tablero-trazabilidad`. Ficha: `.cin324/historias/HU-01.md` |
+| HU-01 | hecha | hu-01-tablero-trazabilidad | 2026-11-09 | Must. 11/11 pruebas pasando y `npm run build` sin errores. Archivado como `2026-11-09-hu-01-tablero-trazabilidad`. Ficha: `.cin324/historias/HU-01.md` |
 | HU-02 | pendiente | — | — | Must |
 | HU-03 | pendiente | — | — | Must |
 | HU-04 | pendiente | — | — | Must |
@@ -57,4 +57,4 @@
 ## Cambios posteriores
 | Cambio | Historia afectada | Motivo | Fecha |
 |--------|-------------------|--------|-------|
-| — | — | — | — |
+| Defecto de generación (sin cambio de especificación) | HU-01 | `npm run build` fallaba por los tipos de `req.params` (@types/express v5 con Express 4); se aplicó `String(...)` en las 5 líneas de `src/rutas/seguimiento.ts`. Comportamiento sin cambios. | 2026-11-10 |
