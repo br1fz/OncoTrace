@@ -257,6 +257,47 @@ describe('HU-01 — Tablero de trazabilidad y línea de tiempo clínica por etap
       expect(response.status).toBe(404);
       expect(response.text).toContain('404 — No encontrado');
     });
+
+    it('Escenario: HU-01-ESC-04 Rechazo de hito con fecha de ocurrencia futura', async () => {
+      const manana = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+      const postRes = await request(app)
+        .post('/casos/CASO-2026-003/hitos')
+        .send({
+          tipo: 'Contacto de seguimiento y navegación asistencial',
+          fechaOcurrencia: manana,
+          responsable: 'Enf. Patricia Soto',
+          rolResponsable: 'Gestor/a UGCO'
+        });
+
+      expect(postRes.status).toBe(400);
+      expect(postRes.text).toContain('La fecha de ocurrencia no puede ser futura');
+
+      const getRes = await request(app).get('/casos/CASO-2026-003');
+      expect(getRes.status).toBe(200);
+      expect(getRes.text).not.toContain(manana);
+      expect(getRes.text).toContain('Etapificación');
+    });
+
+    it('Escenario: HU-01-ESC-05 Rechazo de hito con fecha anterior al último hito registrado', async () => {
+      const fechaAnterior = '2026-09-01';
+
+      const postRes = await request(app)
+        .post('/casos/CASO-2026-003/hitos')
+        .send({
+          tipo: 'Contacto de seguimiento y navegación asistencial',
+          fechaOcurrencia: fechaAnterior,
+          responsable: 'Enf. Patricia Soto',
+          rolResponsable: 'Gestor/a UGCO'
+        });
+
+      expect(postRes.status).toBe(400);
+      expect(postRes.text).toContain('La fecha de ocurrencia no puede ser anterior al último hito registrado');
+
+      const getRes = await request(app).get('/casos/CASO-2026-003');
+      expect(getRes.status).toBe(200);
+      expect(getRes.text).not.toContain('Contacto de seguimiento y navegación asistencial');
+    });
   });
 });
 

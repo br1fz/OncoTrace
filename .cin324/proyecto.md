@@ -37,7 +37,7 @@
 ## Historias
 | Historia | Estado | Cambio de OpenSpec | Fecha | Observaciones |
 |----------|--------|--------------------|-------|----------------|
-| HU-01 | hecha | hu-01-tablero-trazabilidad | 2026-11-09 | Must. 11/11 pruebas pasando y `npm run build` sin errores. Archivado como `2026-11-09-hu-01-tablero-trazabilidad`. Ficha: `.cin324/historias/HU-01.md` |
+| HU-01 | hecha | hu-01-tablero-trazabilidad + ajuste-hu-01-consistencia-temporal | 2026-11-10 | Must. 13/13 pruebas pasando y `npm run build` sin errores. Archivado como `2026-11-10-ajuste-hu-01-consistencia-temporal`. Ficha: `.cin324/historias/HU-01.md` |
 | HU-02 | pendiente | — | — | Must |
 | HU-03 | pendiente | — | — | Must |
 | HU-04 | pendiente | — | — | Must |
@@ -52,9 +52,11 @@
 ## Validaciones
 | Historia | Informe | Estado | Fecha |
 |----------|---------|--------|-------|
-| — | — | — | — |
+| HU-01 | `.cin324/validaciones/VAL-HU-01-1.md` | verificado en el sistema (observaciones resueltas en la vuelta 2) | 2026-11-10 |
+| HU-01 | `.cin324/validaciones/VAL-HU-01-2.md` | verificado en el sistema (ajuste implementado y probado con 13/13 tests) | 2026-11-10 |
 
 ## Cambios posteriores
 | Cambio | Historia afectada | Motivo | Fecha |
 |--------|-------------------|--------|-------|
 | Defecto de generación (sin cambio de especificación) | HU-01 | `npm run build` fallaba por los tipos de `req.params` (@types/express v5 con Express 4); se aplicó `String(...)` en las 5 líneas de `src/rutas/seguimiento.ts`. Comportamiento sin cambios. | 2026-11-10 |
+| 2026-11-10-ajuste-hu-01-consistencia-temporal | HU-01 | Implementar consistencia temporal e inmutabilidad de hitos: rechazo de fechas futuras (ESC-04) y anteriores al último hito registrado (ESC-05). 13/13 pruebas pasando. | 2026-11-10 |

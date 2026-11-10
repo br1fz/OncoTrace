@@ -140,10 +140,24 @@ export class ServicioSeguimiento {
       return { ok: false, error: `No se encontró el caso oncológico '${numeroCaso}'.` };
     }
 
-    // 2. Verificar si tiene resolución de comité previa
+    // 2. Validar consistencia temporal de fechas (HU-01-ESC-04 y HU-01-ESC-05)
+    const fechaHoy = new Date().toISOString().split('T')[0];
+    if (input.fechaOcurrencia.trim() > fechaHoy) {
+      return { ok: false, error: 'La fecha de ocurrencia no puede ser futura' };
+    }
+
+    const hitosExistentes = this.repo.listarHitosPorCasoId(caso.id);
+    if (hitosExistentes.length > 0) {
+      const ultimoHito = hitosExistentes[hitosExistentes.length - 1];
+      if (input.fechaOcurrencia.trim() < ultimoHito.fechaOcurrencia) {
+        return { ok: false, error: 'La fecha de ocurrencia no puede ser anterior al último hito registrado' };
+      }
+    }
+
+    // 3. Verificar si tiene resolución de comité previa
     const tieneResolucion = this.repo.tieneResolucionComite(caso.id);
 
-    // 3. Evaluar transiciones de estado EST-03
+    // 4. Evaluar transiciones de estado EST-03
     const evalTransicion = evaluarTransicionHito(caso.etapaActual, input.tipo, tieneResolucion);
 
     if (!evalTransicion.esValido) {
