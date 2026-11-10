@@ -50,7 +50,7 @@ El diagrama se organiza en tres vistas: seguimiento y alertas, informes diagnós
 | **CU-02** | Recibir avisos de hallazgos críticos | Gestor/a UGCO y médico tratante | [HU-05](./04-historias-usuario.md#hu-05) | HU-05-ESC-02 |
 | **CU-03** | Despachar derivación externa | Funcionario/a UGAA | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-02 |
 | **CU-04** | Registrar recepción y cita en HCVB | Funcionario/a UGAA y gestor/a UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-03 y HU-08-ESC-04 |
-| **CU-05** | Dar seguimiento al caso oncológico | Gestor/a UGCO | [HU-01](./04-historias-usuario.md#hu-01) | HU-01-ESC-01 a HU-01-ESC-03 |
+| **CU-05** | Dar seguimiento al caso oncológico | Gestor/a UGCO | [HU-01](./04-historias-usuario.md#hu-01) | HU-01-ESC-01 a HU-01-ESC-05 |
 | **CU-06** | Gestionar alertas de seguimiento | Gestor/a UGCO | [HU-04](./04-historias-usuario.md#hu-04) y [HU-08](./04-historias-usuario.md#hu-08) | HU-04-ESC-01 a HU-04-ESC-07 y HU-08-ESC-05 |
 | **CU-07** | Confeccionar dossier de derivación | TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-01 |
 | **CU-08** | Registrar entrega del instructivo de pasajes | Gestor/a UGCO o TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-02 |
@@ -80,7 +80,7 @@ El diagrama se organiza en tres vistas: seguimiento y alertas, informes diagnós
 
 ## Reglas de consistencia con otros artefactos
 
-1. **Seguimiento del caso (CU-05).** El caso sigue las ocho etapas del modelo de dominio. La resolución firmada del comité se registra como hito. El cambio a la etapa de tratamiento requiere que se registre el inicio efectivo del tratamiento.
+1. **Seguimiento del caso (CU-05).** El caso sigue las ocho etapas del modelo de dominio. La resolución firmada del comité se registra como hito. El cambio a la etapa de tratamiento requiere que se registre el inicio efectivo del tratamiento. El registro de cualquier hito asistencial exige consistencia temporal: su fecha de ocurrencia no puede ser posterior a la fecha actual ni anterior a la del último hito registrado en el caso, rechazando cualquier incongruencia cronológica.
 2. **Alertas de seguimiento (CU-06).** OncoTrace evalúa los umbrales definidos en el documento 07 para vencimientos GES, inactividad y rezago de derivación. Registrar una gestión de seguimiento no acredita el cumplimiento de una garantía GES. En HU-08, si al cumplirse once días hábiles desde el despacho no hay recepción confirmada ni fecha de atención, se genera una alerta preventiva y la derivación permanece en estado **Despachado por UGAA**.
 3. **Validación e identificación de informes (CU-01 y CU-02).** Si el RUN no permite asociar el informe al paciente con certeza, OncoTrace lo conserva como una excepción pendiente de revisión, registra la discrepancia para auditoría y mantiene el examen pendiente. Si el informe sigue pendiente de validación en LIS o PACS, el examen permanece pendiente de recibir un informe validado.
 4. **Preparación y despacho (CU-07, CU-08 y CU-03).** TENS confecciona el dossier con los antecedentes requeridos, incluida el acta firmada del comité. Para el despacho a HCVB debe constar la entrega anticipada del instructivo del Anexo 6 al paciente o cuidador. Al formalizar el despacho, UGAA registra la fecha y el folio.

@@ -204,6 +204,12 @@ else Se registra resolución firmada del comité sin inicio efectivo de tratamie
   La resolución de comité es un hito de etapificación;
   no se crea una etapa independiente denominada Comité.
   end note
+else Intento de registrar hito con fecha futura (HU-01-ESC-04)
+  Gestor -> OT: Registrar hito asistencial con fecha de ocurrencia posterior a hoy
+  OT --> Gestor: Rechazar registro (400) con mensaje "La fecha de ocurrencia no puede ser futura"
+else Intento de registrar hito anterior al último hito registrado (HU-01-ESC-05)
+  Gestor -> OT: Registrar hito con fecha anterior al último hito registrado en el caso
+  OT --> Gestor: Rechazar registro (400) con mensaje "La fecha de ocurrencia no puede ser anterior al último hito registrado"
 end
 @enduml
 

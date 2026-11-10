@@ -40,6 +40,7 @@
 - **HU-01-CA4 — Línea de tiempo:** Dado que la gestora accede a la ficha, cuando visualiza la sección de línea de tiempo, entonces el sistema debe mostrar los hitos asistenciales en estricto orden cronológico, indicando para cada uno la fecha, tipo de hito y días transcurridos desde el hito anterior.
 - **HU-01-CA5 — Actualización del estado:** Cuando se registra un evento clínico que confirma el ingreso del paciente a otra etapa, como el inicio de tratamiento, el sistema debe actualizar su ubicación en el tablero y conservar el cambio en la línea de tiempo. La presentación del caso o la firma del acta de comité no deben cambiar la etapa por sí solas.
 - **HU-01-CA6 — Trazabilidad de cambios:** Cada hito y cambio de estado debe conservar su fecha y hora de registro, así como el usuario y rol profesional responsable.
+- **HU-01-CA7 — Consistencia temporal e inmutabilidad de hitos:** Cuando un usuario intenta registrar un hito asistencial, el sistema debe validar que su fecha de ocurrencia sea igual o anterior a la fecha actual y no sea anterior a la fecha del último hito registrado en el caso oncológico. Si la fecha es posterior a hoy o anterior a la del último hito registrado, el sistema debe rechazar el registro impidiendo incongruencias cronológicas. Los hitos confirmados son inmutables y no admiten modificaciones retroactivas de fecha.
 
 ---
 

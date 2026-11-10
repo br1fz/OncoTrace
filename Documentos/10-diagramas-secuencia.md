@@ -60,6 +60,8 @@ La gestora consulta el seguimiento y la línea de tiempo de un paciente. OncoTra
 
 - **`alt` — Registro de inicio de tratamiento.** Cuando un profesional autorizado registra el inicio efectivo de la terapia (quirúrgica, quimioterapia o derivación) respaldada por una resolución de comité previa, el caso transiciona a la etapa de **Tratamiento**, se conserva el hito en la línea de tiempo con fecha, hora, usuario y rol responsable, y se actualiza el tablero Kanban ([HU-01-ESC-02](./07-criterios-aceptacion.md#hu-01-esc-02-cambio-de-etapa-por-inicio-del-tratamiento)).
 - **`else` — Resolución de comité sin inicio de tratamiento.** Si se registra la resolución firmada del comité pero aún no se confirma el inicio efectivo de la terapia, la resolución se incorpora como hito asistencial de la etapa de **Etapificación**; el caso permanece en dicha etapa y no se crea una etapa independiente denominada "Comité" ([HU-01-ESC-03](./07-criterios-aceptacion.md#hu-01-esc-03-resolucion-de-comite-sin-inicio-del-tratamiento)).
+- **`else` — Rechazo por fecha de ocurrencia futura.** Si un usuario intenta registrar un hito asistencial con una fecha posterior a la fecha actual, OncoTrace rechaza la operación informando que la fecha no puede ser futura; el caso y la línea de tiempo permanecen sin modificaciones ([HU-01-ESC-04](./07-criterios-aceptacion.md#hu-01-esc-04-rechazo-de-hito-con-fecha-de-ocurrencia-futura)).
+- **`else` — Rechazo por incongruencia cronológica.** Si un usuario intenta registrar un hito con una fecha anterior a la del último hito registrado en el caso, OncoTrace rechaza la operación informando que la fecha no puede ser anterior al último hito registrado; se preserva la coherencia de la trayectoria clínica ([HU-01-ESC-05](./07-criterios-aceptacion.md#hu-01-esc-05-rechazo-de-hito-con-fecha-anterior-al-ultimo-hito-registrado)).
 
 ---
 
@@ -90,5 +92,5 @@ OncoTrace ejecuta una evaluación automática periódica calculando días hábil
 | :--- | :--- | :--- | :--- | :--- |
 | **DSS-01** | HU-05-ESC-01 a HU-05-ESC-04 | CU-01 y CU-02 | Gestor/a UGCO, médico tratante, LIS y PACS | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
 | **DSS-02** | HU-08-ESC-01 a HU-08-ESC-06 | CU-03, CU-04, CU-06, CU-07, CU-08 y CU-09 | TENS UGCO, funcionario/a UGAA, gestor/a UGCO y Sistema HCVB | `CasoOncologico`, `DossierDigitalDerivacion`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
-| **DSS-03** | HU-01-ESC-01 a HU-01-ESC-03 | CU-05 | Gestor/a UGCO y médico tratante | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
+| **DSS-03** | HU-01-ESC-01 a HU-01-ESC-05 | CU-05 | Gestor/a UGCO y médico tratante | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
 | **DSS-04** | HU-04-ESC-01 a HU-04-ESC-07 | CU-06 | Gestor/a UGCO y Unidad GES | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |

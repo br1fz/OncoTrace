@@ -46,6 +46,22 @@ Característica: Seguimiento de casos oncológicos por etapas e hitos
     Entonces la resolución queda incorporada como hito de la línea de tiempo
     Y el caso permanece en etapificación
     Y no se crea una etapa independiente denominada Comité
+
+  Escenario: HU-01-ESC-04 Rechazo de hito con fecha de ocurrencia futura
+    Dado un caso oncológico registrado en el sistema
+    Y un profesional autorizado para registrar hitos
+    Cuando el profesional intenta registrar un hito asistencial con una fecha de ocurrencia posterior a la fecha actual
+    Entonces el sistema rechaza el registro con el mensaje "La fecha de ocurrencia no puede ser futura"
+    Y la línea de tiempo del caso no sufre modificaciones
+    Y la etapa del caso permanece sin cambios
+
+  Escenario: HU-01-ESC-05 Rechazo de hito con fecha anterior al último hito registrado
+    Dado un caso oncológico con al menos un hito asistencial registrado
+    Y un profesional autorizado para registrar hitos
+    Cuando el profesional intenta registrar un nuevo hito con una fecha de ocurrencia anterior a la fecha del último hito registrado
+    Entonces el sistema rechaza el registro con el mensaje "La fecha de ocurrencia no puede ser anterior al último hito registrado"
+    Y no se generan incongruencias cronológicas en la línea de tiempo
+    Y la etapa del caso permanece sin cambios
 ```
 
 ---

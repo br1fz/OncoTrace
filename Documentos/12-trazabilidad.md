@@ -73,7 +73,7 @@ Las fuentes y relaciones de origen se mantienen según la [matriz de trazabilida
 
 | Escenarios de aceptación | Casos de uso relacionados |
 | :--- | :--- |
-| HU-01-ESC-01 a HU-01-ESC-03 | CU-05 · Dar seguimiento al caso oncológico |
+| HU-01-ESC-01 a HU-01-ESC-05 | CU-05 · Dar seguimiento al caso oncológico |
 | HU-04-ESC-01 a HU-04-ESC-07 | CU-06 · Gestionar alertas de seguimiento |
 | HU-05-ESC-01, HU-05-ESC-03 y HU-05-ESC-04 | CU-01 · Consolidar y consultar informes diagnósticos |
 | HU-05-ESC-02 | CU-02 · Recibir avisos de hallazgos críticos |

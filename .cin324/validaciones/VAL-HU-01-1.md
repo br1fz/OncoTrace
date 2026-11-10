@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-11-10  
 **Cambio validado:** `hu-01-tablero-trazabilidad` (archivado 2026-11-09)  
-**Estado:** Resuelto (ajuste de generación y dependencias aplicado)
+**Estado:** verificado en el sistema (observaciones resueltas en vuelta 2)
 
 ---
 
