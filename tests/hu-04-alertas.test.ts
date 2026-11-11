@@ -379,8 +379,14 @@ describe('HU-04 — Motor de alertas preventivas de plazos GES e inactividad', (
       const garantia = repo.obtenerGarantiaPorId(garantiaId1)!;
       expect(garantia.estadoCumplimiento).toBe('Cumplida');
 
-      // Ya no figura en alertas vigentes
-      const vigentesDespues = servicioAlertas.listarAlertasVigentes('2026-11-08');
+      // HU-04-ESC-06: Permanece visible como Resuelta dentro de las 14 horas
+      const vigentesDentro14h = servicioAlertas.listarAlertasVigentes();
+      const alertaResuelta = vigentesDentro14h.find(a => a.id === alerta.id);
+      expect(alertaResuelta?.estado).toBe('Resuelta');
+
+      // Transcurridas 14 horas, ya no figura en el panel de alertas vigentes
+      const quinceHorasDespues = new Date(Date.now() + 15 * 60 * 60 * 1000).toISOString();
+      const vigentesDespues = servicioAlertas.listarAlertasVigentes(quinceHorasDespues);
       expect(vigentesDespues.some(a => a.id === alerta.id)).toBe(false);
     });
 
@@ -652,6 +658,56 @@ describe('HU-04 — Motor de alertas preventivas de plazos GES e inactividad', (
       expect(resFicha.text).toContain('Confirmación diagnóstica');
       expect(resFicha.text).toContain('5 días hábiles');
       expect(resFicha.text).toContain('modal-caso-gestion-');
+    });
+
+    it('4.8 (HU-04-ESC-09) Evaluación explícita desde el panel informa N alertas nuevas y permanece en el panel', async () => {
+      const resEval = await request(app)
+        .post('/alertas/evaluar')
+        .set('Cookie', ['rol=Gestor/a UGCO'])
+        .send({ fechaReferencia: '2026-11-06' });
+
+      expect(resEval.status).toBe(302);
+      expect(resEval.headers.location).toContain('/alertas?mensaje=Evaluaci%C3%B3n%20completada%3A');
+
+      const resPanel = await request(app)
+        .get(resEval.headers.location)
+        .set('Cookie', ['rol=Gestor/a UGCO']);
+      expect(resPanel.status).toBe(200);
+      expect(resPanel.text).toContain('Evaluación completada:');
+      expect(resPanel.text).toContain('Panel General de Alertas');
+    });
+
+    it('4.9 (HU-04-ESC-06) Alerta Resuelta permanece visible en panel durante 14 horas y luego se oculta', async () => {
+      servicioAlertas.evaluarAlertas('2026-11-06');
+      const alerta = servicioAlertas.listarAlertasVigentes('2026-11-06').find(a => a.garantiaId === garantiaTestId)!;
+
+      const ahoraSimulado = '2026-11-06T10:00:00Z';
+      const hitoId = repo.crearHito({
+        casoId: alerta.casoId,
+        tipo: 'Hito resolutivo test',
+        fechaOcurrencia: '2026-11-06',
+        fechaRegistro: ahoraSimulado,
+        responsable: 'Enf. Patricia',
+        rolResponsable: 'Gestor/a UGCO'
+      });
+      repo.resolverAlertaConHito(alerta.id!, hitoId, alerta.garantiaId, ahoraSimulado);
+
+      // Consulta a las 5 horas después (<= 14h): debe seguir visible en el panel
+      const cincoHorasDespues = '2026-11-06T15:00:00Z';
+      const alertasDentro14h = servicioAlertas.listarAlertasVigentes(cincoHorasDespues);
+      const alertaVisible = alertasDentro14h.find(a => a.id === alerta.id);
+      expect(alertaVisible).toBeDefined();
+      expect(alertaVisible?.estado).toBe('Resuelta');
+
+      // Consulta a las 15 horas después (> 14h): ya NO debe listarse en el panel
+      const quinceHorasDespues = '2026-11-07T01:01:00Z';
+      const alertasFuera14h = servicioAlertas.listarAlertasVigentes(quinceHorasDespues);
+      const alertaOculta = alertasFuera14h.find(a => a.id === alerta.id);
+      expect(alertaOculta).toBeUndefined();
+
+      // Sigue consultable en la ficha del caso
+      const casoAlertas = repo.listarAlertasPorCasoId(alerta.casoId);
+      expect(casoAlertas.find(a => a.id === alerta.id)?.estado).toBe('Resuelta');
     });
   });
 });

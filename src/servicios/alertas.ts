@@ -101,8 +101,8 @@ export class ServicioAlertas {
     };
   }
 
-  listarAlertasVigentes(fechaReferencia?: string): AlertaConDetalle[] {
-    return this.repo.listarAlertasVigentes(fechaReferencia);
+  listarAlertasVigentes(fechaReferencia?: string, soloActivas = false): AlertaConDetalle[] {
+    return this.repo.listarAlertasVigentes(fechaReferencia, soloActivas);
   }
 
   registrarGestion(alertaId: number, input: RegistrarGestionInput, rolActual?: string): void {
@@ -175,7 +175,8 @@ export class ServicioAlertas {
       rolResponsable: input.rolResponsable?.trim() || rolActual || 'Gestor/a UGCO'
     });
 
-    this.repo.resolverAlertaConHito(alertaId, hitoId, alerta.garantiaId);
+    const ahoraIso = new Date().toISOString();
+    this.repo.resolverAlertaConHito(alertaId, hitoId, alerta.garantiaId, ahoraIso);
   }
 
   cerrarAlerta(alertaId: number, input: CerrarAlertaInput, rolActual?: string): void {
@@ -213,7 +214,8 @@ export class ServicioAlertas {
     this.validarRolGestora(rolActual);
 
     const ref = fechaReferencia ? fechaReferencia.slice(0, 10) : new Date().toISOString().slice(0, 10);
-    const alertas = this.repo.listarAlertasVigentes(ref);
+    // HU-04-ESC-08: Excluye alertas Resuelta y No aplica (soloActivas = true)
+    const alertas = this.repo.listarAlertasVigentes(ref, true);
 
     const BOM = '\uFEFF';
     const header = 'Caso;Paciente;Tipo de alerta;Tipo de garantía;Días restantes;Estado;Prioridad;Fecha de generación';

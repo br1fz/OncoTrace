@@ -35,17 +35,21 @@ export function crearRutasAlertas(db: Database): Router {
   router.get('/alertas', (req: Request, res: Response) => {
     const rolActual = obtenerRol(req);
     const fechaRef = (req.query.fechaReferencia as string) || undefined;
+    const mensaje = (req.query.mensaje as string) || undefined;
+    const exito = (req.query.exito as string) || undefined;
     const alertas = servicioAlertas.listarAlertasVigentes(fechaRef);
 
     res.render('alertas', {
       alertas,
       rolActual,
       fechaReferencia: fechaRef || new Date().toISOString().slice(0, 10),
+      mensaje,
+      exito,
       titulo: 'Panel de Alertas de Seguimiento'
     });
   });
 
-  // POST /alertas/evaluar - Evaluación explícita de umbrales preventivos e inactividad
+  // POST /alertas/evaluar - Evaluación explícita de umbrales preventivos e inactividad (HU-04-ESC-09)
   router.post('/alertas/evaluar', (req: Request, res: Response) => {
     const rolActual = obtenerRol(req);
     if (rolActual !== 'Gestor/a UGCO') {
@@ -56,11 +60,12 @@ export function crearRutasAlertas(db: Database): Router {
 
     try {
       const resultado = servicioAlertas.evaluarAlertas(fechaRef, rolActual);
+      const msg = `Evaluación completada: ${resultado.alertasGeneradas} alertas nuevas.`;
       if (req.headers.accept && req.headers.accept.includes('application/json')) {
-        return res.json({ ok: true, resultado });
+        return res.json({ ok: true, resultado, mensaje: msg });
       }
-      const volver = req.headers.referer || '/alertas';
-      return res.redirect(volver);
+      const refParam = fechaRef ? `&fechaReferencia=${encodeURIComponent(fechaRef)}` : '';
+      return res.redirect(`/alertas?mensaje=${encodeURIComponent(msg)}${refParam}`);
     } catch (error: any) {
       return res.status(error.status || 500).send(error.message);
     }
@@ -90,18 +95,17 @@ export function crearRutasAlertas(db: Database): Router {
         responsableRegistro: rolActual
       }, rolActual);
 
-      const volver = req.headers.referer || '/alertas';
-      return res.redirect(volver);
+      return res.redirect(`/alertas?exito=${encodeURIComponent('Alerta quedó En gestión y permanece disponible para seguimiento.')}`);
     } catch (error: any) {
       return res.status(error.status || 500).send(error.message);
     }
   });
 
-  // POST /alertas/:id/cumplimiento - Registrar hito de cumplimiento (HU-04-ESC-06)
+  // POST /alertas/:id/cumplimiento - Registrar hito de cumplimiento o resolución (HU-04-ESC-06)
   router.post('/alertas/:id/cumplimiento', (req: Request, res: Response) => {
     const rolActual = obtenerRol(req);
     if (rolActual !== 'Gestor/a UGCO') {
-      return res.status(403).send('Operación no autorizada: Solo el rol Gestor/a UGCO puede acreditar cumplimiento de garantías.');
+      return res.status(403).send('Operación no autorizada: Solo el rol Gestor/a UGCO puede acreditar cumplimiento o resolver alertas.');
     }
 
     const id = parseInt(String(req.params.id), 10);
@@ -119,8 +123,7 @@ export function crearRutasAlertas(db: Database): Router {
         rolResponsable: rolResponsable || rolActual
       }, rolActual);
 
-      const volver = req.headers.referer || '/alertas';
-      return res.redirect(volver);
+      return res.redirect(`/alertas?exito=${encodeURIComponent('Alerta resuelta exitosamente. Permanecerá visible en el panel general durante 14 horas.')}`);
     } catch (error: any) {
       return res.status(error.status || 500).send(error.message);
     }
@@ -147,8 +150,7 @@ export function crearRutasAlertas(db: Database): Router {
         responsableCierre
       }, rolActual);
 
-      const volver = req.headers.referer || '/alertas';
-      return res.redirect(volver);
+      return res.redirect(`/alertas?exito=${encodeURIComponent('Alerta cerrada por causa documentada (No aplica).')}`);
     } catch (error: any) {
       return res.status(error.status || 500).send(error.message);
     }

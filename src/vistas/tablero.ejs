@@ -6,16 +6,6 @@
     <p style="color: #64748b; font-size: 0.95rem;">Monitoreo activo de la trayectoria clínica estructurada en las 8 etapas normadas por la UGCO (Total: <%= tablero.totalCasos %> casos)</p>
   </div>
   <div style="display: flex; gap: 0.75rem; align-items: center;">
-    <% if (rolActual === 'Gestor/a UGCO') { %>
-      <form action="/alertas/evaluar" method="POST" style="margin: 0;">
-        <% if (typeof fechaReferencia !== 'undefined' && fechaReferencia) { %>
-          <input type="hidden" name="fechaReferencia" value="<%= fechaReferencia %>">
-        <% } %>
-        <button type="submit" id="btn-evaluar-alertas" style="background: #0284c7; color: white; border: none; padding: 0.55rem 1.1rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-          ⚡ Evaluar alertas ahora
-        </button>
-      </form>
-    <% } %>
     <a href="/alertas" style="background: white; border: 1px solid #cbd5e1; color: #334155; padding: 0.55rem 1.1rem; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.3rem;">
       🔔 Panel de Alertas &rarr;
     </a>

@@ -31,6 +31,18 @@
     </div>
   </div>
 
+  <% if (typeof mensaje !== 'undefined' && mensaje) { %>
+    <div class="alert-banner info" style="margin-bottom: 1.5rem; background: #e0f2fe; border: 1px solid #7dd3fc; color: #0369a1; padding: 0.75rem 1rem; border-radius: 6px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+      ℹ️ <%= mensaje %>
+    </div>
+  <% } %>
+
+  <% if (typeof exito !== 'undefined' && exito) { %>
+    <div class="alert-banner success" style="margin-bottom: 1.5rem; background: #dcfce7; border: 1px solid #4ade80; color: #166534; padding: 0.75rem 1rem; border-radius: 6px; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+      ✓ <%= exito %>
+    </div>
+  <% } %>
+
   <!-- Resumen de Alertas Vigentes -->
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
     <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
@@ -122,29 +134,41 @@
                   </span>
                 </td>
                 <td style="padding: 0.75rem 1rem;">
-                  <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; background: <%= a.estado === 'Pendiente' ? '#fef3c7; color: #92400e;' : '#e0f2fe; color: #0369a1;' %>">
-                    <%= a.estado %>
-                  </span>
+                  <% if (a.estado === 'Resuelta') { %>
+                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; background: #dcfce7; color: #166534;">
+                      Resuelta (&le; 14h)
+                    </span>
+                  <% } else { %>
+                    <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; background: <%= a.estado === 'Pendiente' ? '#fef3c7; color: #92400e;' : '#e0f2fe; color: #0369a1;' %>">
+                      <%= a.estado %>
+                    </span>
+                  <% } %>
                 </td>
                 <td style="padding: 0.75rem 1rem; color: #64748b; font-size: 0.8rem;">
                   <%= a.fechaGeneracion ? a.fechaGeneracion.slice(0, 10) : '—' %>
                 </td>
                 <td style="padding: 0.75rem 1rem; text-align: right; white-space: nowrap;">
-                  <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                  <div style="display: flex; gap: 0.4rem; justify-content: flex-end; align-items: center;">
                     <a href="/casos/<%= encodeURIComponent(a.numeroCaso) %>" style="padding: 0.35rem 0.65rem; border: 1px solid #cbd5e1; border-radius: 4px; color: #334155; text-decoration: none; font-size: 0.8rem; font-weight: 600; background: white;">
                       Ver caso &rarr;
                     </a>
                     
                     <% if (rolActual === 'Gestor/a UGCO') { %>
-                      <button onclick="document.getElementById('modal-gestion-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #0284c7; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
-                        Gestionar
-                      </button>
-                      <button onclick="document.getElementById('modal-cumplimiento-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #10b981; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
-                        Cumplir
-                      </button>
-                      <button onclick="document.getElementById('modal-cierre-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #64748b; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
-                        Cerrar
-                      </button>
+                      <% if (a.estado === 'Resuelta') { %>
+                        <span style="color: #166534; font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.5rem;">
+                          ✓ Resuelta
+                        </span>
+                      <% } else { %>
+                        <button onclick="document.getElementById('modal-gestion-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #0284c7; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                          Gestionar
+                        </button>
+                        <button onclick="document.getElementById('modal-cumplimiento-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #10b981; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                          <%= a.garantiaId ? 'Cumplir' : 'Resolver' %>
+                        </button>
+                        <button onclick="document.getElementById('modal-cierre-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #64748b; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                          Cerrar
+                        </button>
+                      <% } %>
                     <% } %>
                   </div>
                 </td>
@@ -195,11 +219,11 @@
                 <div id="modal-cumplimiento-<%= a.id %>" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 50; overflow-y: auto;">
                   <div style="max-width: 500px; margin: 4rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                      <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;">Acreditar Cumplimiento de Garantía GES</h3>
+                      <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;"><%= a.garantiaId ? 'Acreditar Cumplimiento de Garantía GES' : 'Resolver Alerta de Inactividad' %></h3>
                       <button onclick="document.getElementById('modal-cumplimiento-<%= a.id %>').style.display = 'none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #94a3b8;">&times;</button>
                     </div>
                     <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">
-                      Caso <%= a.numeroCaso %> · Garantía: <%= a.tipoGarantia || 'Asociada' %>. Al registrar el hito de cumplimiento, la alerta cambiará a <strong>Resuelta</strong> y la garantía a <strong>Cumplida</strong>.
+                      Caso <%= a.numeroCaso %> · <%= a.tipoGarantia ? 'Garantía: ' + a.tipoGarantia : 'Alerta: ' + a.tipo %>. Al registrar el hito resolutivo, la alerta cambiará a <strong>Resuelta</strong> y permanecerá visible durante 14 horas.
                     </p>
                     <form action="/alertas/<%= a.id %>/cumplimiento" method="POST">
                       <div style="margin-bottom: 1rem;">
@@ -220,7 +244,7 @@
                       </div>
                       <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
                         <button type="button" onclick="document.getElementById('modal-cumplimiento-<%= a.id %>').style.display = 'none'" style="padding: 0.5rem 1rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer;">Cancelar</button>
-                        <button type="submit" style="padding: 0.5rem 1.25rem; background: #10b981; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Acreditar Cumplimiento</button>
+                        <button type="submit" style="padding: 0.5rem 1.25rem; background: #10b981; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;"><%= a.garantiaId ? 'Acreditar Cumplimiento' : 'Resolver Alerta' %></button>
                       </div>
                     </form>
                   </div>

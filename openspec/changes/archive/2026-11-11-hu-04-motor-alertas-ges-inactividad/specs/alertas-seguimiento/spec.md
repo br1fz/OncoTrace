@@ -53,56 +53,72 @@ El sistema SHALL calcular el último registro asistencial de cada caso como el m
 
 ### Requirement: Registro de gestión sin acreditar cumplimiento
 
-Cuando una gestora autorizada registra una acción de gestión en la bitácora sobre una alerta GES pendiente, el sistema SHALL conservar la acción y cambiar la alerta a En gestión, sin marcarla como cumplimiento de la garantía.
+Cuando una gestora autorizada registra una acción de gestión en la bitácora sobre una alerta de seguimiento activa (por garantía GES o por inactividad), el sistema SHALL conservar la acción y cambiar la alerta a En gestión, confirmando que la alerta quedó en ese estado y sigue activa, sin marcarla como cumplimiento ni resolución.
 
-#### Scenario: HU-04-ESC-05 Gestión registrada sin cumplimiento de la garantía
+#### Scenario: HU-04-ESC-05 Gestión registrada sin cumplimiento ni resolución
 
-- **GIVEN** un caso con una alerta por una garantía GES pendiente
-- **WHEN** una gestora autorizada registra una acción de gestión en la bitácora sin que se cumpla la garantía
+- **GIVEN** un caso con una alerta de seguimiento activa, por una garantía GES pendiente o por inactividad
+- **WHEN** una gestora autorizada registra una acción de gestión en la bitácora sin que se registre el hito o contacto que resuelve la alerta
 - **THEN** la alerta queda en estado En gestión
 - **AND** permanece disponible para seguimiento
-- **AND** la acción registrada no se considera cumplimiento de la garantía
+- **AND** la acción registrada no se considera cumplimiento de la garantía ni resolución de la alerta
+- **AND** el sistema confirma que la alerta quedó En gestión y que sigue activa
 
-### Requirement: Resolución por cumplimiento de la garantía
+### Requirement: Resolución por cumplimiento o restablecimiento del contacto
 
-Cuando se registra el hito asistencial que acredita el cumplimiento de la garantía GES asociada a una alerta Pendiente o En gestión, el sistema SHALL vincular el hito a la alerta, cambiar su estado a Resuelta y registrar la garantía como Cumplida.
+Cuando se registra el hito asistencial que cumple la garantía GES o el contacto que restablece la actividad del caso, el sistema SHALL vincularlo a la alerta, cambiar su estado a Resuelta, confirmar la acción al usuario y mantener la alerta visible en el panel general durante 14 horas desde su resolución. Transcurrido ese plazo, SHALL excluirla de las alertas vigentes.
 
-#### Scenario: HU-04-ESC-06 Resolución por cumplimiento de la garantía
+#### Scenario: HU-04-ESC-06 Resolución por cumplimiento o restablecimiento del contacto
 
-- **GIVEN** un caso con una alerta por una garantía GES pendiente
-- **WHEN** se registra el hito que acredita el cumplimiento de esa garantía
+- **GIVEN** un caso con una alerta de seguimiento activa, por una garantía GES pendiente o por inactividad
+- **WHEN** se registra el hito que acredita el cumplimiento de esa garantía o el contacto que restablece la actividad del caso
 - **THEN** la alerta queda en estado Resuelta
-- **AND** se conserva la relación entre la alerta y el hito de cumplimiento
+- **AND** el sistema confirma la resolución de la alerta
+- **AND** se conserva la relación entre la alerta y el hito o contacto que la resolvió
+- **AND** la alerta Resuelta permanece visible en el panel general durante 14 horas desde su resolución
+- **AND** transcurridas las 14 horas deja de listarse entre las alertas vigentes y queda consultable en la ficha del caso
 
 ### Requirement: Cierre por causa documentada
 
-Cuando una gestora autorizada registra un motivo, una fecha y una responsable para una causa documentada que deja sin efecto la garantía GES, el sistema SHALL cambiar la alerta a No aplica y conservar esos antecedentes de cierre.
+Cuando una gestora autorizada registra un motivo, una fecha y una responsable para una causa documentada que deja sin efecto la garantía GES o el seguimiento del caso, el sistema SHALL cambiar la alerta a No aplica y conservar esos antecedentes de cierre.
 
-#### Scenario: HU-04-ESC-07 Cierre por una causa que deja sin efecto la garantía
+#### Scenario: HU-04-ESC-07 Cierre por una causa documentada que deja sin efecto la alerta
 
-- **GIVEN** un caso con una alerta por una garantía GES pendiente
-- **AND** una causa documentada que deja sin efecto esa garantía
+- **GIVEN** un caso con una alerta de seguimiento activa, por una garantía GES pendiente o por inactividad
+- **AND** una causa documentada que deja sin efecto esa garantía o el seguimiento del caso
 - **WHEN** una gestora autorizada registra el cierre con su motivo y fecha
 - **THEN** la alerta queda en estado No aplica
 - **AND** se conserva la identificación de la responsable y la causa del cierre
 
 #### Scenario: Rechazo del cierre sin motivo, fecha o responsable
 
-- **GIVEN** una alerta vigente asociada a una garantía GES
+- **GIVEN** una alerta vigente asociada a una garantía GES o inactividad
 - **WHEN** una gestora autorizada intenta cerrarla sin informar el motivo, la fecha o la responsable
 - **THEN** el sistema rechaza el cierre y muestra un mensaje de error
 - **AND** la alerta conserva su estado anterior
 
 ### Requirement: Notificación en el panel general y en la tarjeta del caso
 
-El sistema SHALL mostrar las alertas vigentes en el panel general de la gestora y en la tarjeta del caso, indicando el tipo de alerta, la prioridad, el estado y, cuando corresponda a una garantía GES, el tipo de garantía y los días hábiles restantes.
+El sistema SHALL mostrar las alertas vigentes en el panel general de la gestora y en la tarjeta del caso, indicando el tipo de alerta, la prioridad, el estado y, cuando corresponda a una garantía GES, el tipo de garantía y los días hábiles restantes. Las alertas en estado Resuelta permanecerán visibles en el panel general únicamente durante 14 horas desde su resolución y no se mostrarán como vigentes en la tarjeta del caso.
 
 #### Scenario: Visualización de alertas vigentes en panel y tarjeta
 
 - **GIVEN** un caso con una alerta vigente asociada a una garantía GES
 - **WHEN** la gestora abre el panel general de alertas o la tarjeta del caso en el tablero
 - **THEN** el sistema muestra el tipo de alerta, la prioridad, el estado, el tipo de garantía y los días hábiles restantes
-- **AND** no muestra como vigentes las alertas en estado Resuelta o No aplica
+- **AND** no muestra como vigentes las alertas en estado Resuelta (salvo en el panel general durante las 14 horas reglamentarias) o No aplica
+
+### Requirement: Confirmación de la evaluación explícita desde el panel
+
+El sistema SHALL permitir a la gestora autorizada solicitar la evaluación explícita de alertas desde el panel general mediante la acción «Evaluar alertas ahora», ejecutando la evaluación de vencimientos GES e inactividad, informando cuántas alertas nuevas se generaron mediante un mensaje observable y permaneciendo en el panel general de alertas.
+
+#### Scenario: HU-04-ESC-09 Confirmación de la evaluación explícita desde el panel
+
+- **GIVEN** que la gestora autorizada se encuentra en el panel general de alertas
+- **WHEN** pulsa «Evaluar alertas ahora»
+- **THEN** OncoTrace ejecuta la evaluación de vencimientos GES e inactividad
+- **AND** le informa cuántas alertas nuevas se generaron
+- **AND** permanece en el panel general de alertas
 
 ### Requirement: Exportación del reporte consolidado de alertas vigentes
 

@@ -329,8 +329,10 @@ export class RepositorioOncologico {
     return Boolean(row);
   }
 
-  listarAlertasVigentes(fechaReferencia?: string): AlertaConDetalle[] {
+  listarAlertasVigentes(fechaReferencia?: string, soloActivas = false): AlertaConDetalle[] {
     const ref = fechaReferencia ? fechaReferencia.slice(0, 10) : new Date().toISOString().slice(0, 10);
+    const ahoraMs = fechaReferencia && fechaReferencia.length > 10 ? new Date(fechaReferencia).getTime() : Date.now();
+
     const stmt = this.db.prepare(`
       SELECT 
         a.id, a.caso_id as casoId, a.identificador, a.tipo, a.prioridad, a.estado,
@@ -343,14 +345,32 @@ export class RepositorioOncologico {
       JOIN caso_oncologico c ON c.id = a.caso_id
       JOIN paciente p ON p.id = c.paciente_id
       LEFT JOIN garantia_ges g ON g.id = a.garantia_id
-      WHERE a.estado IN ('Pendiente', 'En gestión')
+      WHERE a.estado IN ('Pendiente', 'En gestión', 'Resuelta')
       ORDER BY 
         CASE WHEN a.prioridad = 'Alta' THEN 1 WHEN a.prioridad = 'Media' THEN 2 ELSE 3 END ASC,
         a.fecha_generacion ASC, a.id DESC
     `);
     const rows = stmt.all() as any[];
 
-    return rows.map((r) => {
+    // HU-04-ESC-06: Resuelta permanece visible en panel durante 14 horas desde resolución.
+    // HU-04-ESC-08: Exportación CSV excluye Resueltas y No aplica.
+    const filtradas = rows.filter((r) => {
+      if (r.estado === 'Pendiente' || r.estado === 'En gestión') {
+        return true;
+      }
+      if (soloActivas) {
+        return false;
+      }
+      if (r.estado === 'Resuelta') {
+        if (!r.fechaCierre) return false;
+        const fechaCierreMs = new Date(r.fechaCierre).getTime();
+        const diffHoras = (ahoraMs - fechaCierreMs) / (1000 * 60 * 60);
+        return diffHoras >= 0 && diffHoras <= 14;
+      }
+      return false;
+    });
+
+    return filtradas.map((r) => {
       let diasRestantes = undefined;
       let diasInactividad = undefined;
       if (r.fechaLimiteGarantia) {
@@ -375,13 +395,14 @@ export class RepositorioOncologico {
     stmt.run(nuevoEstado, alertaId);
   }
 
-  resolverAlertaConHito(alertaId: number, hitoId: number, garantiaId?: number): void {
+  resolverAlertaConHito(alertaId: number, hitoId: number, garantiaId?: number, fechaCierreIso?: string): void {
+    const fecha = fechaCierreIso || new Date().toISOString();
     const tx = this.db.transaction(() => {
       this.db.prepare(`
         UPDATE alerta_seguimiento 
-        SET estado = 'Resuelta', hito_cumplimiento_id = ?
+        SET estado = 'Resuelta', hito_cumplimiento_id = ?, fecha_cierre = ?
         WHERE id = ?
-      `).run(hitoId, alertaId);
+      `).run(hitoId, fecha, alertaId);
 
       if (garantiaId) {
         this.db.prepare(`
