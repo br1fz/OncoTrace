@@ -95,7 +95,7 @@ En `data/app.db` hay una alerta antigua **«Vencimiento de plazo GES (Etapificac
 | 10 | `Documentos/08-modelo-dominio.md` | `fechaCierre` registra fecha y hora de la resolución o del cierre; la ventana de 14 horas se calcula desde ese valor. |
 | 11 | `.cin324/historias/HU-04.md` | Ficha de la historia sincronizada con todo lo anterior (estados, flujo, Gherkin y decisiones I8/I9). |
 
-**Pendiente de verificación manual:** reexportar `EST-01-AlertaSeguimiento.png` y la imagen de DSS-04 desde sus fuentes `.puml`; revisar visualmente el resultado.
+**Verificación completada:** reexportadas `EST-01-AlertaSeguimiento.png` y `DSS-04-HU-04.png` (junto con `DSS-03-HU-01.png`, `EST-03-CasoOncologico.png` y `EST-04-EstudioDiagnostico.png`) desde sus fuentes `.puml` e integradas en la documentación.
 
 ## Cómo trabajamos los cambios
 

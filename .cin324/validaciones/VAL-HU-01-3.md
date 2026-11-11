@@ -76,4 +76,4 @@ HU-01 queda cerrada. Para continuar con la siguiente historia: `/cin324-generar-
 Pendientes opcionales, ninguno bloqueante:
 
 1. Corregir el cálculo de «hoy» para usar la fecha local (OBS-1).
-2. Exportar `diagramas/DSS-03-HU-01.png` desde `diagramas/diagramas-secuencia.puml`, si la entrega exige la imagen.
+2. [x] Exportar `diagramas/DSS-03-HU-01.png` desde `diagramas/diagramas-secuencia.puml` (completado e integrado).

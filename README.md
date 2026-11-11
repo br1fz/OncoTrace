@@ -58,8 +58,8 @@ Los documentos explican el alcance de cada modelo. Las imágenes permiten consul
 | Proceso propuesto | [02 · TO-BE](./Documentos/02-rediseno-to-be.md) | — | [BPMN](./diagramas/to-be.bpmn) |
 | Modelo de dominio | [08 · Modelo de dominio](./Documentos/08-modelo-dominio.md) | [UML](./diagramas/modelo-dominio.png) | [PlantUML](./diagramas/modelo-dominio.puml) |
 | Casos de uso | [09 · Casos de uso](./Documentos/09-casos-de-uso.md) | [DCU-01](./diagramas/casos-de-uso.png) | [PlantUML](./diagramas/casos-de-uso.puml) |
-| Secuencias del sistema | [10 · Diagramas de secuencia](./Documentos/10-diagramas-secuencia.md) | [DSS-01](./diagramas/DSS-01-HU-05.png) · [DSS-02](./diagramas/DSS-02-HU-08.png) | [PlantUML](./diagramas/diagramas-secuencia.puml) |
-| Estados de objetos | [11 · Diagramas de estado](./Documentos/11-diagramas-estado.md) | [EST-01](./diagramas/EST-01-AlertaSeguimiento.png) · [EST-02](./diagramas/EST-02-DossierDigitalDerivacion.png) | [PlantUML](./diagramas/estados-objetos.puml) |
+| Secuencias del sistema | [10 · Diagramas de secuencia](./Documentos/10-diagramas-secuencia.md) | [DSS-01](./diagramas/DSS-01-HU-05.png) · [DSS-02](./diagramas/DSS-02-HU-08.png) · [DSS-03](./diagramas/DSS-03-HU-01.png) · [DSS-04](./diagramas/DSS-04-HU-04.png) | [PlantUML](./diagramas/diagramas-secuencia.puml) |
+| Estados de objetos | [11 · Diagramas de estado](./Documentos/11-diagramas-estado.md) | [EST-01](./diagramas/EST-01-AlertaSeguimiento.png) · [EST-02](./diagramas/EST-02-DossierDigitalDerivacion.png) · [EST-03](./diagramas/EST-03-CasoOncologico.png) · [EST-04](./diagramas/EST-04-EstudioDiagnostico.png) | [PlantUML](./diagramas/estados-objetos.puml) |
 
 ---
 

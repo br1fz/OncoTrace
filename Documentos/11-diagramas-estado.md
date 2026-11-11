@@ -78,6 +78,8 @@ El dossier recorre los seis estados definidos para HU-08. Su ciclo comienza cuan
 - **Caso de uso relacionado:** [CU-05 — Dar seguimiento al caso oncológico](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
 - **Diagrama de secuencia relacionado:** [DSS-03](./10-diagramas-secuencia.md#dss-03--dar-seguimiento-al-caso-oncologico).
 
+![EST-03 — Ciclo de vida de un caso oncológico](../diagramas/EST-03-CasoOncologico.png)
+
 **Archivo fuente:** [estados-objetos.puml](../diagramas/estados-objetos.puml) (`@startuml EST-03-CasoOncologico`).
 
 ```mermaid
@@ -126,6 +128,8 @@ El objeto `CasoOncologico` transiciona a lo largo de las ocho etapas normadas de
 - **Historia relacionada:** [HU-05](./04-historias-usuario.md#hu-05).
 - **Casos de uso relacionados:** [CU-01 y CU-02](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
 - **Diagrama de secuencia relacionado:** [DSS-01](./10-diagramas-secuencia.md#dss-01--incorporar-y-consultar-informes-diagnosticos).
+
+![EST-04 — Ciclo de vida de EstudioDiagnostico](../diagramas/EST-04-EstudioDiagnostico.png)
 
 **Archivo fuente:** [estados-objetos.puml](../diagramas/estados-objetos.puml) (`@startuml EST-04-EstudioDiagnostico`).
 

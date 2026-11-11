@@ -52,6 +52,8 @@ TENS solicita la confección del dossier. En el flujo representado, la gestora r
 - **Historia:** [HU-01](./04-historias-usuario.md#hu-01).
 - **Actores participantes:** Gestor/a UGCO y médico tratante.
 
+![DSS-03 — Dar seguimiento al caso oncológico](../diagramas/DSS-03-HU-01.png)
+
 **Archivo fuente:** [diagramas-secuencia.puml](../diagramas/diagramas-secuencia.puml) (`@startuml DSS-03-HU-01`).
 
 ```mermaid
@@ -97,6 +99,8 @@ La gestora consulta el seguimiento y la línea de tiempo de un paciente. OncoTra
 - **Caso de uso:** [CU-06](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
 - **Historia:** [HU-04](./04-historias-usuario.md#hu-04).
 - **Actores y unidades participantes:** Gestor/a UGCO y Unidad GES institucional.
+
+![DSS-04 — Detección y gestión de alertas preventivas GES e inactividad](../diagramas/DSS-04-HU-04.png)
 
 **Archivo fuente:** [diagramas-secuencia.puml](../diagramas/diagramas-secuencia.puml) (`@startuml DSS-04-HU-04`).
 
