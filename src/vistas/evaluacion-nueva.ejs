@@ -1,0 +1,540 @@
+<%- include('parciales/header') %>
+
+<div style="margin-bottom: 1rem;">
+  <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>" style="color: #0284c7; text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+    &larr; Volver a la Ficha del Caso <%= caso.numeroCaso %>
+  </a>
+</div>
+
+<div class="form-container">
+  <div class="form-header">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div>
+        <span class="badge-subtitulo">Pauta de Valoración Inicial y Multidimensional (CU-10 / TB-02)</span>
+        <h1 style="font-size: 1.6rem; font-weight: 800; color: #0f172a; margin-top: 0.25rem;">
+          Evaluación por Dominios — Caso <%= caso.numeroCaso %>
+        </h1>
+        <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
+          Paciente: <strong><%= caso.nombreCompleto %></strong> &nbsp;|&nbsp; RUN: <strong><%= caso.run %></strong> &nbsp;|&nbsp; Etapa: <strong><%= caso.etapaActual %></strong>
+        </p>
+      </div>
+      <div>
+        <span class="badge-role">Rol actual: <%= rolActual %></span>
+      </div>
+    </div>
+  </div>
+
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert-banner error" style="margin: 1.5rem 1.5rem 0 1.5rem;">
+      <span>⚠️</span> <%= error %>
+    </div>
+  <% } %>
+
+  <% if (rolActual !== 'Gestor/a UGCO') { %>
+    <div class="alert-banner error" style="margin: 1.5rem 1.5rem 0 1.5rem;">
+      <span>🔒</span> <strong>Modo solo lectura:</strong> La aplicación y registro de la pauta de valoración multidimensional está reservada exclusivamente para el rol <strong>Gestor/a UGCO</strong> según el caso de uso CU-10.
+    </div>
+  <% } %>
+
+  <form action="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/evaluaciones" method="POST" class="evaluacion-form" id="evalForm">
+    
+    <!-- 1. Dominio Clínico-Funcional (ECOG) -->
+    <div class="card-dominio">
+      <div class="dominio-header">
+        <span class="dominio-num">1</span>
+        <div>
+          <h2>Dominio Clínico-Funcional</h2>
+          <p>Rendimiento funcional basal del paciente oncológico (Escala ECOG / OMS obligatoria)</p>
+        </div>
+      </div>
+      <div class="dominio-body">
+        <div class="form-group required">
+          <label for="ecogSelect"><strong>Índice ECOG (0 a 4) *:</strong></label>
+          <select name="ecog" id="ecogSelect" class="form-control" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %> required>
+            <option value="">-- Seleccione rendimiento ECOG --</option>
+            <option value="0" <%= datos.ecog === 0 || datos.ecog === '0' ? 'selected' : '' %>>ECOG 0 — Completamente activo, realiza todas sus actividades previas sin restricciones.</option>
+            <option value="1" <%= datos.ecog === 1 || datos.ecog === '1' ? 'selected' : '' %>>ECOG 1 — Restricción para actividad física intensa, pero ambulatorio y realiza trabajos livianos.</option>
+            <option value="2" <%= datos.ecog === 2 || datos.ecog === '2' ? 'selected' : '' %>>ECOG 2 — Ambulatorio y capaz de autocuidado, pero incapaz de realizar trabajo; levantado >50% de las horas de vigilia.</option>
+            <option value="3" <%= datos.ecog === 3 || datos.ecog === '3' ? 'selected' : '' %>>ECOG 3 — Capaz de sólo autocuidado limitado; confinado a cama o silla >50% de las horas de vigilia.</option>
+            <option value="4" <%= datos.ecog === 4 || datos.ecog === '4' ? 'selected' : '' %>>ECOG 4 — Totalmente confinado a la cama o sillón; incapaz de valerse por sí mismo.</option>
+          </select>
+          <small class="help-text">Campo clínico indispensable para la estratificación del riesgo y conducta terapéutica.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="descFuncional">Observaciones y hallazgos funcionales:</label>
+          <textarea name="descripcionFuncional" id="descFuncional" class="form-control" rows="2" placeholder="Detalle sintomatología funcional, dolor o limitaciones motrices..." <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>><%= datos.descripcionFuncional || '' %></textarea>
+        </div>
+
+        <div class="derivacion-box">
+          <label class="checkbox-label">
+            <input type="checkbox" name="requiereDerivacionFuncional" <%= datos.requiereDerivacionFuncional ? 'checked' : '' %> <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            Requiere derivación funcional (Kinesiología / Terapia Ocupacional)
+          </label>
+          <input type="text" name="especialidadDerivadaFuncional" class="form-control mt-1" placeholder="Especialidad o unidad a derivar" value="<%= datos.especialidadDerivadaFuncional || '' %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Dominio Psicoemocional -->
+    <div class="card-dominio">
+      <div class="dominio-header">
+        <span class="dominio-num">2</span>
+        <div>
+          <h2>Dominio Psicoemocional</h2>
+          <p>Pesquisa de distrés emocional, ansiedad y sintomatología depresiva</p>
+        </div>
+      </div>
+      <div class="dominio-body">
+        <div class="form-group">
+          <label for="puntajePsico"><strong>Nivel de afectación psicoemocional:</strong></label>
+          <select name="puntajePsicoemocional" id="puntajePsico" class="form-control" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            <option value="0" <%= datos.puntajePsicoemocional === 0 || datos.puntajePsicoemocional === '0' ? 'selected' : '' %>>0 — Sin afectación o adaptación psicológica adecuada</option>
+            <option value="1" <%= datos.puntajePsicoemocional === 1 || datos.puntajePsicoemocional === '1' ? 'selected' : '' %>>1 — Afectación leve a moderada (angustia reactiva manejable)</option>
+            <option value="2" <%= datos.puntajePsicoemocional === 2 || datos.puntajePsicoemocional === '2' ? 'selected' : '' %>>2 — Distrés severo / Alteración crítica (sugiere intervención psicosocial)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="descPsico">Hallazgos psicoemocionales:</label>
+          <textarea name="descripcionPsicoemocional" id="descPsico" class="form-control" rows="2" placeholder="Describa el estado de ánimo, red de contención o factores de distrés..." <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>><%= datos.descripcionPsicoemocional || '' %></textarea>
+        </div>
+
+        <div class="derivacion-box">
+          <label class="checkbox-label">
+            <input type="checkbox" name="requiereDerivacionPsico" <%= datos.requiereDerivacionPsico ? 'checked' : '' %> <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            Requiere derivación a Psicooncología / Salud Mental
+          </label>
+          <input type="text" name="especialidadPsico" class="form-control mt-1" placeholder="Ej: Psicooncología UGCO" value="<%= datos.especialidadPsico || '' %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Dominio Familiar y Cuidador Principal -->
+    <div class="card-dominio">
+      <div class="dominio-header">
+        <span class="dominio-num">3</span>
+        <div>
+          <h2>Dominio Familiar y Cuidador Principal</h2>
+          <p>Identificación de la red de apoyo, cuidador principal y pesquisa de sobrecarga (Zarit)</p>
+        </div>
+      </div>
+      <div class="dominio-body">
+        <div class="form-group">
+          <label class="checkbox-label" style="font-size: 0.95rem; font-weight: 700;">
+            <input type="checkbox" name="tieneCuidador" id="checkCuidador" value="true" <%= datos.tieneCuidador ? 'checked' : 'checked' %> onchange="toggleCuidador()" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            El paciente cuenta con cuidador/a principal identificado/a
+          </label>
+        </div>
+
+        <div id="seccionCuidador" style="display: block;">
+          <div class="grid-form-2col">
+            <div class="form-group">
+              <label for="nombreCuidador">Nombre completo del cuidador/a:</label>
+              <input type="text" name="nombreCuidador" id="nombreCuidador" class="form-control" placeholder="Ej: Marcela González" value="<%= datos.nombreCuidador || (caso.cuidador ? caso.cuidador.nombreCompleto : '') %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            </div>
+            <div class="form-group">
+              <label for="runCuidador">RUN del cuidador/a:</label>
+              <input type="text" name="runCuidador" id="runCuidador" class="form-control" placeholder="Ej: 14.234.567-8" value="<%= datos.runCuidador || (caso.cuidador ? caso.cuidador.runCuidador : '') %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            </div>
+            <div class="form-group">
+              <label for="parentescoCuidador">Parentesco:</label>
+              <input type="text" name="parentescoCuidador" id="parentescoCuidador" class="form-control" placeholder="Ej: Cónyuge, Hija/o, Hermana/o" value="<%= datos.parentescoCuidador || (caso.cuidador ? caso.cuidador.parentesco : '') %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            </div>
+            <div class="form-group">
+              <label for="telefonoCuidador">Teléfono de contacto:</label>
+              <input type="text" name="telefonoCuidador" id="telefonoCuidador" class="form-control" placeholder="Ej: +56 9 8765 4321" value="<%= datos.telefonoCuidador || (caso.cuidador ? caso.cuidador.telefonoContacto : '') %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            </div>
+          </div>
+
+          <div class="form-group mt-1">
+            <label for="escalaZarit"><strong>Puntaje Escala Zarit de Sobrecarga (0 a 88):</strong></label>
+            <input type="number" min="0" max="88" name="escalaZarit" id="escalaZarit" class="form-control" style="max-width: 200px;" placeholder="0 - 88" value="<%= datos.escalaZarit !== undefined ? datos.escalaZarit : '' %>" oninput="comprobarZarit()" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            <div class="zarit-legend">
+              <span><strong>Referencia Zarit:</strong></span>
+              <span class="legend-badge">≤ 46: Sin sobrecarga</span>
+              <span class="legend-badge">47 - 56: Sobrecarga leve</span>
+              <span class="legend-badge alert"> > 56: Sobrecarga severa (Alerta prioritaria a Servicio Social)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group mt-1">
+          <label for="descCuidador">Observaciones sobre el soporte y dinámicas de cuidado:</label>
+          <textarea name="descripcionCuidador" id="descCuidador" class="form-control" rows="2" placeholder="Indique disponibilidad horaria, signos de agotamiento físico o emocional..." <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>><%= datos.descripcionCuidador || '' %></textarea>
+        </div>
+
+        <div class="derivacion-box" id="cajaDerivacionCuidador">
+          <label class="checkbox-label">
+            <input type="checkbox" name="requiereDerivacionCuidador" id="checkDerivacionCuidador" <%= datos.requiereDerivacionCuidador ? 'checked' : '' %> <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            Solicitud formal de apoyo psicosocial / derivación para el cuidador
+          </label>
+          <input type="text" name="especialidadDerivadaCuidador" id="especialidadCuidador" class="form-control mt-1" placeholder="Ej: Servicio Social / Programa de Cuidadores" value="<%= datos.especialidadDerivadaCuidador || '' %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Dominio Socioeconómico -->
+    <div class="card-dominio">
+      <div class="dominio-header">
+        <span class="dominio-num">4</span>
+        <div>
+          <h2>Dominio Socioeconómico</h2>
+          <p>Cobertura previsional, situación ocupacional y nivel de vulnerabilidad social</p>
+        </div>
+      </div>
+      <div class="dominio-body">
+        <div class="grid-form-3col">
+          <div class="form-group">
+            <label for="nivelSocio"><strong>Vulnerabilidad Socioeconómica:</strong></label>
+            <select name="nivelSocioeconomico" id="nivelSocio" class="form-control" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+              <option value="Bajo" <%= datos.nivelSocioeconomico === 'Bajo' ? 'selected' : '' %>>Baja (Situación socioeconómica estable)</option>
+              <option value="Medio" <%= datos.nivelSocioeconomico === 'Medio' ? 'selected' : '' %>>Media (Ingresos ajustados / Red de apoyo limitada)</option>
+              <option value="Alto" <%= datos.nivelSocioeconomico === 'Alto' ? 'selected' : '' %>>Alta (Situación precaria / Dificultad para adherir)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="previsionSalud"><strong>Previsión de Salud:</strong></label>
+            <select name="previsionSalud" id="previsionSalud" class="form-control" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+              <option value="FONASA A" <%= datos.previsionSalud === 'FONASA A' ? 'selected' : '' %>>FONASA Tramo A</option>
+              <option value="FONASA B" <%= datos.previsionSalud === 'FONASA B' ? 'selected' : '' %>>FONASA Tramo B</option>
+              <option value="FONASA C" <%= datos.previsionSalud === 'FONASA C' ? 'selected' : '' %>>FONASA Tramo C</option>
+              <option value="FONASA D" <%= datos.previsionSalud === 'FONASA D' ? 'selected' : '' %>>FONASA Tramo D</option>
+              <option value="ISAPRE" <%= datos.previsionSalud === 'ISAPRE' ? 'selected' : '' %>>ISAPRE</option>
+              <option value="DIPRECA / CAPREDENA" <%= datos.previsionSalud === 'DIPRECA / CAPREDENA' ? 'selected' : '' %>>DIPRECA / CAPREDENA</option>
+              <option value="Particular" <%= datos.previsionSalud === 'Particular' ? 'selected' : '' %>>Particular / Sin previsión</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="situacionLaboral"><strong>Situación Laboral:</strong></label>
+            <select name="situacionLaboral" id="situacionLaboral" class="form-control" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+              <option value="Empleado dependiente" <%= datos.situacionLaboral === 'Empleado dependiente' ? 'selected' : '' %>>Empleado/a dependiente con contrato</option>
+              <option value="Independiente / Por cuenta propia" <%= datos.situacionLaboral === 'Independiente / Por cuenta propia' ? 'selected' : '' %>>Independiente / Por cuenta propia</option>
+              <option value="Cesante / Desempleado" <%= datos.situacionLaboral === 'Cesante / Desempleado' ? 'selected' : '' %>>Cesante / Buscando trabajo</option>
+              <option value="Jubilado / Pensionado" <%= datos.situacionLaboral === 'Jubilado / Pensionado' ? 'selected' : '' %>>Jubilado/a o Pensionado/a</option>
+              <option value="Labores de cuidado no remuneradas" <%= datos.situacionLaboral === 'Labores de cuidado no remuneradas' ? 'selected' : '' %>>Labores del hogar o de cuidado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group mt-1">
+          <label for="descSocio">Detalle de vulnerabilidad social y económica:</label>
+          <textarea name="descripcionSocioeconomica" id="descSocio" class="form-control" rows="2" placeholder="Mencione dificultades de traslado, vivienda o apoyo económico..." <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>><%= datos.descripcionSocioeconomica || '' %></textarea>
+        </div>
+
+        <div class="derivacion-box">
+          <label class="checkbox-label">
+            <input type="checkbox" name="requiereDerivacionSocial" <%= datos.requiereDerivacionSocial ? 'checked' : '' %> <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            Requiere derivación a Unidad de Servicio Social
+          </label>
+          <input type="text" name="especialidadSocial" class="form-control mt-1" placeholder="Ej: Servicio Social UGCO" value="<%= datos.especialidadSocial || '' %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Dominio Espiritual -->
+    <div class="card-dominio">
+      <div class="dominio-header">
+        <span class="dominio-num">5</span>
+        <div>
+          <h2>Dominio Espiritual y Cultural</h2>
+          <p>Valores, creencias culturales y soporte espiritual de la persona y familia</p>
+        </div>
+      </div>
+      <div class="dominio-body">
+        <div class="form-group">
+          <label for="descEspiritual">Creencias y requerimientos espirituales:</label>
+          <textarea name="descripcionEspiritual" id="descEspiritual" class="form-control" rows="2" placeholder="Consigne necesidades espirituales o culturales que deban considerarse en el plan terapéutico..." <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>><%= datos.descripcionEspiritual || '' %></textarea>
+        </div>
+
+        <div class="derivacion-box">
+          <label class="checkbox-label">
+            <input type="checkbox" name="requiereDerivacionEspiritual" <%= datos.requiereDerivacionEspiritual ? 'checked' : '' %> <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            Requiere derivación a Acompañamiento Espiritual / Capellanía
+          </label>
+          <input type="text" name="especialidadEspiritual" class="form-control mt-1" placeholder="Unidad de acompañamiento espiritual" value="<%= datos.especialidadEspiritual || '' %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Dominio Comprensión Diagnóstica -->
+    <div class="card-dominio">
+      <div class="dominio-header">
+        <span class="dominio-num">6</span>
+        <div>
+          <h2>Dominio Comprensión Diagnóstica</h2>
+          <p>Grado de asimilación del diagnóstico, pronóstico y alternativas de tratamiento</p>
+        </div>
+      </div>
+      <div class="dominio-body">
+        <div class="form-group">
+          <label for="descComprension">Nivel de comprensión diagnóstica:</label>
+          <textarea name="descripcionComprension" id="descComprension" class="form-control" rows="2" placeholder="¿El paciente y su familia comprenden la sospecha o confirmación, los plazos GES y los pasos siguientes?..." <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>><%= datos.descripcionComprension || '' %></textarea>
+        </div>
+
+        <div class="derivacion-box">
+          <label class="checkbox-label">
+            <input type="checkbox" name="requiereDerivacionComprension" <%= datos.requiereDerivacionComprension ? 'checked' : '' %> <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+            Requiere consejería de refuerzo o educación diagnóstica
+          </label>
+          <input type="text" name="especialidadComprension" class="form-control mt-1" placeholder="Ej: Enfermería de Navegación UGCO" value="<%= datos.especialidadComprension || '' %>" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datos de Trazabilidad del Registro (Inmutabilidad) -->
+    <div class="meta-panel">
+      <div>
+        <label for="profesionalEvaluador"><strong>Profesional Evaluador/a Responsable:</strong></label>
+        <input type="text" name="profesionalEvaluador" id="profesionalEvaluador" class="form-control" value="<%= rolActual === 'Gestor/a UGCO' ? 'Enf. Patricia Soto' : 'Dr. Médico Tratante' %>" style="max-width: 320px;" <%= rolActual !== 'Gestor/a UGCO' ? 'disabled' : '' %>>
+        <small class="help-text">La fecha, hora y usuario se registrarán automáticamente de forma inmutable (Ley N° 20.584).</small>
+      </div>
+      <div class="form-actions">
+        <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>" class="btn-secondary">Cancelar</a>
+        <% if (rolActual === 'Gestor/a UGCO') { %>
+          <button type="submit" class="btn-primary" id="btnGuardar">
+            Guardar Evaluación Multidimensional
+          </button>
+        <% } else { %>
+          <button type="button" class="btn-primary" disabled style="opacity: 0.5; cursor: not-allowed;">
+            Guardado deshabilitado para Médico
+          </button>
+        <% } %>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  function toggleCuidador() {
+    const check = document.getElementById('checkCuidador');
+    const seccion = document.getElementById('seccionCuidador');
+    if (check && seccion) {
+      seccion.style.display = check.checked ? 'block' : 'none';
+    }
+  }
+
+  function comprobarZarit() {
+    const inputZarit = document.getElementById('escalaZarit');
+    const checkDeriv = document.getElementById('checkDerivacionCuidador');
+    const espCuidador = document.getElementById('especialidadCuidador');
+    const cajaDeriv = document.getElementById('cajaDerivacionCuidador');
+
+    if (!inputZarit) return;
+    const valor = Number(inputZarit.value);
+
+    if (!isNaN(valor) && valor > 56) {
+      if (checkDeriv) {
+        checkDeriv.checked = true;
+      }
+      if (espCuidador && !espCuidador.value) {
+        espCuidador.value = 'Servicio Social';
+      }
+      if (cajaDeriv) {
+        cajaDeriv.style.borderColor = '#ef4444';
+        cajaDeriv.style.background = '#fef2f2';
+      }
+    } else {
+      if (cajaDeriv) {
+        cajaDeriv.style.borderColor = '#e2e8f0';
+        cajaDeriv.style.background = '#f8fafc';
+      }
+    }
+  }
+</script>
+
+<style>
+  .form-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  .form-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem;
+  }
+  .badge-subtitulo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #0284c7;
+  }
+  .badge-role {
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+  }
+  .evaluacion-form {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .card-dominio {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .dominio-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .dominio-num {
+    background: #0284c7;
+    color: white;
+    font-weight: 800;
+    font-size: 0.85rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dominio-header h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+  }
+  .dominio-header p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0;
+  }
+  .dominio-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .form-group label {
+    font-size: 0.88rem;
+    color: #1e293b;
+  }
+  .form-control {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    color: #0f172a;
+    background: #ffffff;
+    font-family: inherit;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: #0284c7;
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+  }
+  .help-text {
+    font-size: 0.78rem;
+    color: #64748b;
+  }
+  .grid-form-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .grid-form-3col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+  }
+  .derivacion-box {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+  }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: #334155;
+    cursor: pointer;
+  }
+  .mt-1 { margin-top: 0.5rem; }
+  .zarit-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+    font-size: 0.78rem;
+  }
+  .legend-badge {
+    background: #e2e8f0;
+    color: #334155;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .legend-badge.alert {
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 700;
+  }
+  .meta-panel {
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  .form-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    text-decoration: none;
+    padding: 0.55rem 1.1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .btn-primary {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 0.55rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: #0369a1;
+  }
+</style>
+
+<%- include('parciales/footer') %>

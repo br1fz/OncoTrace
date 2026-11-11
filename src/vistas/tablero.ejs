@@ -24,7 +24,7 @@
             <div class="caso-card" onclick="window.location.href='/casos/<%= encodeURIComponent(caso.numeroCaso) %>'">
               <div class="card-top">
                 <span class="caso-id"><%= caso.numeroCaso %></span>
-                <span class="riesgo-tag"><%= caso.marcadorRiesgo %></span>
+                <span class="riesgo-tag riesgo-<%= caso.marcadorRiesgo ? caso.marcadorRiesgo.toLowerCase().replace(/\s+/g, '-') : 'sin-evaluar' %>"><%= caso.marcadorRiesgo %></span>
               </div>
               <h3 class="paciente-nombre"><%= caso.nombreCompleto %></h3>
               <p class="paciente-run">RUN: <%= caso.run %></p>
@@ -163,9 +163,29 @@
     background: #f1f5f9;
     color: #64748b;
     font-size: 0.7rem;
-    padding: 0.1rem 0.4rem;
+    padding: 0.15rem 0.45rem;
     border-radius: 4px;
-    font-weight: 500;
+    font-weight: 600;
+  }
+  .riesgo-tag.riesgo-bajo {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+  }
+  .riesgo-tag.riesgo-medio {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+  }
+  .riesgo-tag.riesgo-alto {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+  }
+  .riesgo-tag.riesgo-sin-evaluar {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
   }
   .paciente-nombre {
     font-size: 0.95rem;

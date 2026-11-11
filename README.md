@@ -125,9 +125,11 @@ El proyecto considera la Ley N° 20.584, la Ley Nacional del Cáncer N° 21.258,
 
 ---
 
-## Aplicación prototipo (HU-01 · Tablero de trazabilidad)
+## Aplicación prototipo (HU-01 y HU-02)
 
-Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se implementó el primer incremento del sistema para la historia **HU-01: Tablero de trazabilidad y línea de tiempo clínica**.
+Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se implementaron los incrementos del sistema para las historias:
+- **HU-01: Tablero de trazabilidad y línea de tiempo clínica por etapas** (TB-01 / CU-05).
+- **HU-02: Evaluación multidimensional y estratificación por dominios** (TB-02 / CU-10).
 
 ### Stack tecnológico
 - **Lenguaje / Entorno:** Node.js (TypeScript estricto con `NodeNext`).
@@ -150,13 +152,13 @@ Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se
    ```bash
    npm run db:seed
    ```
-   *Crea automáticamente la base de datos SQLite en `data/app.db`, aplica migraciones y carga 4 casos ficticios en Sospecha, Confirmación diagnóstica, Etapificación (con resolución de comité) y Tratamiento.*
+   *Crea automáticamente la base de datos SQLite en `data/app.db`, aplica migraciones `001_inicial.sql` y `002_evaluacion_multidimensional.sql`, y carga 4 casos ficticios en etapas distintas con sus hitos, resoluciones y valoraciones multidimensionales basales.*
 
 3. **Ejecutar la suite de pruebas automatizadas:**
    ```bash
    npm test
    ```
-   *Ejecuta 11 pruebas automatizadas que verifican los escenarios Gherkin de HU-01 (tablero por 8 etapas, consulta de línea de tiempo con días transcurridos, resolución de comité sin cambio de etapa, transición a tratamiento y rechazo por falta de resolución previa).*
+   *Ejecuta 23 pruebas automatizadas (13 de HU-01 y 10 de HU-02) que verifican exhaustivamente los escenarios Gherkin, las reglas de consistencia temporal, el cálculo de vulnerabilidad global, la alerta prioritaria por sobrecarga del cuidador (Zarit > 56), la obligatoriedad de ECOG 0–4 y la inmutabilidad de registros.*
 
 4. **Iniciar el servidor en modo desarrollo:**
    ```bash
@@ -165,11 +167,29 @@ Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se
    *La aplicación quedará disponible en [http://localhost:3000](http://localhost:3000).*
 
 ### Recorrido de prueba guiado (Demostración)
-1. **Tablero general (`/`):** Observa las 8 columnas de la trayectoria asistencial (`Sospecha` hasta `Alta y contrarreferencia`). Verás tarjetas de pacientes con su RUN anonimizado, especialidad oncológica, CIE-10, último hito y semáforo de plazos.
-2. **Selector de rol:** En la barra superior, cambia entre `Gestor/a UGCO` y `Médico tratante` para simular operaciones según perfil.
-3. **Ficha y línea de tiempo (`/casos/CASO-2026-003`):** Ingresa al caso en Etapificación. Verás sus antecedentes clínicos, la resolución del Comité Oncológico registrada y la línea de tiempo con los días transcurridos entre hitos consecutivos.
-4. **Registro de hito y transición (`/casos/CASO-2026-003/hitos/nuevo`):** 
-   - Registra el hito `Inicio de tratamiento`.
-   - La regla de negocio (guarda EST-03) validará que existe la resolución previa y cambiará atómicamente la etapa del caso a `Tratamiento`.
-   - Al volver al tablero, el paciente figurará automáticamente en la columna de Tratamiento.
-5. **Rechazo por regla clínica (`/casos/CASO-2026-002`):** Intenta registrar `Inicio de tratamiento` para un caso en Confirmación diagnóstica sin resolución previa; el sistema rechazará la transición cumpliendo con la regla de consistencia institucional.
+
+#### 1. Tablero de Trazabilidad y Semáforo de Riesgo (HU-01 / HU-02)
+- Accede a [http://localhost:3000](http://localhost:3000).
+- Observa las 8 columnas de la trayectoria asistencial (`Sospecha` hasta `Alta y contrarreferencia`).
+- Cada tarjeta muestra RUN anonimizado, especialidad oncológica, CIE-10, último hito, semáforo de plazos y el nuevo distintivo de vulnerabilidad derivado de HU-02 (`Bajo` en verde, `Alto` en rojo o `Sin evaluar` si aún no cuenta con pauta).
+
+#### 2. Ficha del Caso y Valoración Vigente
+- Selecciona el caso `CASO-2026-001` (Sospecha) o `CASO-2026-002` (Confirmación diagnóstica).
+- En el panel lateral derecho observarás la sección **Valoración Multidimensional Vigente** con el detalle del ECOG, afectación psicoemocional, cuidador identificado, puntaje Zarit, profesional evaluador y las derivaciones activas al equipo psicosocial.
+
+#### 3. Aplicar una Nueva Evaluación Multidimensional (HU-02)
+- En la ficha del caso, haz clic en **«+ Nueva evaluación multidimensional»** (o ingresa a `/casos/CASO-2026-001/evaluaciones/nueva`).
+- Completa la pauta valorando los 6 dominios:
+  1. **Clínico-funcional:** Selecciona el índice ECOG (0 a 4). Si intentas omitirlo, el sistema rechazará la acción indicando el campo obligatorio (HU-02-ESC-03).
+  2. **Psicoemocional:** Califica el grado de afectación emocional (0 a 2).
+  3. **Cuidador y red de apoyo:** Identifica al cuidador principal y digita la escala Zarit. Al ingresar un valor superior a 56, el sistema activa automáticamente la solicitud de apoyo psicosocial.
+  4. **Socioeconómico:** Define la vulnerabilidad (Bajo, Medio, Alto), previsión (FONASA / ISAPRE) y situación laboral.
+  5. **Espiritual y Comprensión:** Consigna creencias relevantes y el nivel de comprensión diagnóstica.
+- Presiona **«Guardar Evaluación Multidimensional»**:
+  - El sistema calculará automáticamente el índice global ponderado (0 a 6 puntos $\rightarrow$ Bajo, Medio, Alto).
+  - Ante Zarit > 56, generará de inmediato una alerta prioritaria para la Unidad de Servicio Social (HU-02-ESC-02).
+  - El registro se almacenará de manera inmutable en el historial y actualizará el distintivo del paciente en la ficha y en el tablero Kanban.
+
+#### 4. Control de Rol de Demostración
+- En la barra superior, cambia el rol activo a `Médico tratante`.
+- Al ingresar al formulario de evaluación multidimensional, el sistema se mostrará en modo solo lectura con el guardado deshabilitado, reservando la aplicación de la pauta al perfil de `Gestor/a UGCO` (CU-10).

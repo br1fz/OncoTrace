@@ -32,6 +32,7 @@
   5. **HU-02 (Riesgo y vulnerabilidad):** Estandarizado el concepto como «índice de vulnerabilidad asistencial global» y su clasificación en `nivelVulnerabilidad` (`Bajo`, `Medio`, `Alto`).
   6. **Repositorio y fuente de verdad:** Ratificada la exclusión de `_backup/` y la vigencia absoluta de `Documentos/` y `diagramas/`.
   7. **Vistas, tipos y diagramas visuales:** Agregada `Paciente` a `MD-01.D` y aplicados los tipos `NivelVulnerabilidad`, `EstadoContactoBitacora` y `EstadoSincronizacionMINSAL` en `diagramas/modelo-dominio.puml`. Incorporada previsualización Mermaid del BPMN TO-BE en `02-rediseno-to-be.md`, Mermaid para DSS-03/04 en `10-diagramas-secuencia.md` y Mermaid para EST-03/04 en `11-diagramas-estado.md`.
+- 2026-11-11 — Validación HU-02: se mantiene el historial de evaluaciones inmutable (append-only); se descarta la corrección con log de responsables. La protección contra modificaciones del paciente queda en el control de acceso de CU-10 (solo Gestor/a UGCO registra; Médico tratante, solo lectura).
 
 ## Stack (se define una sola vez)
 - Lenguaje y framework: TypeScript estricto + Express + EJS
@@ -46,7 +47,7 @@
 | Historia | Estado | Cambio de OpenSpec | Fecha | Observaciones |
 |----------|--------|--------------------|-------|----------------|
 | HU-01 | hecha | hu-01-tablero-trazabilidad + ajuste-hu-01-consistencia-temporal | 2026-11-10 | Must. 13/13 pruebas pasando y `npm run build` sin errores. Archivado como `2026-11-10-ajuste-hu-01-consistencia-temporal`. Ficha: `.cin324/historias/HU-01.md`. Validación cerrada el 2026-11-10 (`VAL-HU-01-3`). |
-| HU-02 | pendiente | — | — | Must |
+| HU-02 | hecha | hu-02-evaluacion-multidimensional | 2026-11-11 | Must. 10/10 pruebas de HU-02 (23/23 totales) y `npm run build` sin errores. Validación cerrada el 2026-11-11 (`VAL-HU-02-1`): 3 escenarios Gherkin, cálculo Bajo/Medio/Alto, inmutabilidad, permisos y distintivos verificados sin errores. OBS-1 (corrección con log de responsables) descartada: se mantiene el historial inmutable. Ficha: `.cin324/historias/HU-02.md`. |
 | HU-03 | pendiente | — | — | Must |
 | HU-04 | pendiente | — | — | Must |
 | HU-05 | pendiente | — | — | Must |
@@ -63,6 +64,7 @@
 | HU-01 | `.cin324/validaciones/VAL-HU-01-1.md` | verificado en el sistema (observaciones resueltas en la vuelta 2) | 2026-11-10 |
 | HU-01 | `.cin324/validaciones/VAL-HU-01-2.md` | verificado en el sistema (ajuste implementado y probado con 13/13 tests) | 2026-11-10 |
 | HU-01 | `.cin324/validaciones/VAL-HU-01-3.md` | **verificado en el sistema — HU-01 cerrada** (ESC-04 y ESC-05 comprobados; queda 1 mejora menor pendiente: «hoy» en UTC) | 2026-11-10 |
+| HU-02 | `.cin324/validaciones/VAL-HU-02-1.md` | **verificado en el sistema — HU-02 cerrada** (sin observaciones; OBS-1 descartada: historial inmutable) | 2026-11-11 |
 
 ## Cambios posteriores
 | Cambio | Historia afectada | Motivo | Fecha |

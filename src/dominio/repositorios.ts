@@ -9,6 +9,12 @@ import type {
   CasoResumenTablero,
   EtapaTrayectoria
 } from './caso-oncologico.js';
+import type {
+  CuidadorAutorizado,
+  EvaluacionMultidimensional,
+  DominioValoracion,
+  TipoDominio
+} from './evaluacion.js';
 
 export class RepositorioOncologico {
   constructor(private db: Database) {}
@@ -116,6 +122,17 @@ export class RepositorioOncologico {
         alertaMaxima = alertasRow.maxPrio === 3 ? 'Alta' : alertasRow.maxPrio === 2 ? 'Media' : 'Baja';
       }
 
+      // Última evaluación multidimensional (HU-02)
+      const evalRow = this.db.prepare(`
+        SELECT nivel_vulnerabilidad as nivelVulnerabilidad
+        FROM evaluacion_multidimensional
+        WHERE caso_id = ?
+        ORDER BY fecha_evaluacion DESC, id DESC
+        LIMIT 1
+      `).get(r.id) as any;
+
+      const marcadorRiesgo = evalRow?.nivelVulnerabilidad || 'Sin evaluar';
+
       return {
         numeroCaso: r.numeroCaso,
         run: r.run,
@@ -126,7 +143,7 @@ export class RepositorioOncologico {
         ultimoHito: ultimoHitoRow ? { tipo: ultimoHitoRow.tipo, fechaOcurrencia: ultimoHitoRow.fechaOcurrencia } : undefined,
         alertasPendientes: alertasRow ? Number(alertasRow.total) : 0,
         alertaMaximaPrioridad: alertaMaxima,
-        marcadorRiesgo: 'Sin evaluar'
+        marcadorRiesgo
       };
     });
   }
@@ -221,6 +238,158 @@ export class RepositorioOncologico {
       alerta.fechaGeneracion
     );
     return Number(res.lastInsertRowid);
+  }
+
+  // --- Cuidadores Autorizados (HU-02 / CU-10 / D3) ---
+  obtenerCuidadorPorPacienteId(pacienteId: number): CuidadorAutorizado | null {
+    const row = this.db.prepare(`
+      SELECT 
+        id, paciente_id as pacienteId, run_cuidador as runCuidador,
+        nombre_completo as nombreCompleto, parentesco, telefono_contacto as telefonoContacto,
+        autorizacion_vigente as autorizacionVigente, fecha_registro_autorizacion as fechaRegistroAutorizacion
+      FROM cuidador_autorizado
+      WHERE paciente_id = ?
+      ORDER BY id DESC
+      LIMIT 1
+    `).get(pacienteId) as any;
+    if (!row) return null;
+    return {
+      ...row,
+      autorizacionVigente: Boolean(row.autorizacionVigente)
+    };
+  }
+
+  crearCuidador(cuidador: CuidadorAutorizado): number {
+    const stmt = this.db.prepare(`
+      INSERT INTO cuidador_autorizado (
+        paciente_id, run_cuidador, nombre_completo, parentesco, telefono_contacto, autorizacion_vigente, fecha_registro_autorizacion
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+    const res = stmt.run(
+      cuidador.pacienteId,
+      cuidador.runCuidador,
+      cuidador.nombreCompleto,
+      cuidador.parentesco,
+      cuidador.telefonoContacto,
+      cuidador.autorizacionVigente ? 1 : 0,
+      cuidador.fechaRegistroAutorizacion
+    );
+    return Number(res.lastInsertRowid);
+  }
+
+  // --- Evaluación Multidimensional y Dominios (HU-02 / CU-10 / D1, D2, D5, D6) ---
+  crearEvaluacion(
+    evaluacion: EvaluacionMultidimensional,
+    dominios: DominioValoracion[],
+    cuidador?: CuidadorAutorizado
+  ): number {
+    let evaluacionId = 0;
+    const tx = this.db.transaction(() => {
+      if (cuidador) {
+        this.crearCuidador(cuidador);
+      }
+
+      const stmtEval = this.db.prepare(`
+        INSERT INTO evaluacion_multidimensional (
+          caso_id, identificador, fecha_evaluacion, puntaje_clinico_funcional,
+          puntaje_psicoemocional, escala_zarit_cuidador, nivel_vulnerabilidad, profesional_evaluador
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      const resEval = stmtEval.run(
+        evaluacion.casoId,
+        evaluacion.identificador,
+        evaluacion.fechaEvaluacion,
+        evaluacion.puntajeClinicoFuncional,
+        evaluacion.puntajePsicoemocional,
+        evaluacion.escalaZaritCuidador ?? null,
+        evaluacion.nivelVulnerabilidad,
+        evaluacion.profesionalEvaluador
+      );
+      evaluacionId = Number(resEval.lastInsertRowid);
+
+      const stmtDom = this.db.prepare(`
+        INSERT INTO dominio_valoracion (
+          evaluacion_id, tipo_dominio, descripcion_hallazgo, requiere_derivacion,
+          especialidad_derivada, prevision_salud, situacion_laboral
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `);
+      for (const d of dominios) {
+        stmtDom.run(
+          evaluacionId,
+          d.tipoDominio,
+          d.descripcionHallazgo,
+          d.requiereDerivacion ? 1 : 0,
+          d.especialidadDerivada ?? null,
+          d.previsionSalud ?? null,
+          d.situacionLaboral ?? null
+        );
+      }
+    });
+
+    tx();
+    return evaluacionId;
+  }
+
+  obtenerUltimaEvaluacionPorCasoId(casoId: number): EvaluacionMultidimensional | null {
+    const row = this.db.prepare(`
+      SELECT 
+        id, caso_id as casoId, identificador, fecha_evaluacion as fechaEvaluacion,
+        puntaje_clinico_funcional as puntajeClinicoFuncional,
+        puntaje_psicoemocional as puntajePsicoemocional,
+        escala_zarit_cuidador as escalaZaritCuidador,
+        nivel_vulnerabilidad as nivelVulnerabilidad,
+        profesional_evaluador as profesionalEvaluador
+      FROM evaluacion_multidimensional
+      WHERE caso_id = ?
+      ORDER BY fecha_evaluacion DESC, id DESC
+      LIMIT 1
+    `).get(casoId) as any;
+    if (!row) return null;
+
+    const dominios = this.listarDominiosPorEvaluacionId(row.id);
+    return {
+      ...row,
+      dominios
+    };
+  }
+
+  listarEvaluacionesPorCasoId(casoId: number): EvaluacionMultidimensional[] {
+    const rows = this.db.prepare(`
+      SELECT 
+        id, caso_id as casoId, identificador, fecha_evaluacion as fechaEvaluacion,
+        puntaje_clinico_funcional as puntajeClinicoFuncional,
+        puntaje_psicoemocional as puntajePsicoemocional,
+        escala_zarit_cuidador as escalaZaritCuidador,
+        nivel_vulnerabilidad as nivelVulnerabilidad,
+        profesional_evaluador as profesionalEvaluador
+      FROM evaluacion_multidimensional
+      WHERE caso_id = ?
+      ORDER BY fecha_evaluacion DESC, id DESC
+    `).all(casoId) as any[];
+
+    return rows.map((r) => ({
+      ...r,
+      dominios: this.listarDominiosPorEvaluacionId(r.id)
+    }));
+  }
+
+  listarDominiosPorEvaluacionId(evaluacionId: number): DominioValoracion[] {
+    const rows = this.db.prepare(`
+      SELECT 
+        id, evaluacion_id as evaluacionId, tipo_dominio as tipoDominio,
+        descripcion_hallazgo as descripcionHallazgo, requiere_derivacion as requiereDerivacion,
+        especialidad_derivada as especialidadDerivada,
+        prevision_salud as previsionSalud, situacion_laboral as situacionLaboral
+      FROM dominio_valoracion
+      WHERE evaluacion_id = ?
+      ORDER BY id ASC
+    `).all(evaluacionId) as any[];
+
+    return rows.map((r) => ({
+      ...r,
+      tipoDominio: r.tipoDominio as TipoDominio,
+      requiereDerivacion: Boolean(r.requiereDerivacion)
+    }));
   }
 }
 

@@ -220,7 +220,142 @@ export function sembrarDatos(dbRuta?: string): void {
     });
   }
 
-  console.log('✅ Datos de ejemplo sembrados con éxito (4 casos ficticios en etapas distintas).');
+  // Evaluaciones Multidimensionales Iniciales (HU-02)
+  const checkEval = db.prepare('SELECT COUNT(*) as count FROM evaluacion_multidimensional WHERE caso_id = ?');
+
+  // Caso 1: Rosa Valenzuela - Nivel Bajo (ECOG 1, Zarit 32, FONASA B)
+  if ((checkEval.get(c1.id!) as any).count === 0) {
+    repo.crearEvaluacion(
+      {
+        casoId: c1.id!,
+        identificador: 'EVAL-2026-001',
+        fechaEvaluacion: '2026-10-18T10:00:00Z',
+        puntajeClinicoFuncional: 1,
+        puntajePsicoemocional: 0,
+        escalaZaritCuidador: 32,
+        nivelVulnerabilidad: 'Bajo',
+        profesionalEvaluador: 'Enf. Patricia Soto (Gestor/a UGCO)'
+      },
+      [
+        {
+          tipoDominio: 'CLINICO_FUNCIONAL',
+          descripcionHallazgo: 'ECOG 1 — Paciente ambulatoria con leve astenia pero autónoma.',
+          requiereDerivacion: false
+        },
+        {
+          tipoDominio: 'PSICOEMOCIONAL',
+          descripcionHallazgo: 'Buena adaptación inicial, contención afectiva presente.',
+          requiereDerivacion: false
+        },
+        {
+          tipoDominio: 'CUIDADOR',
+          descripcionHallazgo: 'Hija Claudia acompaña a controles. Zarit 32 (sin sobrecarga).',
+          requiereDerivacion: false
+        },
+        {
+          tipoDominio: 'SOCIOECONOMICO',
+          descripcionHallazgo: 'FONASA Tramo B, jubilada. Red familiar colaborativa.',
+          requiereDerivacion: false,
+          previsionSalud: 'FONASA B',
+          situacionLaboral: 'Jubilado / Pensionado'
+        },
+        {
+          tipoDominio: 'ESPIRITUAL',
+          descripcionHallazgo: 'Católica practicante, manifiesta apoyo de comunidad parroquial.',
+          requiereDerivacion: false
+        },
+        {
+          tipoDominio: 'COMPRENSION_DIAGNOSTICA',
+          descripcionHallazgo: 'Comprende el proceso de sospecha y necesidad de mamografía complementaria.',
+          requiereDerivacion: false
+        }
+      ],
+      {
+        pacienteId: p1.id!,
+        runCuidador: '18.765.432-1',
+        nombreCompleto: 'Claudia Valenzuela',
+        parentesco: 'Hija',
+        telefonoContacto: '+56 9 7654 3210',
+        autorizacionVigente: true,
+        fechaRegistroAutorizacion: '2026-10-18T10:00:00Z'
+      }
+    );
+  }
+
+  // Caso 2: Carlos Araya - Nivel Alto (ECOG 3, Zarit 62 > 56 con sobrecarga y alerta, FONASA A)
+  if ((checkEval.get(c2.id!) as any).count === 0) {
+    repo.crearEvaluacion(
+      {
+        casoId: c2.id!,
+        identificador: 'EVAL-2026-002',
+        fechaEvaluacion: '2026-10-17T11:30:00Z',
+        puntajeClinicoFuncional: 3,
+        puntajePsicoemocional: 2,
+        escalaZaritCuidador: 62,
+        nivelVulnerabilidad: 'Alto',
+        profesionalEvaluador: 'Enf. Patricia Soto (Gestor/a UGCO)'
+      },
+      [
+        {
+          tipoDominio: 'CLINICO_FUNCIONAL',
+          descripcionHallazgo: 'ECOG 3 — Síntomas consuntivos, dolor abdominal persistente y reposo en cama >50% del día.',
+          requiereDerivacion: true,
+          especialidadDerivada: 'Terapia del Dolor y Cuidados Paliativos'
+        },
+        {
+          tipoDominio: 'PSICOEMOCIONAL',
+          descripcionHallazgo: 'Afectación severa: angustia ante el diagnóstico y temor a descompensación.',
+          requiereDerivacion: true,
+          especialidadDerivada: 'Psicooncología UGCO'
+        },
+        {
+          tipoDominio: 'CUIDADOR',
+          descripcionHallazgo: 'Cónyuge Teresa Pizarro asume sola los cuidados. Zarit 62 (sobrecarga severa pesquisada).',
+          requiereDerivacion: true,
+          especialidadDerivada: 'Servicio Social'
+        },
+        {
+          tipoDominio: 'SOCIOECONOMICO',
+          descripcionHallazgo: 'FONASA A, cesante sin subsidios activos. Gastos de traslado críticos.',
+          requiereDerivacion: true,
+          especialidadDerivada: 'Servicio Social UGCO',
+          previsionSalud: 'FONASA A',
+          situacionLaboral: 'Cesante / Desempleado'
+        },
+        {
+          tipoDominio: 'ESPIRITUAL',
+          descripcionHallazgo: 'Solicita apoyo y contención en sala.',
+          requiereDerivacion: false
+        },
+        {
+          tipoDominio: 'COMPRENSION_DIAGNOSTICA',
+          descripcionHallazgo: 'Dificultad para asimilar el informe de biopsia; requiere acompañamiento continuado.',
+          requiereDerivacion: true,
+          especialidadDerivada: 'Enfermería de Navegación UGCO'
+        }
+      ],
+      {
+        pacienteId: p2.id!,
+        runCuidador: '11.234.567-8',
+        nombreCompleto: 'Teresa Pizarro',
+        parentesco: 'Cónyuge',
+        telefonoContacto: '+56 9 8765 1234',
+        autorizacionVigente: true,
+        fechaRegistroAutorizacion: '2026-10-17T11:30:00Z'
+      }
+    );
+
+    // Alerta por sobrecarga severa del cuidador (Zarit > 56 / HU-02-ESC-02)
+    repo.crearAlerta({
+      casoId: c2.id!,
+      tipo: 'Sobrecarga de cuidador',
+      prioridad: 'Alta',
+      estado: 'Pendiente',
+      fechaGeneracion: '2026-10-17T11:30:00Z'
+    });
+  }
+
+  console.log('✅ Datos de ejemplo sembrados con éxito (4 casos y valoraciones multidimensionales iniciales).');
 }
 
 // Ejecución directa por CLI si se invoca con npm run db:seed

@@ -9,6 +9,7 @@ import {
   type AlertaSeguimiento,
   evaluarTransicionHito
 } from '../dominio/caso-oncologico.js';
+import type { EvaluacionMultidimensional, CuidadorAutorizado } from '../dominio/evaluacion.js';
 import { RepositorioOncologico } from '../dominio/repositorios.js';
 
 export interface TableroEtapas {
@@ -33,6 +34,9 @@ export interface FichaCasoCompleta {
   alertasPendientes: number;
   marcadorRiesgo: string;
   ultimoHito?: HitoAsistencial;
+  evaluacionActual?: EvaluacionMultidimensional;
+  evaluacionesHistoricas?: EvaluacionMultidimensional[];
+  cuidador?: CuidadorAutorizado;
 }
 
 export interface RegistroHitoInput {
@@ -103,6 +107,12 @@ export class ServicioSeguimiento {
 
     const ultimoHito = hitosConDias.length > 0 ? hitosConDias[hitosConDias.length - 1] : undefined;
 
+    // Evaluaciones multidimensionales (HU-02)
+    const evaluacionActual = this.repo.obtenerUltimaEvaluacionPorCasoId(caso.id) || undefined;
+    const evaluacionesHistoricas = this.repo.listarEvaluacionesPorCasoId(caso.id);
+    const cuidador = this.repo.obtenerCuidadorPorPacienteId(caso.pacienteId) || undefined;
+    const marcadorRiesgo = evaluacionActual?.nivelVulnerabilidad || 'Sin evaluar';
+
     return {
       numeroCaso: caso.numeroCaso,
       run: caso.paciente.run,
@@ -115,8 +125,11 @@ export class ServicioSeguimiento {
       resoluciones,
       alertas,
       alertasPendientes,
-      marcadorRiesgo: 'Sin evaluar',
-      ultimoHito
+      marcadorRiesgo,
+      ultimoHito,
+      evaluacionActual,
+      evaluacionesHistoricas,
+      cuidador
     };
   }
 

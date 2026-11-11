@@ -21,7 +21,9 @@
     <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
       <span class="caso-badge-code"><%= caso.numeroCaso %></span>
       <span class="badge-etapa-destacada"><%= caso.etapaActual %></span>
-      <span class="badge-riesgo">Riesgo: <%= caso.marcadorRiesgo %></span>
+      <span class="badge-riesgo badge-riesgo-<%= caso.marcadorRiesgo ? caso.marcadorRiesgo.toLowerCase().replace(/\s+/g, '-') : 'sin-evaluar' %>">
+        Vulnerabilidad: <%= caso.marcadorRiesgo %>
+      </span>
     </div>
     <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;"><%= caso.nombreCompleto %></h1>
     <p style="color: #64748b; font-size: 0.95rem;"><strong>RUN:</strong> <%= caso.run %> &nbsp;|&nbsp; <strong>Ingreso UGCO:</strong> <%= caso.fechaIngreso %></p>
@@ -40,9 +42,14 @@
         <% } %>
       </p>
     </div>
-    <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/hitos/nuevo" class="btn-primary">
-      + Registrar nuevo hito asistencial
-    </a>
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+      <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/hitos/nuevo" class="btn-primary">
+        + Registrar nuevo hito asistencial
+      </a>
+      <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/evaluaciones/nueva" class="btn-secondary-action">
+        + Nueva evaluación multidimensional
+      </a>
+    </div>
   </div>
 </div>
 
@@ -88,8 +95,94 @@
     <% } %>
   </div>
 
-  <!-- Columna derecha: Resoluciones de Comité y Alertas -->
+  <!-- Columna derecha: Valoración Multidimensional, Resoluciones y Alertas -->
   <div class="side-panel">
+    <!-- Evaluación Multidimensional Vigente (HU-02) -->
+    <div class="sub-panel" style="margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b; margin: 0;">
+          Valoración Multidimensional
+        </h3>
+        <% if (caso.evaluacionActual) { %>
+          <span class="badge-riesgo badge-riesgo-<%= caso.evaluacionActual.nivelVulnerabilidad.toLowerCase() %>" style="font-size: 0.8rem; font-weight: 700;">
+            <%= caso.evaluacionActual.nivelVulnerabilidad %>
+          </span>
+        <% } %>
+      </div>
+
+      <% if (!caso.evaluacionActual) { %>
+        <p style="color: #94a3b8; font-size: 0.85rem; font-style: italic; margin-bottom: 0.75rem;">
+          Sin evaluación multidimensional registrada aún.
+        </p>
+        <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/evaluaciones/nueva" class="btn-secondary-action" style="display: block; text-align: center; font-size: 0.85rem;">
+          + Aplicar evaluación inicial
+        </a>
+      <% } else { %>
+        <div class="eval-resumen-box">
+          <p style="font-size: 0.82rem; color: #334155; margin-bottom: 0.35rem;">
+            <strong>ECOG / OMS:</strong> Grado <%= caso.evaluacionActual.puntajeClinicoFuncional %>
+          </p>
+          <p style="font-size: 0.82rem; color: #334155; margin-bottom: 0.35rem;">
+            <strong>Afectación psicoemocional:</strong> Nivel <%= caso.evaluacionActual.puntajePsicoemocional %>
+          </p>
+          <p style="font-size: 0.82rem; color: #334155; margin-bottom: 0.35rem;">
+            <strong>Cuidador principal:</strong> 
+            <% if (caso.cuidador) { %>
+              <%= caso.cuidador.nombreCompleto %> (<%= caso.cuidador.parentesco %>)
+            <% } else { %>
+              <em>Sin cuidador identificado</em>
+            <% } %>
+          </p>
+          <p style="font-size: 0.82rem; color: #334155; margin-bottom: 0.35rem;">
+            <strong>Escala Zarit:</strong> 
+            <% if (caso.evaluacionActual.escalaZaritCuidador !== null && caso.evaluacionActual.escalaZaritCuidador !== undefined) { %>
+              <%= caso.evaluacionActual.escalaZaritCuidador %> pts
+              <% if (caso.evaluacionActual.escalaZaritCuidador > 56) { %>
+                <span style="color: #b91c1c; font-weight: 700;">(Sobrecarga severa)</span>
+              <% } else if (caso.evaluacionActual.escalaZaritCuidador >= 47) { %>
+                <span style="color: #b45309;">(Sobrecarga leve)</span>
+              <% } else { %>
+                <span style="color: #15803d;">(Sin sobrecarga)</span>
+              <% } %>
+            <% } else { %>
+              <em>No evaluada</em>
+            <% } %>
+          </p>
+          <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; border-top: 1px dashed #e2e8f0; padding-top: 0.4rem;">
+            Evaluada el <%= caso.evaluacionActual.fechaEvaluacion.slice(0, 10) %> por <strong><%= caso.evaluacionActual.profesionalEvaluador %></strong>
+          </p>
+
+          <!-- Derivaciones requeridas en dominios -->
+          <% const derivacionesActivas = (caso.evaluacionActual.dominios || []).filter(d => d.requiereDerivacion); %>
+          <% if (derivacionesActivas.length > 0) { %>
+            <div style="margin-top: 0.75rem; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 4px; padding: 0.5rem;">
+              <p style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 0.25rem;">Derivaciones requeridas:</p>
+              <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.75rem; color: #78350f;">
+                <% derivacionesActivas.forEach(d => { %>
+                  <li><strong><%= d.tipoDominio %>:</strong> <%= d.especialidadDerivada || 'Intervención psicosocial' %></li>
+                <% }); %>
+              </ul>
+            </div>
+          <% } %>
+
+          <!-- Historial inmutable de evaluaciones -->
+          <% if (caso.evaluacionesHistoricas && caso.evaluacionesHistoricas.length > 1) { %>
+            <details style="margin-top: 0.75rem; font-size: 0.78rem; color: #475569;">
+              <summary style="cursor: pointer; font-weight: 600; color: #0284c7;">Ver historial (<%= caso.evaluacionesHistoricas.length %> evaluaciones inmutables)</summary>
+              <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                <% caso.evaluacionesHistoricas.forEach(eh => { %>
+                  <div style="background: white; border: 1px solid #e2e8f0; border-radius: 4px; padding: 0.35rem 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span><%= eh.fechaEvaluacion.slice(0, 10) %> · ECOG <%= eh.puntajeClinicoFuncional %></span>
+                    <span class="badge-riesgo badge-riesgo-<%= eh.nivelVulnerabilidad.toLowerCase() %>" style="font-size: 0.7rem;"><%= eh.nivelVulnerabilidad %></span>
+                  </div>
+                <% }); %>
+              </div>
+            </details>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+
     <!-- Resoluciones de Comité -->
     <div class="sub-panel">
       <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
@@ -170,6 +263,48 @@
     font-size: 0.8rem;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
+    font-weight: 600;
+  }
+  .badge-riesgo-bajo {
+    background: #dcfce7 !important;
+    color: #15803d !important;
+    border: 1px solid #bbf7d0;
+  }
+  .badge-riesgo-medio {
+    background: #fef3c7 !important;
+    color: #b45309 !important;
+    border: 1px solid #fde68a;
+  }
+  .badge-riesgo-alto {
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fecaca;
+  }
+  .badge-riesgo-sin-evaluar {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    border: 1px solid #cbd5e1;
+  }
+  .btn-secondary-action {
+    background: #f8fafc;
+    color: #0284c7;
+    border: 1px solid #0284c7;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+    transition: all 0.15s ease;
+  }
+  .btn-secondary-action:hover {
+    background: #e0f2fe;
+  }
+  .eval-resumen-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 0.85rem;
   }
   .btn-primary {
     background: #0284c7;
