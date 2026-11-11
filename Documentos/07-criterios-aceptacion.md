@@ -105,22 +105,26 @@ Característica: Detección y gestión de alertas de seguimiento
     Cuando OncoTrace evalúa la inactividad del caso
     Entonces no genera una alerta por inactividad para ese caso
 
-  Escenario: HU-04-ESC-05 Gestión registrada sin cumplimiento de la garantía
-    Dado un caso con una alerta por una garantía GES pendiente
-    Cuando una gestora autorizada registra una acción de gestión en la bitácora sin que se cumpla la garantía
+  Escenario: HU-04-ESC-05 Gestión registrada sin cumplimiento ni resolución
+    Dado un caso con una alerta de seguimiento activa, por una garantía GES pendiente o por inactividad
+    Cuando una gestora autorizada registra una acción de gestión en la bitácora sin que se registre el hito o contacto que resuelve la alerta
     Entonces la alerta queda en estado En gestión
     Y permanece disponible para seguimiento
-    Y la acción registrada no se considera cumplimiento de la garantía
+    Y la acción registrada no se considera cumplimiento de la garantía ni resolución de la alerta
+    Y el sistema confirma que la alerta quedó En gestión y que sigue activa
 
-  Escenario: HU-04-ESC-06 Resolución por cumplimiento de la garantía
-    Dado un caso con una alerta por una garantía GES pendiente
-    Cuando se registra el hito que acredita el cumplimiento de esa garantía
+  Escenario: HU-04-ESC-06 Resolución por cumplimiento o restablecimiento del contacto
+    Dado un caso con una alerta de seguimiento activa, por una garantía GES pendiente o por inactividad
+    Cuando se registra el hito que acredita el cumplimiento de esa garantía o el contacto que restablece la actividad del caso
     Entonces la alerta queda en estado Resuelta
-    Y se conserva la relación entre la alerta y el hito de cumplimiento
+    Y el sistema confirma la resolución de la alerta
+    Y se conserva la relación entre la alerta y el hito o contacto que la resolvió
+    Y la alerta Resuelta permanece visible en el panel general durante 14 horas desde su resolución
+    Y transcurridas las 14 horas deja de listarse entre las alertas vigentes y queda consultable en la ficha del caso
 
-  Escenario: HU-04-ESC-07 Cierre por una causa que deja sin efecto la garantía
-    Dado un caso con una alerta por una garantía GES pendiente
-    Y una causa documentada que deja sin efecto esa garantía
+  Escenario: HU-04-ESC-07 Cierre por una causa documentada que deja sin efecto la alerta
+    Dado un caso con una alerta de seguimiento activa, por una garantía GES pendiente o por inactividad
+    Y una causa documentada que deja sin efecto esa garantía o el seguimiento del caso
     Cuando una gestora autorizada registra el cierre con su motivo y fecha
     Entonces la alerta queda en estado No aplica
     Y se conserva la identificación de la responsable y la causa del cierre
@@ -131,6 +135,13 @@ Característica: Detección y gestión de alertas de seguimiento
     Entonces el sistema genera un archivo CSV descargable
     Y cada fila incluye el caso, el tipo de garantía, los días restantes (si corresponde a una garantía GES) y el estado de la alerta
     Y el archivo no incluye alertas en estado Resuelta ni No aplica
+
+  Escenario: HU-04-ESC-09 Confirmación de la evaluación explícita desde el panel
+    Dado que la gestora autorizada se encuentra en el panel general de alertas
+    Cuando pulsa «Evaluar alertas ahora»
+    Entonces OncoTrace ejecuta la evaluación de vencimientos GES e inactividad
+    Y le informa cuántas alertas nuevas se generaron
+    Y permanece en el panel general de alertas
 ```
 
 ---

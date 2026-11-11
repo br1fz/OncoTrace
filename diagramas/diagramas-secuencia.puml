@@ -255,16 +255,25 @@ else Inactividad asistencial superior a 15 días corridos (HU-04-ESC-03, ESC-04)
   OT -> Gestor: Notificar alerta de inactividad con caso y período transcurrido
 end
 
-Gestor -> OT: Consultar alertas pendientes y acceder al caso
+Gestor -> OT: Acceder al panel general y consultar alertas activas
 OT --> Gestor: Mostrar alertas activas, prioridad, días restantes y opciones de gestión
 
-alt Gestora registra acción en bitácora sin que se cumpla la garantía (HU-04-ESC-05)
+opt Gestora pulsa «Evaluar alertas ahora» (HU-04-ESC-09)
+  Gestor -> OT: Solicitar evaluación explícita de vencimientos GES e inactividad
+  OT --> Gestor: Informar cuántas alertas nuevas se generaron y permanecer en el panel
+end
+
+alt Gestora registra acción en bitácora sin cumplir la garantía ni resolver la alerta (HU-04-ESC-05)
   Gestor -> OT: Registrar acción de gestión en bitácora de acompañamiento
-  OT --> Gestor: Actualizar alerta a estado En gestión; mantener disponible para seguimiento
-else Se registra hito que acredita cumplimiento de la garantía GES (HU-04-ESC-06)
-  Gestor -> OT: Registrar hito de cumplimiento de la garantía
-  OT --> Gestor: Vincular hito a la alerta, cambiar estado a Resuelta y cerrar alerta
-else Se documenta causa que deja sin efecto la garantía GES (HU-04-ESC-07)
+  OT --> Gestor: Actualizar alerta a estado En gestión y confirmar que sigue activa
+else Se registra hito de cumplimiento o contacto que restablece la actividad (HU-04-ESC-06)
+  Gestor -> OT: Registrar hito de cumplimiento o contacto
+  OT --> Gestor: Vincular hito o contacto, cambiar estado a Resuelta y confirmar la resolución
+  note over OT, Gestor
+La alerta Resuelta permanece visible en el panel general 14 horas desde su resolución;
+luego deja de listarse entre las alertas vigentes y queda consultable en la ficha del caso.
+end note
+else Se documenta causa que deja sin efecto la garantía o el seguimiento (HU-04-ESC-07)
   Gestor -> OT: Documentar causa justificada de cierre con responsable
   OT --> Gestor: Cambiar estado a No aplica y registrar cierre definitivo
 end

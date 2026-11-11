@@ -30,13 +30,19 @@ state "Resuelta" as R #E7F4EC
 state "No aplica" as N #F0F2F5
 
 [*] -down-> P : / Vincular al caso y a su origen
-P -down-> G : Gestión registrada\n[GES, gestora autorizada]\n/ Guardar en bitácora
-P -down-> R : Hito registrado\n[GES cumplida] / Vincular hito
-P -down-> N : Causa documentada\n[GES sin efecto] / Registrar cierre
-G -left-> R : Hito registrado\n[GES cumplida] / Vincular hito y cerrar
-G -right-> N : Causa documentada\n[GES sin efecto] / Registrar cierre
+P -down-> G : Gestión registrada\n[GES, gestora autorizada]\n/ Guardar en bitácora y confirmar
+P -down-> R : Hito o contacto registrado\n[GES cumplida o actividad restablecida]\n/ Vincular hito y confirmar
+P -down-> N : Causa documentada\n[garantía o seguimiento sin efecto]\n/ Registrar cierre
+G -left-> R : Hito o contacto registrado\n[GES cumplida o actividad restablecida]\n/ Vincular hito y confirmar
+G -right-> N : Causa documentada\n[garantía o seguimiento sin efecto]\n/ Registrar cierre
 R -down-> [*]
 N -down-> [*]
+
+note right of R
+La alerta Resuelta permanece visible en el panel general
+14 horas desde su resolución; luego solo en la ficha del caso.
+No es un estado nuevo: solo cambia su visibilidad.
+end note
 
 legend top
   **Creación.** Se alcanza el umbral aplicable (GES <= 5 d, inactividad > 15 d, rezago derivación 11 d, o 3 intentos fallidos de contacto HU-03-CA7).

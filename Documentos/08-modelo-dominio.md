@@ -107,7 +107,9 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 
 - Cada alerta GES debe vincularse a una garantía del mismo caso. Cada alerta de rezago debe vincularse a un dossier del mismo caso. Una alerta de inactividad se vincula directamente al caso y no necesita garantía ni dossier de origen.
 
-- Una gestión registrada no resuelve una garantía pendiente. El estado Resuelta requiere el hito de cumplimiento. El estado No aplica requiere una causa documentada, fecha y responsable del cierre.
+- Una gestión registrada no resuelve una garantía pendiente. El estado Resuelta requiere el hito de cumplimiento de la garantía o el contacto que restablece la actividad del caso. El estado No aplica requiere una causa documentada, fecha y responsable del cierre.
+
+- Al transicionar a **Resuelta** o **No aplica**, `AlertaSeguimiento` registra en `fechaCierre` la fecha y hora del cambio. La visibilidad de 14 horas de una alerta **Resuelta** en el panel general se calcula desde ese valor; transcurrido ese plazo, la alerta solo queda consultable en la ficha del caso (HU-04 / ESC-06).
 
 - Un informe incorporado debe estar validado y vinculado a una orden del caso cuyo paciente coincida con el RUN informado. Si hay discrepancia, se conserva para revisión y no cuenta como examen recibido. Un informe pendiente de validación tampoco cuenta como recibido.
 

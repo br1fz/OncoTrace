@@ -76,7 +76,7 @@ Las fuentes y relaciones de origen se mantienen según la [matriz de trazabilida
 | HU-01-ESC-01 a HU-01-ESC-05 | CU-05 · Dar seguimiento al caso oncológico |
 | HU-02-ESC-01 a HU-02-ESC-03 | CU-10 · Aplicar evaluación multidimensional y estratificar riesgo |
 | HU-03-ESC-01 a HU-03-ESC-04 | CU-11 · Registrar interacción en bitácora de acompañamiento |
-| HU-04-ESC-01 a HU-04-ESC-07 | CU-06 · Gestionar alertas de seguimiento |
+| HU-04-ESC-01 a HU-04-ESC-09 | CU-06 · Gestionar alertas de seguimiento |
 | HU-05-ESC-01, HU-05-ESC-03 y HU-05-ESC-04 | CU-01 · Consolidar y consultar informes diagnósticos |
 | HU-05-ESC-02 | CU-02 · Recibir avisos de hallazgos críticos |
 | HU-06-ESC-01 a HU-06-ESC-03 | CU-12 · Generar ficha de presentación a comité |
@@ -148,4 +148,4 @@ Las relaciones entre historias y diagramas son de muchos a muchos: por ejemplo, 
 
 6. **Requisitos de calidad:** RNF-01, RNF-02, RNF-03 y RNF-04 se verifican con los escenarios de [06-atributos-calidad.md](./06-atributos-calidad.md). En la matriz se indican los artefactos donde aplican, y se reflejan transversalmente en los accesos SSO y auditoría.
 
-7. **Coherencia entre artefactos:** los eventos de EST-02 asociados a interacciones corresponden a los mensajes de DSS-02. El cumplimiento del plazo de once días hábiles desde el despacho se representa como un evento temporal en EST-02 y alerta en DSS-02. Los seis estados del dossier corresponden a HU-08-CA3. Las transiciones de gestión y cierre de alertas GES en EST-01 se trazan directamente a los escenarios del HU-04-ESC-05 al HU-04-ESC-07 y DSS-04. Las ocho etapas de `CasoOncologico` en EST-03 son las definidas en RF-01, TO-BE y DSS-03. El comité se registra como hito.
+7. **Coherencia entre artefactos:** los eventos de EST-02 asociados a interacciones corresponden a los mensajes de DSS-02. El cumplimiento del plazo de once días hábiles desde el despacho se representa como un evento temporal en EST-02 y alerta en DSS-02. Los seis estados del dossier corresponden a HU-08-CA3. Las transiciones de gestión, resolución y cierre de `AlertaSeguimiento` en EST-01 se trazan directamente a los escenarios HU-04-ESC-05 al HU-04-ESC-07 y DSS-04; la evaluación explícita desde el panel se traza a HU-04-ESC-09 y la visibilidad de 14 horas de la alerta **Resuelta** se refleja en la nota de EST-01 y en HU-04-ESC-06. Las ocho etapas de `CasoOncologico` en EST-03 son las definidas en RF-01, TO-BE y DSS-03. El comité se registra como hito.

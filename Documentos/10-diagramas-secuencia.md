@@ -118,16 +118,22 @@ sequenceDiagram
     OT-->>Gestor: Notificar alerta de inactividad con período transcurrido
   end
 
-  Gestor->>OT: Consultar alertas pendientes y acceder al caso
+  Gestor->>OT: Acceder al panel general y consultar alertas activas
   OT-->>Gestor: Mostrar alertas activas, prioridad y opciones de gestión
 
-  alt Gestora registra acción en bitácora sin cumplir garantía (HU-04-ESC-05)
+  opt Gestora pulsa «Evaluar alertas ahora» (HU-04-ESC-09)
+    Gestor->>OT: Solicitar evaluación explícita de vencimientos GES e inactividad
+    OT-->>Gestor: Informar cuántas alertas nuevas se generaron y permanecer en el panel
+  end
+
+  alt Gestora registra acción en bitácora sin cumplir garantía ni resolver la alerta (HU-04-ESC-05)
     Gestor->>OT: Registrar acción en bitácora
-    OT-->>Gestor: Actualizar alerta a estado En gestión
-  else Se registra hito de cumplimiento de la garantía (HU-04-ESC-06)
-    Gestor->>OT: Registrar hito de cumplimiento
-    OT-->>Gestor: Vincular hito a alerta, transicionar a Resuelta y cerrar
-  else Causa documentada deja sin efecto la garantía (HU-04-ESC-07)
+    OT-->>Gestor: Actualizar alerta a estado En gestión y confirmar que sigue activa
+  else Se registra hito de cumplimiento o contacto que restablece la actividad (HU-04-ESC-06)
+    Gestor->>OT: Registrar hito de cumplimiento o contacto
+    OT-->>Gestor: Vincular hito o contacto, transicionar a Resuelta y confirmar la resolución
+    Note over OT,Gestor: La alerta Resuelta sigue visible en el panel 14 horas; luego solo en la ficha del caso
+  else Causa documentada deja sin efecto la garantía o el seguimiento (HU-04-ESC-07)
     Gestor->>OT: Documentar causa de cierre con responsable
     OT-->>Gestor: Cambiar estado a No aplica y registrar cierre definitivo
   end
@@ -140,9 +146,10 @@ OncoTrace ejecuta una evaluación automática periódica calculando días hábil
 - **`alt` — Proximidad de vencimiento GES.** Si faltan $\le 5$ días hábiles para el vencimiento de una garantía GES y no existe una alerta activa para ella, se genera una alerta preventiva de prioridad Alta en estado **Pendiente**, notificando a la gestora y a la Unidad GES ([HU-04-ESC-01](./07-criterios-aceptacion.md#hu-04-esc-01-garantia-pendiente-a-cinco-dias-habiles-del-vencimiento)). Si faltan 6 o más días hábiles, no se genera alerta ([HU-04-ESC-02](./07-criterios-aceptacion.md#hu-04-esc-02-garantia-fuera-del-umbral-preventivo)).
 - **`else` — Riesgo de Inactividad/Abandono.** Si transcurren más de 15 días corridos (16 o más) sin registros asistenciales, atenciones ni exámenes, se genera una alerta por inactividad ([HU-04-ESC-03](./07-criterios-aceptacion.md#hu-04-esc-03-inactividad-superior-a-quince-dias-corridos)). Con 15 días exactos o menos, no se genera alerta ([HU-04-ESC-04](./07-criterios-aceptacion.md#hu-04-esc-04-inactividad-que-aun-no-supera-el-umbral)).
 - **Gestión y resolución:**
-  - Si la gestora registra una acción en la bitácora sin cumplir la garantía, la alerta pasa a **En gestión** ([HU-04-ESC-05](./07-criterios-aceptacion.md#hu-04-esc-05-gestion-registrada-sin-cumplimiento-de-la-garantia)).
-  - Si se registra el hito que acredita el cumplimiento de la garantía, la alerta pasa a **Resuelta** y se cierra ([HU-04-ESC-06](./07-criterios-aceptacion.md#hu-04-esc-06-resolucion-por-cumplimiento-de-la-garantia)).
-  - Si se documenta una causa clínica o administrativa justificada que deja sin efecto la garantía, pasa a **No aplica** ([HU-04-ESC-07](./07-criterios-aceptacion.md#hu-04-esc-07-cierre-por-causa-documentada)).
+  - Si la gestora registra una acción en la bitácora sin cumplir la garantía ni resolver la alerta, esta pasa a **En gestión** y el sistema confirma que sigue activa ([HU-04-ESC-05](./07-criterios-aceptacion.md#hu-04-esc-05-gestion-registrada-sin-cumplimiento-ni-resolucion)).
+  - Si se registra el hito que acredita el cumplimiento de la garantía o el contacto que restablece la actividad, la alerta pasa a **Resuelta**, el sistema confirma la resolución y la alerta sigue visible en el panel general durante 14 horas; luego solo queda consultable en la ficha del caso ([HU-04-ESC-06](./07-criterios-aceptacion.md#hu-04-esc-06-resolucion-por-cumplimiento-o-restablecimiento-del-contacto)).
+  - Si se documenta una causa clínica o administrativa justificada que deja sin efecto la garantía o el seguimiento del caso, pasa a **No aplica** ([HU-04-ESC-07](./07-criterios-aceptacion.md#hu-04-esc-07-cierre-por-una-causa-documentada-que-deja-sin-efecto-la-alerta)).
+- **`opt` — Evaluación explícita desde el panel.** Al pulsar «Evaluar alertas ahora», OncoTrace ejecuta la evaluación de vencimientos GES e inactividad, informa cuántas alertas nuevas se generaron y mantiene a la gestora en el panel ([HU-04-ESC-09](./07-criterios-aceptacion.md#hu-04-esc-09-confirmacion-de-la-evaluacion-explicita-desde-el-panel)).
 
 ---
 
@@ -153,4 +160,4 @@ OncoTrace ejecuta una evaluación automática periódica calculando días hábil
 | **DSS-01** | HU-05-ESC-01 a HU-05-ESC-04 | CU-01 y CU-02 | Gestor/a UGCO, médico tratante, LIS y PACS | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
 | **DSS-02** | HU-08-ESC-01 a HU-08-ESC-06 | CU-03, CU-04, CU-06, CU-07, CU-08 y CU-09 | TENS UGCO, funcionario/a UGAA, gestor/a UGCO y Sistema HCVB | `CasoOncologico`, `DossierDigitalDerivacion`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
 | **DSS-03** | HU-01-ESC-01 a HU-01-ESC-05 | CU-05 | Gestor/a UGCO y médico tratante | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
-| **DSS-04** | HU-04-ESC-01 a HU-04-ESC-07 | CU-06 | Gestor/a UGCO y Unidad GES | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
+| **DSS-04** | HU-04-ESC-01 a HU-04-ESC-09 | CU-06 | Gestor/a UGCO y Unidad GES | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |

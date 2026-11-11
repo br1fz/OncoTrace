@@ -27,8 +27,8 @@ La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: 
 | :--- | :--- | :--- | :--- | :--- |
 | **Nodo inicial** | — | — | Vincular la alerta al caso y, según origen, a la garantía GES, al dossier o al registro de búsqueda activa | **Pendiente** |
 | **Pendiente** | Registro de acción de gestión o contacto | [Gestora autorizada: acción sobre alerta GES, rezago de derivación o inicio de coordinación con APS para búsqueda activa] | Conservar la acción en bitácora; en GES no equivale al cumplimiento de la garantía | **En gestión** |
-| **Pendiente** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y cerrar la alerta | **Resuelta** |
-| **En gestión** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y cerrar la alerta | **Resuelta** |
+| **Pendiente** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
+| **En gestión** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
 | **Pendiente** | Registro de causa documentada | [Causa clínica/administrativa documentada deja sin efecto la garantía o el seguimiento asistencial] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
 | **En gestión** | Registro de causa documentada | [Causa clínica/administrativa documentada deja sin efecto la garantía o el seguimiento asistencial] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
 | **Resuelta** | — | — | — | **Fin** |
@@ -36,6 +36,9 @@ La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: 
 
 > [!NOTE]
 > **Gestión de alertas de búsqueda activa (HU-03-CA7):** La alerta generada tras tres intentos fallidos consecutivos de llamada/contacto pasa a **En gestión** cuando la gestora registra en la bitácora la coordinación con la red de Atención Primaria de Salud (APS), y transiciona a **Resuelta** cuando se restablece el contacto asistencial efectivo con el paciente o cuidador o se incorpora la respuesta formal del centro APS. Si una causa justificada documentada extingue el seguimiento (p. ej. traslado o egreso formal), se cierra con estado **No aplica**.
+
+> [!NOTE]
+> **Visibilidad de la alerta resuelta (HU-04 / ESC-06):** al quedar **Resuelta**, la alerta permanece visible en el panel general durante 14 horas desde su resolución y luego deja de listarse entre las alertas vigentes; sigue consultable en la ficha del caso. No se crea un estado nuevo: solo cambia su visibilidad.
 
 ---
 
