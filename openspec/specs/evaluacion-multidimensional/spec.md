@@ -35,17 +35,26 @@ El sistema SHALL validar que el puntaje clínico-funcional ECOG sea un número e
 - **AND** mantiene el caso en su estado previo sin alterar la estratificación
 
 ### Requirement: Cálculo ponderado de vulnerabilidad global
-El sistema SHALL calcular de forma automática el nivel de vulnerabilidad asistencial global (`Bajo`, `Medio`, `Alto`) considerando:
-1. Rendimiento funcional (ECOG 0–1 = 0 pts; ECOG 2 = 1 pt; ECOG 3–4 = 2 pts).
-2. Vulnerabilidad socioeconómica (Baja = 0 pts; Media = 1 pt; Alta = 2 pts).
-3. Sobrecarga del cuidador (Zarit ≤ 46 = 0 pts; Zarit 47–56 = 1 pt; Zarit > 56 o ausencia de red/cuidador = 2 pts).
-La suma (0 a 6 pts) determinará:
-- 0 a 2 puntos: `Bajo`
-- 3 a 4 puntos: `Medio`
-- 5 a 6 puntos: `Alto`
+El sistema SHALL calcular de forma automática el nivel de vulnerabilidad asistencial global (`Bajo`, `Medio`, `Alto`) mediante la ponderación aditiva (0 a 6 puntos) de ECOG, vulnerabilidad socioeconómica y sobrecarga del cuidador (Zarit).
+
+#### Scenario: Ponderación multidimensional del nivel de vulnerabilidad
+- **GIVEN** los puntajes clínicos de rendimiento ECOG, nivel socioeconómico y sobrecarga Zarit del cuidador
+- **WHEN** el sistema procesa la estratificación asistencial
+- **THEN** asigna el nivel `Bajo` para 0 a 2 puntos, `Medio` para 3 a 4 puntos, y `Alto` para 5 a 6 puntos
 
 ### Requirement: Inmutabilidad del historial de evaluaciones
-El sistema SHALL persistir cada evaluación como un registro nuevo e inmutable (operación de solo inserción). En ningún caso SHALL modificarse o eliminarse una evaluación previa registrada. El caso y el tablero Kanban SHALL reflejar el resultado de la evaluación más reciente.
+El sistema SHALL persistir cada evaluación como un registro nuevo e inmutable mediante operaciones exclusivas de inserción, conservando la estampa temporal y evaluador responsable.
+
+#### Scenario: Conservación inmutable de revaluaciones
+- **GIVEN** un caso con una evaluación multidimensional previa registrada
+- **WHEN** la gestora registra una nueva evaluación para el mismo caso
+- **THEN** el sistema almacena la nueva evaluación sin modificar ni eliminar los registros históricos
+- **AND** la ficha del caso y el tablero reflejan la evaluación más reciente
 
 ### Requirement: Visualización de distintivo categórico en Kanban y Ficha
 El sistema SHALL mostrar el nivel de vulnerabilidad asistencial (`Bajo`, `Medio`, `Alto`) mediante distintivos visuales diferenciados en la tarjeta del tablero Kanban y en la ficha integral del caso.
+
+#### Scenario: Despliegue de distintivo visual de vulnerabilidad
+- **GIVEN** un caso con nivel de vulnerabilidad estratificado
+- **WHEN** el usuario consulta el tablero de etapas o la ficha clínica del caso
+- **THEN** el sistema despliega el marcador de vulnerabilidad con distintivo visual categórico diferenciado
