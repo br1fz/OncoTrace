@@ -207,23 +207,167 @@
 
     <!-- Alertas de Seguimiento -->
     <div class="sub-panel" style="margin-top: 1.5rem;">
-      <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
-        Alertas de Seguimiento
+      <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <span>Alertas de Seguimiento</span>
+        <a href="/alertas" style="font-size: 0.8rem; font-weight: 600; color: #0284c7; text-decoration: none;">Ver panel general &rarr;</a>
       </h3>
       <% if (caso.alertas.length === 0) { %>
         <p style="color: #15803d; font-size: 0.85rem;">✓ No existen alertas registradas para este caso.</p>
       <% } else { %>
         <% caso.alertas.forEach(alerta => { %>
-          <div class="alerta-card prio-<%= alerta.prioridad.toLowerCase() %>">
+          <div class="alerta-card prio-<%= alerta.prioridad.toLowerCase() %>" style="margin-bottom: 0.75rem; padding: 0.75rem; border-radius: 6px; border-left: 4px solid <%= alerta.prioridad === 'Alta' ? '#ef4444' : '#f59e0b' %>; background: #fff;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-              <span style="font-weight: 700; font-size: 0.8rem;"><%= alerta.tipo %></span>
-              <span class="alerta-status-badge"><%= alerta.estado %></span>
+              <span style="font-weight: 700; font-size: 0.85rem; color: #1e293b;"><%= alerta.tipo %></span>
+              <span class="alerta-status-badge badge-estado-<%= alerta.estado.toLowerCase().replace(/\s+/g, '-') %>" style="padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; background: <%= alerta.estado === 'Pendiente' ? '#fef3c7; color: #92400e;' : (alerta.estado === 'En gestión' ? '#e0f2fe; color: #0369a1;' : (alerta.estado === 'Resuelta' ? '#dcfce7; color: #166534;' : '#f1f5f9; color: #475569;')) %>"><%= alerta.estado %></span>
             </div>
+            <% if (alerta.tipoGarantia) { %>
+              <p style="font-size: 0.8rem; color: #334155; margin-bottom: 0.2rem;">
+                <strong>Garantía GES:</strong> <%= alerta.tipoGarantia %>
+              </p>
+            <% } %>
+            <% if (alerta.diasRestantes !== undefined) { %>
+              <p style="font-size: 0.8rem; margin-bottom: 0.2rem;">
+                <strong>Días hábiles restantes:</strong> 
+                <span style="font-weight: 700; color: <%= alerta.diasRestantes <= 0 ? '#b91c1c' : (alerta.diasRestantes <= 5 ? '#e11d48' : '#0284c7') %>;">
+                  <%= alerta.diasRestantes %> <%= alerta.diasRestantes === 1 ? 'día hábil' : 'días hábiles' %>
+                </span>
+              </p>
+            <% } else if (alerta.diasInactividad !== undefined) { %>
+              <p style="font-size: 0.8rem; margin-bottom: 0.2rem;">
+                <strong>Inactividad asistencial:</strong> <%= alerta.diasInactividad %> días corridos
+              </p>
+            <% } %>
+            <% if (alerta.motivoCierre) { %>
+              <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">
+                <strong>Cierre:</strong> <%= alerta.motivoCierre %> (por <%= alerta.responsableCierre %>, <%= alerta.fechaCierre %>)
+              </p>
+            <% } %>
             <p style="font-size: 0.75rem; color: #64748b;">Prioridad: <strong><%= alerta.prioridad %></strong> · Generada: <%= alerta.fechaGeneracion.split('T')[0] %></p>
+            
+            <% if (rolActual === 'Gestor/a UGCO' && ['Pendiente', 'En gestión'].includes(alerta.estado)) { %>
+              <div style="margin-top: 0.5rem; display: flex; gap: 0.4rem; border-top: 1px dashed #e2e8f0; padding-top: 0.4rem;">
+                <% if (alerta.estado === 'Pendiente') { %>
+                  <button type="button" onclick="document.getElementById('modal-caso-gestion-<%= alerta.id %>').style.display='block'" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; background: #0284c7; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Gestionar
+                  </button>
+                <% } %>
+                <button type="button" onclick="document.getElementById('modal-caso-cumplimiento-<%= alerta.id %>').style.display='block'" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                  Cumplir
+                </button>
+                <button type="button" onclick="document.getElementById('modal-caso-cierre-<%= alerta.id %>').style.display='block'" style="font-size: 0.75rem; padding: 0.25rem 0.5rem; background: #64748b; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                  Cerrar
+                </button>
+              </div>
+
+              <!-- Modales para este alerta en la ficha -->
+              <div id="modal-caso-gestion-<%= alerta.id %>" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 50; overflow-y: auto;">
+                <div style="max-width: 500px; margin: 4rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a;">Registrar Acción de Gestión en Bitácora</h3>
+                    <button type="button" onclick="document.getElementById('modal-caso-gestion-<%= alerta.id %>').style.display='none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">&times;</button>
+                  </div>
+                  <form action="/alertas/<%= alerta.id %>/gestion" method="POST">
+                    <div style="margin-bottom: 0.75rem;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Resumen de la interacción / Gestión *</label>
+                      <textarea name="resumenInteraccion" rows="3" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required placeholder="Detalle de contacto o gestión realizada..."></textarea>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                      <button type="button" onclick="document.getElementById('modal-caso-gestion-<%= alerta.id %>').style.display='none'" style="padding: 0.4rem 0.8rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px;">Cancelar</button>
+                      <button type="submit" style="padding: 0.4rem 1rem; background: #0284c7; color: white; border: none; border-radius: 4px; font-weight: 600;">Guardar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <div id="modal-caso-cumplimiento-<%= alerta.id %>" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 50; overflow-y: auto;">
+                <div style="max-width: 500px; margin: 4rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a;">Acreditar Cumplimiento de Garantía</h3>
+                    <button type="button" onclick="document.getElementById('modal-caso-cumplimiento-<%= alerta.id %>').style.display='none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">&times;</button>
+                  </div>
+                  <form action="/alertas/<%= alerta.id %>/cumplimiento" method="POST">
+                    <div style="margin-bottom: 0.75rem;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Hito Asistencial *</label>
+                      <input type="text" name="tipoHito" value="<%= alerta.tipoGarantia ? 'Cumplimiento GES: ' + alerta.tipoGarantia : 'Resolución asistencial' %>" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Fecha de ocurrencia *</label>
+                      <input type="date" name="fechaOcurrencia" value="<%= new Date().toISOString().slice(0, 10) %>" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Profesional responsable *</label>
+                      <input type="text" name="responsable" value="Enf. Patricia Soto" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                      <button type="button" onclick="document.getElementById('modal-caso-cumplimiento-<%= alerta.id %>').style.display='none'" style="padding: 0.4rem 0.8rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px;">Cancelar</button>
+                      <button type="submit" style="padding: 0.4rem 1rem; background: #10b981; color: white; border: none; border-radius: 4px; font-weight: 600;">Cumplir Garantía</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <div id="modal-caso-cierre-<%= alerta.id %>" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 50; overflow-y: auto;">
+                <div style="max-width: 500px; margin: 4rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a;">Cerrar Alerta por Causa Documentada</h3>
+                    <button type="button" onclick="document.getElementById('modal-caso-cierre-<%= alerta.id %>').style.display='none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">&times;</button>
+                  </div>
+                  <form action="/alertas/<%= alerta.id %>/cierre" method="POST">
+                    <div style="margin-bottom: 0.75rem;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Causa documentada *</label>
+                      <select name="motivoCierre" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                        <option value="Rechazo voluntario del paciente formalizado por escrito">Rechazo voluntario formalizado</option>
+                        <option value="Traslado a prestador de la red privada fuera del convenio">Traslado a red privada fuera del convenio</option>
+                        <option value="Fallecimiento del paciente">Fallecimiento del paciente</option>
+                        <option value="Inasistencia reiterada a citaciones clínicas justificadas">Inasistencia reiterada justificada</option>
+                      </select>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Fecha de cierre *</label>
+                      <input type="date" name="fechaCierre" value="<%= new Date().toISOString().slice(0, 10) %>" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                      <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Responsable de cierre *</label>
+                      <input type="text" name="responsableCierre" value="Enf. Patricia Soto (Gestora UGCO)" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                      <button type="button" onclick="document.getElementById('modal-caso-cierre-<%= alerta.id %>').style.display='none'" style="padding: 0.4rem 0.8rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px;">Cancelar</button>
+                      <button type="submit" style="padding: 0.4rem 1rem; background: #be123c; color: white; border: none; border-radius: 4px; font-weight: 600;">Cerrar (No aplica)</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            <% } %>
           </div>
         <% }); %>
       <% } %>
     </div>
+
+    <!-- Bitácora de Gestiones Registradas (HU-04-ESC-05 / CU-06) -->
+    <% if (caso.entradasBitacora && caso.entradasBitacora.length > 0) { %>
+      <div class="sub-panel" style="margin-top: 1.5rem;">
+        <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+          Bitácora de Gestión de Alertas (<%= caso.entradasBitacora.length %>)
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <% caso.entradasBitacora.forEach(b => { %>
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.75rem; font-size: 0.85rem;">
+              <div style="display: flex; justify-content: space-between; color: #64748b; font-size: 0.75rem; margin-bottom: 0.25rem;">
+                <span style="font-weight: 700; color: #0284c7;"><%= b.identificador %> · <%= b.canalContacto %></span>
+                <span><%= b.fechaContacto ? b.fechaContacto.slice(0, 10) : '' %></span>
+              </div>
+              <p style="color: #1e293b; margin-bottom: 0.25rem;"><strong>Gestión:</strong> <%= b.resumenInteraccion %></p>
+              <% if (b.acuerdosEstablecidos) { %>
+                <p style="color: #475569; font-size: 0.8rem;"><strong>Acuerdos:</strong> <%= b.acuerdosEstablecidos %></p>
+              <% } %>
+              <div style="color: #94a3b8; font-size: 0.75rem; margin-top: 0.25rem;">
+                Registrado por <%= b.responsableRegistro %> · Interlocutor: <%= b.interlocutor || 'Paciente' %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    <% } %>
   </div>
 </div>
 

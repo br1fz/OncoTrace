@@ -49,7 +49,7 @@
 | HU-01 | hecha | hu-01-tablero-trazabilidad + ajuste-hu-01-consistencia-temporal | 2026-11-10 | Must. 13/13 pruebas pasando y `npm run build` sin errores. Archivado como `2026-11-10-ajuste-hu-01-consistencia-temporal`. Ficha: `.cin324/historias/HU-01.md`. Validación cerrada el 2026-11-10 (`VAL-HU-01-3`). |
 | HU-02 | hecha | hu-02-evaluacion-multidimensional | 2026-11-11 | Must. 10/10 pruebas de HU-02 (23/23 totales) y `npm run build` sin errores. Validación cerrada el 2026-11-11 (`VAL-HU-02-1`): 3 escenarios Gherkin, cálculo Bajo/Medio/Alto, inmutabilidad, permisos y distintivos verificados sin errores. OBS-1 (corrección con log de responsables) descartada: se mantiene el historial inmutable. Ficha: `.cin324/historias/HU-02.md`. |
 | HU-03 | pendiente | — | — | Must |
-| HU-04 | pendiente | — | — | Must |
+| HU-04 | en curso, pendiente de validación | hu-04-motor-alertas-ges-inactividad | 2026-11-11 | Must. Ficha confirmada en `.cin324/historias/HU-04.md`. 27/27 pruebas de HU-04 (50/50 totales) y `npm run build` sin errores. Cubre TB-04, CU-06, RF-04, 8 escenarios Gherkin (incluye exportación CSV HU-04-ESC-08), calendario de días hábiles 2026, detección de inactividad > 15 días corridos, gestión y cierre por causa documentada. |
 | HU-05 | pendiente | — | — | Must |
 | HU-06 | pendiente | — | — | Must |
 | HU-07 | pendiente | — | — | Must |

@@ -1,0 +1,272 @@
+<%- include('parciales/header') %>
+
+<div style="margin-bottom: 2rem;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+    <div>
+      <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; letter-spacing: -0.02em;">Panel General de Alertas de Seguimiento</h1>
+      <p style="color: #64748b; font-size: 0.95rem;">
+        Motor de alertas preventivas de plazos GES e inactividad clínica prolongada (CU-06 / TB-04)
+      </p>
+    </div>
+    
+    <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+      <% if (rolActual === 'Gestor/a UGCO') { %>
+        <form action="/alertas/evaluar" method="POST" style="margin: 0;">
+          <% if (typeof fechaReferencia !== 'undefined' && fechaReferencia) { %>
+            <input type="hidden" name="fechaReferencia" value="<%= fechaReferencia %>">
+          <% } %>
+          <button type="submit" id="btn-evaluar-alertas" style="background: #0284c7; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            ⚡ Evaluar alertas ahora
+          </button>
+        </form>
+
+        <a href="/alertas/exportar.csv<%= typeof fechaReferencia !== 'undefined' && fechaReferencia ? '?fechaReferencia=' + encodeURIComponent(fechaReferencia) : '' %>" id="btn-exportar-csv" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+          📥 Exportar reporte GES (CSV)
+        </a>
+      <% } else { %>
+        <span style="font-size: 0.85rem; color: #64748b; background: #e2e8f0; padding: 0.5rem 0.8rem; border-radius: 6px;">
+          👁️ Modo solo lectura (<%= rolActual %>)
+        </span>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Resumen de Alertas Vigentes -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+      <div style="font-size: 0.8rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Alertas Vigentes</div>
+      <div style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 0.25rem;"><%= alertas.length %></div>
+    </div>
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+      <div style="font-size: 0.8rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Plazos GES Próximos</div>
+      <div style="font-size: 1.8rem; font-weight: 800; color: #b91c1c; margin-top: 0.25rem;">
+        <%= alertas.filter(a => a.tipo.includes('GES')).length %>
+      </div>
+    </div>
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+      <div style="font-size: 0.8rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Riesgo Inactividad</div>
+      <div style="font-size: 1.8rem; font-weight: 800; color: #d97706; margin-top: 0.25rem;">
+        <%= alertas.filter(a => a.tipo.includes('Inactividad')).length %>
+      </div>
+    </div>
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+      <div style="font-size: 0.8rem; text-transform: uppercase; color: #64748b; font-weight: 700;">En Gestión Activa</div>
+      <div style="font-size: 1.8rem; font-weight: 800; color: #0284c7; margin-top: 0.25rem;">
+        <%= alertas.filter(a => a.estado === 'En gestión').length %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Alertas Vigentes -->
+  <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div style="padding: 1rem 1.5rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-weight: 700; color: #1e293b;">
+      Alertas Activas (Pendiente y En gestión)
+    </div>
+
+    <% if (alertas.length === 0) { %>
+      <div style="padding: 3rem 1.5rem; text-align: center; color: #64748b;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎉</div>
+        <div style="font-weight: 600; font-size: 1.1rem; color: #334155;">No hay alertas pendientes ni en gestión</div>
+        <p style="font-size: 0.9rem; margin-top: 0.25rem;">Todos los plazos GES e intervalos de atención asistencial se encuentran bajo control.</p>
+      </div>
+    <% } else { %>
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+          <thead>
+            <tr style="background: #f1f5f9; color: #475569; border-bottom: 1px solid #cbd5e1;">
+              <th style="padding: 0.75rem 1rem;">ID</th>
+              <th style="padding: 0.75rem 1rem;">Caso / Paciente</th>
+              <th style="padding: 0.75rem 1rem;">Tipo de Alerta</th>
+              <th style="padding: 0.75rem 1rem;">Garantía GES / Detalle</th>
+              <th style="padding: 0.75rem 1rem;">Días Restantes / Inactividad</th>
+              <th style="padding: 0.75rem 1rem;">Prioridad</th>
+              <th style="padding: 0.75rem 1rem;">Estado</th>
+              <th style="padding: 0.75rem 1rem;">Fecha Gen.</th>
+              <th style="padding: 0.75rem 1rem; text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% alertas.forEach(a => { %>
+              <tr style="border-bottom: 1px solid #f1f5f9;" id="alerta-<%= a.id %>">
+                <td style="padding: 0.75rem 1rem; font-family: monospace; font-weight: 600; color: #64748b;">
+                  <%= a.identificador || 'ALR-' + a.id %>
+                </td>
+                <td style="padding: 0.75rem 1rem;">
+                  <a href="/casos/<%= encodeURIComponent(a.numeroCaso) %>" style="font-weight: 700; color: #0284c7; text-decoration: none;">
+                    <%= a.numeroCaso %>
+                  </a>
+                  <div style="font-size: 0.8rem; color: #475569;"><%= a.pacienteNombre %> (<%= a.pacienteRun %>)</div>
+                </td>
+                <td style="padding: 0.75rem 1rem; font-weight: 600; color: #1e293b;">
+                  <%= a.tipo %>
+                </td>
+                <td style="padding: 0.75rem 1rem; color: #334155;">
+                  <%= a.tipoGarantia || '—' %>
+                </td>
+                <td style="padding: 0.75rem 1rem;">
+                  <% if (a.diasRestantes !== undefined) { %>
+                    <span style="font-weight: 700; color: <%= a.diasRestantes <= 0 ? '#b91c1c' : (a.diasRestantes <= 5 ? '#e11d48' : '#0284c7') %>;">
+                      <%= a.diasRestantes %> <%= a.diasRestantes === 1 ? 'día hábil' : 'días hábiles' %>
+                    </span>
+                  <% } else if (a.diasInactividad !== undefined) { %>
+                    <span style="font-weight: 700; color: #d97706;">
+                      <%= a.diasInactividad %> días corridos
+                    </span>
+                  <% } else { %>
+                    <span style="color: #94a3b8;">—</span>
+                  <% } %>
+                </td>
+                <td style="padding: 0.75rem 1rem;">
+                  <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; background: <%= a.prioridad === 'Alta' ? '#fee2e2; color: #991b1b;' : '#fef3c7; color: #92400e;' %>">
+                    <%= a.prioridad %>
+                  </span>
+                </td>
+                <td style="padding: 0.75rem 1rem;">
+                  <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; background: <%= a.estado === 'Pendiente' ? '#fef3c7; color: #92400e;' : '#e0f2fe; color: #0369a1;' %>">
+                    <%= a.estado %>
+                  </span>
+                </td>
+                <td style="padding: 0.75rem 1rem; color: #64748b; font-size: 0.8rem;">
+                  <%= a.fechaGeneracion ? a.fechaGeneracion.slice(0, 10) : '—' %>
+                </td>
+                <td style="padding: 0.75rem 1rem; text-align: right; white-space: nowrap;">
+                  <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                    <a href="/casos/<%= encodeURIComponent(a.numeroCaso) %>" style="padding: 0.35rem 0.65rem; border: 1px solid #cbd5e1; border-radius: 4px; color: #334155; text-decoration: none; font-size: 0.8rem; font-weight: 600; background: white;">
+                      Ver caso &rarr;
+                    </a>
+                    
+                    <% if (rolActual === 'Gestor/a UGCO') { %>
+                      <button onclick="document.getElementById('modal-gestion-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #0284c7; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                        Gestionar
+                      </button>
+                      <button onclick="document.getElementById('modal-cumplimiento-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #10b981; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                        Cumplir
+                      </button>
+                      <button onclick="document.getElementById('modal-cierre-<%= a.id %>').style.display = 'block'" style="padding: 0.35rem 0.65rem; background: #64748b; color: white; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                        Cerrar
+                      </button>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+
+              <% if (rolActual === 'Gestor/a UGCO') { %>
+                <!-- Modal Registrar Gestión -->
+                <div id="modal-gestion-<%= a.id %>" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 50; overflow-y: auto;">
+                  <div style="max-width: 500px; margin: 4rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;">Registrar Acción de Gestión en Bitácora</h3>
+                      <button onclick="document.getElementById('modal-gestion-<%= a.id %>').style.display = 'none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #94a3b8;">&times;</button>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">
+                      Caso <%= a.numeroCaso %> · Alerta <%= a.tipo %> (<%= a.tipoGarantia || 'Inactividad' %>). La alerta pasará al estado <strong>En gestión</strong> sin acreditar cumplimiento de la garantía.
+                    </p>
+                    <form action="/alertas/<%= a.id %>/gestion" method="POST">
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Canal de contacto</label>
+                        <select name="canalContacto" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;">
+                          <option value="Telefónico">Telefónico</option>
+                          <option value="Presencial">Presencial (UGCO / Policlínico)</option>
+                          <option value="Correo electrónico">Correo electrónico</option>
+                          <option value="Interconsulta interna">Interconsulta interna</option>
+                        </select>
+                      </div>
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Interlocutor</label>
+                        <input type="text" name="interlocutor" value="Paciente / Cuidador" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                      </div>
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Resumen de la interacción / Gestión realizada *</label>
+                        <textarea name="resumenInteraccion" rows="3" placeholder="Se contacta a unidad de origen para agilizar informe pendiente..." style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required></textarea>
+                      </div>
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Acuerdos establecidos</label>
+                        <input type="text" name="acuerdosEstablecidos" placeholder="Hora reservada para biopsia o revisión de antecedentes" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;">
+                      </div>
+                      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                        <button type="button" onclick="document.getElementById('modal-gestion-<%= a.id %>').style.display = 'none'" style="padding: 0.5rem 1rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer;">Cancelar</button>
+                        <button type="submit" style="padding: 0.5rem 1.25rem; background: #0284c7; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Guardar Gestión</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Modal Registrar Cumplimiento -->
+                <div id="modal-cumplimiento-<%= a.id %>" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 50; overflow-y: auto;">
+                  <div style="max-width: 500px; margin: 4rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;">Acreditar Cumplimiento de Garantía GES</h3>
+                      <button onclick="document.getElementById('modal-cumplimiento-<%= a.id %>').style.display = 'none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #94a3b8;">&times;</button>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">
+                      Caso <%= a.numeroCaso %> · Garantía: <%= a.tipoGarantia || 'Asociada' %>. Al registrar el hito de cumplimiento, la alerta cambiará a <strong>Resuelta</strong> y la garantía a <strong>Cumplida</strong>.
+                    </p>
+                    <form action="/alertas/<%= a.id %>/cumplimiento" method="POST">
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Tipo de hito asistencial cumplido *</label>
+                        <input type="text" name="tipoHito" value="<%= a.tipoGarantia ? 'Cumplimiento GES: ' + a.tipoGarantia : 'Atención clínica resolutiva' %>" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                      </div>
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Fecha de ocurrencia del hito *</label>
+                        <input type="date" name="fechaOcurrencia" value="<%= typeof fechaReferencia !== 'undefined' && fechaReferencia ? fechaReferencia : '' %>" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                      </div>
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Profesional responsable *</label>
+                        <input type="text" name="responsable" value="Enf. Patricia Soto" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                      </div>
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Rol del responsable</label>
+                        <input type="text" name="rolResponsable" value="Gestor/a UGCO" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" readonly>
+                      </div>
+                      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                        <button type="button" onclick="document.getElementById('modal-cumplimiento-<%= a.id %>').style.display = 'none'" style="padding: 0.5rem 1rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer;">Cancelar</button>
+                        <button type="submit" style="padding: 0.5rem 1.25rem; background: #10b981; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Acreditar Cumplimiento</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Modal Cierre por Causa Documentada -->
+                <div id="modal-cierre-<%= a.id %>" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 50; overflow-y: auto;">
+                  <div style="max-width: 500px; margin: 4rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;">Cerrar Alerta por Causa Documentada</h3>
+                      <button onclick="document.getElementById('modal-cierre-<%= a.id %>').style.display = 'none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #94a3b8;">&times;</button>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">
+                      Caso <%= a.numeroCaso %> · La causa documentada deja sin efecto la garantía/alerta. El estado pasará a <strong>No aplica</strong>.
+                    </p>
+                    <form action="/alertas/<%= a.id %>/cierre" method="POST">
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Motivo / Causa documentada *</label>
+                        <select name="motivoCierre" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                          <option value="Rechazo voluntario del paciente formalizado por escrito">Rechazo voluntario formalizado</option>
+                          <option value="Traslado a prestador de la red privada fuera del convenio">Traslado a red privada / extra-sistema</option>
+                          <option value="Fallecimiento del paciente">Fallecimiento del paciente</option>
+                          <option value="Inasistencia reiterada a citaciones clínicas justificadas">Inasistencia reiterada justificada</option>
+                          <option value="Condición clínica intercurrente incompatible con el tratamiento">Condición clínica incompatible transitoria</option>
+                        </select>
+                      </div>
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Fecha del cierre *</label>
+                        <input type="date" name="fechaCierre" value="<%= typeof fechaReferencia !== 'undefined' && fechaReferencia ? fechaReferencia : '' %>" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                      </div>
+                      <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Profesional responsable del cierre *</label>
+                        <input type="text" name="responsableCierre" value="Enf. Patricia Soto (Gestora UGCO)" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+                      </div>
+                      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                        <button type="button" onclick="document.getElementById('modal-cierre-<%= a.id %>').style.display = 'none'" style="padding: 0.5rem 1rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px; cursor: pointer;">Cancelar</button>
+                        <button type="submit" style="padding: 0.5rem 1.25rem; background: #be123c; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Confirmar Cierre (No aplica)</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              <% } %>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>

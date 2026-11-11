@@ -1,6 +1,7 @@
-// src/db/seed.ts - Carga de datos de ejemplo idempotente (HU-01)
+// src/db/seed.ts - Carga de datos de ejemplo idempotente (HU-01, HU-02, HU-04)
 import { obtenerConexion, cerrarConexion } from './conexion.js';
 import { RepositorioOncologico } from '../dominio/repositorios.js';
+import { sumarDiasHabiles } from '../dominio/calendario-ges.js';
 
 export function sembrarDatos(dbRuta?: string): void {
   const db = obtenerConexion(dbRuta);
@@ -136,15 +137,6 @@ export function sembrarDatos(dbRuta?: string): void {
       fechaRegistro: '2026-10-16T10:30:00Z',
       responsable: 'Dr. Fernando Bravo',
       rolResponsable: 'Médico tratante'
-    });
-
-    // Alerta preventiva pendiente
-    repo.crearAlerta({
-      casoId: c2.id!,
-      tipo: 'Vencimiento de plazo GES (Etapificación)',
-      prioridad: 'Alta',
-      estado: 'Pendiente',
-      fechaGeneracion: '2026-10-25T08:00:00Z'
     });
   }
 
@@ -355,7 +347,56 @@ export function sembrarDatos(dbRuta?: string): void {
     });
   }
 
-  console.log('✅ Datos de ejemplo sembrados con éxito (4 casos y valoraciones multidimensionales iniciales).');
+  // Garantías GES (HU-04 / RF-04)
+  const fechaHoy = new Date().toISOString().slice(0, 10);
+  const garantiasSemilla = [
+    {
+      casoId: c2.id!,
+      identificador: 'GES-2026-002',
+      tipoGarantia: 'Etapificación y confirmación diagnóstica',
+      fechaInicio: '2026-10-02',
+      fechaLimite: sumarDiasHabiles(fechaHoy, 5), // Exactamente 5 días hábiles (ventana de alerta HU-04-ESC-01)
+      estadoCumplimiento: 'Pendiente' as const
+    },
+    {
+      casoId: c1.id!,
+      identificador: 'GES-2026-001',
+      tipoGarantia: 'Confirmación diagnóstica',
+      fechaInicio: '2026-10-15',
+      fechaLimite: sumarDiasHabiles(fechaHoy, 6), // 6 días hábiles (fuera de ventana de alerta HU-04-ESC-02)
+      estadoCumplimiento: 'Pendiente' as const
+    },
+    {
+      casoId: c3.id!,
+      identificador: 'GES-2026-003',
+      tipoGarantia: 'Resolución de comité y etapificación',
+      fechaInicio: '2026-09-18',
+      fechaLimite: '2026-10-15',
+      estadoCumplimiento: 'Cumplida' as const
+    }
+  ];
+
+  const stmtGarantia = db.prepare(`
+    INSERT INTO garantia_ges (
+      caso_id, identificador, tipo_garantia, fecha_inicio, fecha_limite, estado_cumplimiento
+    ) VALUES (?, ?, ?, ?, ?, ?)
+    ON CONFLICT(identificador) DO UPDATE SET
+      fecha_limite = excluded.fecha_limite,
+      estado_cumplimiento = excluded.estado_cumplimiento
+  `);
+
+  for (const g of garantiasSemilla) {
+    stmtGarantia.run(
+      g.casoId,
+      g.identificador,
+      g.tipoGarantia,
+      g.fechaInicio,
+      g.fechaLimite,
+      g.estadoCumplimiento
+    );
+  }
+
+  console.log('✅ Datos de ejemplo sembrados con éxito (4 casos, valoraciones multidimensionales y garantías GES).');
 }
 
 // Ejecución directa por CLI si se invoca con npm run db:seed

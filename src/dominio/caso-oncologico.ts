@@ -56,10 +56,16 @@ export interface ResolucionComite {
 export interface AlertaSeguimiento {
   id?: number;
   casoId: number;
+  identificador?: string;
   tipo: string;
   prioridad: string;
   estado: string;
   fechaGeneracion: string;
+  garantiaId?: number;
+  hitoCumplimientoId?: number;
+  motivoCierre?: string;
+  fechaCierre?: string;
+  responsableCierre?: string;
 }
 
 export interface CasoResumenTablero {
@@ -76,6 +82,12 @@ export interface CasoResumenTablero {
   alertasPendientes: number;
   alertaMaximaPrioridad?: string;
   marcadorRiesgo: string;
+  alertaMasUrgente?: {
+    tipo: string;
+    tipoGarantia?: string;
+    diasRestantes?: number;
+    diasInactividad?: number;
+  };
 }
 
 export interface ResultadoEvaluacionHito {

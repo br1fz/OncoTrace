@@ -19,12 +19,14 @@ export function crearRutasSeguimiento(db: Database): Router {
 
   // GET / - Tablero por las 8 etapas
   router.get('/', (req: Request, res: Response) => {
-    const tablero = servicio.obtenerTablero();
+    const fechaRef = (req.query.fechaReferencia as string) || undefined;
+    const tablero = servicio.obtenerTablero(fechaRef);
     const rolActual = obtenerRol(req);
 
     res.render('tablero', {
       tablero,
       rolActual,
+      fechaReferencia: fechaRef,
       titulo: 'Tablero de Trazabilidad Oncológica por Etapas'
     });
   });
@@ -32,7 +34,8 @@ export function crearRutasSeguimiento(db: Database): Router {
   // GET /casos/:numeroCaso - Ficha del caso y línea de tiempo clínica
   router.get('/casos/:numeroCaso', (req: Request, res: Response) => {
     const { numeroCaso } = req.params;
-    const caso = servicio.obtenerFichaCaso(String(numeroCaso));
+    const fechaRef = (req.query.fechaReferencia as string) || undefined;
+    const caso = servicio.obtenerFichaCaso(String(numeroCaso), fechaRef);
 
     if (!caso) {
       return res.status(404).render('404', {

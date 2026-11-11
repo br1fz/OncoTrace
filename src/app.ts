@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import type { Database } from 'better-sqlite3';
 import { crearRutasSeguimiento } from './rutas/seguimiento.js';
 import { crearRutasEvaluacion } from './rutas/evaluacion.js';
+import { crearRutasAlertas } from './rutas/alertas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +27,7 @@ export function crearApp(db: Database): Express {
   // Rutas principales
   app.use('/', crearRutasSeguimiento(db));
   app.use('/', crearRutasEvaluacion(db));
+  app.use('/', crearRutasAlertas(db));
 
   // Manejo de error 404
   app.use((req, res) => {

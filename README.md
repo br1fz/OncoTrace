@@ -125,11 +125,12 @@ El proyecto considera la Ley N° 20.584, la Ley Nacional del Cáncer N° 21.258,
 
 ---
 
-## Aplicación prototipo (HU-01 y HU-02)
+## Aplicación prototipo (HU-01, HU-02 y HU-04)
 
 Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se implementaron los incrementos del sistema para las historias:
 - **HU-01: Tablero de trazabilidad y línea de tiempo clínica por etapas** (TB-01 / CU-05).
 - **HU-02: Evaluación multidimensional y estratificación por dominios** (TB-02 / CU-10).
+- **HU-04: Motor de alertas preventivas de plazos GES e inactividad** (TB-04 / CU-06 / RF-04).
 
 ### Stack tecnológico
 - **Lenguaje / Entorno:** Node.js (TypeScript estricto con `NodeNext`).
@@ -152,13 +153,13 @@ Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se
    ```bash
    npm run db:seed
    ```
-   *Crea automáticamente la base de datos SQLite en `data/app.db`, aplica migraciones `001_inicial.sql` y `002_evaluacion_multidimensional.sql`, y carga 4 casos ficticios en etapas distintas con sus hitos, resoluciones y valoraciones multidimensionales basales.*
+   *Crea automáticamente la base de datos SQLite en `data/app.db`, aplica migraciones `001_inicial.sql`, `002_evaluacion_multidimensional.sql` y `003_alertas_ges.sql`, y carga 4 casos ficticios en etapas distintas con sus hitos, resoluciones, valoraciones multidimensionales basales y garantías GES relativas.*
 
 3. **Ejecutar la suite de pruebas automatizadas:**
    ```bash
    npm test
    ```
-   *Ejecuta 23 pruebas automatizadas (13 de HU-01 y 10 de HU-02) que verifican exhaustivamente los escenarios Gherkin, las reglas de consistencia temporal, el cálculo de vulnerabilidad global, la alerta prioritaria por sobrecarga del cuidador (Zarit > 56), la obligatoriedad de ECOG 0–4 y la inmutabilidad de registros.*
+   *Ejecuta 50 pruebas automatizadas (13 de HU-01, 10 de HU-02 y 27 de HU-04) que verifican exhaustivamente los escenarios Gherkin, las reglas de consistencia temporal, el calendario oficial de feriados 2026 de Chile, el umbral preventivo GES (≤ 5 días hábiles), la detección de inactividad (> 15 días corridos), el ciclo de vida de alertas (Pendiente → En gestión → Resuelta / No aplica), la bitácora de gestión, la exportación del reporte consolidado en CSV con BOM UTF-8 y el control de acceso por roles.*
 
 4. **Iniciar el servidor en modo desarrollo:**
    ```bash
@@ -168,28 +169,33 @@ Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se
 
 ### Recorrido de prueba guiado (Demostración)
 
-#### 1. Tablero de Trazabilidad y Semáforo de Riesgo (HU-01 / HU-02)
+#### 1. Tablero de Trazabilidad y Semáforo de Riesgo (HU-01 / HU-02 / HU-04)
 - Accede a [http://localhost:3000](http://localhost:3000).
 - Observa las 8 columnas de la trayectoria asistencial (`Sospecha` hasta `Alta y contrarreferencia`).
-- Cada tarjeta muestra RUN anonimizado, especialidad oncológica, CIE-10, último hito, semáforo de plazos y el nuevo distintivo de vulnerabilidad derivado de HU-02 (`Bajo` en verde, `Alto` en rojo o `Sin evaluar` si aún no cuenta con pauta).
+- Cada tarjeta muestra RUN anonimizado, especialidad oncológica, CIE-10, último hito, semáforo de plazos, distintivo de vulnerabilidad derivado de HU-02 y el nuevo distintivo de alerta GES más urgente derivado de HU-04 con el tipo de garantía y los días hábiles restantes.
+- En la parte superior, presiona el botón **«⚡ Evaluar alertas ahora»** para disparar la evaluación bajo demanda sin requerir tareas programadas (cron).
 
 #### 2. Ficha del Caso y Valoración Vigente
 - Selecciona el caso `CASO-2026-001` (Sospecha) o `CASO-2026-002` (Confirmación diagnóstica).
 - En el panel lateral derecho observarás la sección **Valoración Multidimensional Vigente** con el detalle del ECOG, afectación psicoemocional, cuidador identificado, puntaje Zarit, profesional evaluador y las derivaciones activas al equipo psicosocial.
+- En la sección **Alertas de Seguimiento**, puedes ver las alertas vigentes con sus días hábiles restantes o días de inactividad, y acceder a las acciones directas de gestión, acreditación de cumplimiento o cierre justificado.
+- Si se han registrado gestiones, se muestra la **Bitácora de Gestión de Alertas** con fecha, canal de contacto e interlocutor.
 
 #### 3. Aplicar una Nueva Evaluación Multidimensional (HU-02)
 - En la ficha del caso, haz clic en **«+ Nueva evaluación multidimensional»** (o ingresa a `/casos/CASO-2026-001/evaluaciones/nueva`).
-- Completa la pauta valorando los 6 dominios:
-  1. **Clínico-funcional:** Selecciona el índice ECOG (0 a 4). Si intentas omitirlo, el sistema rechazará la acción indicando el campo obligatorio (HU-02-ESC-03).
-  2. **Psicoemocional:** Califica el grado de afectación emocional (0 a 2).
-  3. **Cuidador y red de apoyo:** Identifica al cuidador principal y digita la escala Zarit. Al ingresar un valor superior a 56, el sistema activa automáticamente la solicitud de apoyo psicosocial.
-  4. **Socioeconómico:** Define la vulnerabilidad (Bajo, Medio, Alto), previsión (FONASA / ISAPRE) y situación laboral.
-  5. **Espiritual y Comprensión:** Consigna creencias relevantes y el nivel de comprensión diagnóstica.
-- Presiona **«Guardar Evaluación Multidimensional»**:
-  - El sistema calculará automáticamente el índice global ponderado (0 a 6 puntos $\rightarrow$ Bajo, Medio, Alto).
-  - Ante Zarit > 56, generará de inmediato una alerta prioritaria para la Unidad de Servicio Social (HU-02-ESC-02).
-  - El registro se almacenará de manera inmutable en el historial y actualizará el distintivo del paciente en la ficha y en el tablero Kanban.
+- Completa la pauta valorando los 6 dominios normados y presiona **«Guardar Evaluación Multidimensional»**.
 
-#### 4. Control de Rol de Demostración
+#### 4. Panel General de Alertas y Exportación GES (HU-04)
+- Accede a la barra superior y selecciona el enlace **«Alertas»** (o ingresa a `/alertas`).
+- Visualiza el resumen consolidado de alertas activas, divididas en plazos GES próximos e inactividad asistencial.
+- En la tabla de alertas vigentes, la gestora puede:
+  1. **Gestionar:** Registra una llamada o contacto en la bitácora mínima; la alerta pasa a estado `En gestión` conservando la garantía pendiente (HU-04-ESC-05).
+  2. **Cumplir:** Acredita el cumplimiento de la garantía registrando el hito asistencial; la alerta pasa a `Resuelta` y la garantía a `Cumplida` (HU-04-ESC-06).
+  3. **Cerrar:** Documenta una causa legal o clínica que deja sin efecto la garantía (rechazo informado, fallecimiento, etc.); la alerta y la garantía pasan a `No aplica` (HU-04-ESC-07).
+- Presiona **«📥 Exportar reporte GES (CSV)»**:
+  - Descarga el archivo `alertas-vigentes-AAAA-MM-DD.csv` formateado con BOM UTF-8 y separador `;` para apertura nativa en Excel en Chile (HU-04-ESC-08).
+  - Incluye exclusivamente alertas `Pendiente` y `En gestión`, excluyendo alertas resueltas y no aplicables.
+
+#### 5. Control de Rol de Demostración
 - En la barra superior, cambia el rol activo a `Médico tratante`.
-- Al ingresar al formulario de evaluación multidimensional, el sistema se mostrará en modo solo lectura con el guardado deshabilitado, reservando la aplicación de la pauta al perfil de `Gestor/a UGCO` (CU-10).
+- Observa que las opciones de evaluación, gestión, resolución, cierre y exportación CSV quedan deshabilitadas o protegidas con rechazo HTTP 403, reservadas exclusivamente al perfil `Gestor/a UGCO` (CU-06 / CU-10).

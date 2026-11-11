@@ -124,6 +124,13 @@ Característica: Detección y gestión de alertas de seguimiento
     Cuando una gestora autorizada registra el cierre con su motivo y fecha
     Entonces la alerta queda en estado No aplica
     Y se conserva la identificación de la responsable y la causa del cierre
+
+  Escenario: HU-04-ESC-08 Exportación del reporte consolidado de alertas vigentes
+    Dado que existen alertas de seguimiento vigentes en estado Pendiente o En gestión
+    Cuando una gestora autorizada solicita exportar el reporte consolidado para la Unidad GES
+    Entonces el sistema genera un archivo CSV descargable
+    Y cada fila incluye el caso, el tipo de garantía, los días restantes (si corresponde a una garantía GES) y el estado de la alerta
+    Y el archivo no incluye alertas en estado Resuelta ni No aplica
 ```
 
 ---

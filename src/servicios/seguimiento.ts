@@ -10,7 +10,10 @@ import {
   evaluarTransicionHito
 } from '../dominio/caso-oncologico.js';
 import type { EvaluacionMultidimensional, CuidadorAutorizado } from '../dominio/evaluacion.js';
+import type { GarantiaGES, EntradaBitacora } from '../dominio/alertas.js';
+import { diasHabilesRestantes, diasCorridosEntre } from '../dominio/calendario-ges.js';
 import { RepositorioOncologico } from '../dominio/repositorios.js';
+import { ServicioAlertas } from './alertas.js';
 
 export interface TableroEtapas {
   etapas: {
@@ -30,13 +33,15 @@ export interface FichaCasoCompleta {
   fechaIngreso: string;
   hitos: HitoAsistencial[];
   resoluciones: ResolucionComite[];
-  alertas: AlertaSeguimiento[];
+  alertas: (AlertaSeguimiento & { tipoGarantia?: string; diasRestantes?: number; diasInactividad?: number })[];
   alertasPendientes: number;
   marcadorRiesgo: string;
   ultimoHito?: HitoAsistencial;
   evaluacionActual?: EvaluacionMultidimensional;
   evaluacionesHistoricas?: EvaluacionMultidimensional[];
   cuidador?: CuidadorAutorizado;
+  garantias?: GarantiaGES[];
+  entradasBitacora?: EntradaBitacora[];
 }
 
 export interface RegistroHitoInput {
@@ -55,13 +60,16 @@ export interface ResultadoRegistroHito {
 
 export class ServicioSeguimiento {
   private repo: RepositorioOncologico;
+  private alertasService: ServicioAlertas;
 
   constructor(private db: Database) {
     this.repo = new RepositorioOncologico(db);
+    this.alertasService = new ServicioAlertas(db);
   }
 
-  obtenerTablero(): TableroEtapas {
-    const todosLosCasos = this.repo.listarCasosResumen();
+  obtenerTablero(fechaReferencia?: string): TableroEtapas {
+    this.alertasService.evaluarAlertas(fechaReferencia);
+    const todosLosCasos = this.repo.listarCasosResumen(fechaReferencia);
 
     const etapas = ETAPAS.map((nombreEtapa) => ({
       nombre: nombreEtapa,
@@ -74,7 +82,8 @@ export class ServicioSeguimiento {
     };
   }
 
-  obtenerFichaCaso(numeroCaso: string): FichaCasoCompleta | null {
+  obtenerFichaCaso(numeroCaso: string, fechaReferencia?: string): FichaCasoCompleta | null {
+    this.alertasService.evaluarAlertas(fechaReferencia);
     const caso = this.repo.obtenerCasoPorNumero(numeroCaso);
     if (!caso || !caso.id) {
       return null;
@@ -82,7 +91,25 @@ export class ServicioSeguimiento {
 
     const hitosBrutos = this.repo.listarHitosPorCasoId(caso.id);
     const resoluciones = this.repo.listarResolucionesPorCasoId(caso.id);
-    const alertas = this.repo.listarAlertasPorCasoId(caso.id);
+    const alertasRaw = this.repo.listarAlertasPorCasoId(caso.id);
+
+    const ref = fechaReferencia ? fechaReferencia.slice(0, 10) : new Date().toISOString().slice(0, 10);
+    const ultimoRegistro = this.repo.obtenerFechaUltimoRegistroAsistencial(caso.id);
+
+    const alertas = alertasRaw.map((a) => {
+      let diasRestantes = undefined;
+      let diasInactividad = undefined;
+      if (a.fechaLimiteGarantia) {
+        diasRestantes = diasHabilesRestantes(a.fechaLimiteGarantia, ref);
+      } else if (a.tipo === 'Riesgo de Inactividad/Abandono' && ultimoRegistro) {
+        diasInactividad = diasCorridosEntre(ultimoRegistro, ref);
+      }
+      return {
+        ...a,
+        diasRestantes,
+        diasInactividad
+      };
+    });
 
     // Calcular días transcurridos entre hitos cronológicos consecutivos
     const hitosConDias: HitoAsistencial[] = hitosBrutos.map((hito, idx) => {
@@ -113,6 +140,10 @@ export class ServicioSeguimiento {
     const cuidador = this.repo.obtenerCuidadorPorPacienteId(caso.pacienteId) || undefined;
     const marcadorRiesgo = evaluacionActual?.nivelVulnerabilidad || 'Sin evaluar';
 
+    // Garantías y Bitácora (HU-04)
+    const garantias = this.repo.listarGarantiasPorCasoId(caso.id);
+    const entradasBitacora = this.repo.listarEntradasPorCasoId(caso.id);
+
     return {
       numeroCaso: caso.numeroCaso,
       run: caso.paciente.run,
@@ -129,7 +160,9 @@ export class ServicioSeguimiento {
       ultimoHito,
       evaluacionActual,
       evaluacionesHistoricas,
-      cuidador
+      cuidador,
+      garantias,
+      entradasBitacora
     };
   }
 
