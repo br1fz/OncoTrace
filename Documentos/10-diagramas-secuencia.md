@@ -136,7 +136,7 @@ sequenceDiagram
   else Se registra hito de cumplimiento o contacto que restablece la actividad (HU-04-ESC-06)
     Gestor->>OT: Registrar hito de cumplimiento o contacto
     OT-->>Gestor: Vincular hito o contacto, transicionar a Resuelta y confirmar la resolución
-    Note over OT,Gestor: La alerta Resuelta sigue visible en el panel 14 horas; luego solo en la ficha del caso
+    Note over OT,Gestor: La ficha indica el hito o contacto con su tipo y fecha; la alerta Resuelta sigue visible en el panel 14 horas y luego solo en la ficha del caso
   else Causa documentada deja sin efecto la garantía o el seguimiento (HU-04-ESC-07)
     Gestor->>OT: Documentar causa de cierre con responsable
     OT-->>Gestor: Cambiar estado a No aplica y registrar cierre definitivo
@@ -151,7 +151,7 @@ OncoTrace ejecuta una evaluación automática periódica calculando días hábil
 - **`else` — Riesgo de Inactividad/Abandono.** Si transcurren más de 15 días corridos (16 o más) sin registros asistenciales, atenciones ni exámenes, se genera una alerta por inactividad ([HU-04-ESC-03](./07-criterios-aceptacion.md#hu-04-esc-03-inactividad-superior-a-quince-dias-corridos)). Con 15 días exactos o menos, no se genera alerta ([HU-04-ESC-04](./07-criterios-aceptacion.md#hu-04-esc-04-inactividad-que-aun-no-supera-el-umbral)).
 - **Gestión y resolución:**
   - Si la gestora registra una acción en la bitácora sin cumplir la garantía ni resolver la alerta, esta pasa a **En gestión** y el sistema confirma que sigue activa ([HU-04-ESC-05](./07-criterios-aceptacion.md#hu-04-esc-05-gestion-registrada-sin-cumplimiento-ni-resolucion)).
-  - Si se registra el hito que acredita el cumplimiento de la garantía o el contacto que restablece la actividad, la alerta pasa a **Resuelta**, el sistema confirma la resolución y la alerta sigue visible en el panel general durante 14 horas; luego solo queda consultable en la ficha del caso ([HU-04-ESC-06](./07-criterios-aceptacion.md#hu-04-esc-06-resolucion-por-cumplimiento-o-restablecimiento-del-contacto)).
+  - Si se registra el hito que acredita el cumplimiento de la garantía o el contacto que restablece la actividad, la alerta pasa a **Resuelta**, el sistema confirma la resolución, la ficha del caso indica el hito o contacto con su tipo y fecha y la alerta sigue visible en el panel general durante 14 horas; luego solo queda consultable en la ficha del caso ([HU-04-ESC-06](./07-criterios-aceptacion.md#hu-04-esc-06-resolucion-por-cumplimiento-o-restablecimiento-del-contacto)).
   - Si se documenta una causa clínica o administrativa justificada que deja sin efecto la garantía o el seguimiento del caso, pasa a **No aplica** ([HU-04-ESC-07](./07-criterios-aceptacion.md#hu-04-esc-07-cierre-por-una-causa-documentada-que-deja-sin-efecto-la-alerta)).
 - **`opt` — Evaluación explícita desde el panel.** Al pulsar «Evaluar alertas ahora», OncoTrace ejecuta la evaluación de vencimientos GES e inactividad, informa cuántas alertas nuevas se generaron y mantiene a la gestora en el panel ([HU-04-ESC-09](./07-criterios-aceptacion.md#hu-04-esc-09-confirmacion-de-la-evaluacion-explicita-desde-el-panel)).
 
