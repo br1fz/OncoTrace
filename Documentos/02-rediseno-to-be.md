@@ -126,7 +126,106 @@ El proceso también contempla los puntos de contacto definidos por la UGCO, la c
 
 ## Diagrama del proceso TO-BE
 
-[Ver diagrama del proceso TO-BE en BPMN 2.0](../diagramas/to-be.bpmn)
+El proceso rediseñado se encuentra especificado formalmente en notación BPMN 2.0:
+
+* [Archivo formal BPMN 2.0 (Camunda Modeler)](../diagramas/to-be.bpmn)
+
+> [!TIP]
+> **Visualización del archivo .bpmn:** Puede abrirse interactivamente mediante [bpmn.io/viewer](https://demo.bpmn.io/), con *Camunda Modeler* (versión 5.51+) o con extensiones de visualización BPMN en VS Code.
+
+### Representación visual del flujo macro TO-BE (Líneas de responsabilidad y actividades rediseñadas TB-01 a TB-11)
+
+Para permitir una revisión visual inmediata del flujo asistencial y tecnológico sin herramientas externas, el siguiente diagrama sintetiza la interacción entre los 9 carriles de OncoTrace/HGF, los sistemas externos y las 11 actividades nucleares rediseñadas:
+
+```mermaid
+flowchart TD
+  subgraph Paciente_Cuidador ["Paciente / Familia y Cuidador"]
+    P_In(["Sospecha / Ingreso"]) --> P_Aten["Atención médica / Toma de muestras"]
+    P_Totem["TB-09: Consulta en Tótem de autoatención"]
+    P_Chat["TB-10: Orientación de derechos y Triage presencial"]
+    P_Trat["Asistencia a terapia / Controles de seguimiento"]
+  end
+
+  subgraph Medico_Tratante ["Médico Tratante / Especialista"]
+    M_Eval["Evaluación clínica y sospecha"]
+    M_Ord["Emisión de órdenes diagnósticas LIS/PACS"]
+    M_Ficha["Revisión de Ficha de Comité y propuesta terapéutica"]
+    M_Trat["Ejecución terapéutica local (Cirugía LEIQ / QT Hemato)"]
+  end
+
+  subgraph Sistema_OncoTrace ["Sistema OncoTrace (Motor Central Automatizado)"]
+    S_Index["TB-05: Indexación automática LIS/PACS y alerta inmediata de hallazgo crítico"]
+    S_Alertas["TB-04: Motor de alertas preventivas GES e inactividad"]
+    S_Ficha["TB-06: Compilación automatizada de Ficha de Comité"]
+    S_REM["TB-07: Consolidación automática de informe mensual REM 7"]
+    S_MINSAL["TB-11: Intercambio con Plataforma MINSAL según mecanismo acordado"]
+  end
+
+  subgraph Gestora_UGCO ["Gestor/a Oncológico/a (UGCO)"]
+    G_Ing["TB-01: Registro en Tablero Kanban y timeline de hitos"]
+    G_Eval["TB-02: Evaluación multidimensional por dominios y vulnerabilidad"]
+    G_Bit["TB-03: Bitácora digital de 6 puntos de contacto normados"]
+    G_Prog["TB-06: Programación de caso en tabla de Comité Regional"]
+    G_Retorno["TB-08: Recepción de epicrisis, hito de retorno y seguimiento"]
+  end
+
+  subgraph TENS_UGCO ["TENS UGCO"]
+    T_Dossier["TB-08: Confección de Dossier Digital de derivación"]
+    T_Anexo["TB-08: Entrega anticipada de instructivo de pasajes (Anexo 6)"]
+  end
+
+  subgraph Comite_Oncologico ["Comité Oncológico Regional"]
+    C_Sesion["Sesión colegiada multidisciplinaria"]
+    C_Acta["TB-07: Deliberación digital, Acta firmada electrónicamente"]
+  end
+
+  subgraph UGAA_HGF ["UGAA (Gestión de Red y Derivaciones)"]
+    U_Val["Validación de antecedentes y constancia de Anexo 6"]
+    U_Desp["TB-08: Formalización de despacho digital con folio y fecha"]
+  end
+
+  subgraph Red_Externa ["Red Externa (HCVB / Privados en Convenio / MINSAL)"]
+    E_HCVB["HCVB: Recepción de derivación, asignación de cita y tratamiento RT/QT"]
+    E_Priv["Centros en Convenio: Ejecución PET-CT / EBUS"]
+    E_MINSAL["Plataforma Central MINSAL"]
+  end
+
+  %% Conexiones principales de flujo
+  P_In --> M_Eval --> M_Ord
+  M_Eval --> G_Ing --> G_Eval --> G_Bit
+  M_Ord --> S_Index
+  S_Index -->|Alerta crítica| M_Eval
+  S_Index --> G_Prog
+  G_Prog --> S_Ficha --> M_Ficha --> C_Sesion
+  C_Sesion --> C_Acta --> S_REM
+  C_Acta -->|Derivación externa HCVB| T_Dossier
+  T_Dossier --> T_Anexo --> U_Val --> U_Desp
+  U_Desp -->|Expediente digital| E_HCVB
+  E_HCVB -->|Epicrisis y contrarreferencia| G_Retorno
+  C_Acta -->|Tratamiento local HGF| M_Trat --> P_Trat
+  G_Ing -.-> S_Alertas
+  G_Bit -.-> S_Alertas
+  G_Ing -.-> S_MINSAL
+  P_Totem -.-> G_Ing
+  P_Chat -.-> G_Ing
+  S_MINSAL -.-> E_MINSAL
+```
+
+### Estructura de carriles (Lanes) y Pools del modelo BPMN TO-BE
+
+| Carril / Pool en `to-be.bpmn` | Actor institucional / Componente | Rol en el proceso rediseñado | Actividades TO-BE soportadas |
+| :--- | :--- | :--- | :--- |
+| `Lane_TB_Paciente` | Paciente / Familia y Cuidador | Autoatención, orientación e interacción asistencial | TB-09, TB-10 |
+| `Lane_TB_Medico` | Médico Tratante / Especialista | Diagnóstico, propuesta y deliberación en comités | TB-05, TB-06, TB-07 |
+| `Lane_TB_Gestor` | Gestor/a Oncológico/a UGCO | Navegación clínica, valoración multidimensional y bitácora | TB-01, TB-02, TB-03, TB-06, TB-08 |
+| `Lane_TB_TENS` | TENS UGCO | Confección de dossier digital y orientación de pasajes | TB-03, TB-08 |
+| `Lane_TB_Admin` | Administrativo/a UGCO | Citaciones y apoyo administrativo en red | TB-01, TB-08 |
+| `Lane_TB_UGAA` | UGAA | Validación y despacho digital formal de derivaciones | TB-08 |
+| `Lane_TB_GES` | Unidad GES y Registros | Validación de garantías de oportunidad y auditoría | TB-04 |
+| `Lane_TB_Comite` | Comité Oncológico Multidisciplinario | Decisión terapéutica consensuada y suscripción electrónica | TB-07 |
+| `Lane_TB_Sistema` | Sistema OncoTrace (Motor Automatizado) | Indexación diagnóstica, motor de alertas, REM 7 e interoperabilidad | TB-04, TB-05, TB-06, TB-07, TB-10, TB-11 |
+| `Pool_HCVB_TB` | Hospital Carlos Van Buren | Receptor de derivaciones de radioterapia y quimioterapia sólida | TB-08 |
+| `Pool_Privados_TB` | Centros Privados en Convenio | Realización de estudios de alta complejidad (PET-CT / EBUS) | TB-05 |
 
 ---
 

@@ -39,7 +39,7 @@ R -down-> [*]
 N -down-> [*]
 
 legend top
-  **Creación.** Se alcanza el umbral aplicable.
+  **Creación.** Se alcanza el umbral aplicable (GES <= 5 d, inactividad > 15 d, rezago derivación 11 d, o 3 intentos fallidos de contacto HU-03-CA7).
   En HU-04 se requiere que no haya una alerta equivalente activa.
 endlegend
 @enduml

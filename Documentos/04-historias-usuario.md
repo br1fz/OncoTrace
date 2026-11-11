@@ -65,8 +65,8 @@
 - **HU-02-CA3 — Evaluación del cuidador principal:** El formulario debe permitir identificar formalmente al cuidador principal (nombre, parentesco, contacto) y aplicar indicadores de pesquisa de sobrecarga del cuidador.
 - **HU-02-CA4 — Dominio espiritual y comprensión:** Debe permitir consignar aspectos culturales/espirituales relevantes y el nivel de comprensión diagnóstica del paciente y familia.
 - **HU-02-CA5 — Guardado y versionado:** Al completar la pauta, el sistema debe registrar fecha, hora y usuario responsable, manteniendo el historial inmutable de evaluaciones previas.
-- **HU-02-CA6 — Cálculo automático de riesgo:** El sistema debe calcular automáticamente un índice de riesgo asistencial global que pondere el estado clínico, la vulnerabilidad social y la fragilidad del soporte familiar.
-- **HU-02-CA7 — Visualización del riesgo:** El nivel de riesgo debe reflejarse mediante un distintivo visual (Alto, Medio, Bajo) en la ficha y en la tarjeta del tablero Kanban.
+- **HU-02-CA6 — Cálculo automático de vulnerabilidad:** El sistema debe calcular automáticamente un índice de vulnerabilidad asistencial global que pondere el estado clínico funcional (ECOG), la vulnerabilidad socioeconómica y la sobrecarga o fragilidad del soporte del cuidador.
+- **HU-02-CA7 — Visualización de nivel de vulnerabilidad:** El resultado de la estratificación (`nivelVulnerabilidad`) debe reflejarse mediante un distintivo visual categórico (**Bajo**, **Medio**, **Alto**) en la ficha y en la tarjeta del tablero Kanban.
 
 ---
 
@@ -98,6 +98,7 @@
 - **HU-03-CA4 — Programación de próxima acción:** El sistema debe permitir agendar la fecha y objetivo del siguiente contacto o seguimiento de exámenes.
 - **HU-03-CA5 — Visualización cronológica:** Los registros deben desplegarse en orden cronológico descendente (más reciente al más antiguo).
 - **HU-03-CA6 — Integridad inmutable:** Ningún registro de bitácora podrá ser eliminado directamente; cualquier corrección requerirá una nota de adenda con trazabilidad de usuario, fecha y hora.
+- **HU-03-CA7 — Protocolo de búsqueda activa ante no contactabilidad:** Si se registra una interacción con estado "No contactable" (llamada fallida), el sistema debe computar el intento; al alcanzar tres intentos fallidos consecutivos sin respuesta, OncoTrace debe generar una alerta preventiva para activar el protocolo de búsqueda activa y rescate en coordinación con la red de Atención Primaria de Salud (APS).
 
 ---
 
@@ -295,6 +296,6 @@
 - **HU-11-CA1 — Integración habilitada:** Mientras la integración no esté habilitada según el acuerdo institucional, el sistema debe indicar esa condición y mantener deshabilitado el envío de datos a MINSAL.
 - **HU-11-CA2 — Datos y periodicidad acordados:** Una vez habilitada la integración, el sistema debe enviar únicamente los datos de seguimiento autorizados, mediante el mecanismo y con la periodicidad acordados por HGF y MINSAL. No se presupone un protocolo ni un intercambio bidireccional.
 - **HU-11-CA3 — Seguimiento de envíos:** Cada envío debe contar con un identificador y un registro de fecha y hora, caso o registros de seguimiento asociados, estado y confirmaciones o errores recibidos. El personal autorizado debe poder consultar ese registro.
-- **HU-11-CA4 — Confirmación de recepción:** Un envío solo debe figurar como **Confirmado** cuando exista una confirmación válida según el mecanismo institucional acordado. Si todavía no se recibe, debe mantenerse como **Pendiente de confirmación**, sin presentar el envío como recibido por MINSAL.
-- **HU-11-CA5 — Errores y reintentos:** Ante un envío fallido, el sistema debe registrar el error y permitir que personal autorizado lo revise y reintente. Debe conservar el historial de intentos y su relación con el envío original. Antes de reenviar, debe comprobar el estado mediante el mecanismo acordado para evitar duplicar envíos ya confirmados; la ausencia de confirmación no debe dar lugar a un reenvío sin esa comprobación.
+- **HU-11-CA4 — Vocabulario y sincronización de envíos:** Cada envío de seguimiento debe reflejar con exactitud su estado de sincronización (`estadoSincronizacion`). Figurará como **Sincronizado** únicamente cuando exista una respuesta válida con folio de transacción retornado por el servicio central del MINSAL. Mientras se encuentre emitido o en tránsito sin respuesta, debe mantenerse como **Pendiente de confirmación**, sin presentarlo falsamente como recibido por el MINSAL.
+- **HU-11-CA5 — Errores y reintentos:** Ante un envío fallido por indisponibilidad o error de formato, el sistema debe registrar el detalle del error, catalogarlo con estado **Pendiente de reintento** y permitir que personal autorizado lo revise y reintente. Debe conservar el historial de intentos y su relación con el envío original. Antes de reenviar, debe comprobar el estado mediante el mecanismo acordado para evitar duplicar envíos ya sincronizados; la ausencia de respuesta satisfactoria no debe dar lugar a un reenvío sin esa comprobación.
 - **HU-11-CA6 — Acceso y auditoría:** La consulta de registros y la ejecución de reintentos deben restringirse a funcionarios autenticados mediante SSO y con los permisos correspondientes. Estas operaciones deben quedar auditadas conforme a RNF-03, con identificación del responsable, fecha, hora y tipo de operación.

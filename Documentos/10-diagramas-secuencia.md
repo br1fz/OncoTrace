@@ -54,6 +54,33 @@ TENS solicita la confección del dossier. En el flujo representado, la gestora r
 
 **Archivo fuente:** [diagramas-secuencia.puml](../diagramas/diagramas-secuencia.puml) (`@startuml DSS-03-HU-01`).
 
+```mermaid
+sequenceDiagram
+  autonumber
+  actor Gestor as Gestor/a UGCO
+  participant OT as OncoTrace
+  actor Medico as Médico tratante
+
+  Note over Gestor,OT: Gestora autenticada con autorización (RNF-03 y REQ-DER-01)
+
+  Gestor->>OT: Consultar seguimiento y línea de tiempo del caso
+  OT-->>Gestor: Retornar RUN, nombre, especialidad, diagnóstico CIE-10, etapa actual, último hito y timeline
+
+  alt Inicio de tratamiento con resolución previa (HU-01-ESC-02)
+    Gestor->>OT: Registrar inicio del tratamiento con respaldo clínico
+    OT-->>Gestor: Actualizar etapa a Tratamiento, registrar hito con responsable y actualizar Kanban
+  else Resolución de comité sin inicio de tratamiento (HU-01-ESC-03)
+    Medico->>OT: Registrar resolución firmada del comité oncológico
+    OT-->>Medico: Incorporar resolución como hito en Etapificación (caso permanece en Etapificación)
+  else Intento de registro con fecha futura (HU-01-ESC-04)
+    Gestor->>OT: Registrar hito asistencial con fecha posterior a hoy
+    OT-->>Gestor: Rechazar registro (400): La fecha de ocurrencia no puede ser futura
+  else Intento de registro con fecha anterior al último hito (HU-01-ESC-05)
+    Gestor->>OT: Registrar hito con fecha anterior al último hito del caso
+    OT-->>Gestor: Rechazar registro (400): La fecha no puede ser anterior al último hito registrado
+  end
+```
+
 La gestora consulta el seguimiento y la línea de tiempo de un paciente. OncoTrace retorna los datos demográficos (RUN, nombre), especialidad oncológica asignada, diagnóstico o sospecha CIE-10, etapa actual de la trayectoria asistencial (dentro de las 8 normadas), último hito registrado, alertas activas y el historial cronológico de hitos con indicación de días transcurridos entre ellos ([HU-01-ESC-01](./07-criterios-aceptacion.md#hu-01-esc-01-consulta-del-seguimiento-de-un-caso)).
 
 ### Variantes representadas
@@ -72,6 +99,39 @@ La gestora consulta el seguimiento y la línea de tiempo de un paciente. OncoTra
 - **Actores y unidades participantes:** Gestor/a UGCO y Unidad GES institucional.
 
 **Archivo fuente:** [diagramas-secuencia.puml](../diagramas/diagramas-secuencia.puml) (`@startuml DSS-04-HU-04`).
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor Gestor as Gestor/a UGCO
+  participant OT as OncoTrace
+  actor GES as Unidad GES
+
+  Note over OT: Evaluación periódica: días hábiles (GES) y corridos (Inactividad). Sin alertas redundantes.
+
+  alt Garantía GES con plazo <= 5 días hábiles sin alerta activa (HU-04-ESC-01, ESC-02)
+    OT->>OT: Generar alerta preventiva (prioridad Alta, estado Pendiente)
+    OT-->>Gestor: Notificar alerta GES con caso, tipo y días restantes
+    OT-->>GES: Notificar alerta para reporte institucional
+  else Inactividad asistencial > 15 días corridos (HU-04-ESC-03, ESC-04)
+    OT->>OT: Generar alerta por Riesgo de Inactividad/Abandono (estado Pendiente)
+    OT-->>Gestor: Notificar alerta de inactividad con período transcurrido
+  end
+
+  Gestor->>OT: Consultar alertas pendientes y acceder al caso
+  OT-->>Gestor: Mostrar alertas activas, prioridad y opciones de gestión
+
+  alt Gestora registra acción en bitácora sin cumplir garantía (HU-04-ESC-05)
+    Gestor->>OT: Registrar acción en bitácora
+    OT-->>Gestor: Actualizar alerta a estado En gestión
+  else Se registra hito de cumplimiento de la garantía (HU-04-ESC-06)
+    Gestor->>OT: Registrar hito de cumplimiento
+    OT-->>Gestor: Vincular hito a alerta, transicionar a Resuelta y cerrar
+  else Causa documentada deja sin efecto la garantía (HU-04-ESC-07)
+    Gestor->>OT: Documentar causa de cierre con responsable
+    OT-->>Gestor: Cambiar estado a No aplica y registrar cierre definitivo
+  end
+```
 
 OncoTrace ejecuta una evaluación automática periódica calculando días hábiles (según calendario nacional y feriados para garantías GES) y días corridos (para inactividad del caso). No genera alertas duplicadas activas para una misma condición.
 

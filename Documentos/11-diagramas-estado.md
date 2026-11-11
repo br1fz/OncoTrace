@@ -9,8 +9,8 @@ Este documento describe los estados y transiciones de las clases clave del domin
 ## EST-01 — Ciclo de vida de AlertaSeguimiento
 
 - **Clase del dominio:** [`AlertaSeguimiento`](./08-modelo-dominio.md).
-- **Historias relacionadas:** [HU-04](./04-historias-usuario.md#hu-04) y [HU-08](./04-historias-usuario.md#hu-08).
-- **Caso de uso relacionado:** [CU-06 — Gestionar alertas de seguimiento](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
+- **Historias relacionadas:** [HU-04](./04-historias-usuario.md#hu-04), [HU-08](./04-historias-usuario.md#hu-08) y [HU-03](./04-historias-usuario.md#hu-03).
+- **Casos de uso relacionados:** [CU-06 — Gestionar alertas de seguimiento](./09-casos-de-uso.md#casos-de-uso-y-su-origen) y [CU-11 — Registrar interacción en bitácora de acompañamiento](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
 - **Diagramas de secuencia relacionados:** [DSS-04](./10-diagramas-secuencia.md#dss-04--deteccion-y-gestion-de-alertas-preventivas-ges-e-inactividad) y [DSS-02](./10-diagramas-secuencia.md#dss-02--gestionar-derivacion-externa-y-retorno).
 
 ![EST-01 — Ciclo de vida de una alerta de seguimiento](../diagramas/EST-01-AlertaSeguimiento.png)
@@ -19,20 +19,23 @@ Este documento describe los estados y transiciones de las clases clave del domin
 
 ### Descripción del ciclo de vida
 
-La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: cinco días hábiles o menos para el vencimiento de una garantía GES; más de quince días corridos de inactividad; o, para una derivación, once días hábiles desde el despacho sin confirmación de recepción ni fecha de atención. En HU-04, la evaluación repetida no genera alertas redundantes mientras la condición siga activa y pendiente de resolución.
+La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: cinco días hábiles o menos para el vencimiento de una garantía GES (HU-04); más de quince días corridos de inactividad (HU-04); once días hábiles desde el despacho de una derivación sin confirmación de recepción ni fecha de atención (HU-08); o tres intentos fallidos consecutivos de contacto en la bitácora («No contactable») para activar el protocolo de búsqueda activa y coordinación con APS (HU-03 / HU-03-CA7 / ESC-03). En HU-04, la evaluación repetida no genera alertas redundantes mientras la condición siga activa y pendiente de resolución.
 
 ### Tabla de transiciones
 
 | Estado origen | Evento | Guarda | Acción | Estado destino |
 | :--- | :--- | :--- | :--- | :--- |
-| **Nodo inicial** | — | — | Vincular la alerta al caso y, si corresponde, a la garantía GES o al dossier | **Pendiente** |
-| **Pendiente** | Registro de una acción de gestión | [Alerta GES y gestora autorizada] | Conservar la acción en la bitácora; no equivale al cumplimiento de la garantía | **En gestión** |
-| **Pendiente** | Registro de hito de cumplimiento | [Cumplimiento de la garantía GES] | Vincular el hito que acredita el cumplimiento | **Resuelta** |
-| **En gestión** | Registro de hito de cumplimiento | [Cumplimiento de la garantía GES] | Vincular el hito y cerrar la alerta | **Resuelta** |
-| **Pendiente** | Registro de causa documentada | [La causa deja sin efecto la garantía GES] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
-| **En gestión** | Registro de causa documentada | [La causa deja sin efecto la garantía GES] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
+| **Nodo inicial** | — | — | Vincular la alerta al caso y, según origen, a la garantía GES, al dossier o al registro de búsqueda activa | **Pendiente** |
+| **Pendiente** | Registro de acción de gestión o contacto | [Gestora autorizada: acción sobre alerta GES, rezago de derivación o inicio de coordinación con APS para búsqueda activa] | Conservar la acción en bitácora; en GES no equivale al cumplimiento de la garantía | **En gestión** |
+| **Pendiente** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y cerrar la alerta | **Resuelta** |
+| **En gestión** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y cerrar la alerta | **Resuelta** |
+| **Pendiente** | Registro de causa documentada | [Causa clínica/administrativa documentada deja sin efecto la garantía o el seguimiento asistencial] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
+| **En gestión** | Registro de causa documentada | [Causa clínica/administrativa documentada deja sin efecto la garantía o el seguimiento asistencial] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
 | **Resuelta** | — | — | — | **Fin** |
 | **No aplica** | — | — | — | **Fin** |
+
+> [!NOTE]
+> **Gestión de alertas de búsqueda activa (HU-03-CA7):** La alerta generada tras tres intentos fallidos consecutivos de llamada/contacto pasa a **En gestión** cuando la gestora registra en la bitácora la coordinación con la red de Atención Primaria de Salud (APS), y transiciona a **Resuelta** cuando se restablece el contacto asistencial efectivo con el paciente o cuidador o se incorpora la respuesta formal del centro APS. Si una causa justificada documentada extingue el seguimiento (p. ej. traslado o egreso formal), se cierra con estado **No aplica**.
 
 ---
 
@@ -74,6 +77,21 @@ El dossier recorre los seis estados definidos para HU-08. Su ciclo comienza cuan
 
 **Archivo fuente:** [estados-objetos.puml](../diagramas/estados-objetos.puml) (`@startuml EST-03-CasoOncologico`).
 
+```mermaid
+stateDiagram-v2
+  [*] --> Sospecha: Ingreso del caso por sospecha clínica o CAE
+  Sospecha --> ConfirmacionDiagnostica: Confirmación histopatológica / Emisión IPD
+  ConfirmacionDiagnostica --> Etapificacion: Indicación de estudios de extensión
+  Etapificacion --> Etapificacion: Resolución firmada de comité (hito en Etapificación)
+  Etapificacion --> Tratamiento: Inicio efectivo del tratamiento registrado
+  Tratamiento --> Rehabilitacion: Término de terapia activa (cirugía/QT/RT)
+  Tratamiento --> CuidadosPaliativos: Indicación médica de soporte paliativo
+  Rehabilitacion --> SeguimientoSobrevivientes: Controles periódicos de vigilancia activa
+  CuidadosPaliativos --> AltaContrarreferencia: Cierre asistencial documentado
+  SeguimientoSobrevivientes --> AltaContrarreferencia: Vigilancia de 5 años o remisión completa
+  AltaContrarreferencia --> [*]
+```
+
 ### Descripción del ciclo de vida
 
 El objeto `CasoOncologico` transiciona a lo largo de las ocho etapas normadas de la trayectoria asistencial. De acuerdo con los criterios de aceptación de HU-01:
@@ -107,6 +125,18 @@ El objeto `CasoOncologico` transiciona a lo largo de las ocho etapas normadas de
 - **Diagrama de secuencia relacionado:** [DSS-01](./10-diagramas-secuencia.md#dss-01--incorporar-y-consultar-informes-diagnosticos).
 
 **Archivo fuente:** [estados-objetos.puml](../diagramas/estados-objetos.puml) (`@startuml EST-04-EstudioDiagnostico`).
+
+```mermaid
+stateDiagram-v2
+  [*] --> Solicitado: Emisión de OrdenExamen vinculada al caso
+  Solicitado --> PendienteValidacion: Detección de informe preliminar en LIS/PACS
+  PendienteValidacion --> ObservadoIdentificacion: Discrepancia de RUN detectada (HU-05-ESC-03)
+  ObservadoIdentificacion --> Incorporado: Subsanación de RUN y validación ratificada
+  PendienteValidacion --> Incorporado: Informe validado sin hallazgo crítico (HU-05-ESC-01)
+  PendienteValidacion --> IncorporadoHallazgoCritico: Informe validado con hallazgo de malignidad (HU-05-ESC-02)
+  Incorporado --> [*]
+  IncorporadoHallazgoCritico --> [*]
+```
 
 ### Descripción del ciclo de vida
 

@@ -1,8 +1,8 @@
 # Casos de uso
 
-Este documento describe los objetivos de los actores que participan en las historias **HU-01**, **HU-04**, **HU-05** y **HU-08** de OncoTrace. Su alcance se basa en los [criterios de aceptación](./07-criterios-aceptacion.md) y el [modelo de dominio](./08-modelo-dominio.md) de la Entrega 2.
+Este documento describe los objetivos de los actores que participan en las historias **HU-01 a HU-11** de OncoTrace (casos de uso **CU-01 a CU-16**). Su alcance se basa en los [criterios de aceptación](./07-criterios-aceptacion.md) y el [modelo de dominio](./08-modelo-dominio.md).
 
-**Requisitos de origen:** RF-01, RF-04, RF-05 y RF-08 de [03-requisitos.md](./03-requisitos.md).
+**Requisitos de origen:** RF-01 a RF-11 de [03-requisitos.md](./03-requisitos.md).
 
 ---
 
@@ -10,25 +10,24 @@ Este documento describe los objetivos de los actores que participan en las histo
 
 | Actor | Tipo | Descripción |
 | :--- | :--- | :--- |
-| **Gestor/a UGCO** | Humano | Consulta y actualiza el seguimiento del caso dentro de sus permisos, gestiona alertas, consulta informes diagnósticos y coordina el seguimiento de las derivaciones. |
-| **Médico tratante** | Humano | Consulta informes diagnósticos y recibe avisos prioritarios de hallazgos críticos para su evaluación clínica. |
-| **TENS UGCO** | Humano | Confecciona el dossier digital de derivación y puede registrar la entrega anticipada del instructivo de pasajes del Anexo 6. |
+| **Gestor/a UGCO** | Humano | Consulta y actualiza el seguimiento del caso dentro de sus permisos, gestiona alertas, consulta informes diagnósticos, coordina derivaciones, aplica valoraciones multidimensionales y monitorea la bitácora y la sincronización con MINSAL. |
+| **Médico tratante** | Humano | Consulta informes diagnósticos, recibe avisos prioritarios de hallazgos críticos para su evaluación clínica y elabora hipótesis diagnósticas y propuestas para comité. |
+| **TENS UGCO** | Humano | Confecciona el dossier digital de derivación, registra interacciones de contacto en la bitácora y registra la entrega anticipada del instructivo de pasajes del Anexo 6. |
 | **Funcionario/a UGAA** | Humano | Valida el dossier, formaliza el despacho y registra la confirmación de recepción o de cita emitida por el centro receptor cuando corresponde. |
+| **Médico integrante del Comité Oncológico** | Humano | Especialista que participa en la sesión colegiada para deliberar la conducta terapéutica consensuada y suscribir el acta con firma electrónica institucional. |
+| **Paciente / Cuidador** | Humano | Personas que reciben orientación y que consultan el avance de trámites e hitos asistenciales mediante canales de autoatención (tótem) o asistentes interactivos (chatbot de derechos y triage). |
 | **LIS** | Sistema externo | Proporciona informes de laboratorio y anatomía patológica junto con su estado de validación. |
 | **PACS** | Sistema externo | Proporciona informes de imagenología junto con su estado de validación. |
 | **Sistema HCVB** | Sistema externo | Representa al sistema del Hospital Carlos Van Buren en el intercambio de antecedentes de la derivación, confirmaciones de recepción, fechas de atención y documentos de retorno, según las interfaces institucionales habilitadas y autorizadas. |
+| **Sistema Central MINSAL** | Sistema externo | Plataforma nacional del Ministerio de Salud con la que OncoTrace intercambia datos estructurados de seguimiento oncológico según el mecanismo institucional acordado. |
 
 Los actores humanos deben autenticarse y contar con los permisos de su rol. OncoTrace registra los accesos y las operaciones sujetos a auditoría conforme a RNF-03 y REQ-DER-01.
 
 La comunicación con LIS y PACS se ajusta a RNF-04. El intercambio puede realizarse mediante HL7 FHIR o API REST según las interfaces disponibles en el hospital. Si no hay una interfaz habilitada con HCVB, UGAA puede registrar la confirmación de recepción o de cita emitida por el centro receptor. El retorno se registra cuando la gestora incorpora la epicrisis y la contrarreferencia.
 
-En las historias seleccionadas, el paciente o cuidador recibe orientación y el instructivo de pasajes a través del personal de la UGCO. La autoatención de HU-09 y el intercambio con MINSAL de HU-11 quedan fuera del alcance de este diagrama.
+La autoatención en tótem (HU-09 / CU-14) y la interacción mediante chatbot (HU-10 / CU-15) ofrecen canales directos a pacientes y cuidadores acreditados, y la sincronización con MINSAL (HU-11 / CU-16) provee interoperabilidad a nivel ministerial.
 
 ---
-
-- **Médico integrante del Comité Oncológico:** Especialista que participa en la sesión colegiada para deliberar la conducta terapéutica consensuada y suscribir el acta con firma electrónica.
-- **Paciente y cuidador:** Personas que consultan el avance de su proceso asistencial mediante canales de autoatención (tótem) o asistentes interactivos (chatbot de derechos y triage).
-- **Sistema Central MINSAL (Sistema externo):** Plataforma nacional del Ministerio de Salud con la que OncoTrace intercambia datos estructurados de seguimiento oncológico.
 
 ## Diagrama de casos de uso
 
@@ -38,7 +37,13 @@ En las historias seleccionadas, el paciente o cuidador recibe orientación y el 
 
 **Archivo fuente:** [casos-de-uso.puml](../diagramas/casos-de-uso.puml).
 
-El diagrama se organiza en tres vistas: seguimiento y alertas, informes diagnósticos y derivaciones externas. En cada vista, el rectángulo delimita OncoTrace y los actores se ubican fuera. Cuando un actor aparece en más de una vista, representa el mismo rol.
+El diagrama se organiza en **cuatro vistas complementarias**:
+- **DCU-01.A — Seguimiento y alertas:** CU-05 (Seguimiento del caso) y CU-06 (Gestión de alertas).
+- **DCU-01.B — Informes diagnósticos:** CU-01 (Consolidar y consultar informes) y CU-02 (Recibir avisos de hallazgos críticos).
+- **DCU-01.C — Derivaciones externas y retorno:** CU-03 (Despachar derivación), CU-04 (Registrar recepción y cita en HCVB), CU-07 (Confeccionar dossier), CU-08 (Registrar instructivo de pasajes) y CU-09 (Registrar retorno con epicrisis), estructurados en cinco bloques modulares.
+- **DCU-01.D — Valoración multidimensional, comités, canales y MINSAL:** CU-10 (Evaluación multidimensional), CU-11 (Bitácora de acompañamiento), CU-12 (Ficha de comité), CU-13 (Acta y REM 7), CU-14 (Tótem de autoatención), CU-15 (Chatbot y triage) y CU-16 (Interoperabilidad MINSAL).
+
+En cada vista, el rectángulo delimita OncoTrace y los actores se ubican fuera. Cuando un actor aparece en más de una vista, representa el mismo rol.
 
 ---
 
@@ -87,4 +92,4 @@ El diagrama se organiza en tres vistas: seguimiento y alertas, informes diagnós
 5. **Recepción, cita y retorno (CU-04 y CU-09).** El despacho deja la derivación en estado **Despachado por UGAA**. Para pasar a **Recepcionado en HCVB**, se registra la confirmación emitida por el centro receptor. La fecha de atención confirmada permite registrar **Cita Asignada**. El inicio del tratamiento se registra cuando se confirma que ocurrió. Al retorno, la gestora incorpora la epicrisis y la contrarreferencia, las vincula al caso y deja un hito en la línea de tiempo.
 6. **Evaluación multidimensional y bitácora (CU-10 y CU-11).** La valoración inicial exige el registro del estado funcional basal ECOG y la estratificación de vulnerabilidad biopsicosocial. Los 6 puntos de contacto normados deben registrarse cronológicamente en la bitácora según el Journey Map; el rezago superior a 48 horas hábiles tras alcanzar un hito obligatorio sin registrar el contacto genera una alerta preventiva a la gestora en CU-06. La bitácora preserva el principio de inmutabilidad mediante notas de adenda para cualquier rectificación posterior.
 7. **Comités oncológicos y REM 7 (CU-12 y CU-13).** La ficha de presentación exige informe de biopsia validado en LIS/Pathology. El acta firmada electrónicamente por los especialistas es legalmente vinculante, inmutable tras la sesión (Ley N° 20.584 y DS N° 29), y aporta la información estadística consolidada para el REM 7 ministerial.
-8. **Autoatención, triage e interoperabilidad (CU-14, CU-15 y CU-16).** La consulta en tótem de autoatención (CU-14) exige autenticación mediante factor autorizado por el hospital (cédula más factor secundario/código de verificación; RUN o cédula solos no bastan) y verifica la autorización vigente si quien consulta es un cuidador. El tótem despliega únicamente los 4 estados macro en lenguaje claro (*En proceso en laboratorio, Informe listo para revisión médica, Caso agendado en comité, Próxima cita médica programada*), omite términos histopatológicos reservados (Ley N° 20.584) y cierra la sesión automáticamente tras 30 segundos de inactividad o mediante el botón Salir. Las consultas de triage con dolor o urgencia generan tickets prioritarios sincronizados con el mesón gestor. La sincronización MINSAL reporta eventos en HL7 FHIR manteniendo encolamiento de reintentos ante fallas técnicas.
+8. **Autoatención, triage e interoperabilidad (CU-14, CU-15 y CU-16).** La consulta en tótem de autoatención (CU-14) exige autenticación mediante factor autorizado por el hospital (cédula más factor secundario/código de verificación; RUN o cédula solos no bastan) y verifica la autorización vigente si quien consulta es un cuidador. El tótem despliega únicamente los 4 estados macro en lenguaje claro (*En proceso en laboratorio, Informe listo para revisión médica, Caso agendado en comité, Próxima cita médica programada*), omite términos histopatológicos reservados (Ley N° 20.584) y cierra la sesión automáticamente tras 30 segundos de inactividad o mediante el botón Salir. Las consultas de triage con dolor o urgencia generan tickets prioritarios sincronizados con el mesón gestor. La sincronización MINSAL reporta eventos mediante el mecanismo institucional acordado, manteniendo encolamiento de reintentos ante fallas técnicas.

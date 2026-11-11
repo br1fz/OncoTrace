@@ -248,6 +248,11 @@ title
 MD-01.D — Valoración integral, bitácora, comités, canales y MINSAL
 end title
 
+class Paciente {
+  run: Texto
+  nombreCompleto: Texto
+}
+
 class CasoOncologico {
   numeroCaso: Texto
   especialidad: Texto
@@ -261,7 +266,7 @@ class EvaluacionMultidimensional {
   puntajeClinicoFuncional: Entero
   puntajePsicoemocional: Entero
   escalaZaritCuidador: Entero
-  nivelVulnerabilidad: Texto
+  nivelVulnerabilidad: NivelVulnerabilidad
   profesionalEvaluador: Texto
 }
 
@@ -282,7 +287,7 @@ class EntradaBitacora {
   resumenInteraccion: Texto
   acuerdosEstablecidos: Texto
   responsableRegistro: Texto
-  estadoContacto: Texto
+  estadoContacto: EstadoContactoBitacora
   esAdenda: Booleano
 }
 
@@ -352,7 +357,7 @@ class RegistroIntercambioMINSAL {
   identificadorMensaje: Texto
   tipoEvento: Texto
   fechaEnvio: FechaHora
-  estadoSincronizacion: Texto
+  estadoSincronizacion: EstadoSincronizacionMINSAL
   codigoRespuesta: Texto
   folioTransaccionMINSAL: Texto
 }

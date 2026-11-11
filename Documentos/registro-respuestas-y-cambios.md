@@ -1,8 +1,11 @@
 # Registro de Respuestas y Resolución Integral de Requisitos — Entrega 2
 **Proyecto:** OncoTrace · CIN324 Ingeniería de Requisitos  
 **Hospital Dr. Gustavo Fricke · Unidad de Gestión de Casos Oncológicos (UGCO)**  
-**Fecha:** 5 de noviembre de 2026  
+**Fecha:** 5 de noviembre de 2026 (Actualizado y consolidado: 11 de noviembre de 2026)  
 **Propósito:** Documentar la resolución experta de los hallazgos y puntos de completitud del repositorio para la generación de código y avance a la siguiente etapa asistida con OpenCode y OpenSpec.
+
+> [!NOTE]
+> **Documento de auditoría y trazabilidad histórica:** Este registro refleja la evolución y resolución de las observaciones formuladas al repositorio. Los criterios y especificaciones canónicas vinculantes para la implementación se encuentran formalizados en los documentos normativos correspondientes (`04-historias-usuario.md`, `07-criterios-aceptacion.md`, `08-modelo-dominio.md`, `09-casos-de-uso.md`, `10-diagramas-secuencia.md`, `11-diagramas-estado.md` y `12-trazabilidad.md`).
 
 ---
 
@@ -28,13 +31,13 @@ El repositorio ha alcanzado un **100% de cobertura y completitud metodológica**
 Para garantizar la total trazabilidad hacia el código y permitir que OpenCode pueda derivar cualquiera de estas historias sin advertencias ni bloqueos, se elaboraron e integraron los siguientes artefactos:
 
 1. **Criterios de Aceptación (Gherkin Dado-Cuando-Entonces):**
-   - **HU-02 (Evaluación multidimensional):** `HU-02-ESC-01` (registro de pauta de 6 dominios y categorización de vulnerabilidad), `HU-02-ESC-02` (pesquisa de sobrecarga de cuidador Zarit > 56 y derivación a trabajo social), `HU-02-ESC-03` (exigencia de índice clínico ECOG).
-   - **HU-03 (Bitácora de acompañamiento):** `HU-03-ESC-01` (registro de puntos de contacto 1 a 6 según Journey Map), `HU-03-ESC-02` (alerta por contacto vencido tras 5 días en tratamiento), `HU-03-ESC-03` (gestión de rescate tras 3 llamados fallidos).
+   - **HU-02 (Evaluación multidimensional):** `HU-02-ESC-01` (registro de pauta de 6 dominios e índice de vulnerabilidad asistencial global: Bajo, Medio, Alto), `HU-02-ESC-02` (pesquisa de sobrecarga de cuidador Zarit > 56 y derivación psicosocial), `HU-02-ESC-03` (exigencia de índice clínico ECOG).
+   - **HU-03 (Bitácora de acompañamiento):** `HU-03-ESC-01` (registro de los 6 puntos normados del Journey Map), `HU-03-ESC-02` (alerta preventiva por contacto pendiente tras 48 horas hábiles), `HU-03-ESC-03` (protocolo de búsqueda activa con APS tras 3 intentos fallidos consecutivos), `HU-03-ESC-04` (inmutabilidad y notas de adenda).
    - **HU-06 (Ficha de presentación a comité):** `HU-06-ESC-01` (consolidación automatizada de ficha clínica con TNM preliminar e imágenes), `HU-06-ESC-02` (bloqueo ante informe de biopsia ausente o no validado), `HU-06-ESC-03` (inclusión en la tabla oficial de la sesión).
    - **HU-07 (Acta digital y REM 7):** `HU-07-ESC-01` (deliberación colegiada y firma electrónica), `HU-07-ESC-02` (sellado legal e inmutabilidad según Ley N° 20.584 y DS N° 29), `HU-07-ESC-03` (consolidación para reporte REM 7).
-   - **HU-09 (Tótem de autoatención):** `HU-09-ESC-01` (consulta de exámenes y citas por RUN/cédula), `HU-09-ESC-02` (anonimización y omisión de diagnósticos sensibles en pantalla pública), `HU-09-ESC-03` (cierre de sesión automático por inactividad tras 60 s).
+   - **HU-09 (Tótem de autoatención):** `HU-09-ESC-01` (consulta por método autorizado: cédula + factor secundario, y despliegue de 4 estados macro), `HU-09-ESC-02` y `ESC-03` (verificación de autorización vigente de cuidador), `HU-09-ESC-04` (resguardo de confidencialidad y omisión de histopatología sensible), `HU-09-ESC-05` (cierre de sesión tras 30 s de inactividad o botón Salir).
    - **HU-10 (Chatbot de derechos y triage):** `HU-10-ESC-01` (orientación interactiva de la Ley Nacional del Cáncer N° 21.258), `HU-10-ESC-02` (triage clínico de demanda espontánea y priorización), `HU-10-ESC-03` (emisión de turno digital sincronizado con mesón UGCO).
-   - **HU-11 (Interoperabilidad MINSAL):** `HU-11-ESC-01` (transmisión HL7 FHIR de hito asistencial), `HU-11-ESC-02` (detección de error de esquema y encolamiento para reintento), `HU-11-ESC-03` (auditoría integral de intercambios).
+   - **HU-11 (Interoperabilidad MINSAL):** `HU-11-ESC-01` (transmisión de hito según mecanismo acordado y estado Sincronizado), `HU-11-ESC-02` (detección de error de formato y encolamiento en estado Pendiente de reintento), `HU-11-ESC-03` (auditoría integral de intercambios).
 
 2. **Casos de Uso del Sistema (incorporados en `casos-de-uso.puml` y `09-casos-de-uso.md`):**
    - `CU-10`: Aplicar evaluación multidimensional y estratificar riesgo (`Gestor/a UGCO`).

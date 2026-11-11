@@ -94,9 +94,12 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | Tipo | Valores o significado |
 | :--- | :--- |
 | `EtapaTrayectoria` | Sospecha; Confirmación diagnóstica; Etapificación; Tratamiento; Rehabilitación; Cuidados paliativos y alivio del dolor; Seguimiento y sobrevivientes; Alta y contrarreferencia. |
-| `TipoAlerta` | Proximidad de vencimiento GES; Riesgo de Inactividad/Abandono; Rezago de derivación. |
+| `TipoAlerta` | Proximidad de vencimiento GES; Riesgo de Inactividad/Abandono; Rezago de derivación; Búsqueda activa por no contactabilidad. |
 | `EstadoAlerta` | Pendiente; En gestión; Resuelta; No aplica. Pendiente identifica una alerta generada que aún no tiene una gestión registrada; los otros estados se aplican según HU-04. |
 | `EstadoDerivacionRed` | Dossier Confeccionado; Despachado por UGAA; Recepcionado en HCVB; Cita Asignada; Tratamiento Iniciado; Contrarreferido con Epicrisis. |
+| `NivelVulnerabilidad` | Bajo; Medio; Alto. Clasificación resultante del índice de vulnerabilidad asistencial global que pondera el desempeño clínico funcional (ECOG 0-4), riesgo psicosocial y sobrecarga del cuidador (Zarit > 56). |
+| `EstadoContactoBitacora` | Exitoso; No contactable. Registra la efectividad del contacto asistencial en cada entrada de la bitácora. |
+| `EstadoSincronizacionMINSAL` | Pendiente de confirmación; Sincronizado; Pendiente de reintento. Modela el ciclo de vida de los mensajes de intercambio ministerial (HU-11). |
 
 ### Restricciones que complementan las multiplicidades
 
@@ -114,11 +117,22 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 
 - La contrarreferencia con epicrisis se asocia al dossier cuando se registra el retorno al HGF, según HU-08-ESC-06.
 
-## Relación con las historias seleccionadas
+- El conteo de intentos fallidos de contacto se calcula a partir de las últimas instancias de `EntradaBitacora` vinculadas al caso (`estadoContacto = 'No contactable'`). Al detectarse tres intentos fallidos consecutivos, el sistema genera automáticamente una `AlertaSeguimiento` para activar el protocolo de rescate y búsqueda activa con APS (HU-03).
 
-| Historia | Conceptos principales |
+- Los registros en `RegistroIntercambioMINSAL` inician en `Pendiente de confirmación` al emitirse el mensaje hacia la plataforma nacional, pasan a `Sincronizado` al recibir el acuse satisfactorio con folio de transacción MINSAL, o a `Pendiente de reintento` ante indisponibilidad o errores de formato para permitir su reprocesamiento auditado (HU-11).
+
+## Relación con las historias de usuario (HU-01 a HU-11)
+
+| Historia | Conceptos principales del modelo de dominio |
 | :--- | :--- |
 | [HU-01](./04-historias-usuario.md#hu-01) | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite`. |
+| [HU-02](./04-historias-usuario.md#hu-02) | `CasoOncologico`, `EvaluacionMultidimensional`, `DominioValoracion`. |
+| [HU-03](./04-historias-usuario.md#hu-03) | `CasoOncologico`, `EntradaBitacora`, `HitoAsistencial`, `AlertaSeguimiento`. |
 | [HU-04](./04-historias-usuario.md#hu-04) | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial`. |
 | [HU-05](./04-historias-usuario.md#hu-05) | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico`. |
+| [HU-06](./04-historias-usuario.md#hu-06) | `CasoOncologico`, `FichaPresentacionComite`, `EstudioDiagnostico`. |
+| [HU-07](./04-historias-usuario.md#hu-07) | `CasoOncologico`, `ActaComite`, `FirmaElectronica`, `RegistroREM7`, `ResolucionComite`. |
 | [HU-08](./04-historias-usuario.md#hu-08) | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`. |
+| [HU-09](./04-historias-usuario.md#hu-09) | `Paciente`, `CuidadorAutorizado`, `InteraccionCanalUsuario`, `CasoOncologico`. |
+| [HU-10](./04-historias-usuario.md#hu-10) | `Paciente`, `InteraccionCanalUsuario`, `TicketTriagePresencial`. |
+| [HU-11](./04-historias-usuario.md#hu-11) | `CasoOncologico`, `RegistroIntercambioMINSAL`, `HitoAsistencial`. |

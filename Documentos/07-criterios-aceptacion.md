@@ -260,7 +260,7 @@ Característica: Evaluación multidimensional y estratificación de vulnerabilid
     Y una gestora UGCO autorizada aplicando la pauta inicial de valoración
     Cuando la gestora registra los puntajes de los seis dominios (clínico-funcional ECOG, psicoemocional, cuidador Zarit, socioeconómico, espiritual y comprensión diagnóstica)
     Entonces OncoTrace almacena la evaluación vinculada al caso y paciente
-    Y calcula el índice integral de vulnerabilidad clasificando el caso en Bajo, Medio o Alto
+    Y calcula el índice de vulnerabilidad asistencial global registrando el nivel de vulnerabilidad en Bajo, Medio o Alto
     Y genera sugerencias de derivación al equipo psicosocial si el dominio psicoemocional o socioeconómico presenta alteración crítica
 
   Escenario: HU-02-ESC-02 Detección de sobrecarga severa en cuidador principal
@@ -480,9 +480,9 @@ Característica: Interoperabilidad de seguimiento con la plataforma del MINSAL
     Y almacena el identificador de transacción y fecha de confirmación ministerial
 
   Escenario: HU-11-ESC-02 Detección de error de transmisión y encolamiento para reintento
-    Dado un envío de hito oncológico que es rechazado por indisponibilidad del MINSAL o discrepancia de esquema
+    Dado un envío de hito oncológico que es rechazado por indisponibilidad del MINSAL o error de formato
     Cuando OncoTrace procesa la respuesta fallida
-    Entonces registra el evento con estado Pendiente de Reintento
+    Entonces registra el evento con estado Pendiente de reintento
     Y conserva el detalle del error en la bitácora de interoperabilidad sin suspender la operación local
     Y programa el reintento automático según las políticas de conectividad definidas
 
