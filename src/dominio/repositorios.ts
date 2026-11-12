@@ -252,16 +252,18 @@ export class RepositorioOncologico {
   }
 
   // --- Alertas de Seguimiento (HU-04) ---
-  listarAlertasPorCasoId(casoId: number): (AlertaSeguimiento & { tipoGarantia?: string; fechaLimiteGarantia?: string })[] {
+  listarAlertasPorCasoId(casoId: number): (AlertaSeguimiento & { tipoGarantia?: string; fechaLimiteGarantia?: string; tipoHitoCumplimiento?: string; fechaHitoCumplimiento?: string })[] {
     const stmt = this.db.prepare(`
       SELECT 
         a.id, a.caso_id as casoId, a.identificador, a.tipo, a.prioridad, a.estado,
         a.fecha_generacion as fechaGeneracion, a.garantia_id as garantiaId,
         a.hito_cumplimiento_id as hitoCumplimientoId, a.motivo_cierre as motivoCierre,
         a.fecha_cierre as fechaCierre, a.responsable_cierre as responsableCierre,
-        g.tipo_garantia as tipoGarantia, g.fecha_limite as fechaLimiteGarantia
+        g.tipo_garantia as tipoGarantia, g.fecha_limite as fechaLimiteGarantia,
+        h.tipo as tipoHitoCumplimiento, h.fecha_ocurrencia as fechaHitoCumplimiento
       FROM alerta_seguimiento a
       LEFT JOIN garantia_ges g ON g.id = a.garantia_id
+      LEFT JOIN hito_asistencial h ON h.id = a.hito_cumplimiento_id
       WHERE a.caso_id = ?
       ORDER BY a.fecha_generacion DESC, a.id DESC
     `);

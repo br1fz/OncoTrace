@@ -709,5 +709,31 @@ describe('HU-04 — Motor de alertas preventivas de plazos GES e inactividad', (
       const casoAlertas = repo.listarAlertasPorCasoId(alerta.casoId);
       expect(casoAlertas.find(a => a.id === alerta.id)?.estado).toBe('Resuelta');
     });
+
+    it('4.10 (HU-04-ESC-06 / OBS-1) La ficha del caso indica el hito o contacto que resolvió la alerta con su tipo y fecha', async () => {
+      servicioAlertas.evaluarAlertas('2026-11-06');
+      const alerta = servicioAlertas.listarAlertasVigentes('2026-11-06').find(a => a.casoId === casoTestId && a.garantiaId === garantiaTestId)!;
+
+      const fechaHito = '2026-11-06';
+      const tipoHito = 'Confirmación diagnóstica cumplida (biopsia)';
+      const hitoId = repo.crearHito({
+        casoId: alerta.casoId,
+        tipo: tipoHito,
+        fechaOcurrencia: fechaHito,
+        fechaRegistro: new Date().toISOString(),
+        responsable: 'Dra. Loyola',
+        rolResponsable: 'Patólogo/a'
+      });
+      repo.resolverAlertaConHito(alerta.id!, hitoId, alerta.garantiaId);
+
+      const resFicha = await request(app)
+        .get('/casos/CASO-HTTP-001')
+        .set('Cookie', ['rol=Gestor/a UGCO']);
+
+      expect(resFicha.status).toBe(200);
+      expect(resFicha.text).toContain('Resolución:');
+      expect(resFicha.text).toContain(tipoHito);
+      expect(resFicha.text).toContain(`(${fechaHito})`);
+    });
   });
 });

@@ -49,7 +49,7 @@
 | HU-01 | hecha | hu-01-tablero-trazabilidad + ajuste-hu-01-consistencia-temporal | 2026-11-10 | Must. 13/13 pruebas pasando y `npm run build` sin errores. Archivado como `2026-11-10-ajuste-hu-01-consistencia-temporal`. Ficha: `.cin324/historias/HU-01.md`. Validación cerrada el 2026-11-10 (`VAL-HU-01-3`). |
 | HU-02 | hecha | hu-02-evaluacion-multidimensional | 2026-11-11 | Must. 10/10 pruebas de HU-02 (23/23 totales) y `npm run build` sin errores. Validación cerrada el 2026-11-11 (`VAL-HU-02-1`): 3 escenarios Gherkin, cálculo Bajo/Medio/Alto, inmutabilidad, permisos y distintivos verificados sin errores. OBS-1 (corrección con log de responsables) descartada: se mantiene el historial inmutable. Ficha: `.cin324/historias/HU-02.md`. |
 | HU-03 | pendiente | — | — | Must |
-| HU-04 | hecha | hu-04-motor-alertas-ges-inactividad | 2026-11-11 | Must. 29/29 pruebas de HU-04 (52/52 totales) y `npm run build` sin errores. Cubre TB-04, CU-06, RF-04, 9 escenarios Gherkin (HU-04-ESC-01 a HU-04-ESC-09), regla de visibilidad de 14h para alertas resueltas, confirmación de evaluación en panel, calendario de días hábiles 2026, detección de inactividad > 15 días corridos, gestión y cierre por causa documentada. Ficha: `.cin324/historias/HU-04.md`. Archivado como `2026-11-11-hu-04-motor-alertas-ges-inactividad`. |
+| HU-04 | hecha | hu-04-motor-alertas-ges-inactividad + ajuste-hu-04-indicacion-hito-resolutivo | 2026-11-11 | Must. 30/30 pruebas de HU-04 (53/53 totales) y `npm run build` sin errores. Cubre TB-04, CU-06, RF-04, 9 escenarios Gherkin (HU-04-ESC-01 a HU-04-ESC-09), regla de visibilidad de 14h para alertas resueltas, indicación observable de hito resolutivo en ficha del caso (OBS-1), confirmación de evaluación en panel, calendario de días hábiles 2026, detección de inactividad > 15 días corridos, gestión y cierre por causa documentada. Ficha: `.cin324/historias/HU-04.md`. Archivado como `2026-11-11-ajuste-hu-04-indicacion-hito-resolutivo`. |
 | HU-05 | pendiente | — | — | Must |
 | HU-06 | pendiente | — | — | Must |
 | HU-07 | pendiente | — | — | Must |
@@ -65,7 +65,8 @@
 | HU-01 | `.cin324/validaciones/VAL-HU-01-2.md` | verificado en el sistema (ajuste implementado y probado con 13/13 tests) | 2026-11-10 |
 | HU-01 | `.cin324/validaciones/VAL-HU-01-3.md` | **verificado en el sistema — HU-01 cerrada** (ESC-04 y ESC-05 comprobados; queda 1 mejora menor pendiente: «hoy» en UTC) | 2026-11-10 |
 | HU-02 | `.cin324/validaciones/VAL-HU-02-1.md` | **verificado en el sistema — HU-02 cerrada** (sin observaciones; OBS-1 descartada: historial inmutable) | 2026-11-11 |
-| HU-04 | `.cin324/validaciones/VAL-HU-04-1.md` | **verificado en el sistema — HU-04 cerrada** (ajustes OBS-1 a OBS-4 implementados; 29/29 tests pasando) | 2026-11-11 |
+| HU-04 | `.cin324/validaciones/VAL-HU-04-1.md` | verificado en el sistema (ajustes OBS-1 a OBS-4 implementados; 29/29 tests) | 2026-11-11 |
+| HU-04 | `.cin324/validaciones/VAL-HU-04-2.md` | verificado en el sistema (ajuste OBS-1 en ficha implementado y probado; 30/30 tests) | 2026-11-11 |
 
 ## Cambios posteriores
 | Cambio | Historia afectada | Motivo | Fecha |
@@ -73,3 +74,4 @@
 | Defecto de generación (sin cambio de especificación) | HU-01 | `npm run build` fallaba por los tipos de `req.params` (@types/express v5 con Express 4); se aplicó `String(...)` en las 5 líneas de `src/rutas/seguimiento.ts`. Comportamiento sin cambios. | 2026-11-10 |
 | 2026-11-10-ajuste-hu-01-consistencia-temporal | HU-01 | Implementar consistencia temporal e inmutabilidad de hitos: rechazo de fechas futuras (ESC-04) y anteriores al último hito registrado (ESC-05). 13/13 pruebas pasando. | 2026-11-10 |
 | 2026-11-11-hu-04-motor-alertas-ges-inactividad | HU-04 | Implementar motor de alertas GES e inactividad, feedback de evaluación (ESC-09) y visibilidad de 14h en alertas resueltas (ESC-06). 52/52 pruebas totales pasando. | 2026-11-11 |
+| 2026-11-11-ajuste-hu-04-indicacion-hito-resolutivo | HU-04 | Mostrar en la ficha del caso el hito o contacto que resolvió la alerta (tipo y fecha) según HU-04-ESC-06 (OBS-1). 53/53 pruebas totales pasando. | 2026-11-11 |
