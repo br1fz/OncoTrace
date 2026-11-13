@@ -251,19 +251,33 @@ export class RepositorioOncologico {
     return Number(res.lastInsertRowid);
   }
 
-  // --- Alertas de Seguimiento (HU-04) ---
-  listarAlertasPorCasoId(casoId: number): (AlertaSeguimiento & { tipoGarantia?: string; fechaLimiteGarantia?: string; tipoHitoCumplimiento?: string; fechaHitoCumplimiento?: string })[] {
+  // --- Alertas de Seguimiento (HU-04 / HU-03) ---
+  listarAlertasPorCasoId(casoId: number): (AlertaSeguimiento & {
+    tipoGarantia?: string;
+    fechaLimiteGarantia?: string;
+    tipoHitoCumplimiento?: string;
+    fechaHitoCumplimiento?: string;
+    identificadorEntradaCumplimiento?: string;
+    fechaEntradaCumplimiento?: string;
+    tipoHitoOrigen?: string;
+  })[] {
     const stmt = this.db.prepare(`
       SELECT 
         a.id, a.caso_id as casoId, a.identificador, a.tipo, a.prioridad, a.estado,
         a.fecha_generacion as fechaGeneracion, a.garantia_id as garantiaId,
         a.hito_cumplimiento_id as hitoCumplimientoId, a.motivo_cierre as motivoCierre,
         a.fecha_cierre as fechaCierre, a.responsable_cierre as responsableCierre,
+        a.hito_origen_id as hitoOrigenId, a.entrada_origen_id as entradaOrigenId,
+        a.entrada_cumplimiento_id as entradaCumplimientoId,
         g.tipo_garantia as tipoGarantia, g.fecha_limite as fechaLimiteGarantia,
-        h.tipo as tipoHitoCumplimiento, h.fecha_ocurrencia as fechaHitoCumplimiento
+        h.tipo as tipoHitoCumplimiento, h.fecha_ocurrencia as fechaHitoCumplimiento,
+        ho.tipo as tipoHitoOrigen,
+        eb.identificador as identificadorEntradaCumplimiento, eb.fecha_contacto as fechaEntradaCumplimiento
       FROM alerta_seguimiento a
       LEFT JOIN garantia_ges g ON g.id = a.garantia_id
       LEFT JOIN hito_asistencial h ON h.id = a.hito_cumplimiento_id
+      LEFT JOIN hito_asistencial ho ON ho.id = a.hito_origen_id
+      LEFT JOIN entrada_bitacora eb ON eb.id = a.entrada_cumplimiento_id
       WHERE a.caso_id = ?
       ORDER BY a.fecha_generacion DESC, a.id DESC
     `);
@@ -275,8 +289,9 @@ export class RepositorioOncologico {
     const stmt = this.db.prepare(`
       INSERT INTO alerta_seguimiento (
         caso_id, identificador, tipo, prioridad, estado, fecha_generacion,
-        garantia_id, hito_cumplimiento_id, motivo_cierre, fecha_cierre, responsable_cierre
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        garantia_id, hito_cumplimiento_id, motivo_cierre, fecha_cierre, responsable_cierre,
+        hito_origen_id, entrada_origen_id, entrada_cumplimiento_id
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const res = stmt.run(
       alerta.casoId,
@@ -289,7 +304,10 @@ export class RepositorioOncologico {
       alerta.hitoCumplimientoId ?? null,
       alerta.motivoCierre ?? null,
       alerta.fechaCierre ?? null,
-      alerta.responsableCierre ?? null
+      alerta.responsableCierre ?? null,
+      alerta.hitoOrigenId ?? null,
+      alerta.entradaOrigenId ?? null,
+      alerta.entradaCumplimientoId ?? null
     );
     return Number(res.lastInsertRowid);
   }
@@ -417,6 +435,15 @@ export class RepositorioOncologico {
     tx();
   }
 
+  resolverAlertaConEntrada(alertaId: number, entradaId: number, fechaCierreIso?: string): void {
+    const fecha = fechaCierreIso || new Date().toISOString();
+    this.db.prepare(`
+      UPDATE alerta_seguimiento 
+      SET estado = 'Resuelta', entrada_cumplimiento_id = ?, fecha_cierre = ?
+      WHERE id = ?
+    `).run(entradaId, fecha, alertaId);
+  }
+
   cerrarAlertaPorCausa(alertaId: number, motivo: string, fecha: string, responsable: string, garantiaId?: number): void {
     const tx = this.db.transaction(() => {
       this.db.prepare(`
@@ -514,15 +541,16 @@ export class RepositorioOncologico {
     stmt.run(nuevoEstado, garantiaId);
   }
 
-  // --- Entrada Bitácora mínima (HU-04 / HU-03) ---
+  // --- Entrada Bitácora y Acompañamiento (HU-04 / HU-03) ---
   crearEntradaBitacora(entrada: EntradaBitacora): number {
     const identificador = entrada.identificador || `BIT-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 900 + 100)}`;
     const stmt = this.db.prepare(`
       INSERT INTO entrada_bitacora (
         caso_id, identificador, punto_contacto_normado, fecha_contacto, canal_contacto,
         interlocutor, motivo_contacto, resumen_interaccion, acuerdos_establecidos,
-        responsable_registro, estado_contacto, es_adenda
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        responsable_registro, estado_contacto, es_adenda,
+        fecha_proximo_contacto, objetivo_proximo_contacto, entrada_original_id
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const res = stmt.run(
       entrada.casoId,
@@ -536,7 +564,10 @@ export class RepositorioOncologico {
       entrada.acuerdosEstablecidos ?? null,
       entrada.responsableRegistro,
       entrada.estadoContacto,
-      entrada.esAdenda ? 1 : 0
+      entrada.esAdenda ? 1 : 0,
+      entrada.fechaProximoContacto ?? null,
+      entrada.objetivoProximoContacto ?? null,
+      entrada.entradaOriginalId ?? null
     );
     return Number(res.lastInsertRowid);
   }
@@ -548,7 +579,10 @@ export class RepositorioOncologico {
         fecha_contacto as fechaContacto, canal_contacto as canalContacto, interlocutor,
         motivo_contacto as motivoContacto, resumen_interaccion as resumenInteraccion,
         acuerdos_establecidos as acuerdosEstablecidos, responsable_registro as responsableRegistro,
-        estado_contacto as estadoContacto, es_adenda as esAdenda
+        estado_contacto as estadoContacto, es_adenda as esAdenda,
+        fecha_proximo_contacto as fechaProximoContacto,
+        objetivo_proximo_contacto as objetivoProximoContacto,
+        entrada_original_id as entradaOriginalId
       FROM entrada_bitacora
       WHERE caso_id = ?
       ORDER BY fecha_contacto DESC, id DESC
@@ -558,6 +592,100 @@ export class RepositorioOncologico {
       ...r,
       esAdenda: Boolean(r.esAdenda)
     }));
+  }
+
+  obtenerEntradaBitacoraPorIdentificador(identificador: string): EntradaBitacora | null {
+    const row = this.db.prepare(`
+      SELECT 
+        id, caso_id as casoId, identificador, punto_contacto_normado as puntoContactoNormado,
+        fecha_contacto as fechaContacto, canal_contacto as canalContacto, interlocutor,
+        motivo_contacto as motivoContacto, resumen_interaccion as resumenInteraccion,
+        acuerdos_establecidos as acuerdosEstablecidos, responsable_registro as responsableRegistro,
+        estado_contacto as estadoContacto, es_adenda as esAdenda,
+        fecha_proximo_contacto as fechaProximoContacto,
+        objetivo_proximo_contacto as objetivoProximoContacto,
+        entrada_original_id as entradaOriginalId
+      FROM entrada_bitacora
+      WHERE identificador = ?
+    `).get(identificador) as any;
+    if (!row) return null;
+    return {
+      ...row,
+      esAdenda: Boolean(row.esAdenda)
+    };
+  }
+
+  obtenerUltimaEntradaAcompanamiento(casoId: number): EntradaBitacora | null {
+    const row = this.db.prepare(`
+      SELECT 
+        id, caso_id as casoId, identificador, punto_contacto_normado as puntoContactoNormado,
+        fecha_contacto as fechaContacto, canal_contacto as canalContacto, interlocutor,
+        motivo_contacto as motivoContacto, resumen_interaccion as resumenInteraccion,
+        acuerdos_establecidos as acuerdosEstablecidos, responsable_registro as responsableRegistro,
+        estado_contacto as estadoContacto, es_adenda as esAdenda,
+        fecha_proximo_contacto as fechaProximoContacto,
+        objetivo_proximo_contacto as objetivoProximoContacto,
+        entrada_original_id as entradaOriginalId
+      FROM entrada_bitacora
+      WHERE caso_id = ? AND es_adenda = 0 AND punto_contacto_normado IS NOT NULL
+      ORDER BY fecha_contacto DESC, id DESC
+      LIMIT 1
+    `).get(casoId) as any;
+    if (!row) return null;
+    return {
+      ...row,
+      esAdenda: Boolean(row.esAdenda)
+    };
+  }
+
+  contarIntentosFallidosConsecutivos(casoId: number): number {
+    const rows = this.db.prepare(`
+      SELECT estado_contacto as estadoContacto
+      FROM entrada_bitacora
+      WHERE caso_id = ? AND es_adenda = 0 AND punto_contacto_normado IS NOT NULL
+      ORDER BY fecha_contacto DESC, id DESC
+    `).all(casoId) as { estadoContacto: string }[];
+
+    let fallos = 0;
+    for (const r of rows) {
+      if (r.estadoContacto === 'No contactable') {
+        fallos++;
+      } else if (r.estadoContacto === 'Efectivo') {
+        break;
+      }
+    }
+    return fallos;
+  }
+
+  existeEntradaDelPunto(casoId: number, puntoNormado: string, fechaMinimaOcurrencia: string): boolean {
+    const fechaMin = fechaMinimaOcurrencia.slice(0, 10);
+    const row = this.db.prepare(`
+      SELECT 1 FROM entrada_bitacora
+      WHERE caso_id = ? 
+        AND punto_contacto_normado = ? 
+        AND substr(fecha_contacto, 1, 10) >= ?
+        AND es_adenda = 0
+      LIMIT 1
+    `).get(casoId, puntoNormado, fechaMin);
+    return Boolean(row);
+  }
+
+  existeAlertaActivaPorHitoOrigen(hitoId: number): boolean {
+    const row = this.db.prepare(`
+      SELECT 1 FROM alerta_seguimiento
+      WHERE hito_origen_id = ? AND estado IN ('Pendiente', 'En gestión')
+      LIMIT 1
+    `).get(hitoId);
+    return Boolean(row);
+  }
+
+  existeAlertaActivaPorTipo(casoId: number, tipo: string): boolean {
+    const row = this.db.prepare(`
+      SELECT 1 FROM alerta_seguimiento
+      WHERE caso_id = ? AND tipo = ? AND estado IN ('Pendiente', 'En gestión')
+      LIMIT 1
+    `).get(casoId, tipo);
+    return Boolean(row);
   }
 
   // --- Cuidadores Autorizados (HU-02 / CU-10 / D3) ---

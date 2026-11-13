@@ -18,15 +18,24 @@
 
 <div class="caso-header-panel">
   <div class="header-main">
-    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
       <span class="caso-badge-code"><%= caso.numeroCaso %></span>
       <span class="badge-etapa-destacada"><%= caso.etapaActual %></span>
       <span class="badge-riesgo badge-riesgo-<%= caso.marcadorRiesgo ? caso.marcadorRiesgo.toLowerCase().replace(/\s+/g, '-') : 'sin-evaluar' %>">
         Vulnerabilidad: <%= caso.marcadorRiesgo %>
       </span>
+      <span class="badge-contactabilidad badge-contact-<%= caso.indicadorContactabilidad ? caso.indicadorContactabilidad.toLowerCase().replace(/\s+/g, '-') : 'sin-registro' %>">
+        Contactabilidad: <%= caso.indicadorContactabilidad || 'Sin registro' %>
+      </span>
     </div>
     <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;"><%= caso.nombreCompleto %></h1>
     <p style="color: #64748b; font-size: 0.95rem;"><strong>RUN:</strong> <%= caso.run %> &nbsp;|&nbsp; <strong>Ingreso UGCO:</strong> <%= caso.fechaIngreso %></p>
+    <% if (caso.proximaAccion) { %>
+      <div style="margin-top: 0.75rem; background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.85rem; color: #166534; display: flex; align-items: center; gap: 0.5rem;">
+        <span>📅</span>
+        <span><strong>Próxima acción programada:</strong> <%= caso.proximaAccion.fecha %> — <%= caso.proximaAccion.objetivo %></span>
+      </div>
+    <% } %>
   </div>
 
   <div class="header-side">
@@ -49,6 +58,11 @@
       <a href="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/evaluaciones/nueva" class="btn-secondary-action">
         + Nueva evaluación multidimensional
       </a>
+      <% if (rolActual === 'Gestor/a UGCO' || rolActual === 'TENS UGCO') { %>
+        <button type="button" onclick="document.getElementById('modal-registro-bitacora').style.display='block'" class="btn-secondary-action" style="cursor: pointer; text-align: center; background: #f0fdf4; border-color: #22c55e; color: #15803d;">
+          + Registrar interacción en bitácora
+        </button>
+      <% } %>
     </div>
   </div>
 </div>
@@ -237,12 +251,21 @@
                 <strong>Inactividad asistencial:</strong> <%= alerta.diasInactividad %> días corridos
               </p>
             <% } %>
+            <% if (alerta.tipoHitoOrigen) { %>
+              <p style="font-size: 0.8rem; color: #334155; margin-bottom: 0.2rem;">
+                <strong>Hito de origen:</strong> <%= alerta.tipoHitoOrigen %>
+              </p>
+            <% } %>
             <% if (alerta.motivoCierre) { %>
               <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;">
                 <strong>Cierre:</strong> <%= alerta.motivoCierre %> (por <%= alerta.responsableCierre %>, <%= alerta.fechaCierre %>)
               </p>
             <% } %>
-            <% if (alerta.estado === 'Resuelta' && (alerta.tipoHitoCumplimiento || alerta.hitoCumplimientoId)) { %>
+            <% if (alerta.estado === 'Resuelta' && alerta.identificadorEntradaCumplimiento) { %>
+              <p style="font-size: 0.75rem; color: #166534; margin-top: 0.25rem; background: #f0fdf4; padding: 0.35rem 0.5rem; border-radius: 4px; border: 1px solid #bbf7d0;">
+                <strong>Resolución:</strong> Contacto <%= alerta.identificadorEntradaCumplimiento %> (<%= alerta.fechaEntradaCumplimiento ? alerta.fechaEntradaCumplimiento.slice(0, 10) : '' %>)
+              </p>
+            <% } else if (alerta.estado === 'Resuelta' && (alerta.tipoHitoCumplimiento || alerta.hitoCumplimientoId)) { %>
               <p style="font-size: 0.75rem; color: #166534; margin-top: 0.25rem; background: #f0fdf4; padding: 0.35rem 0.5rem; border-radius: 4px; border: 1px solid #bbf7d0;">
                 <strong>Resolución:</strong> <%= alerta.tipoHitoCumplimiento || 'Hito resolutivo' %><% if (alerta.fechaHitoCumplimiento) { %> (<%= alerta.fechaHitoCumplimiento %>)<% } %>
               </p>
@@ -348,35 +371,225 @@
       <% } %>
     </div>
 
-    <!-- Bitácora de Gestiones Registradas (HU-04-ESC-05 / CU-06) -->
-    <% if (caso.entradasBitacora && caso.entradasBitacora.length > 0) { %>
-      <div class="sub-panel" style="margin-top: 1.5rem;">
-        <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
-          Bitácora de Gestión de Alertas (<%= caso.entradasBitacora.length %>)
+    <!-- Bitácora de Acompañamiento y Navegación (HU-03 / CU-11 / RF-03) -->
+    <div class="sub-panel" style="margin-top: 1.5rem;" id="seccion-bitacora">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: #1e293b; margin: 0;">
+          Bitácora de Acompañamiento (<%= caso.entradasBitacora ? caso.entradasBitacora.length : 0 %>)
         </h3>
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <% if (rolActual === 'Gestor/a UGCO' || rolActual === 'TENS UGCO') { %>
+          <button type="button" onclick="document.getElementById('modal-registro-bitacora').style.display='block'" style="background: #0284c7; color: white; border: none; border-radius: 4px; padding: 0.35rem 0.75rem; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+            + Registrar interacción
+          </button>
+        <% } %>
+      </div>
+
+      <% if (!caso.entradasBitacora || caso.entradasBitacora.length === 0) { %>
+        <p style="color: #64748b; font-size: 0.85rem; font-style: italic; text-align: center; padding: 1.5rem 0;">
+          Sin interacciones registradas en la bitácora aún.
+        </p>
+      <% } else { %>
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
           <% caso.entradasBitacora.forEach(b => { %>
-            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.75rem; font-size: 0.85rem;">
-              <div style="display: flex; justify-content: space-between; color: #64748b; font-size: 0.75rem; margin-bottom: 0.25rem;">
-                <span style="font-weight: 700; color: #0284c7;"><%= b.identificador %> · <%= b.canalContacto %></span>
-                <span><%= b.fechaContacto ? b.fechaContacto.slice(0, 10) : '' %></span>
+            <div class="bitacora-card" id="bitacora-<%= b.identificador %>" style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.85rem; font-size: 0.85rem; <%= b.esAdenda ? 'border-left: 4px solid #8b5cf6; background: #faf5ff;' : '' %>">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.35rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                  <span style="font-family: monospace; font-weight: 700; color: #0284c7;"><%= b.identificador %></span>
+                  <% if (b.puntoContactoNormado) { %>
+                    <span style="background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem;">
+                      <%= b.puntoContactoNormado %>
+                    </span>
+                  <% } %>
+                  <% if (b.esAdenda) { %>
+                    <span style="background: #ede9fe; color: #6d28d9; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem;">
+                      Adenda inmutable &rarr; <%= b.entradaOriginalId %>
+                    </span>
+                  <% } %>
+                  <span style="background: <%= b.estadoContacto === 'Efectivo' ? '#dcfce7; color: #166534;' : '#fee2e2; color: #991b1b;' %>; padding: 0.15rem 0.45rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem;">
+                    <%= b.estadoContacto %>
+                  </span>
+                </div>
+                <span style="color: #64748b; font-size: 0.75rem;">
+                  <%= b.fechaContacto ? b.fechaContacto.slice(0, 16).replace('T', ' ') : '' %> · <%= b.canalContacto %>
+                </span>
               </div>
-              <p style="color: #1e293b; margin-bottom: 0.25rem;"><strong>Gestión:</strong> <%= b.resumenInteraccion %></p>
-              <% if (b.acuerdosEstablecidos) { %>
-                <p style="color: #475569; font-size: 0.8rem;"><strong>Acuerdos:</strong> <%= b.acuerdosEstablecidos %></p>
+
+              <% if (b.motivoContacto) { %>
+                <p style="color: #334155; margin-bottom: 0.25rem;"><strong>Motivo:</strong> <%= b.motivoContacto %></p>
               <% } %>
-              <div style="color: #94a3b8; font-size: 0.75rem; margin-top: 0.25rem;">
-                Registrado por <%= b.responsableRegistro %> · Interlocutor: <%= b.interlocutor || 'Paciente' %>
+              <p style="color: #1e293b; margin-bottom: 0.35rem;"><strong>Resumen:</strong> <%= b.resumenInteraccion %></p>
+              <% if (b.acuerdosEstablecidos) { %>
+                <p style="color: #475569; font-size: 0.8rem; margin-bottom: 0.35rem; background: #f8fafc; padding: 0.35rem 0.5rem; border-radius: 4px; border: 1px solid #f1f5f9;">
+                  <strong>Acuerdos:</strong> <%= b.acuerdosEstablecidos %>
+                </p>
+              <% } %>
+              <% if (b.fechaProximoContacto) { %>
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 0.35rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.35rem;">
+                  <span>📅</span>
+                  <span><strong>Próximo contacto programado:</strong> <%= b.fechaProximoContacto %> (<%= b.objetivoProximoContacto || 'Seguimiento' %>)</span>
+                </div>
+              <% } %>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; color: #94a3b8; font-size: 0.75rem; margin-top: 0.35rem; border-top: 1px dashed #e2e8f0; padding-top: 0.35rem;">
+                <span>Registrado por <strong><%= b.responsableRegistro %></strong> · Interlocutor: <%= b.interlocutor || 'Paciente' %></span>
+                <% if (!b.esAdenda && (rolActual === 'Gestor/a UGCO' || rolActual === 'TENS UGCO')) { %>
+                  <button type="button" onclick="document.getElementById('modal-adenda-<%= b.id %>').style.display='block'" style="background: none; border: 1px solid #cbd5e1; border-radius: 4px; padding: 0.2rem 0.5rem; font-size: 0.75rem; color: #475569; cursor: pointer;">
+                    + Agregar adenda
+                  </button>
+                <% } %>
               </div>
+
+              <!-- Modales de Adenda para cada entrada -->
+              <% if (!b.esAdenda && (rolActual === 'Gestor/a UGCO' || rolActual === 'TENS UGCO')) { %>
+                <div id="modal-adenda-<%= b.id %>" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 60; overflow-y: auto;">
+                  <div style="max-width: 500px; margin: 4rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                      <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a;">Agregar Adenda Inmutable a <%= b.identificador %></h3>
+                      <button type="button" onclick="document.getElementById('modal-adenda-<%= b.id %>').style.display='none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <form action="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/bitacora/<%= encodeURIComponent(b.identificador) %>/adenda" method="POST">
+                      <div style="margin-bottom: 0.75rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Motivo de la enmienda o rectificación *</label>
+                        <input type="text" name="motivoEnmienda" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required placeholder="Ej: Corrección de fecha de inicio o aclaración clínica">
+                      </div>
+                      <div style="margin-bottom: 0.75rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Detalle de la corrección asistencial *</label>
+                        <textarea name="resumenCorreccion" rows="3" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required placeholder="Ingrese el texto aclaratorio o rectificado..."></textarea>
+                      </div>
+                      <div style="margin-bottom: 0.75rem;">
+                        <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Nuevos acuerdos establecidos (opcional)</label>
+                        <textarea name="acuerdosEstablecidos" rows="2" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" placeholder="Acuerdos enmendados si aplica..."></textarea>
+                      </div>
+                      <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                        <button type="button" onclick="document.getElementById('modal-adenda-<%= b.id %>').style.display='none'" style="padding: 0.4rem 0.8rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px;">Cancelar</button>
+                        <button type="submit" style="padding: 0.4rem 1rem; background: #8b5cf6; color: white; border: none; border-radius: 4px; font-weight: 600;">Registrar Adenda</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              <% } %>
             </div>
           <% }); %>
         </div>
-      </div>
-    <% } %>
+      <% } %>
+    </div>
   </div>
 </div>
 
+<!-- Modal Registrar Interacción en Bitácora (HU-03) -->
+<% if (rolActual === 'Gestor/a UGCO' || rolActual === 'TENS UGCO') { %>
+  <div id="modal-registro-bitacora" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 55; overflow-y: auto;">
+    <div style="max-width: 580px; margin: 3rem auto; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a;">Registrar Interacción en Bitácora</h3>
+        <button type="button" onclick="document.getElementById('modal-registro-bitacora').style.display='none'" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">&times;</button>
+      </div>
+      <form action="/casos/<%= encodeURIComponent(caso.numeroCaso) %>/bitacora" method="POST">
+        <div style="margin-bottom: 0.75rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Punto de Contacto Normado (Journey Map)</label>
+          <select name="puntoContactoNormado" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;">
+            <option value="">No normado (Seguimiento general)</option>
+            <option value="P1 Ingreso/Sospecha inicial">P1 Ingreso/Sospecha inicial</option>
+            <option value="P2 Post-confirmación diagnóstica con IPD">P2 Post-confirmación diagnóstica con IPD</option>
+            <option value="P3 Etapificación/Post-resolución de comité">P3 Etapificación/Post-resolución de comité</option>
+            <option value="P4 Alta de hospitalización o cirugía">P4 Alta de hospitalización o cirugía</option>
+            <option value="P5 Fin del tratamiento activo y retorno a la vida cotidiana">P5 Fin del tratamiento activo y retorno a la vida cotidiana</option>
+            <option value="P6 Derivación a otro establecimiento de la red">P6 Derivación a otro establecimiento de la red</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Fecha y hora del contacto *</label>
+            <input type="datetime-local" name="fechaContacto" value="<%= new Date().toISOString().slice(0, 16) %>" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Canal de contacto *</label>
+            <select name="canalContacto" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+              <option value="Telefónico">Telefónico</option>
+              <option value="Presencial en UGCO">Presencial en UGCO</option>
+              <option value="Visita domiciliaria">Visita domiciliaria</option>
+              <option value="Correo electrónico">Correo electrónico</option>
+              <option value="Coordinación APS">Coordinación APS</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Interlocutor *</label>
+            <input type="text" name="interlocutor" value="Paciente" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required placeholder="Paciente, Cuidador/a, Familiar...">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Estado del contacto *</label>
+            <select name="estadoContacto" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required>
+              <option value="Efectivo">Efectivo (Contactable)</option>
+              <option value="No contactable">No contactable (Fallido)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 0.75rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Motivo del contacto *</label>
+          <input type="text" name="motivoContacto" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required placeholder="Ej: Orientación hito P1 / Confirmación de citación...">
+        </div>
+
+        <div style="margin-bottom: 0.75rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Resumen de la interacción *</label>
+          <textarea name="resumenInteraccion" rows="3" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" required placeholder="Detalle asistencial de la interacción sostenida..."></textarea>
+        </div>
+
+        <div style="margin-bottom: 0.75rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">Acuerdos establecidos (opcional)</label>
+          <textarea name="acuerdosEstablecidos" rows="2" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 4px;" placeholder="Compromisos o indicaciones al paciente/cuidador..."></textarea>
+        </div>
+
+        <!-- Programación próximo contacto (HU-03-ESC-05) -->
+        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem;">
+          <div style="font-weight: 700; font-size: 0.85rem; color: #334155; margin-bottom: 0.5rem;">📅 Programación de Próxima Acción (Opcional)</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div>
+              <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem;">Fecha próximo contacto</label>
+              <input type="date" name="fechaProximoContacto" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.2rem;">Objetivo del contacto</label>
+              <input type="text" name="objetivoProximoContacto" placeholder="Ej: Seguimiento de resultado de biopsia" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+          <button type="button" onclick="document.getElementById('modal-registro-bitacora').style.display='none'" style="padding: 0.4rem 0.8rem; border: 1px solid #cbd5e1; background: white; border-radius: 4px;">Cancelar</button>
+          <button type="submit" style="padding: 0.4rem 1.2rem; background: #0284c7; color: white; border: none; border-radius: 4px; font-weight: 600;">Registrar Interacción</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<% } %>
+
 <style>
+  .badge-contactabilidad {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .badge-contact-contactable {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    border: 1px solid #bbf7d0;
+  }
+  .badge-contact-no-contactable {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border: 1px solid #fecaca;
+  }
+  .badge-contact-sin-registro {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    border: 1px solid #cbd5e1;
+  }
   .caso-header-panel {
     background: white;
     border-radius: 8px;

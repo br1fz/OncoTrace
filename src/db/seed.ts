@@ -396,7 +396,147 @@ export function sembrarDatos(dbRuta?: string): void {
     );
   }
 
-  console.log('✅ Datos de ejemplo sembrados con éxito (4 casos, valoraciones multidimensionales y garantías GES).');
+  // Bitácora de Acompañamiento y Puntos Normados (HU-03 / TB-03 / CU-11)
+  const bitacoraSemilla = [
+    // CASO 1: P1 cumplido y próximo contacto programado
+    {
+      casoId: c1.id!,
+      identificador: 'BIT-2026-001',
+      puntoContactoNormado: 'P1 Ingreso/Sospecha inicial',
+      fechaContacto: '2026-10-16T10:00:00Z',
+      canalContacto: 'Telefónico',
+      interlocutor: 'Paciente',
+      motivoContacto: 'Contacto inicial de navegación y acogida',
+      resumenInteraccion: 'Se contacta a la paciente Rosa Valenzuela, se entrega orientación sobre garantías GES y se confirma citación a mamografía complementaria.',
+      acuerdosEstablecidos: 'Paciente asistirá a examen mamográfico en Hospital Dr. Gustavo Fricke el 2026-10-22.',
+      responsableRegistro: 'Enf. Patricia Soto',
+      estadoContacto: 'Efectivo',
+      esAdenda: 0,
+      fechaProximoContacto: '2026-10-22',
+      objetivoProximoContacto: 'Seguimiento de resultado de mamografía complementaria',
+      entradaOriginalId: null
+    },
+    // CASO 2: P1 cumplido, pero hito P2 (2026-10-16) pendiente sin contacto (> 48h hábiles)
+    {
+      casoId: c2.id!,
+      identificador: 'BIT-2026-002',
+      puntoContactoNormado: 'P1 Ingreso/Sospecha inicial',
+      fechaContacto: '2026-10-03T11:00:00Z',
+      canalContacto: 'Presencial en UGCO',
+      interlocutor: 'Paciente',
+      motivoContacto: 'Ingreso inicial por derivación de urgencia',
+      resumenInteraccion: 'Se recepciona paciente Carlos Araya y se abre expediente de navegación oncológica.',
+      acuerdosEstablecidos: 'Se gestiona biopsia urgente con Unidad de Endoscopía.',
+      responsableRegistro: 'TENS Claudia Morales',
+      estadoContacto: 'Efectivo',
+      esAdenda: 0,
+      fechaProximoContacto: null,
+      objetivoProximoContacto: null,
+      entradaOriginalId: null
+    },
+    // CASO 3: Racha de 2 intentos fallidos consecutivos (listo para 3.er fallo)
+    {
+      casoId: c3.id!,
+      identificador: 'BIT-2026-003',
+      puntoContactoNormado: 'P3 Etapificación/Post-resolución de comité',
+      fechaContacto: '2026-10-12T10:00:00Z',
+      canalContacto: 'Telefónico',
+      interlocutor: 'Paciente',
+      motivoContacto: 'Coordinación asistencial post-comité',
+      resumenInteraccion: 'Teléfono suena ocupado reiteradamente sin respuesta.',
+      acuerdosEstablecidos: null,
+      responsableRegistro: 'Enf. Patricia Soto',
+      estadoContacto: 'No contactable',
+      esAdenda: 0,
+      fechaProximoContacto: null,
+      objetivoProximoContacto: null,
+      entradaOriginalId: null
+    },
+    {
+      casoId: c3.id!,
+      identificador: 'BIT-2026-004',
+      puntoContactoNormado: 'P3 Etapificación/Post-resolución de comité',
+      fechaContacto: '2026-10-14T14:30:00Z',
+      canalContacto: 'Telefónico',
+      interlocutor: 'Cuidador/a',
+      motivoContacto: 'Segundo intento de contacto post-resolución de comité',
+      resumenInteraccion: 'Llamada se desvía a buzón de voz tras 5 timbres.',
+      acuerdosEstablecidos: null,
+      responsableRegistro: 'TENS Claudia Morales',
+      estadoContacto: 'No contactable',
+      esAdenda: 0,
+      fechaProximoContacto: null,
+      objetivoProximoContacto: null,
+      entradaOriginalId: null
+    },
+    // CASO 4: Entradas normales de consulta y adenda inmutable
+    {
+      casoId: c4.id!,
+      identificador: 'BIT-2026-005',
+      puntoContactoNormado: 'P3 Etapificación/Post-resolución de comité',
+      fechaContacto: '2026-09-08T11:00:00Z',
+      canalContacto: 'Presencial en UGCO',
+      interlocutor: 'Paciente',
+      motivoContacto: 'Explicación de conducta acordada en comité',
+      resumenInteraccion: 'Se explica a Don Juan Pablo el plan de tratamiento urológico y fecha tentativa de cirugía.',
+      acuerdosEstablecidos: 'Paciente acepta conducta y se programa para ingreso preoperatorio.',
+      responsableRegistro: 'Enf. Patricia Soto',
+      estadoContacto: 'Efectivo',
+      esAdenda: 0,
+      fechaProximoContacto: null,
+      objetivoProximoContacto: null,
+      entradaOriginalId: null
+    },
+    {
+      casoId: c4.id!,
+      identificador: 'BIT-2026-006',
+      puntoContactoNormado: null,
+      fechaContacto: '2026-09-09T09:30:00Z',
+      canalContacto: 'Presencial en UGCO',
+      interlocutor: 'Paciente',
+      motivoContacto: 'Adenda: Rectificación de fecha de ingreso preoperatorio',
+      resumenInteraccion: 'Se aclara que la fecha de ingreso preoperatorio se reprograma para el 18 de septiembre.',
+      acuerdosEstablecidos: 'Paciente informado y conforme con cambio de fecha.',
+      responsableRegistro: 'Enf. Patricia Soto',
+      estadoContacto: 'Efectivo',
+      esAdenda: 1,
+      fechaProximoContacto: null,
+      objetivoProximoContacto: null,
+      entradaOriginalId: 'BIT-2026-005'
+    }
+  ];
+
+  const stmtBitacora = db.prepare(`
+    INSERT INTO entrada_bitacora (
+      caso_id, identificador, punto_contacto_normado, fecha_contacto, canal_contacto,
+      interlocutor, motivo_contacto, resumen_interaccion, acuerdos_establecidos,
+      responsable_registro, estado_contacto, es_adenda, fecha_proximo_contacto,
+      objetivo_proximo_contacto, entrada_original_id
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(identificador) DO NOTHING
+  `);
+
+  for (const b of bitacoraSemilla) {
+    stmtBitacora.run(
+      b.casoId,
+      b.identificador,
+      b.puntoContactoNormado,
+      b.fechaContacto,
+      b.canalContacto,
+      b.interlocutor,
+      b.motivoContacto,
+      b.resumenInteraccion,
+      b.acuerdosEstablecidos,
+      b.responsableRegistro,
+      b.estadoContacto,
+      b.esAdenda,
+      b.fechaProximoContacto,
+      b.objetivoProximoContacto,
+      b.entradaOriginalId
+    );
+  }
+
+  console.log('✅ Datos de ejemplo sembrados con éxito (4 casos, valoraciones multidimensionales, garantías GES y bitácora de acompañamiento).');
 }
 
 // Ejecución directa por CLI si se invoca con npm run db:seed

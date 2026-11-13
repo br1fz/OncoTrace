@@ -4,14 +4,16 @@ import { randomUUID } from 'node:crypto';
 import { RepositorioOncologico } from '../dominio/repositorios.js';
 import {
   diasHabilesRestantes,
-  diasCorridosEntre
+  diasCorridosEntre,
+  sumarDiasHabiles
 } from '../dominio/calendario-ges.js';
-import type {
-  AlertaConDetalle,
-  ResultadoEvaluacionAlertas,
-  RegistrarGestionInput,
-  RegistrarCumplimientoInput,
-  CerrarAlertaInput
+import {
+  mapearHitoAPuntoNormado,
+  type AlertaConDetalle,
+  type ResultadoEvaluacionAlertas,
+  type RegistrarGestionInput,
+  type RegistrarCumplimientoInput,
+  type CerrarAlertaInput
 } from '../dominio/alertas.js';
 
 export class ServicioAlertas {
@@ -39,6 +41,7 @@ export class ServicioAlertas {
     let totalEvaluadas = 0;
     let alertasGesGeneradas = 0;
     let alertasInactividadGeneradas = 0;
+    let alertasPuntoPendienteGeneradas = 0;
 
     const tx = this.db.transaction(() => {
       // 1. Garantías GES pendientes (HU-04-ESC-01, ESC-02)
@@ -88,17 +91,89 @@ export class ServicioAlertas {
           }
         }
       }
+
+      // 3. Puntos de contacto normados pendientes > 48h hábiles (HU-03-ESC-02)
+      for (const c of casos) {
+        const hitos = this.repo.listarHitosPorCasoId(c.id);
+        for (const h of hitos) {
+          totalEvaluadas++;
+          const puntoNormado = mapearHitoAPuntoNormado(h.tipo);
+          if (!puntoNormado) continue;
+
+          const umbral = sumarDiasHabiles(h.fechaOcurrencia.slice(0, 10), 2);
+          if (ref > umbral) {
+            const yaCumplido = this.repo.existeEntradaDelPunto(c.id, puntoNormado, h.fechaOcurrencia);
+            if (!yaCumplido) {
+              const tieneAlerta = this.repo.existeAlertaActivaPorHitoOrigen(h.id!);
+              if (!tieneAlerta) {
+                const fechaGen = `${ref}T08:00:00Z`;
+                this.repo.crearAlerta({
+                  casoId: c.id,
+                  identificador: `ALR-${randomUUID().slice(0, 8).toUpperCase()}`,
+                  tipo: 'Punto de contacto pendiente',
+                  prioridad: 'Alta',
+                  estado: 'Pendiente',
+                  fechaGeneracion: fechaGen,
+                  hitoOrigenId: h.id
+                });
+                alertasPuntoPendienteGeneradas++;
+              }
+            }
+          }
+        }
+      }
     });
 
     tx();
 
     return {
       totalEvaluadas,
-      alertasGeneradas: alertasGesGeneradas + alertasInactividadGeneradas,
+      alertasGeneradas: alertasGesGeneradas + alertasInactividadGeneradas + alertasPuntoPendienteGeneradas,
       alertasGesGeneradas,
       alertasInactividadGeneradas,
+      alertasPuntoPendienteGeneradas,
       fechaReferencia: ref
     };
+  }
+
+  evaluarPuntosPendientes(referencia?: string): number {
+    const ref = referencia ? referencia.slice(0, 10) : new Date().toISOString().slice(0, 10);
+    let alertasPuntoPendienteGeneradas = 0;
+
+    const tx = this.db.transaction(() => {
+      const casos = this.db.prepare('SELECT id, numero_caso as numeroCaso FROM caso_oncologico').all() as any[];
+      for (const c of casos) {
+        const hitos = this.repo.listarHitosPorCasoId(c.id);
+        for (const h of hitos) {
+          const puntoNormado = mapearHitoAPuntoNormado(h.tipo);
+          if (!puntoNormado) continue;
+
+          const umbral = sumarDiasHabiles(h.fechaOcurrencia.slice(0, 10), 2);
+          if (ref > umbral) {
+            const yaCumplido = this.repo.existeEntradaDelPunto(c.id, puntoNormado, h.fechaOcurrencia);
+            if (!yaCumplido) {
+              const tieneAlerta = this.repo.existeAlertaActivaPorHitoOrigen(h.id!);
+              if (!tieneAlerta) {
+                const fechaGen = `${ref}T08:00:00Z`;
+                this.repo.crearAlerta({
+                  casoId: c.id,
+                  identificador: `ALR-${randomUUID().slice(0, 8).toUpperCase()}`,
+                  tipo: 'Punto de contacto pendiente',
+                  prioridad: 'Alta',
+                  estado: 'Pendiente',
+                  fechaGeneracion: fechaGen,
+                  hitoOrigenId: h.id
+                });
+                alertasPuntoPendienteGeneradas++;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    tx();
+    return alertasPuntoPendienteGeneradas;
   }
 
   listarAlertasVigentes(fechaReferencia?: string, soloActivas = false): AlertaConDetalle[] {

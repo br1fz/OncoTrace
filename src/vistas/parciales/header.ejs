@@ -52,6 +52,7 @@
         <label for="rolSelect">Rol activo:</label>
         <select name="rol" id="rolSelect" class="role-select" onchange="this.form.submit()">
           <option value="gestora" <%= rolActual === 'Gestor/a UGCO' ? 'selected' : '' %>>Gestor/a UGCO</option>
+          <option value="tens" <%= rolActual === 'TENS UGCO' ? 'selected' : '' %>>TENS UGCO</option>
           <option value="medico" <%= rolActual === 'Médico tratante' ? 'selected' : '' %>>Médico tratante</option>
         </select>
         <span class="role-badge"><%= rolActual %></span>

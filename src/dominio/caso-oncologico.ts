@@ -66,6 +66,13 @@ export interface AlertaSeguimiento {
   motivoCierre?: string;
   fechaCierre?: string;
   responsableCierre?: string;
+  hitoOrigenId?: number;
+  entradaOrigenId?: number;
+  entradaCumplimientoId?: number;
+  tipoHitoCumplimiento?: string;
+  fechaHitoCumplimiento?: string;
+  identificadorEntradaCumplimiento?: string;
+  fechaEntradaCumplimiento?: string;
 }
 
 export interface CasoResumenTablero {
