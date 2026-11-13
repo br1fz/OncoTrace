@@ -139,9 +139,9 @@ Si el tipo de hito no coincide con ninguno de estos textos, no se abre obligaci�
 
 - La contrarreferencia con epicrisis se asocia al dossier cuando se registra el retorno al HGF, según HU-08-ESC-06.
 
-- El conteo de intentos fallidos de contacto se calcula sobre las entradas **no adenda** vinculadas al caso (`estadoContacto = 'No contactable'`), en orden cronológico. Un contacto `Efectivo` reinicia la racha y las adendas no la alteran. Al detectarse tres intentos fallidos consecutivos, el sistema genera una única `AlertaSeguimiento` de búsqueda activa, vinculada a la tercera entrada (`entradaOrigenId`), para activar el protocolo de rescate y búsqueda activa con APS (HU-03).
+- El conteo de intentos fallidos de contacto se calcula sobre las **entradas de acompañamiento** vinculadas al caso (no adenda y con punto de contacto normado) cuyo `estadoContacto = 'No contactable'`, en orden cronológico. Un contacto `Efectivo` reinicia la racha y las adendas no la alteran. Las entradas de gestión de alertas de HU-04, que no declaran punto normado, no cuentan como intento ni reinician la racha. Al detectarse tres intentos fallidos consecutivos, el sistema genera una única `AlertaSeguimiento` de búsqueda activa, vinculada a la tercera entrada (`entradaOrigenId`), para activar el protocolo de rescate y búsqueda activa con APS (HU-03).
 
-- El indicador de contactabilidad del caso se deriva de la última entrada **no adenda**: `Efectivo` indica contacto vigente y `No contactable` indica que se perdió. Las adendas no modifican ese indicador.
+- El indicador de contactabilidad del caso se deriva de la última **entrada de acompañamiento** (no adenda y con punto de contacto normado): `Efectivo` indica contacto vigente y `No contactable` indica que se perdió. Las adendas y las entradas de gestión de alertas de HU-04 no modifican ese indicador.
 
 - Una adenda se vincula a la entrada original mediante `entradaOriginalId`; no la reemplaza ni la elimina. La entrada original permanece intacta y la adenda conserva usuario, fecha y hora, y motivo de la enmienda (HU-03 / ESC-04).
 
