@@ -76,3 +76,4 @@
 | 2026-11-10-ajuste-hu-01-consistencia-temporal | HU-01 | Implementar consistencia temporal e inmutabilidad de hitos: rechazo de fechas futuras (ESC-04) y anteriores al último hito registrado (ESC-05). 13/13 pruebas pasando. | 2026-11-10 |
 | 2026-11-11-hu-04-motor-alertas-ges-inactividad | HU-04 | Implementar motor de alertas GES e inactividad, feedback de evaluación (ESC-09) y visibilidad de 14h en alertas resueltas (ESC-06). 52/52 pruebas totales pasando. | 2026-11-11 |
 | 2026-11-11-ajuste-hu-04-indicacion-hito-resolutivo | HU-04 | Mostrar en la ficha del caso el hito o contacto que resolvió la alerta (tipo y fecha) según HU-04-ESC-06 (OBS-1). 53/53 pruebas totales pasando. | 2026-11-11 |
+| 2026-11-13-hu-03-bitacora-acompanamiento | HU-03 | Implementar bitácora digital de acompañamiento, puntos normados P1–P6, alerta preventiva >48h hábiles, racha de 3 fallos y búsqueda activa, adendas y próximo contacto. 72/72 pruebas totales pasando. | 2026-11-13 |
