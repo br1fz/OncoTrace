@@ -61,7 +61,7 @@ En cada vista, el rectángulo delimita OncoTrace y los actores se ubican fuera. 
 | **CU-08** | Registrar entrega del instructivo de pasajes | Gestor/a UGCO o TENS UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-02 |
 | **CU-09** | Registrar retorno con epicrisis | Gestor/a UGCO | [HU-08](./04-historias-usuario.md#hu-08) | HU-08-ESC-06 |
 | **CU-10** | Aplicar evaluación multidimensional y estratificar riesgo | Gestor/a UGCO | [HU-02](./04-historias-usuario.md#hu-02) | HU-02-ESC-01 a HU-02-ESC-03 |
-| **CU-11** | Registrar interacción en bitácora de acompañamiento | Gestor/a UGCO y TENS UGCO | [HU-03](./04-historias-usuario.md#hu-03) | HU-03-ESC-01 a HU-03-ESC-04 |
+| **CU-11** | Registrar interacción en bitácora de acompañamiento | Gestor/a UGCO y TENS UGCO | [HU-03](./04-historias-usuario.md#hu-03) | HU-03-ESC-01 a HU-03-ESC-06 |
 | **CU-12** | Generar ficha de presentación a comité | Gestor/a UGCO y médico tratante | [HU-06](./04-historias-usuario.md#hu-06) | HU-06-ESC-01 a HU-06-ESC-03 |
 | **CU-13** | Registrar acta de comité, firma y consolidar REM 7 | Médico integrante del comité | [HU-07](./04-historias-usuario.md#hu-07) | HU-07-ESC-01 a HU-07-ESC-03 |
 | **CU-14** | Consultar estado en tótem de autoatención | Paciente y cuidador principal | [HU-09](./04-historias-usuario.md#hu-09) | HU-09-ESC-01 a HU-09-ESC-05 |
@@ -81,7 +81,7 @@ En cada vista, el rectángulo delimita OncoTrace y los actores se ubican fuera. 
 
 - **CU-12 se incluye en CU-13 (`<<include>>`).** Para formalizar el acta y deliberar en comité (CU-13), la sesión colegiada requiere la disponibilidad de la Ficha Resumen de Presentación generada y consolidada previamente (CU-12).
 - **CU-15 extiende a CU-14 (`<<extend>>`).** El paciente que consulta en el tótem de autoatención (CU-14) puede solicitar orientación interactiva de derechos o triage presencial (CU-15) si presenta desorientación o síntomas de descompensación asistencial.
-- **CU-11 actualiza los hitos de CU-05.** Cada punto de contacto normado registrado en la bitácora impacta cronológicamente la línea de tiempo del caso oncológico.
+- **CU-11 actualiza la línea de tiempo de CU-05 sin crear un hito clínico.** Cada punto de contacto normado registrado en la bitácora se refleja cronológicamente en la línea de tiempo del caso oncológico, pero no genera una instancia de `HitoAsistencial`: el acompañamiento no se confunde con los hechos clínicos ni abre por sí mismo nuevas obligaciones de contacto.
 
 ## Reglas de consistencia con otros artefactos
 

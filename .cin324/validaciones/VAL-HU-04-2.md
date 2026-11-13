@@ -1,6 +1,6 @@
 # Informe de validación — HU-04 · Motor de alertas preventivas de plazos GES e inactividad
 
-**Fecha:** 2026-11-11 · **Cambio de OpenSpec validado:** `hu-04-motor-alertas-ges-inactividad` · **Estado:** verificado en el sistema — artefactos actualizados, pendiente de regeneración
+**Fecha:** 2026-11-11 · **Cambio de OpenSpec validado:** `hu-04-motor-alertas-ges-inactividad` · **Estado:** verificado en el sistema — HU-04 cerrada (ajuste OBS-1 comprobado en la ficha)
 
 ## Resumen
 

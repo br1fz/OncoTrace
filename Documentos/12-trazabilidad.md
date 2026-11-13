@@ -75,7 +75,7 @@ Las fuentes y relaciones de origen se mantienen según la [matriz de trazabilida
 | :--- | :--- |
 | HU-01-ESC-01 a HU-01-ESC-05 | CU-05 · Dar seguimiento al caso oncológico |
 | HU-02-ESC-01 a HU-02-ESC-03 | CU-10 · Aplicar evaluación multidimensional y estratificar riesgo |
-| HU-03-ESC-01 a HU-03-ESC-04 | CU-11 · Registrar interacción en bitácora de acompañamiento |
+| HU-03-ESC-01 a HU-03-ESC-06 | CU-11 · Registrar interacción en bitácora de acompañamiento |
 | HU-04-ESC-01 a HU-04-ESC-09 | CU-06 · Gestionar alertas de seguimiento |
 | HU-05-ESC-01, HU-05-ESC-03 y HU-05-ESC-04 | CU-01 · Consolidar y consultar informes diagnósticos |
 | HU-05-ESC-02 | CU-02 · Recibir avisos de hallazgos críticos |
@@ -120,7 +120,7 @@ Los nombres corresponden a conceptos definidos en el [modelo de dominio](./08-mo
 | :--- | :--- | :--- | :--- |
 | **HU-01** | DCU-01.A | DSS-03 · Dar seguimiento al caso oncológico | EST-03 · Ciclo de vida de `CasoOncologico` |
 | **HU-02** | DCU-01.D | — | — |
-| **HU-03** | DCU-01.D | — | EST-01 · Alerta de búsqueda activa |
+| **HU-03** | DCU-01.D | — | EST-01 · Alertas de búsqueda activa y punto pendiente |
 | **HU-04** | DCU-01.A | DSS-04 · Detección y gestión de alertas preventivas GES | EST-01 · Ciclo de vida de `AlertaSeguimiento` |
 | **HU-05** | DCU-01.B | DSS-01 · Informes diagnósticos LIS/PACS | EST-04 · Ciclo de vida de `EstudioDiagnostico` |
 | **HU-06** | DCU-01.D | — | — |

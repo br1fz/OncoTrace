@@ -19,16 +19,16 @@ Este documento describe los estados y transiciones de las clases clave del domin
 
 ### Descripción del ciclo de vida
 
-La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: cinco días hábiles o menos para el vencimiento de una garantía GES (HU-04); más de quince días corridos de inactividad (HU-04); once días hábiles desde el despacho de una derivación sin confirmación de recepción ni fecha de atención (HU-08); o tres intentos fallidos consecutivos de contacto en la bitácora («No contactable») para activar el protocolo de búsqueda activa y coordinación con APS (HU-03 / HU-03-CA7 / ESC-03). En HU-04, la evaluación repetida no genera alertas redundantes mientras la condición siga activa y pendiente de resolución.
+La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: cinco días hábiles o menos para el vencimiento de una garantía GES (HU-04); más de quince días corridos de inactividad (HU-04); once días hábiles desde el despacho de una derivación sin confirmación de recepción ni fecha de atención (HU-08); más de dos días hábiles completos desde un hito normado sin la entrada del punto de contacto correspondiente en la bitácora (HU-03 / ESC-02); o tres intentos fallidos consecutivos de contacto en la bitácora («No contactable») para activar el protocolo de búsqueda activa y coordinación con APS (HU-03 / HU-03-CA7 / ESC-03). En HU-04 y en HU-03, la evaluación repetida no genera alertas redundantes mientras la condición siga activa: cada hito normado abre una sola alerta de punto pendiente y la búsqueda activa no se duplica mientras siga vigente.
 
 ### Tabla de transiciones
 
 | Estado origen | Evento | Guarda | Acción | Estado destino |
 | :--- | :--- | :--- | :--- | :--- |
-| **Nodo inicial** | — | — | Vincular la alerta al caso y, según origen, a la garantía GES, al dossier o al registro de búsqueda activa | **Pendiente** |
+| **Nodo inicial** | — | — | Vincular la alerta al caso y, según origen, a la garantía GES, al dossier, al hito normado de origen o a la entrada de bitácora que la origina | **Pendiente** |
 | **Pendiente** | Registro de acción de gestión o contacto | [Gestora autorizada: acción sobre alerta GES, rezago de derivación o inicio de coordinación con APS para búsqueda activa] | Conservar la acción en bitácora; en GES no equivale al cumplimiento de la garantía | **En gestión** |
-| **Pendiente** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
-| **En gestión** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
+| **Pendiente** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa, entrada del punto de contacto obligatorio o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
+| **En gestión** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa, entrada del punto de contacto obligatorio o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
 | **Pendiente** | Registro de causa documentada | [Causa clínica/administrativa documentada deja sin efecto la garantía o el seguimiento asistencial] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
 | **En gestión** | Registro de causa documentada | [Causa clínica/administrativa documentada deja sin efecto la garantía o el seguimiento asistencial] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
 | **Resuelta** | — | — | — | **Fin** |
@@ -36,6 +36,9 @@ La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: 
 
 > [!NOTE]
 > **Gestión de alertas de búsqueda activa (HU-03-CA7):** La alerta generada tras tres intentos fallidos consecutivos de llamada/contacto pasa a **En gestión** cuando la gestora registra en la bitácora la coordinación con la red de Atención Primaria de Salud (APS), y transiciona a **Resuelta** cuando se restablece el contacto asistencial efectivo con el paciente o cuidador o se incorpora la respuesta formal del centro APS. Si una causa justificada documentada extingue el seguimiento (p. ej. traslado o egreso formal), se cierra con estado **No aplica**.
+
+> [!NOTE]
+> **Alerta de punto de contacto pendiente (HU-03 / ESC-02):** se crea en **Pendiente** con prioridad Alta cuando un hito normado (P1–P6) lleva más de dos días hábiles completos sin una entrada del punto en la bitácora con fecha igual o posterior al hito. Se vincula al `hitoOrigenId` y no se duplica mientras exista una alerta activa para ese hito. Se resuelve con la entrada del punto, que queda registrada en `entradaCumplimientoId`; también admite gestión y cierre por causa documentada, con las mismas transiciones de la tabla.
 
 > [!NOTE]
 > **Visibilidad de la alerta resuelta (HU-04 / ESC-06):** al quedar **Resuelta**, la alerta permanece visible en el panel general durante 14 horas desde su resolución y luego deja de listarse entre las alertas vigentes; sigue consultable en la ficha del caso. No se crea un estado nuevo: solo cambia su visibilidad.

@@ -64,6 +64,9 @@ class AlertaSeguimiento {
   motivoCierre: Texto
   fechaCierre: FechaHora
   responsableCierre: Texto
+  hitoOrigenId: Texto
+  entradaOrigenId: Texto
+  entradaCumplimientoId: Texto
 }
 
 Paciente "1" -- "1..*" CasoOncologico : presenta
@@ -72,6 +75,7 @@ CasoOncologico "1" -- "0..*" GarantiaGES : tiene
 CasoOncologico "1" -- "0..*" AlertaSeguimiento : presenta
 GarantiaGES "0..1" -- "0..*" AlertaSeguimiento : origina
 HitoAsistencial "0..1" -- "0..*" AlertaSeguimiento : justifica cierre
+HitoAsistencial "0..1" -- "0..*" AlertaSeguimiento : motiva
 
 @enduml
 
@@ -279,7 +283,7 @@ class DominioValoracion {
 
 class EntradaBitacora {
   identificador: Texto
-  puntoContactoNormado: Texto
+  puntoContactoNormado: PuntoContactoNormado
   fechaContacto: FechaHora
   canalContacto: Texto
   interlocutor: Texto
@@ -289,6 +293,9 @@ class EntradaBitacora {
   responsableRegistro: Texto
   estadoContacto: EstadoContactoBitacora
   esAdenda: Booleano
+  fechaProximoContacto: Fecha
+  objetivoProximoContacto: Texto
+  entradaOriginalId: Texto
 }
 
 class CuidadorAutorizado {
@@ -362,9 +369,21 @@ class RegistroIntercambioMINSAL {
   folioTransaccionMINSAL: Texto
 }
 
+class AlertaSeguimiento {
+  identificador: Texto
+  tipo: TipoAlerta
+  estado: EstadoAlerta
+  hitoOrigenId: Texto
+  entradaOrigenId: Texto
+  entradaCumplimientoId: Texto
+}
+
 CasoOncologico "1" -- "0..*" EvaluacionMultidimensional : registra
 EvaluacionMultidimensional "1" -- "1..*" DominioValoracion : evalúa
 CasoOncologico "1" -- "0..*" EntradaBitacora : documenta
+EntradaBitacora "0..1" -- "0..*" EntradaBitacora : rectifica
+EntradaBitacora "0..1" -- "0..*" AlertaSeguimiento : motiva
+EntradaBitacora "0..1" -- "0..*" AlertaSeguimiento : resuelve
 CasoOncologico "1" -- "0..*" FichaPresentacionComite : sustenta
 FichaPresentacionComite "1" -- "0..1" ActaComite : presenta a
 ActaComite "1" -- "1..*" FirmaElectronica : suscribe con

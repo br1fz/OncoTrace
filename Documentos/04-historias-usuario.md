@@ -94,10 +94,10 @@
   4. *Al alta de hospitalizaciones o cirugías.*
   5. *Al finalizar el tratamiento activo y retorno a la vida cotidiana (manejo de temor a recidiva).*
   6. *Ante toda derivación a otro establecimiento de la red.*
-- **HU-03-CA3 — Alerta de contacto pendiente:** Si un paciente alcanza el hito clínico correspondiente y transcurren más de 48 horas hábiles sin registro del punto de contacto obligatorio, el sistema debe emitir un recordatorio a la gestora.
+- **HU-03-CA3 — Alerta de contacto pendiente:** Si un paciente alcanza el hito clínico correspondiente y transcurren más de 48 horas hábiles sin registro del punto de contacto obligatorio, el sistema debe generar una alerta de contacto pendiente dirigida a la gestora asignada.
 - **HU-03-CA4 — Programación de próxima acción:** El sistema debe permitir agendar la fecha y objetivo del siguiente contacto o seguimiento de exámenes.
 - **HU-03-CA5 — Visualización cronológica:** Los registros deben desplegarse en orden cronológico descendente (más reciente al más antiguo).
-- **HU-03-CA6 — Integridad inmutable:** Ningún registro de bitácora podrá ser eliminado directamente; cualquier corrección requerirá una nota de adenda con trazabilidad de usuario, fecha y hora.
+- **HU-03-CA6 — Integridad inmutable:** Ningún registro de bitácora podrá ser eliminado directamente; cualquier corrección requerirá una adenda vinculada a la entrada original, con trazabilidad de usuario, fecha y hora, y motivo de la enmienda.
 - **HU-03-CA7 — Protocolo de búsqueda activa ante no contactabilidad:** Si se registra una interacción con estado "No contactable" (llamada fallida), el sistema debe computar el intento; al alcanzar tres intentos fallidos consecutivos sin respuesta, OncoTrace debe generar una alerta preventiva para activar el protocolo de búsqueda activa y rescate en coordinación con la red de Atención Primaria de Salud (APS).
 
 ---

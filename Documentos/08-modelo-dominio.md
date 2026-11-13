@@ -20,7 +20,7 @@ Archivo fuente: [modelo-dominio.puml](../diagramas/modelo-dominio.puml).
 | `CasoOncologico` | Caso cuyo seguimiento se realiza a lo largo de la trayectoria asistencial. | numeroCaso, especialidad, codigoDiagnosticoOSospecha, etapaActual, fechaIngreso |
 | `HitoAsistencial` | Hecho del proceso de atención que se conserva en la línea de tiempo del caso. | tipo, fechaOcurrencia, fechaRegistro, responsable, rolResponsable |
 | `GarantiaGES` | Garantía de oportunidad que se controla para un caso. | identificador, tipoGarantia, fechaInicio, fechaLimite, estadoCumplimiento |
-| `AlertaSeguimiento` | Situación que requiere gestión por vencimiento próximo, inactividad o rezago de una derivación. | identificador, tipo, prioridad, fechaGeneracion, estado, motivoCierre, fechaCierre, responsableCierre |
+| `AlertaSeguimiento` | Situación que requiere gestión por vencimiento próximo, inactividad, rezago de una derivación, búsqueda activa por no contactabilidad o punto de contacto pendiente. | identificador, tipo, prioridad, fechaGeneracion, estado, motivoCierre, fechaCierre, responsableCierre, hitoOrigenId, entradaOrigenId, entradaCumplimientoId |
 | `OrdenExamen` | Solicitud de un estudio diagnóstico para un caso. | identificador, tipoEstudio, fechaSolicitud |
 | `EstudioDiagnostico` | Estudio y su informe, cuya validación e identificación se comprueban antes de incorporarlo al caso. | identificadorInforme, runInformado, tipoEstudio, origen, fechaInforme, estadoValidacion, estadoRecepcion, hallazgoCritico |
 | `ResolucionComite` | Conducta terapéutica acordada por el comité para un caso. | identificador, conductaAcordada, fechaResolucion, fechaFirma |
@@ -29,7 +29,7 @@ Archivo fuente: [modelo-dominio.puml](../diagramas/modelo-dominio.puml).
 | `ContraReferenciaEpicrisis` | Antecedentes de cierre de la atención externa y del retorno al HGF. | identificador, fechaEmision, fechaRetornoHGF, resumenTratamiento, planSeguimiento |
 | `EvaluacionMultidimensional` | Pauta de valoración integral aplicada al paciente para determinar riesgo biopsicosocial y derivaciones. | identificador, fechaEvaluacion, puntajeClinicoFuncional, puntajePsicoemocional, escalaZaritCuidador, nivelVulnerabilidad, profesionalEvaluador |
 | `DominioValoracion` | Dimensión específica evaluada (clínico-funcional, psicoemocional, cuidador, social, espiritual, cognitivo). | tipoDominio, descripcionHallazgo, requiereDerivacion, especialidadDerivada |
-| `EntradaBitacora` | Registro cronológico individual de contacto asistencial normado según el Journey Map de navegación, con soporte de adendas inmutables. | identificador, puntoContactoNormado, fechaContacto, canalContacto, interlocutor, motivoContacto, resumenInteraccion, acuerdosEstablecidos, responsableRegistro, estadoContacto, esAdenda |
+| `EntradaBitacora` | Registro cronológico individual de contacto asistencial normado según el Journey Map de navegación, con programación del próximo contacto y soporte de adendas inmutables. | identificador, puntoContactoNormado, fechaContacto, canalContacto, interlocutor, motivoContacto, resumenInteraccion, acuerdosEstablecidos, responsableRegistro, estadoContacto, esAdenda, fechaProximoContacto, objetivoProximoContacto, entradaOriginalId |
 | `CuidadorAutorizado` | Persona de apoyo acreditada con autorización formal vigente para consultar el estado del paciente en canales de autoatención. | runCuidador, nombreCompleto, parentesco, telefonoContacto, autorizacionVigente, fechaRegistroAutorizacion |
 | `FichaPresentacionComite` | Expediente sintético consolidado automáticamente para la deliberación médica en el Comité Regional. | folioFicha, resumenClinico, etapificacionTNM, biopsiaValidadaReferencia, propuestaConducta, fechaGeneracion |
 | `ActaComite` | Documento legal colegiado que formaliza el acuerdo terapéutico adoptado durante la sesión. | numeroActa, fechaSesion, quorumAsistentes, resolucionAcordada, estadoFirma |
@@ -51,7 +51,7 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | registra | `CasoOncologico` — `HitoAsistencial` | Un caso: 0..* hitos. Un hito: 1 caso. | La línea de tiempo crece a medida que se registran hechos asistenciales. |
 | tiene | `CasoOncologico` — `GarantiaGES` | Un caso: 0..* garantías. Una garantía: 1 caso. | Un caso puede tener varias garantías aplicables; no se exige una garantía para todo caso. |
 | presenta | `CasoOncologico` — `AlertaSeguimiento` | Un caso: 0..* alertas. Una alerta: 1 caso. | Cada alerta debe permitir identificar el caso que requiere gestión. |
-| origina | `GarantiaGES` — `AlertaSeguimiento` | Una garantía: 0..* alertas. Una alerta: 0..1 garantía. | Las alertas GES identifican su garantía. Las de inactividad o rezago tienen otro origen. |
+| origina | `GarantiaGES` — `AlertaSeguimiento` | Una garantía: 0..* alertas. Una alerta: 0..1 garantía. | Las alertas GES identifican su garantía. Las de inactividad, rezago, búsqueda activa o punto de contacto pendiente tienen otro origen. |
 | requiere | `CasoOncologico` — `OrdenExamen` | Un caso: 0..* órdenes. Una orden: 1 caso. | El seguimiento distingue los exámenes solicitados de sus resultados recibidos. |
 | obtiene | `OrdenExamen` — `EstudioDiagnostico` | Una orden: 0..1 estudio. Un estudio: 0..1 orden. | La orden puede estar pendiente. Un informe con identificación discrepante puede conservarse para revisión sin asociarlo todavía a una orden. |
 | cuenta con | `CasoOncologico` — `ResolucionComite` | Un caso: 0..* resoluciones. Una resolución: 1 caso. | El caso puede existir antes de su presentación y puede recibir nuevas resoluciones durante su atención. |
@@ -62,9 +62,13 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | recibe | `DossierDigitalDerivacion` — `ContraReferenciaEpicrisis` | Un dossier: 0..1 contrarreferencia con epicrisis. Una contrarreferencia: 1 dossier. | El retorno se incorpora cuando finaliza la atención externa. |
 | origina | `DossierDigitalDerivacion` — `AlertaSeguimiento` | Un dossier: 0..* alertas. Una alerta: 0..1 dossier. | Una alerta de rezago identifica la derivación que requiere seguimiento. |
 | justifica cierre | `HitoAsistencial` — `AlertaSeguimiento` | Un hito: 0..* alertas. Una alerta: 0..1 hito de cumplimiento. | Cuando una garantía se cumple, se conserva el hito que permite resolver su alerta. |
+| motiva | `HitoAsistencial` — `AlertaSeguimiento` | Un hito: 0..* alertas. Una alerta: 0..1 hito de origen. | La alerta de punto de contacto pendiente identifica el hito normado que la abrió. |
 | registra | `CasoOncologico` — `EvaluacionMultidimensional` | Un caso: 0..* evaluaciones. Una evaluación: 1 caso. | El caso puede recibir una evaluación basal y revaluaciones periódicas. |
 | evalúa | `EvaluacionMultidimensional` — `DominioValoracion` | Una evaluación: 1..* dominios. Un dominio evaluado: 1 evaluación. | La valoración se compone obligatoriamente de los dominios biopsicosociales normados. |
 | documenta | `CasoOncologico` — `EntradaBitacora` | Un caso: 0..* entradas. Una entrada: 1 caso. | La bitácora registra cronológicamente cada interacción y punto de contacto. |
+| rectifica | `EntradaBitacora` — `EntradaBitacora` | Una entrada original: 0..* adendas. Una adenda: 0..1 entrada original. | Vincula la corrección con la entrada que rectifica; la entrada original permanece intacta. |
+| motiva | `EntradaBitacora` — `AlertaSeguimiento` | Una entrada: 0..* alertas. Una alerta: 0..1 entrada de origen. | La alerta de búsqueda activa identifica la tercera entrada fallida que la abrió. |
+| resuelve | `EntradaBitacora` — `AlertaSeguimiento` | Una entrada: 0..* alertas. Una alerta: 0..1 entrada de cumplimiento. | Cuando el contacto restablece la actividad, se conserva la entrada que resolvió la alerta. |
 | sustenta | `CasoOncologico` — `FichaPresentacionComite` | Un caso: 0..* fichas. Una ficha: 1 caso. | Un caso puede presentarse en una o más ocasiones ante el comité. |
 | presenta a | `FichaPresentacionComite` — `ActaComite` | Una ficha: 0..1 acta. Un acta: 1 ficha. | Cada presentación a sesión de comité concluye formalmente en su respectiva acta. |
 | suscribe con | `ActaComite` — `FirmaElectronica` | Un acta: 1..* firmas. Una firma: 1 acta. | Todo dictamen colegiado requiere la firma de los médicos especialistas asistentes. |
@@ -94,12 +98,28 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | Tipo | Valores o significado |
 | :--- | :--- |
 | `EtapaTrayectoria` | Sospecha; Confirmación diagnóstica; Etapificación; Tratamiento; Rehabilitación; Cuidados paliativos y alivio del dolor; Seguimiento y sobrevivientes; Alta y contrarreferencia. |
-| `TipoAlerta` | Proximidad de vencimiento GES; Riesgo de Inactividad/Abandono; Rezago de derivación; Búsqueda activa por no contactabilidad. |
-| `EstadoAlerta` | Pendiente; En gestión; Resuelta; No aplica. Pendiente identifica una alerta generada que aún no tiene una gestión registrada; los otros estados se aplican según HU-04. |
+| `TipoAlerta` | Proximidad de vencimiento GES; Riesgo de Inactividad/Abandono; Rezago de derivación; Búsqueda activa por no contactabilidad; Punto de contacto pendiente. |
+| `EstadoAlerta` | Pendiente; En gestión; Resuelta; No aplica. Pendiente identifica una alerta generada que aún no tiene una gestión registrada; los otros estados se aplican según HU-04 y HU-03. |
 | `EstadoDerivacionRed` | Dossier Confeccionado; Despachado por UGAA; Recepcionado en HCVB; Cita Asignada; Tratamiento Iniciado; Contrarreferido con Epicrisis. |
 | `NivelVulnerabilidad` | Bajo; Medio; Alto. Clasificación resultante del índice de vulnerabilidad asistencial global que pondera el desempeño clínico funcional (ECOG 0-4), riesgo psicosocial y sobrecarga del cuidador (Zarit > 56). |
-| `EstadoContactoBitacora` | Exitoso; No contactable. Registra la efectividad del contacto asistencial en cada entrada de la bitácora. |
+| `EstadoContactoBitacora` | Efectivo; No contactable. Registra la efectividad del contacto asistencial en cada entrada de la bitácora. |
+| `PuntoContactoNormado` | P1 Ingreso/Sospecha inicial; P2 Post-confirmación diagnóstica con IPD; P3 Etapificación/Post-resolución de comité; P4 Alta de hospitalización o cirugía; P5 Fin del tratamiento activo y retorno a la vida cotidiana; P6 Derivación a otro establecimiento de la red; No normado. Identifica el punto de contacto obligatorio del Journey Map al que corresponde una entrada de la bitácora. |
 | `EstadoSincronizacionMINSAL` | Pendiente de confirmación; Sincronizado; Pendiente de reintento. Modela el ciclo de vida de los mensajes de intercambio ministerial (HU-11). |
+
+### Correspondencia entre hitos y puntos de contacto
+
+La obligación de contacto se activa cuando el `tipo` de un `HitoAsistencial` coincide, sin distinguir mayúsculas, con alguno de estos textos:
+
+| Punto | Textos del tipo de hito que activan la obligación |
+| :--- | :--- |
+| **P1** Ingreso / Sospecha inicial | ingreso de sospecha; recepción de interconsulta; primera consulta; derivación desde urgencia con sospecha |
+| **P2** Post-confirmación diagnóstica con IPD | confirmación diagnóstica; confirmación histológica; notificación diagnóstica; notificación GES; entrega de IPD; informe de biopsia confirmatoria; diagnóstico confirmado |
+| **P3** Etapificación / Post-resolución de comité | resolución de comité |
+| **P4** Alta de hospitalización o cirugía | alta hospitalaria; intervención quirúrgica; cirugía |
+| **P5** Fin del tratamiento activo y retorno a la vida cotidiana | término de quimioterapia; término de radioterapia; ingreso a seguimiento; sobrevivientes |
+| **P6** Derivación a otro establecimiento de la red | despacho de derivación |
+
+Si el tipo de hito no coincide con ninguno de estos textos, no se abre obligación.
 
 ### Restricciones que complementan las multiplicidades
 
@@ -119,7 +139,15 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 
 - La contrarreferencia con epicrisis se asocia al dossier cuando se registra el retorno al HGF, según HU-08-ESC-06.
 
-- El conteo de intentos fallidos de contacto se calcula a partir de las últimas instancias de `EntradaBitacora` vinculadas al caso (`estadoContacto = 'No contactable'`). Al detectarse tres intentos fallidos consecutivos, el sistema genera automáticamente una `AlertaSeguimiento` para activar el protocolo de rescate y búsqueda activa con APS (HU-03).
+- El conteo de intentos fallidos de contacto se calcula sobre las entradas **no adenda** vinculadas al caso (`estadoContacto = 'No contactable'`), en orden cronológico. Un contacto `Efectivo` reinicia la racha y las adendas no la alteran. Al detectarse tres intentos fallidos consecutivos, el sistema genera una única `AlertaSeguimiento` de búsqueda activa, vinculada a la tercera entrada (`entradaOrigenId`), para activar el protocolo de rescate y búsqueda activa con APS (HU-03).
+
+- El indicador de contactabilidad del caso se deriva de la última entrada **no adenda**: `Efectivo` indica contacto vigente y `No contactable` indica que se perdió. Las adendas no modifican ese indicador.
+
+- Una adenda se vincula a la entrada original mediante `entradaOriginalId`; no la reemplaza ni la elimina. La entrada original permanece intacta y la adenda conserva usuario, fecha y hora, y motivo de la enmienda (HU-03 / ESC-04).
+
+- La alerta de punto de contacto pendiente se abre cuando un hito de la correspondencia anterior lleva más de dos días hábiles completos sin una entrada del punto con fecha igual o posterior al hito. Se vincula al `hitoOrigenId` y se resuelve con la entrada del punto, que queda registrada en `entradaCumplimientoId`. No se duplica mientras exista una alerta activa para el mismo hito.
+
+- La alerta de búsqueda activa se resuelve con un contacto `Efectivo` o con la acreditación de la respuesta de APS; el contacto que resuelve queda registrado en `entradaCumplimientoId`.
 
 - Los registros en `RegistroIntercambioMINSAL` inician en `Pendiente de confirmación` al emitirse el mensaje hacia la plataforma nacional, pasan a `Sincronizado` al recibir el acuse satisfactorio con folio de transacción MINSAL, o a `Pendiente de reintento` ante indisponibilidad o errores de formato para permitir su reprocesamiento auditado (HU-11).
 

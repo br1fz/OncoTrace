@@ -334,6 +334,18 @@ Característica: Bitácora digital de acompañamiento y puntos de contacto
     Cuando el profesional responsable ingresa una corrección asistencial
     Entonces el sistema conserva intacto el registro original
     Y genera una nota de adenda vinculada con fecha, hora, usuario y motivo de la enmienda
+
+  Escenario: HU-03-ESC-05 Programación del próximo contacto asistencial
+    Dado un caso oncológico con una interacción registrada en la bitácora
+    Cuando la gestora o TENS registra la fecha y el objetivo del próximo contacto o del seguimiento de exámenes
+    Entonces OncoTrace conserva la fecha y el objetivo en la entrada de la bitácora
+    Y muestra la próxima acción programada en la ficha del caso
+
+  Escenario: HU-03-ESC-06 Registro rechazado por datos obligatorios incompletos
+    Dado un caso oncológico asignado a una gestora o TENS
+    Cuando intenta registrar una interacción sin fecha, canal, interlocutor, motivo o resumen
+    Entonces OncoTrace rechaza el registro e indica los campos obligatorios faltantes
+    Y no crea ninguna entrada en la bitácora
 ```
 
 ---
