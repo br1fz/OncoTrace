@@ -13,6 +13,9 @@ Desktop.ini
 data/*.db
 data/*.db-wal
 data/*.db-shm
+data/informes/*
+!data/informes/seed-petct-c3.pdf
+!data/informes/.gitkeep
 
 # Environment variables
 .env

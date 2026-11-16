@@ -48,6 +48,7 @@
     <div class="header-actions">
       <a href="/" class="nav-link">Tablero por Etapas</a>
       <a href="/alertas" class="nav-link">Alertas</a>
+      <a href="/excepciones" class="nav-link">Bandeja Excepciones</a>
       <form action="/rol" method="POST" class="role-form">
         <label for="rolSelect">Rol activo:</label>
         <select name="rol" id="rolSelect" class="role-select" onchange="this.form.submit()">
@@ -60,4 +61,47 @@
     </div>
   </header>
   <main>
+  <% if (typeof alertasCriticas !== 'undefined' && alertasCriticas && alertasCriticas.length > 0) { %>
+    <div id="popup-hallazgo-critico" class="modal-critico-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+      <div style="background: white; border-radius: 10px; max-width: 600px; width: 90%; padding: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border-top: 6px solid #ef4444;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+          <span style="font-size: 1.75rem;">🚨</span>
+          <div>
+            <h3 style="color: #991b1b; font-size: 1.25rem; font-weight: 700;">Aviso de Hallazgo Crítico Activo</h3>
+            <p style="color: #64748b; font-size: 0.85rem;">Se requiere evaluación clínica prioritaria de los informes validados.</p>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+          <% alertasCriticas.forEach(function(alerta) { %>
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 0.75rem;">
+              <div style="font-weight: 700; color: #991b1b; font-size: 0.95rem;">
+                Caso <%= alerta.numeroCaso %> · <%= alerta.pacienteNombre %> (<%= alerta.pacienteRun %>)
+              </div>
+              <div style="font-size: 0.85rem; color: #475569; margin-top: 0.25rem;">
+                <strong>Informe:</strong> <%= alerta.identificadorInforme || 'Validado en Anatomía Patológica' %> · <%= alerta.tipoEstudio || 'Biopsia con hallazgo de malignidad' %>
+              </div>
+              <div style="margin-top: 0.5rem; font-size: 0.8rem;">
+                <a href="/casos/<%= alerta.numeroCaso %>" style="color: #dc2626; font-weight: 600; text-decoration: underline;">Ir a la ficha del caso &rarr;</a>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+          <span style="font-size: 0.75rem; color: #94a3b8;">Este aviso se retira automáticamente a los 5 minutos.</span>
+          <button type="button" onclick="document.getElementById('popup-hallazgo-critico').style.display='none'" style="background: #0f172a; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            Entendido
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Temporizador de 5 minutos (300.000 ms) para retirar el aviso emergente (HU-05 / D8)
+      setTimeout(function() {
+        var pop = document.getElementById('popup-hallazgo-critico');
+        if (pop) pop.style.display = 'none';
+      }, 300000);
+    </script>
+  <% } %>
 

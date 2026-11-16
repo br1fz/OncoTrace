@@ -69,6 +69,7 @@ export interface AlertaSeguimiento {
   hitoOrigenId?: number;
   entradaOrigenId?: number;
   entradaCumplimientoId?: number;
+  estudioOrigenId?: number;
   tipoHitoCumplimiento?: string;
   fechaHitoCumplimiento?: string;
   identificadorEntradaCumplimiento?: string;
@@ -89,6 +90,7 @@ export interface CasoResumenTablero {
   alertasPendientes: number;
   alertaMaximaPrioridad?: string;
   marcadorRiesgo: string;
+  completitudDiagnostica?: number;
   alertaMasUrgente?: {
     tipo: string;
     tipoGarantia?: string;

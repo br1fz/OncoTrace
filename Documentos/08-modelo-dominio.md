@@ -20,9 +20,9 @@ Archivo fuente: [modelo-dominio.puml](../diagramas/modelo-dominio.puml).
 | `CasoOncologico` | Caso cuyo seguimiento se realiza a lo largo de la trayectoria asistencial. | numeroCaso, especialidad, codigoDiagnosticoOSospecha, etapaActual, fechaIngreso |
 | `HitoAsistencial` | Hecho del proceso de atención que se conserva en la línea de tiempo del caso. | tipo, fechaOcurrencia, fechaRegistro, responsable, rolResponsable |
 | `GarantiaGES` | Garantía de oportunidad que se controla para un caso. | identificador, tipoGarantia, fechaInicio, fechaLimite, estadoCumplimiento |
-| `AlertaSeguimiento` | Situación que requiere gestión por vencimiento próximo, inactividad, rezago de una derivación, búsqueda activa por no contactabilidad o punto de contacto pendiente. | identificador, tipo, prioridad, fechaGeneracion, estado, motivoCierre, fechaCierre, responsableCierre, hitoOrigenId, entradaOrigenId, entradaCumplimientoId |
+| `AlertaSeguimiento` | Situación que requiere gestión por vencimiento próximo, inactividad, rezago de una derivación, búsqueda activa por no contactabilidad, punto de contacto pendiente o hallazgo crítico informado en un informe validado. | identificador, tipo, prioridad, fechaGeneracion, estado, motivoCierre, fechaCierre, responsableCierre, hitoOrigenId, entradaOrigenId, entradaCumplimientoId, estudioOrigenId |
 | `OrdenExamen` | Solicitud de un estudio diagnóstico para un caso. | identificador, tipoEstudio, fechaSolicitud |
-| `EstudioDiagnostico` | Estudio y su informe, cuya validación e identificación se comprueban antes de incorporarlo al caso. | identificadorInforme, runInformado, tipoEstudio, origen, fechaInforme, estadoValidacion, estadoRecepcion, hallazgoCritico |
+| `EstudioDiagnostico` | Estudio y su informe, cuya validación e identificación se comprueban antes de incorporarlo al caso. | identificadorInforme, runInformado, tipoEstudio, origen, fechaInforme, estadoValidacion, estadoRecepcion, hallazgoCritico, archivoAdjunto |
 | `ResolucionComite` | Conducta terapéutica acordada por el comité para un caso. | identificador, conductaAcordada, fechaResolucion, fechaFirma |
 | `DossierDigitalDerivacion` | Expediente preparado para una derivación externa y su seguimiento hasta el retorno. | identificador, centroDestino, estado, fechaConfeccion, folioUGAA, fechaDespacho, fechaRecepcion, confirmacionRecepcion, fechaCita, fechaInicioTratamiento |
 | `InstructivoReembolsoPasajes` | Ejemplar del instructivo asociado a un dossier, con su constancia de entrega. | referenciaAnexo, mediosCubiertos, exclusiones, requisitos, fechaEntrega, destinatario, responsableEntrega |
@@ -51,7 +51,8 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | registra | `CasoOncologico` — `HitoAsistencial` | Un caso: 0..* hitos. Un hito: 1 caso. | La línea de tiempo crece a medida que se registran hechos asistenciales. |
 | tiene | `CasoOncologico` — `GarantiaGES` | Un caso: 0..* garantías. Una garantía: 1 caso. | Un caso puede tener varias garantías aplicables; no se exige una garantía para todo caso. |
 | presenta | `CasoOncologico` — `AlertaSeguimiento` | Un caso: 0..* alertas. Una alerta: 1 caso. | Cada alerta debe permitir identificar el caso que requiere gestión. |
-| origina | `GarantiaGES` — `AlertaSeguimiento` | Una garantía: 0..* alertas. Una alerta: 0..1 garantía. | Las alertas GES identifican su garantía. Las de inactividad, rezago, búsqueda activa o punto de contacto pendiente tienen otro origen. |
+| origina | `GarantiaGES` — `AlertaSeguimiento` | Una garantía: 0..* alertas. Una alerta: 0..1 garantía. | Las alertas GES identifican su garantía. Las de inactividad, rezago, búsqueda activa, punto de contacto pendiente o hallazgo crítico tienen otro origen. |
+| origina | `EstudioDiagnostico` — `AlertaSeguimiento` | Un estudio: 0..* alertas. Una alerta: 0..1 estudio. | La alerta de hallazgo crítico identifica el informe o estudio diagnóstico que la motivó. |
 | requiere | `CasoOncologico` — `OrdenExamen` | Un caso: 0..* órdenes. Una orden: 1 caso. | El seguimiento distingue los exámenes solicitados de sus resultados recibidos. |
 | obtiene | `OrdenExamen` — `EstudioDiagnostico` | Una orden: 0..1 estudio. Un estudio: 0..1 orden. | La orden puede estar pendiente. Un informe con identificación discrepante puede conservarse para revisión sin asociarlo todavía a una orden. |
 | cuenta con | `CasoOncologico` — `ResolucionComite` | Un caso: 0..* resoluciones. Una resolución: 1 caso. | El caso puede existir antes de su presentación y puede recibir nuevas resoluciones durante su atención. |
@@ -98,8 +99,8 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | Tipo | Valores o significado |
 | :--- | :--- |
 | `EtapaTrayectoria` | Sospecha; Confirmación diagnóstica; Etapificación; Tratamiento; Rehabilitación; Cuidados paliativos y alivio del dolor; Seguimiento y sobrevivientes; Alta y contrarreferencia. |
-| `TipoAlerta` | Proximidad de vencimiento GES; Riesgo de Inactividad/Abandono; Rezago de derivación; Búsqueda activa por no contactabilidad; Punto de contacto pendiente. |
-| `EstadoAlerta` | Pendiente; En gestión; Resuelta; No aplica. Pendiente identifica una alerta generada que aún no tiene una gestión registrada; los otros estados se aplican según HU-04 y HU-03. |
+| `TipoAlerta` | Proximidad de vencimiento GES; Riesgo de Inactividad/Abandono; Rezago de derivación; Búsqueda activa por no contactabilidad; Punto de contacto pendiente; Hallazgo crítico. |
+| `EstadoAlerta` | Pendiente; En gestión; Resuelta; No aplica. Pendiente identifica una alerta generada que aún no tiene una gestión registrada; los otros estados se aplican según HU-04, HU-03 y HU-05. |
 | `EstadoDerivacionRed` | Dossier Confeccionado; Despachado por UGAA; Recepcionado en HCVB; Cita Asignada; Tratamiento Iniciado; Contrarreferido con Epicrisis. |
 | `NivelVulnerabilidad` | Bajo; Medio; Alto. Clasificación resultante del índice de vulnerabilidad asistencial global que pondera el desempeño clínico funcional (ECOG 0-4), riesgo psicosocial y sobrecarga del cuidador (Zarit > 56). |
 | `EstadoContactoBitacora` | Efectivo; No contactable. Registra la efectividad del contacto asistencial en cada entrada de la bitácora. |
@@ -131,7 +132,7 @@ Si el tipo de hito no coincide con ninguno de estos textos, no se abre obligaci�
 
 - Al transicionar a **Resuelta** o **No aplica**, `AlertaSeguimiento` registra en `fechaCierre` la fecha y hora del cambio. La visibilidad de 14 horas de una alerta **Resuelta** en el panel general se calcula desde ese valor; transcurrido ese plazo, la alerta solo queda consultable en la ficha del caso (HU-04 / ESC-06).
 
-- Un informe incorporado debe estar validado y vinculado a una orden del caso cuyo paciente coincida con el RUN informado. Si hay discrepancia, se conserva para revisión y no cuenta como examen recibido. Un informe pendiente de validación tampoco cuenta como recibido.
+- Un informe incorporado debe estar validado y vinculado a una orden del caso cuyo paciente coincida con el RUN informado. Si hay discrepancia, se conserva para revisión y no cuenta como examen recibido. Un informe pendiente de validación tampoco cuenta como recibido. Si el informe validado contiene hallazgo de malignidad o valor crítico, genera una `AlertaSeguimiento` de tipo «Hallazgo crítico» vinculada al estudio (`estudioOrigenId`). Si corresponde a una compra de servicio externo, se adjunta en formato PDF registrando su ruta en `archivoAdjunto`.
 
 - Los estudios y la resolución incluidos en un dossier deben corresponder al mismo caso. La confección exige los antecedentes de HU-08-ESC-01 y la resolución firmada; las multiplicidades opcionales no eliminan esos prerrequisitos.
 
@@ -159,7 +160,7 @@ Si el tipo de hito no coincide con ninguno de estos textos, no se abre obligaci�
 | [HU-02](./04-historias-usuario.md#hu-02) | `CasoOncologico`, `EvaluacionMultidimensional`, `DominioValoracion`. |
 | [HU-03](./04-historias-usuario.md#hu-03) | `CasoOncologico`, `EntradaBitacora`, `HitoAsistencial`, `AlertaSeguimiento`. |
 | [HU-04](./04-historias-usuario.md#hu-04) | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial`. |
-| [HU-05](./04-historias-usuario.md#hu-05) | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico`. |
+| [HU-05](./04-historias-usuario.md#hu-05) | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico`, `AlertaSeguimiento`. |
 | [HU-06](./04-historias-usuario.md#hu-06) | `CasoOncologico`, `FichaPresentacionComite`, `EstudioDiagnostico`. |
 | [HU-07](./04-historias-usuario.md#hu-07) | `CasoOncologico`, `ActaComite`, `FirmaElectronica`, `RegistroREM7`, `ResolucionComite`. |
 | [HU-08](./04-historias-usuario.md#hu-08) | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`. |

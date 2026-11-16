@@ -1,7 +1,10 @@
-// src/db/seed.ts - Carga de datos de ejemplo idempotente (HU-01, HU-02, HU-04)
+// src/db/seed.ts - Carga de datos de ejemplo idempotente (HU-01, HU-02, HU-04, HU-05)
+import fs from 'node:fs';
+import path from 'node:path';
 import { obtenerConexion, cerrarConexion } from './conexion.js';
 import { RepositorioOncologico } from '../dominio/repositorios.js';
 import { sumarDiasHabiles } from '../dominio/calendario-ges.js';
+import { PDF_MINIMO_BUFFER } from '../servicios/examenes.js';
 
 export function sembrarDatos(dbRuta?: string): void {
   const db = obtenerConexion(dbRuta);
@@ -11,7 +14,8 @@ export function sembrarDatos(dbRuta?: string): void {
     { run: '12.345.678-9', nombreCompleto: 'Rosa Valenzuela Muñoz' },
     { run: '9.876.543-2', nombreCompleto: 'Carlos Araya Pizarro' },
     { run: '15.432.198-7', nombreCompleto: 'María Elena González Silva' },
-    { run: '8.765.432-1', nombreCompleto: 'Juan Pablo Morales Castro' }
+    { run: '8.765.432-1', nombreCompleto: 'Juan Pablo Morales Castro' },
+    { run: '7.654.321-0', nombreCompleto: 'Elena Poblete Astudillo' }
   ];
 
   // Insertar pacientes idempotentemente
@@ -30,6 +34,7 @@ export function sembrarDatos(dbRuta?: string): void {
   const p2 = repo.obtenerPacientePorRun('9.876.543-2')!;
   const p3 = repo.obtenerPacientePorRun('15.432.198-7')!;
   const p4 = repo.obtenerPacientePorRun('8.765.432-1')!;
+  const p5 = repo.obtenerPacientePorRun('7.654.321-0')!;
 
   const casosSemilla = [
     {
@@ -63,6 +68,14 @@ export function sembrarDatos(dbRuta?: string): void {
       codigoDiagnosticoOSospecha: 'C61 — Cáncer de Próstata',
       etapaActual: 'Tratamiento' as const,
       fechaIngreso: '2026-08-20'
+    },
+    {
+      numeroCaso: 'CASO-2026-005',
+      pacienteId: p5.id!,
+      especialidad: 'Tórax',
+      codigoDiagnosticoOSospecha: 'C34.9 — Sospecha Ca. Pulmonar',
+      etapaActual: 'Sospecha' as const,
+      fechaIngreso: '2026-10-20'
     }
   ];
 
@@ -89,8 +102,20 @@ export function sembrarDatos(dbRuta?: string): void {
   const c2 = repo.obtenerCasoPorNumero('CASO-2026-002')!;
   const c3 = repo.obtenerCasoPorNumero('CASO-2026-003')!;
   const c4 = repo.obtenerCasoPorNumero('CASO-2026-004')!;
+  const c5 = repo.obtenerCasoPorNumero('CASO-2026-005')!;
 
   const checkHitos = db.prepare('SELECT COUNT(*) as count FROM hito_asistencial WHERE caso_id = ?');
+
+  if ((checkHitos.get(c5.id!) as any).count === 0) {
+    repo.crearHito({
+      casoId: c5.id!,
+      tipo: 'Ingreso de sospecha desde APS',
+      fechaOcurrencia: '2026-10-20',
+      fechaRegistro: '2026-10-20T10:00:00Z',
+      responsable: 'Enf. Patricia Soto',
+      rolResponsable: 'Gestor/a UGCO'
+    });
+  }
 
   // Caso 1: Sospecha
   if ((checkHitos.get(c1.id!) as any).count === 0) {
@@ -536,7 +561,83 @@ export function sembrarDatos(dbRuta?: string): void {
     );
   }
 
-  console.log('✅ Datos de ejemplo sembrados con éxito (4 casos, valoraciones multidimensionales, garantías GES y bitácora de acompañamiento).');
+  // --- HU-05: Órdenes de exámenes, compras externas y excepciones ---
+  const ordenesSemilla = [
+    // Caso 1: Dos exámenes (Biopsia mamaria recepcionable por LIS, Mamografía pendiente) -> HU-05-ESC-01 / CA3
+    { casoId: c1.id!, identificador: 'ORD-MAM-001', tipoEstudio: 'Biopsia core mamaria', fechaSolicitud: '2026-10-16' },
+    { casoId: c1.id!, identificador: 'ORD-MAM-002', tipoEstudio: 'Mamografía bilateral de diagnóstico', fechaSolicitud: '2026-10-16' },
+    // Caso 2: Examen con informe crítico en LIS -> HU-05-ESC-02
+    { casoId: c2.id!, identificador: 'ORD-COL-001', tipoEstudio: 'Colonoscopía con biopsia', fechaSolicitud: '2026-10-05' },
+    // Caso 3: Compra externa con PDF ya incorporado y otra orden en Solicitado -> HU-05-ESC-05
+    { casoId: c3.id!, identificador: 'ORD-PET-001', tipoEstudio: 'PET-CT Oncológico', fechaSolicitud: '2026-09-20' },
+    { casoId: c3.id!, identificador: 'ORD-RMN-001', tipoEstudio: 'Resonancia Magnética de Pelvis con contraste', fechaSolicitud: '2026-09-20' },
+    // Caso 4: Examen con informe pendiente de validación en LIS -> HU-05-ESC-04
+    { casoId: c4.id!, identificador: 'ORD-BIO-PROST-01', tipoEstudio: 'Biopsia prostática transrectal', fechaSolicitud: '2026-08-25' },
+    // Caso 5: Examen con informe con discrepancia de RUN en LIS -> HU-05-ESC-03
+    { casoId: c5.id!, identificador: 'ORD-BIO-PULM-01', tipoEstudio: 'Biopsia pulmonar percutánea', fechaSolicitud: '2026-10-20' }
+  ];
+
+  const stmtOrden = db.prepare(`
+    INSERT INTO orden_examen (caso_id, identificador, tipo_estudio, fecha_solicitud)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(identificador) DO NOTHING
+  `);
+
+  for (const o of ordenesSemilla) {
+    stmtOrden.run(o.casoId, o.identificador, o.tipoEstudio, o.fechaSolicitud);
+  }
+
+  // Carpeta de informes PDF
+  const dirInformes = path.join(process.cwd(), 'data', 'informes');
+  if (!fs.existsSync(dirInformes)) {
+    fs.mkdirSync(dirInformes, { recursive: true });
+  }
+
+  // Caso 3: Incorporar informe PDF de compra externa para ORD-PET-001 si aún no existe
+  const ordPet = repo.obtenerOrdenExamenPorIdentificador('ORD-PET-001');
+  if (ordPet) {
+    const estudioPetExistente = repo.obtenerEstudioPorOrdenId(ordPet.id!);
+    if (!estudioPetExistente) {
+      const rutaPdfSeed = path.join(dirInformes, 'seed-petct-c3.pdf');
+      if (!fs.existsSync(rutaPdfSeed)) {
+        fs.writeFileSync(rutaPdfSeed, PDF_MINIMO_BUFFER);
+      }
+      repo.crearEstudioDiagnostico({
+        ordenExamenId: ordPet.id!,
+        casoId: c3.id!,
+        identificadorInforme: 'EXT-ORD-PET-001',
+        runInformado: p3.run,
+        tipoEstudio: 'PET-CT Oncológico',
+        origen: 'Compra externa',
+        fechaInforme: '2026-09-25',
+        estadoValidacion: 'Validado',
+        estadoRecepcion: 'Incorporado',
+        hallazgoCritico: false,
+        archivoAdjunto: 'data/informes/seed-petct-c3.pdf',
+        fechaRegistro: '2026-09-25T11:00:00Z'
+      });
+    }
+  }
+
+  // Bandeja de Excepciones: Precargar informe discrepante por RUN si no existe
+  const excExistente = repo.obtenerEstudioPorIdentificadorInforme('EXC-RUN-2026-01');
+  if (!excExistente) {
+    repo.crearEstudioDiagnostico({
+      ordenExamenId: null,
+      casoId: null,
+      identificadorInforme: 'EXC-RUN-2026-01',
+      runInformado: '99.888.777-K',
+      tipoEstudio: 'Biopsia pulmonar percutánea',
+      origen: 'LIS',
+      fechaInforme: '2026-10-21',
+      estadoValidacion: 'Validado',
+      estadoRecepcion: 'Observado por identificación',
+      hallazgoCritico: false,
+      fechaRegistro: '2026-10-21T10:00:00Z'
+    });
+  }
+
+  console.log('✅ Datos de ejemplo sembrados con éxito (5 casos, valoraciones multidimensionales, garantías GES, bitácora de acompañamiento y exámenes diagnósticos HU-05).');
 }
 
 // Ejecución directa por CLI si se invoca con npm run db:seed

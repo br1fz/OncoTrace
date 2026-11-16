@@ -145,10 +145,10 @@
 **Criterios de aceptación:**
 
 - **HU-05-CA1 — Indexación por RUN:** El sistema debe capturar informes validados desde los sistemas LIS (laboratorio/biopsias) y PACS (radiología) mediante estándares HL7 FHIR o API REST, asociándolos unívocamente al RUN del paciente.
-- **HU-05-CA2 — Detección de informes críticos:** Si Anatomía Patológica emite un informe con diagnóstico positivo de malignidad o valor crítico, OncoTrace debe activar una notificación prioritaria inmediata al médico tratante y al gestor.
+- **HU-05-CA2 — Detección de informes críticos:** Si Anatomía Patológica emite un informe con diagnóstico positivo de malignidad o valor crítico, OncoTrace debe generar una alerta de seguimiento gestionable de tipo «Hallazgo crítico» dirigida al médico tratante y a la gestora.
 - **HU-05-CA3 — Indicador de completitud:** En la ficha y en el tablero se debe contrastar la lista de exámenes solicitados con los recibidos, indicando el porcentaje de completitud para presentación a comité.
 - **HU-05-CA4 — Visualización integrada:** El profesional debe poder previsualizar y descargar los informes en PDF directamente desde OncoTrace sin necesidad de abrir visores externos.
-- **HU-05-CA5 — Registro de compras de servicio:** Si el examen corresponde a una compra de servicio externo (ej. PET-CT, EBUS), debe permitir al gestor adjuntar el informe externo e incorporarlo al expediente consolidado.
+- **HU-05-CA5 — Registro de compras de servicio:** Si el examen corresponde a una compra de servicio externo (ej. PET-CT, EBUS), debe permitir a la gestora adjuntar el informe externo en formato PDF e incorporarlo al expediente consolidado.
 - **HU-05-CA6 — Tolerancia a fallos:** Si un archivo presenta discrepancia en el identificador del paciente, el sistema debe almacenarlo en una bandeja de excepciones para auditoría sin asociarlo incorrectamente.
 
 ---

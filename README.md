@@ -125,23 +125,30 @@ El proyecto considera la Ley N° 20.584, la Ley Nacional del Cáncer N° 21.258,
 
 ---
 
-## Aplicación prototipo (HU-01, HU-02, HU-03 y HU-04)
+## Aplicación prototipo (HU-01, HU-02, HU-03, HU-04 y HU-05)
 
 Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se implementaron los incrementos del sistema para las historias:
 - **HU-01: Tablero de trazabilidad y línea de tiempo clínica por etapas** (TB-01 / CU-05).
 - **HU-02: Evaluación multidimensional y estratificación por dominios** (TB-02 / CU-10).
 - **HU-03: Bitácora digital de acompañamiento y puntos de contacto obligatorios** (TB-03 / CU-11 / RF-03).
 - **HU-04: Motor de alertas preventivas de plazos GES e inactividad** (TB-04 / CU-06 / RF-04).
+- **HU-05: Consolidación e indexación automática de exámenes y alertas críticas** (TB-05 / CU-01, CU-02 / RF-05 / DSS-01 / EST-04, EST-01).
 
 ### Stack tecnológico
 - **Lenguaje / Entorno:** Node.js (TypeScript estricto con `NodeNext`).
-- **Framework web:** Express.js + EJS (interfaz accesible, ligera y multi-dispositivo).
+- **Framework web:** Express.js + EJS (interfaz accesible, ligera y multi-dispositivo) + Multer (carga multipart de informes PDF externos).
 - **Base de datos:** SQLite local (`better-sqlite3` con modo WAL y claves foráneas).
 - **Pruebas:** Vitest + Supertest (pruebas unitarias de dominio y pruebas de integración de rutas vinculadas a los escenarios Gherkin).
+- **Almacenamiento de informes:** Carpeta local `data/informes/` para copias PDF descargables y validadas con magic bytes `%PDF`.
 
 ### Requisitos previos
 - Node.js versión 20 o superior.
 - npm versión 9 o superior.
+
+### Variables de entorno (Opcionales)
+- `DATABASE_PATH`: Ruta al archivo SQLite (por defecto: `data/app.db`).
+- `INTEGRACIONES_MODO`: Modo de adaptadores LIS/PACS (`simulado` por defecto).
+- `LIMITE_ADJUNTO_MB`: Límite máximo en MB para informes externos en PDF (opcional, sin límite prefijado si no se define).
 
 ### Puesta en marcha
 
@@ -154,13 +161,13 @@ Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se
    ```bash
    npm run db:seed
    ```
-   *Crea automáticamente la base de datos SQLite en `data/app.db`, aplica migraciones `001_inicial.sql`, `002_evaluacion_multidimensional.sql`, `003_alertas_ges.sql` y `004_bitacora_puntos_normados.sql`, y carga 4 casos ficticios en etapas distintas con sus hitos, resoluciones, valoraciones multidimensionales basales, garantías GES y bitácora de acompañamiento con puntos normados P1 a P6.*
+   *Crea automáticamente la base de datos SQLite en `data/app.db`, aplica migraciones `001_inicial.sql` a `005_examenes_diagnosticos.sql`, y carga 5 casos ficticios en etapas distintas con sus hitos, resoluciones, valoraciones multidimensionales basales, garantías GES, bitácora de acompañamiento y órdenes de exámenes diagnósticos para recorrer ESC-01 a ESC-05.*
 
 3. **Ejecutar la suite de pruebas automatizadas:**
    ```bash
    npm test
    ```
-   *Ejecuta 72 pruebas automatizadas (13 de HU-01, 10 de HU-02, 19 de HU-03 y 30 de HU-04) que verifican exhaustivamente los escenarios Gherkin, las reglas de consistencia temporal, el calendario oficial de feriados 2026 de Chile, el umbral preventivo GES (≤ 5 días hábiles), la alerta preventiva de punto pendiente (> 48h hábiles), la racha de fallos y activación de búsqueda activa APS al 3.er intento, las adendas inmutables, la programación del próximo contacto, la exportación del reporte consolidado en CSV y el control de acceso por roles.*
+   *Ejecuta 97 pruebas automatizadas (13 de HU-01, 10 de HU-02, 19 de HU-03, 30 de HU-04 y 25 de HU-05) que verifican exhaustivamente los escenarios Gherkin, las reglas de consistencia temporal, el calendario oficial de feriados 2026 de Chile, el umbral preventivo GES (≤ 5 días hábiles), la alerta preventiva de punto pendiente (> 48h hábiles), la racha de fallos y activación de búsqueda activa APS al 3.er intento, las adendas inmutables, la incorporación atómica de informes LIS/PACS, las transiciones EST-04, la alerta transaccional de hallazgo crítico, la bandeja de excepciones de identificación, la compra externa en PDF y el pop-up emergente de 5 minutos.*
 
 4. **Iniciar el servidor en modo desarrollo:**
    ```bash
@@ -209,5 +216,33 @@ Como parte de la validación ejecutable de requisitos en OpenCode / OpenSpec, se
 #### 6. Control de Rol de Demostración (Gestora UGCO, TENS UGCO y Médico tratante)
 - En la barra superior, cambia el selector de rol a:
   - **TENS UGCO:** Puede registrar interacciones y adendas en la bitácora de acompañamiento (CU-11).
-  - **Gestor/a UGCO:** Acceso total a bitácora, evaluación multidimensional y gestión del motor de alertas.
-  - **Médico tratante:** Modo solo lectura; los formularios de bitácora y evaluación quedan ocultos y cualquier intento de envío directo es rechazado con HTTP 403.
+  - **Gestor/a UGCO:** Acceso total a bitácora, evaluación multidimensional, gestión de alertas y adjunto de informes externos en PDF.
+  - **Médico tratante:** Acceso de consulta clínica; recibe el pop-up emergente de hallazgos críticos prioritarios (5 minutos) y visualiza informes PDF validados, con formularios de gestión y adjunto restringidos (HTTP 403).
+
+#### 7. Consolidación de Exámenes y Alertas Críticas (HU-05)
+- **Sincronización automatizada con LIS y PACS e indicador de completitud (HU-05-ESC-01 / CA3):**
+  - Accede a `CASO-2026-001` (Rosa Valenzuela), que posee dos órdenes registradas (`Biopsia core mamaria` y `Mamografía bilateral de diagnóstico`).
+  - Presiona **«🔄 Sincronizar exámenes LIS/PACS»** (`POST /casos/CASO-2026-001/examenes/consultar`).
+  - El sistema consulta ambos sistemas por RUN, incorpora de inmediato el informe validado de Anatomía Patológica, almacena su copia PDF en `data/informes/` y recalcula la completitud diagnóstica al 50 % (1 de 2), dejando la mamografía pendiente.
+  - Presiona **«📄 Ver informe en PDF»** (`GET /casos/CASO-2026-001/examenes/:id/informe.pdf`) para previsualizar la copia normada en el navegador.
+- **Detección transaccional de hallazgos críticos y aviso prioritario (HU-05-ESC-02 / D8):**
+  - Accede a `CASO-2026-002` (Carlos Araya).
+  - Presiona **«🔄 Sincronizar exámenes LIS/PACS»**; el LIS entrega un informe con diagnóstico de adenocarcinoma y marca de hallazgo crítico.
+  - En una única transacción atómica, el examen pasa a `Incorporado con hallazgo crítico` y se crea una `AlertaSeguimiento` de tipo `Hallazgo crítico`, prioridad `Alta` y estado `Pendiente`.
+  - Aparece en pantalla el modal emergente **🚨 Aviso de Hallazgo Crítico Activo** con el caso, el informe y el temporizador visible de 5 minutos (`300000 ms`), retirable con el botón «Entendido».
+  - La alerta permanece anclada permanentemente en la tarjeta del tablero y en el panel general `/alertas`.
+- **Notificación al médico tratante y resolución clínica (7.1, 7.2):**
+  - En el panel de alertas o en la ficha del caso, la gestora presiona **«Notificar al médico tratante»** (`POST /alertas/:id/notificacion-medico`); la alerta pasa a `En gestión` y genera una entrada en la bitácora con interlocutor «Médico tratante».
+  - Al resolverse por hito clínico (ej. Comité Oncológico vía `POST /alertas/:id/cumplimiento`), la alerta pasa a `Resuelta` y la ficha refleja el hito y su fecha de resolución.
+- **Bandeja de excepciones por discrepancia en RUN (HU-05-ESC-03 / D1):**
+  - Accede a `CASO-2026-005` (Elena Poblete).
+  - Al sincronizar con LIS, el informe viene emitido con RUN discrepante `99.888.777-K`.
+  - El examen del caso permanece pendiente y el informe no se asocia, derivándose automáticamente a la **Bandeja de Excepciones** (`/excepciones`), accesible desde la cabecera superior.
+- **Exclusión de informes preliminares no validados (HU-05-ESC-04):**
+  - Accede a `CASO-2026-004` (Juan Pablo Morales).
+  - El informe en LIS se encuentra en estado `Pendiente de validación`. Al sincronizar, el sistema no lo incorpora y la orden permanece en `Solicitado`.
+- **Compra de servicio externo en PDF (HU-05-ESC-05 / D4):**
+  - Accede a `CASO-2026-003` (María Elena González).
+  - En el subpanel **Exámenes Diagnósticos**, la orden `PET-CT Oncológico` ya cuenta con su informe externo incorporado en PDF (`seed-petct-c3.pdf`).
+  - Para la orden pendiente `Resonancia Magnética de Pelvis con contraste`, presiona **«📎 Adjuntar informe externo (PDF)»**.
+  - Sube un archivo PDF válido; el sistema valida los magic bytes `%PDF` y el límite opcional de `LIMITE_ADJUNTO_MB`, guarda el archivo en `data/informes/` y actualiza la completitud diagnóstica. Si se intenta subir un archivo no PDF (ej. `.docx`), el sistema lo rechaza estrictamente con mensaje explicativo.

@@ -219,6 +219,58 @@ export class ServicioAlertas {
     tx();
   }
 
+  registrarNotificacionMedico(alertaId: number, rolActual?: string): void {
+    this.validarRolGestora(rolActual);
+
+    const alerta = this.repo.obtenerAlertaPorId(alertaId);
+    if (!alerta) {
+      throw new Error(`Alerta con ID ${alertaId} no encontrada.`);
+    }
+
+    if (alerta.estado !== 'Pendiente') {
+      throw new Error(`Solo se pueden notificar alertas en estado Pendiente. Estado actual: ${alerta.estado}`);
+    }
+
+    const tx = this.db.transaction(() => {
+      const fechaContacto = new Date().toISOString();
+      this.repo.crearEntradaBitacora({
+        casoId: alerta.casoId,
+        identificador: `BIT-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 900 + 100)}`,
+        puntoContactoNormado: null,
+        fechaContacto,
+        canalContacto: 'Sistema / Ficha',
+        interlocutor: 'Médico tratante',
+        motivoContacto: 'Notificación de hallazgo crítico',
+        resumenInteraccion: `Notificación prioritaria de hallazgo crítico (${alerta.identificador}) efectuada al médico tratante.`,
+        responsableRegistro: rolActual || 'Gestor/a UGCO',
+        estadoContacto: 'Efectivo',
+        esAdenda: false
+      });
+
+      this.repo.actualizarEstadoAlerta(alertaId, 'En gestión');
+    });
+
+    tx();
+  }
+
+  listarAlertasCriticasActivas(): AlertaConDetalle[] {
+    const rows = this.db.prepare(`
+      SELECT 
+        a.id, a.caso_id as casoId, a.identificador, a.tipo, a.prioridad, a.estado,
+        a.fecha_generacion as fechaGeneracion, a.estudio_origen_id as estudioOrigenId,
+        c.numero_caso as numeroCaso, p.nombre_completo as pacienteNombre, p.run as pacienteRun,
+        ed.identificador_informe as identificadorInforme, ed.tipo_estudio as tipoEstudio
+      FROM alerta_seguimiento a
+      JOIN caso_oncologico c ON c.id = a.caso_id
+      JOIN paciente p ON p.id = c.paciente_id
+      LEFT JOIN estudio_diagnostico ed ON ed.id = a.estudio_origen_id
+      WHERE a.tipo = 'Hallazgo crítico' AND a.estado IN ('Pendiente', 'En gestión')
+      ORDER BY a.fecha_generacion DESC
+    `).all() as any[];
+
+    return rows;
+  }
+
   registrarCumplimiento(alertaId: number, input: RegistrarCumplimientoInput, rolActual?: string): void {
     this.validarRolGestora(rolActual);
 

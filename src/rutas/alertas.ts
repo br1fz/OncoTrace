@@ -101,6 +101,22 @@ export function crearRutasAlertas(db: Database): Router {
     }
   });
 
+  // POST /alertas/:id/notificacion-medico - Notificar al médico tratante (HU-05 / D7 / 7.1)
+  router.post('/alertas/:id/notificacion-medico', (req: Request, res: Response) => {
+    const rolActual = obtenerRol(req);
+    if (rolActual !== 'Gestor/a UGCO') {
+      return res.status(403).send('Operación no autorizada: Solo el rol Gestor/a UGCO puede registrar notificación médica.');
+    }
+
+    const id = parseInt(String(req.params.id), 10);
+    try {
+      servicioAlertas.registrarNotificacionMedico(id, rolActual);
+      return res.redirect(`/alertas?exito=${encodeURIComponent('Notificación al médico tratante registrada. Alerta pasó a estado En gestión.')}`);
+    } catch (error: any) {
+      return res.status(error.status || 500).send(error.message);
+    }
+  });
+
   // POST /alertas/:id/cumplimiento - Registrar hito de cumplimiento o resolución (HU-04-ESC-06)
   router.post('/alertas/:id/cumplimiento', (req: Request, res: Response) => {
     const rolActual = obtenerRol(req);

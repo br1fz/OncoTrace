@@ -20,6 +20,13 @@ import type {
   EntradaBitacora,
   AlertaConDetalle
 } from './alertas.js';
+import type {
+  OrdenExamen,
+  EstudioDiagnostico,
+  ExamenConDetalle,
+  ResumenCompletitudDiagnostica,
+  EstadoRecepcion
+} from './examenes.js';
 import { diasHabilesRestantes, diasCorridosEntre } from './calendario-ges.js';
 
 export class RepositorioOncologico {
@@ -140,6 +147,8 @@ export class RepositorioOncologico {
 
       const marcadorRiesgo = evalRow?.nivelVulnerabilidad || 'Sin evaluar';
 
+      const completitud = this.calcularCompletitudDiagnostica(r.id);
+
       // Alerta más urgente para el tablero (HU-04 / D7)
       const alertaUrgenteRow = this.db.prepare(`
         SELECT 
@@ -182,7 +191,8 @@ export class RepositorioOncologico {
         alertasPendientes: alertasRow ? Number(alertasRow.total) : 0,
         alertaMaximaPrioridad: alertaMaxima,
         marcadorRiesgo,
-        alertaMasUrgente
+        alertaMasUrgente,
+        completitudDiagnostica: completitud.porcentajeCompletitud
       };
     });
   }
@@ -260,6 +270,9 @@ export class RepositorioOncologico {
     identificadorEntradaCumplimiento?: string;
     fechaEntradaCumplimiento?: string;
     tipoHitoOrigen?: string;
+    estudioOrigenId?: number;
+    identificadorInformeOrigen?: string;
+    tipoEstudioOrigen?: string;
   })[] {
     const stmt = this.db.prepare(`
       SELECT 
@@ -269,15 +282,18 @@ export class RepositorioOncologico {
         a.fecha_cierre as fechaCierre, a.responsable_cierre as responsableCierre,
         a.hito_origen_id as hitoOrigenId, a.entrada_origen_id as entradaOrigenId,
         a.entrada_cumplimiento_id as entradaCumplimientoId,
+        a.estudio_origen_id as estudioOrigenId,
         g.tipo_garantia as tipoGarantia, g.fecha_limite as fechaLimiteGarantia,
         h.tipo as tipoHitoCumplimiento, h.fecha_ocurrencia as fechaHitoCumplimiento,
         ho.tipo as tipoHitoOrigen,
-        eb.identificador as identificadorEntradaCumplimiento, eb.fecha_contacto as fechaEntradaCumplimiento
+        eb.identificador as identificadorEntradaCumplimiento, eb.fecha_contacto as fechaEntradaCumplimiento,
+        ed.identificador_informe as identificadorInformeOrigen, ed.tipo_estudio as tipoEstudioOrigen
       FROM alerta_seguimiento a
       LEFT JOIN garantia_ges g ON g.id = a.garantia_id
       LEFT JOIN hito_asistencial h ON h.id = a.hito_cumplimiento_id
       LEFT JOIN hito_asistencial ho ON ho.id = a.hito_origen_id
       LEFT JOIN entrada_bitacora eb ON eb.id = a.entrada_cumplimiento_id
+      LEFT JOIN estudio_diagnostico ed ON ed.id = a.estudio_origen_id
       WHERE a.caso_id = ?
       ORDER BY a.fecha_generacion DESC, a.id DESC
     `);
@@ -290,8 +306,8 @@ export class RepositorioOncologico {
       INSERT INTO alerta_seguimiento (
         caso_id, identificador, tipo, prioridad, estado, fecha_generacion,
         garantia_id, hito_cumplimiento_id, motivo_cierre, fecha_cierre, responsable_cierre,
-        hito_origen_id, entrada_origen_id, entrada_cumplimiento_id
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        hito_origen_id, entrada_origen_id, entrada_cumplimiento_id, estudio_origen_id
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     const res = stmt.run(
       alerta.casoId,
@@ -307,24 +323,30 @@ export class RepositorioOncologico {
       alerta.responsableCierre ?? null,
       alerta.hitoOrigenId ?? null,
       alerta.entradaOrigenId ?? null,
-      alerta.entradaCumplimientoId ?? null
+      alerta.entradaCumplimientoId ?? null,
+      alerta.estudioOrigenId ?? null
     );
     return Number(res.lastInsertRowid);
   }
 
-  obtenerAlertaPorId(alertaId: number): (AlertaSeguimiento & { numeroCaso: string; pacienteNombre: string; pacienteRun: string; tipoGarantia?: string; fechaLimiteGarantia?: string }) | null {
+  obtenerAlertaPorId(alertaId: number): (AlertaSeguimiento & { numeroCaso: string; pacienteNombre: string; pacienteRun: string; tipoGarantia?: string; fechaLimiteGarantia?: string; identificadorInforme?: string; tipoEstudio?: string }) | null {
     const stmt = this.db.prepare(`
       SELECT 
         a.id, a.caso_id as casoId, a.identificador, a.tipo, a.prioridad, a.estado,
         a.fecha_generacion as fechaGeneracion, a.garantia_id as garantiaId,
         a.hito_cumplimiento_id as hitoCumplimientoId, a.motivo_cierre as motivoCierre,
         a.fecha_cierre as fechaCierre, a.responsable_cierre as responsableCierre,
+        a.hito_origen_id as hitoOrigenId, a.entrada_origen_id as entradaOrigenId,
+        a.entrada_cumplimiento_id as entradaCumplimientoId,
+        a.estudio_origen_id as estudioOrigenId,
         c.numero_caso as numeroCaso, p.nombre_completo as pacienteNombre, p.run as pacienteRun,
-        g.tipo_garantia as tipoGarantia, g.fecha_limite as fechaLimiteGarantia
+        g.tipo_garantia as tipoGarantia, g.fecha_limite as fechaLimiteGarantia,
+        ed.identificador_informe as identificadorInforme, ed.tipo_estudio as tipoEstudio
       FROM alerta_seguimiento a
       JOIN caso_oncologico c ON c.id = a.caso_id
       JOIN paciente p ON p.id = c.paciente_id
       LEFT JOIN garantia_ges g ON g.id = a.garantia_id
+      LEFT JOIN estudio_diagnostico ed ON ed.id = a.estudio_origen_id
       WHERE a.id = ?
     `);
     const row = stmt.get(alertaId) as any;
@@ -359,12 +381,17 @@ export class RepositorioOncologico {
         a.fecha_generacion as fechaGeneracion, a.garantia_id as garantiaId,
         a.hito_cumplimiento_id as hitoCumplimientoId, a.motivo_cierre as motivoCierre,
         a.fecha_cierre as fechaCierre, a.responsable_cierre as responsableCierre,
+        a.hito_origen_id as hitoOrigenId, a.entrada_origen_id as entradaOrigenId,
+        a.entrada_cumplimiento_id as entradaCumplimientoId,
+        a.estudio_origen_id as estudioOrigenId,
         c.numero_caso as numeroCaso, p.nombre_completo as pacienteNombre, p.run as pacienteRun,
-        g.tipo_garantia as tipoGarantia, g.fecha_limite as fechaLimiteGarantia
+        g.tipo_garantia as tipoGarantia, g.fecha_limite as fechaLimiteGarantia,
+        ed.identificador_informe as identificadorInforme, ed.tipo_estudio as tipoEstudio
       FROM alerta_seguimiento a
       JOIN caso_oncologico c ON c.id = a.caso_id
       JOIN paciente p ON p.id = c.paciente_id
       LEFT JOIN garantia_ges g ON g.id = a.garantia_id
+      LEFT JOIN estudio_diagnostico ed ON ed.id = a.estudio_origen_id
       WHERE a.estado IN ('Pendiente', 'En gestión', 'Resuelta')
       ORDER BY 
         CASE WHEN a.prioridad = 'Alta' THEN 1 WHEN a.prioridad = 'Media' THEN 2 ELSE 3 END ASC,
@@ -838,6 +865,261 @@ export class RepositorioOncologico {
       tipoDominio: r.tipoDominio as TipoDominio,
       requiereDerivacion: Boolean(r.requiereDerivacion)
     }));
+  }
+
+  // --- Órdenes de Examen y Estudios Diagnósticos (HU-05) ---
+
+  crearOrdenExamen(orden: OrdenExamen): number {
+    const stmt = this.db.prepare(`
+      INSERT INTO orden_examen (caso_id, identificador, tipo_estudio, fecha_solicitud)
+      VALUES (?, ?, ?, ?)
+    `);
+    const res = stmt.run(orden.casoId, orden.identificador, orden.tipoEstudio, orden.fechaSolicitud);
+    return Number(res.lastInsertRowid);
+  }
+
+  obtenerOrdenExamenPorId(id: number): OrdenExamen | null {
+    const row = this.db.prepare(`
+      SELECT id, caso_id as casoId, identificador, tipo_estudio as tipoEstudio, fecha_solicitud as fechaSolicitud
+      FROM orden_examen
+      WHERE id = ?
+    `).get(id) as any;
+    return row || null;
+  }
+
+  obtenerOrdenExamenPorIdentificador(identificador: string): OrdenExamen | null {
+    const row = this.db.prepare(`
+      SELECT id, caso_id as casoId, identificador, tipo_estudio as tipoEstudio, fecha_solicitud as fechaSolicitud
+      FROM orden_examen
+      WHERE identificador = ?
+    `).get(identificador) as any;
+    return row || null;
+  }
+
+  listarOrdenesPorCasoId(casoId: number): OrdenExamen[] {
+    const rows = this.db.prepare(`
+      SELECT id, caso_id as casoId, identificador, tipo_estudio as tipoEstudio, fecha_solicitud as fechaSolicitud
+      FROM orden_examen
+      WHERE caso_id = ?
+      ORDER BY fecha_solicitud ASC, id ASC
+    `).all(casoId) as any[];
+    return rows;
+  }
+
+  crearEstudioDiagnostico(estudio: EstudioDiagnostico): number {
+    const stmt = this.db.prepare(`
+      INSERT INTO estudio_diagnostico (
+        orden_examen_id, caso_id, identificador_informe, run_informado, tipo_estudio,
+        origen, fecha_informe, estado_validacion, estado_recepcion, hallazgo_critico,
+        archivo_adjunto, fecha_registro
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    const res = stmt.run(
+      estudio.ordenExamenId ?? null,
+      estudio.casoId ?? null,
+      estudio.identificadorInforme,
+      estudio.runInformado,
+      estudio.tipoEstudio,
+      estudio.origen,
+      estudio.fechaInforme,
+      estudio.estadoValidacion,
+      estudio.estadoRecepcion,
+      estudio.hallazgoCritico ? 1 : 0,
+      estudio.archivoAdjunto ?? null,
+      estudio.fechaRegistro || new Date().toISOString()
+    );
+    return Number(res.lastInsertRowid);
+  }
+
+  obtenerEstudioDiagnosticoPorId(id: number): EstudioDiagnostico | null {
+    const row = this.db.prepare(`
+      SELECT 
+        id, orden_examen_id as ordenExamenId, caso_id as casoId,
+        identificador_informe as identificadorInforme, run_informado as runInformado,
+        tipo_estudio as tipoEstudio, origen, fecha_informe as fechaInforme,
+        estado_validacion as estadoValidacion, estado_recepcion as estadoRecepcion,
+        hallazgo_critico as hallazgoCritico, archivo_adjunto as archivoAdjunto,
+        fecha_registro as fechaRegistro
+      FROM estudio_diagnostico
+      WHERE id = ?
+    `).get(id) as any;
+    if (!row) return null;
+    return {
+      ...row,
+      hallazgoCritico: Boolean(row.hallazgoCritico)
+    };
+  }
+
+  obtenerEstudioPorOrdenId(ordenId: number): EstudioDiagnostico | null {
+    const row = this.db.prepare(`
+      SELECT 
+        id, orden_examen_id as ordenExamenId, caso_id as casoId,
+        identificador_informe as identificadorInforme, run_informado as runInformado,
+        tipo_estudio as tipoEstudio, origen, fecha_informe as fechaInforme,
+        estado_validacion as estadoValidacion, estado_recepcion as estadoRecepcion,
+        hallazgo_critico as hallazgoCritico, archivo_adjunto as archivoAdjunto,
+        fecha_registro as fechaRegistro
+      FROM estudio_diagnostico
+      WHERE orden_examen_id = ?
+      ORDER BY id DESC
+      LIMIT 1
+    `).get(ordenId) as any;
+    if (!row) return null;
+    return {
+      ...row,
+      hallazgoCritico: Boolean(row.hallazgoCritico)
+    };
+  }
+
+  obtenerEstudioPorIdentificadorInforme(identificadorInforme: string): EstudioDiagnostico | null {
+    const row = this.db.prepare(`
+      SELECT 
+        id, orden_examen_id as ordenExamenId, caso_id as casoId,
+        identificador_informe as identificadorInforme, run_informado as runInformado,
+        tipo_estudio as tipoEstudio, origen, fecha_informe as fechaInforme,
+        estado_validacion as estadoValidacion, estado_recepcion as estadoRecepcion,
+        hallazgo_critico as hallazgoCritico, archivo_adjunto as archivoAdjunto,
+        fecha_registro as fechaRegistro
+      FROM estudio_diagnostico
+      WHERE identificador_informe = ?
+      ORDER BY id DESC
+      LIMIT 1
+    `).get(identificadorInforme) as any;
+    if (!row) return null;
+    return {
+      ...row,
+      hallazgoCritico: Boolean(row.hallazgoCritico)
+    };
+  }
+
+  actualizarEstadoEstudio(id: number, nuevoEstado: EstadoRecepcion, archivoAdjunto?: string | null): void {
+    if (archivoAdjunto !== undefined) {
+      this.db.prepare(`
+        UPDATE estudio_diagnostico
+        SET estado_recepcion = ?, archivo_adjunto = ?
+        WHERE id = ?
+      `).run(nuevoEstado, archivoAdjunto, id);
+    } else {
+      this.db.prepare(`
+        UPDATE estudio_diagnostico
+        SET estado_recepcion = ?
+        WHERE id = ?
+      `).run(nuevoEstado, id);
+    }
+  }
+
+  asociarEstudioACasoYOrden(estudioId: number, casoId: number, ordenExamenId: number): void {
+    this.db.prepare(`
+      UPDATE estudio_diagnostico
+      SET caso_id = ?, orden_examen_id = ?, estado_recepcion = 'Incorporado'
+      WHERE id = ?
+    `).run(casoId, ordenExamenId, estudioId);
+  }
+
+  listarEstudiosPorCasoId(casoId: number): EstudioDiagnostico[] {
+    const rows = this.db.prepare(`
+      SELECT 
+        id, orden_examen_id as ordenExamenId, caso_id as casoId,
+        identificador_informe as identificadorInforme, run_informado as runInformado,
+        tipo_estudio as tipoEstudio, origen, fecha_informe as fechaInforme,
+        estado_validacion as estadoValidacion, estado_recepcion as estadoRecepcion,
+        hallazgo_critico as hallazgoCritico, archivo_adjunto as archivoAdjunto,
+        fecha_registro as fechaRegistro
+      FROM estudio_diagnostico
+      WHERE caso_id = ?
+      ORDER BY fecha_informe DESC, id DESC
+    `).all(casoId) as any[];
+    return rows.map((r) => ({
+      ...r,
+      hallazgoCritico: Boolean(r.hallazgoCritico)
+    }));
+  }
+
+  listarExamenesDetalladosPorCasoId(casoId: number): ExamenConDetalle[] {
+    const rows = this.db.prepare(`
+      SELECT 
+        o.id as ordenId,
+        o.caso_id as casoId,
+        o.identificador as identificadorOrden,
+        o.tipo_estudio as tipoEstudio,
+        o.fecha_solicitud as fechaSolicitud,
+        e.id as estudioId,
+        e.identificador_informe as identificadorInforme,
+        e.run_informado as runInformado,
+        e.origen as origen,
+        e.fecha_informe as fechaInforme,
+        e.estado_validacion as estadoValidacion,
+        COALESCE(e.estado_recepcion, 'Solicitado') as estadoRecepcion,
+        COALESCE(e.hallazgo_critico, 0) as hallazgoCritico,
+        e.archivo_adjunto as archivoAdjunto
+      FROM orden_examen o
+      LEFT JOIN estudio_diagnostico e ON e.orden_examen_id = o.id
+      WHERE o.caso_id = ?
+      ORDER BY o.fecha_solicitud ASC, o.id ASC
+    `).all(casoId) as any[];
+
+    return rows.map((r) => ({
+      ordenId: r.ordenId,
+      casoId: r.casoId,
+      identificadorOrden: r.identificadorOrden,
+      tipoEstudio: r.tipoEstudio,
+      fechaSolicitud: r.fechaSolicitud,
+      estudioId: r.estudioId ?? null,
+      identificadorInforme: r.identificadorInforme ?? null,
+      runInformado: r.runInformado ?? null,
+      origen: r.origen ?? null,
+      fechaInforme: r.fechaInforme ?? null,
+      estadoValidacion: r.estadoValidacion ?? null,
+      estadoRecepcion: r.estadoRecepcion as EstadoRecepcion,
+      hallazgoCritico: Boolean(r.hallazgoCritico),
+      archivoAdjunto: r.archivoAdjunto ?? null
+    }));
+  }
+
+  listarBandejaExcepciones(): EstudioDiagnostico[] {
+    const rows = this.db.prepare(`
+      SELECT 
+        id, orden_examen_id as ordenExamenId, caso_id as casoId,
+        identificador_informe as identificadorInforme, run_informado as runInformado,
+        tipo_estudio as tipoEstudio, origen, fecha_informe as fechaInforme,
+        estado_validacion as estadoValidacion, estado_recepcion as estadoRecepcion,
+        hallazgo_critico as hallazgoCritico, archivo_adjunto as archivoAdjunto,
+        fecha_registro as fechaRegistro
+      FROM estudio_diagnostico
+      WHERE estado_recepcion = 'Observado por identificación'
+      ORDER BY fecha_registro DESC, id DESC
+    `).all() as any[];
+
+    return rows.map((r) => ({
+      ...r,
+      hallazgoCritico: Boolean(r.hallazgoCritico)
+    }));
+  }
+
+  calcularCompletitudDiagnostica(casoId: number): ResumenCompletitudDiagnostica {
+    const totalSolicitadosRow = this.db.prepare('SELECT COUNT(*) as total FROM orden_examen WHERE caso_id = ?').get(casoId) as any;
+    const totalSolicitados = Number(totalSolicitadosRow?.total || 0);
+
+    const incorporadosRow = this.db.prepare(`
+      SELECT COUNT(DISTINCT o.id) as total
+      FROM orden_examen o
+      JOIN estudio_diagnostico e ON e.orden_examen_id = o.id
+      WHERE o.caso_id = ? AND e.estado_recepcion IN ('Incorporado', 'Incorporado con hallazgo crítico')
+    `).get(casoId) as any;
+    const totalIncorporados = Number(incorporadosRow?.total || 0);
+
+    const porcentajeCompletitud = totalSolicitados === 0 
+      ? 0 
+      : Math.round((totalIncorporados / totalSolicitados) * 100);
+
+    const examenesPendientes = Math.max(0, totalSolicitados - totalIncorporados);
+
+    return {
+      totalSolicitados,
+      totalIncorporados,
+      porcentajeCompletitud,
+      examenesPendientes
+    };
   }
 }
 

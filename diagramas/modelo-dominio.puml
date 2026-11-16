@@ -67,6 +67,7 @@ class AlertaSeguimiento {
   hitoOrigenId: Texto
   entradaOrigenId: Texto
   entradaCumplimientoId: Texto
+  estudioOrigenId: Texto
 }
 
 Paciente "1" -- "1..*" CasoOncologico : presenta
@@ -126,6 +127,15 @@ class EstudioDiagnostico {
   estadoValidacion: Texto
   estadoRecepcion: Texto
   hallazgoCritico: Texto
+  archivoAdjunto: Texto
+}
+
+class AlertaSeguimiento {
+  identificador: Texto
+  tipo: TipoAlerta
+  prioridad: Texto
+  estado: EstadoAlerta
+  estudioOrigenId: Texto
 }
 
 class DossierDigitalDerivacion {
@@ -154,6 +164,7 @@ CasoOncologico "1" -- "0..*" ResolucionComite : cuenta con
 CasoOncologico "1" -- "0..*" DossierDigitalDerivacion : tramita
 DossierDigitalDerivacion "0..*" -- "1" ResolucionComite : se basa en
 DossierDigitalDerivacion "0..*" -- "0..*" EstudioDiagnostico : incluye
+EstudioDiagnostico "0..1" -- "0..*" AlertaSeguimiento : origina
 
 @enduml
 

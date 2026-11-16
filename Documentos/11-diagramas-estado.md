@@ -9,9 +9,9 @@ Este documento describe los estados y transiciones de las clases clave del domin
 ## EST-01 — Ciclo de vida de AlertaSeguimiento
 
 - **Clase del dominio:** [`AlertaSeguimiento`](./08-modelo-dominio.md).
-- **Historias relacionadas:** [HU-04](./04-historias-usuario.md#hu-04), [HU-08](./04-historias-usuario.md#hu-08) y [HU-03](./04-historias-usuario.md#hu-03).
-- **Casos de uso relacionados:** [CU-06 — Gestionar alertas de seguimiento](./09-casos-de-uso.md#casos-de-uso-y-su-origen) y [CU-11 — Registrar interacción en bitácora de acompañamiento](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
-- **Diagramas de secuencia relacionados:** [DSS-04](./10-diagramas-secuencia.md#dss-04--deteccion-y-gestion-de-alertas-preventivas-ges-e-inactividad) y [DSS-02](./10-diagramas-secuencia.md#dss-02--gestionar-derivacion-externa-y-retorno).
+- **Historias relacionadas:** [HU-04](./04-historias-usuario.md#hu-04), [HU-08](./04-historias-usuario.md#hu-08), [HU-03](./04-historias-usuario.md#hu-03) y [HU-05](./04-historias-usuario.md#hu-05).
+- **Casos de uso relacionados:** [CU-06 — Gestionar alertas de seguimiento](./09-casos-de-uso.md#casos-de-uso-y-su-origen), [CU-11 — Registrar interacción en bitácora de acompañamiento](./09-casos-de-uso.md#casos-de-uso-y-su-origen) y [CU-02 — Recibir avisos de hallazgos críticos](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
+- **Diagramas de secuencia relacionados:** [DSS-04](./10-diagramas-secuencia.md#dss-04--deteccion-y-gestion-de-alertas-preventivas-ges-e-inactividad), [DSS-02](./10-diagramas-secuencia.md#dss-02--gestionar-derivacion-externa-y-retorno) y [DSS-01](./10-diagramas-secuencia.md#dss-01--incorporar-y-consultar-informes-diagnosticos).
 
 ![EST-01 — Ciclo de vida de una alerta de seguimiento](../diagramas/EST-01-AlertaSeguimiento.png)
 
@@ -19,16 +19,16 @@ Este documento describe los estados y transiciones de las clases clave del domin
 
 ### Descripción del ciclo de vida
 
-La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: cinco días hábiles o menos para el vencimiento de una garantía GES (HU-04); más de quince días corridos de inactividad (HU-04); once días hábiles desde el despacho de una derivación sin confirmación de recepción ni fecha de atención (HU-08); más de dos días hábiles completos desde un hito normado sin la entrada del punto de contacto correspondiente en la bitácora (HU-03 / ESC-02); o tres intentos fallidos consecutivos de contacto en la bitácora («No contactable») para activar el protocolo de búsqueda activa y coordinación con APS (HU-03 / HU-03-CA7 / ESC-03). En HU-04 y en HU-03, la evaluación repetida no genera alertas redundantes mientras la condición siga activa: cada hito normado abre una sola alerta de punto pendiente y la búsqueda activa no se duplica mientras siga vigente.
+La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: cinco días hábiles o menos para el vencimiento de una garantía GES (HU-04); más de quince días corridos de inactividad (HU-04); once días hábiles desde el despacho de una derivación sin confirmación de recepción ni fecha de atención (HU-08); más de dos días hábiles completos desde un hito normado sin la entrada del punto de contacto correspondiente en la bitácora (HU-03 / ESC-02); tres intentos fallidos consecutivos de contacto en la bitácora («No contactable») para activar el protocolo de búsqueda activa y coordinación con APS (HU-03 / HU-03-CA7 / ESC-03); o la incorporación de un informe validado de anatomía patológica con hallazgo de malignidad o valor crítico (HU-05 / ESC-02). En HU-04 y en HU-03, la evaluación repetida no genera alertas redundantes mientras la condición siga activa: cada hito normado abre una sola alerta de punto pendiente y la búsqueda activa no se duplica mientras siga vigente.
 
 ### Tabla de transiciones
 
 | Estado origen | Evento | Guarda | Acción | Estado destino |
 | :--- | :--- | :--- | :--- | :--- |
-| **Nodo inicial** | — | — | Vincular la alerta al caso y, según origen, a la garantía GES, al dossier, al hito normado de origen o a la entrada de bitácora que la origina | **Pendiente** |
+| **Nodo inicial** | — | — | Vincular la alerta al caso y, según origen, a la garantía GES, al dossier, al hito normado de origen, a la entrada de bitácora o al estudio diagnóstico que la origina | **Pendiente** |
 | **Pendiente** | Registro de acción de gestión o contacto | [Gestora autorizada: acción sobre alerta GES, rezago de derivación o inicio de coordinación con APS para búsqueda activa] | Conservar la acción en bitácora; en GES no equivale al cumplimiento de la garantía | **En gestión** |
-| **Pendiente** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa, entrada del punto de contacto obligatorio o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
-| **En gestión** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa, entrada del punto de contacto obligatorio o restablecimiento de contacto / respuesta formal de APS] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
+| **Pendiente** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa, entrada del punto de contacto obligatorio, restablecimiento de contacto / respuesta formal de APS, o hito clínico que acredita la conducta adoptada ante un hallazgo crítico] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
+| **En gestión** | Registro de resolución, cumplimiento o contacto | [Hito de cumplimiento de garantía GES, confirmación de derivación externa, entrada del punto de contacto obligatorio, restablecimiento de contacto / respuesta formal de APS, o hito clínico que acredita la conducta adoptada ante un hallazgo crítico] | Vincular el hito o antecedente que acredita la resolución y confirmar el cambio a la gestora | **Resuelta** |
 | **Pendiente** | Registro de causa documentada | [Causa clínica/administrativa documentada deja sin efecto la garantía o el seguimiento asistencial] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
 | **En gestión** | Registro de causa documentada | [Causa clínica/administrativa documentada deja sin efecto la garantía o el seguimiento asistencial] | Conservar el motivo, la fecha y la responsable del cierre | **No aplica** |
 | **Resuelta** | — | — | — | **Fin** |
@@ -39,6 +39,9 @@ La alerta comienza en **Pendiente** cuando se cumple el umbral correspondiente: 
 
 > [!NOTE]
 > **Alerta de punto de contacto pendiente (HU-03 / ESC-02):** se crea en **Pendiente** con prioridad Alta cuando un hito normado (P1–P6) lleva más de dos días hábiles completos sin una entrada del punto en la bitácora con fecha igual o posterior al hito. Se vincula al `hitoOrigenId` y no se duplica mientras exista una alerta activa para ese hito. Se resuelve con la entrada del punto, que queda registrada en `entradaCumplimientoId`; también admite gestión y cierre por causa documentada, con las mismas transiciones de la tabla.
+
+> [!NOTE]
+> **Alerta de hallazgo crítico (HU-05 / ESC-02):** se crea en **Pendiente** con prioridad Alta al incorporar un informe validado con hallazgo de malignidad o valor crítico, vinculada al `estudioOrigenId`. Pasa a **En gestión** cuando la gestora registra la notificación al médico tratante, y a **Resuelta** cuando se registra el hito clínico que documenta la conducta adoptada. Si una causa justificada deja sin efecto el seguimiento, se cierra en **No aplica**.
 
 > [!NOTE]
 > **Visibilidad de la alerta resuelta (HU-04 / ESC-06):** al quedar **Resuelta**, la alerta permanece visible en el panel general durante 14 horas desde su resolución y luego deja de listarse entre las alertas vigentes; sigue consultable en la ficha del caso. No se crea un estado nuevo: solo cambia su visibilidad.
@@ -144,13 +147,14 @@ stateDiagram-v2
   ObservadoIdentificacion --> Incorporado: Subsanación de RUN y validación ratificada
   PendienteValidacion --> Incorporado: Informe validado sin hallazgo crítico (HU-05-ESC-01)
   PendienteValidacion --> IncorporadoHallazgoCritico: Informe validado con hallazgo de malignidad (HU-05-ESC-02)
+  Solicitado --> Incorporado: Adjunto de informe externo en PDF (HU-05-ESC-05)
   Incorporado --> [*]
   IncorporadoHallazgoCritico --> [*]
 ```
 
 ### Descripción del ciclo de vida
 
-El objeto `EstudioDiagnostico` modela la sincronización con LIS y PACS y los atributos `estadoValidacion` y `estadoRecepcion`. Un examen solicitado permanece pendiente en la completitud del caso hasta que su informe esté **validado** en el origen y su RUN se asocie **inequívocamente** al paciente ([HU-05-ESC-01](./07-criterios-aceptacion.md#hu-05-esc-01-incorporacion-y-consulta-de-un-informe-validado)). Si existe discrepancia de identificación, se deriva a una bandeja de excepciones para auditoría sin asociarlo indebidamente ([HU-05-ESC-03](./07-criterios-aceptacion.md#hu-05-esc-03-identificacion-discrepante-del-paciente)).
+El objeto `EstudioDiagnostico` modela la sincronización con LIS y PACS y los atributos `estadoValidacion` y `estadoRecepcion`. Un examen solicitado permanece pendiente en la completitud del caso hasta que su informe esté **validado** en el origen y su RUN se asocie **inequívocamente** al paciente ([HU-05-ESC-01](./07-criterios-aceptacion.md#hu-05-esc-01-incorporacion-y-consulta-de-un-informe-validado)). Si existe discrepancia de identificación, se deriva a una bandeja de excepciones para auditoría sin asociarlo indebidamente ([HU-05-ESC-03](./07-criterios-aceptacion.md#hu-05-esc-03-identificacion-discrepante-del-paciente)). Si el examen corresponde a una compra de servicio externo, el informe se adjunta en formato PDF directamente sobre la orden solicitada, incorporando el estudio sin requerir interfaces con LIS ni PACS ([HU-05-ESC-05](./07-criterios-aceptacion.md#hu-05-esc-05-incorporacion-de-un-informe-de-compra-de-servicio-externo)).
 
 ### Tabla de transiciones
 
@@ -158,10 +162,11 @@ El objeto `EstudioDiagnostico` modela la sincronización con LIS y PACS y los at
 | :--- | :--- | :--- | :--- | :--- |
 | **Nodo inicial** | — | — | Emisión de `OrdenExamen` vinculada al caso | **Solicitado** |
 | **Solicitado** | Detección de informe en LIS/PACS | [Informe no validado por especialista de origen] | Mantener recepción pendiente en el caso (completitud sin variar) | **Pendiente de validación** |
+| **Solicitado** | Adjunto de informe externo en PDF | [Compra de servicio externo (PET-CT o EBUS) no disponible en LIS ni en PACS] | Incorporar el PDF al expediente y actualizar la completitud | **Incorporado** |
 | **Pendiente de validación** | Cotejo de identificación | [RUN informado no permite asociar inequívocamente al paciente] | Registrar excepción de auditoría; examen sigue pendiente | **Observado por identificación** |
 | **Observado por identificación**| Subsanación de discrepancia | [Identificación validada y ratificada por auditoría] | Incorporar informe consolidado y copia PDF | **Incorporado** |
 | **Pendiente de validación** | Recepción de informe validado | [RUN validado inequívocamente y sin hallazgo crítico] | Incorporar copia PDF y actualizar completitud diagnóstica | **Incorporado** |
-| **Pendiente de validación** | Recepción de informe validado | [RUN validado y hallazgo de malignidad o valor crítico] | Incorporar PDF y disparar notificación inmediata a médico y gestora | **Incorporado con hallazgo crítico** |
+| **Pendiente de validación** | Recepción de informe validado | [RUN validado y hallazgo de malignidad o valor crítico] | Incorporar PDF y generar alerta de seguimiento tipo «Hallazgo crítico» para médico tratante y gestora | **Incorporado con hallazgo crítico** |
 | **Incorporado** | — | — | — | **Fin** |
 | **Incorporado con hallazgo crítico** | — | — | — | **Fin** |
 

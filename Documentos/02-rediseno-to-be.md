@@ -64,7 +64,7 @@ El proceso también contempla los puntos de contacto definidos por la UGCO, la c
 
 - **Heurística aplicada:** Integración tecnológica de fuentes de información diagnóstica.
 
-- **Objetivo o mejora propuesta:** Consultar e indexar por RUN los informes disponibles en LIS y PACS mediante las interfaces autorizadas por el hospital. El sistema debe facilitar el acceso a los resultados y generar una alerta médica prioritaria ante hallazgos de malignidad, según las reglas que defina el equipo clínico.
+- **Objetivo o mejora propuesta:** Consultar e indexar por RUN los informes disponibles en LIS y PACS mediante las interfaces autorizadas por el hospital. El sistema debe facilitar el acceso a los resultados y generar una alerta de seguimiento de tipo «Hallazgo crítico» ante hallazgos de malignidad o valores críticos, según las reglas que defina el equipo clínico.
 
 - **Efecto esperado (cuadrángulo del diablo):**
   - *Tiempo:* Menos pasos para localizar los informes una vez publicados e integrados.

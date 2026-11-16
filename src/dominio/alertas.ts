@@ -99,6 +99,8 @@ export interface AlertaConDetalle extends AlertaSeguimiento {
   fechaHitoCumplimiento?: string;
   identificadorEntradaCumplimiento?: string;
   fechaEntradaCumplimiento?: string;
+  identificadorInforme?: string;
+  tipoEstudio?: string;
 }
 
 export interface ResultadoEvaluacionAlertas {

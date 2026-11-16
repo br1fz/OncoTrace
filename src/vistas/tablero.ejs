@@ -38,6 +38,14 @@
                 <p><strong>Especialidad:</strong> <%= caso.especialidad %></p>
                 <p><strong>CIE-10:</strong> <%= caso.codigoDiagnosticoOSospecha %></p>
                 <p><strong>Etapa actual:</strong> <span class="badge-etapa"><%= caso.etapaActual %></span></p>
+                <% if (caso.completitudDiagnostica !== undefined) { %>
+                  <p class="completitud-diagnostica" style="font-size: 0.82rem; margin-top: 0.2rem;">
+                    <strong>Completitud diagnóstica:</strong>
+                    <span style="font-weight: 700; color: <%= caso.completitudDiagnostica === 100 ? '#166534' : '#0369a1' %>;">
+                      <%= caso.completitudDiagnostica %>%
+                    </span>
+                  </p>
+                <% } %>
                 <% if (caso.ultimoHito) { %>
                   <p class="ultimo-hito">
                     <strong>Último hito:</strong> <%= caso.ultimoHito.tipo %> 

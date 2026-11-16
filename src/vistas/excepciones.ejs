@@ -1,0 +1,59 @@
+<%- include('parciales/header') %>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+  <div>
+    <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">Bandeja de Excepciones de Identificación</h1>
+    <p style="color: #64748b; font-size: 0.9rem;">Informes diagnósticos con discrepancia de RUN retenidos para auditoría (HU-05-ESC-03 / D1)</p>
+  </div>
+  <a href="/" style="background: #e2e8f0; color: #1e293b; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.85rem;">
+    &larr; Volver al tablero
+  </a>
+</div>
+
+<div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+  <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; color: #92400e;">
+    <strong>Regla de Aislamiento Clínico:</strong> Todo informe cuyo RUN informado no coincida unívocamente con el paciente registrado se conserva en esta bandeja de auditoría. Ningún informe con discrepancia se asocia al expediente ni computa en la completitud diagnóstica.
+  </div>
+
+  <% if (!excepciones || excepciones.length === 0) { %>
+    <p style="color: #64748b; font-size: 0.9rem; text-align: center; padding: 2rem 0;">
+      No hay informes con excepciones de identificación pendientes de revisión.
+    </p>
+  <% } else { %>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid #e2e8f0; color: #475569;">
+            <th style="padding: 0.75rem;">Folio Informe</th>
+            <th style="padding: 0.75rem;">RUN Informado</th>
+            <th style="padding: 0.75rem;">Estudio</th>
+            <th style="padding: 0.75rem;">Origen</th>
+            <th style="padding: 0.75rem;">Fecha Emisión</th>
+            <th style="padding: 0.75rem;">Estado Recepción</th>
+            <th style="padding: 0.75rem;">Fecha Registro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% excepciones.forEach(function(item) { %>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 0.75rem; font-weight: 600; color: #0f172a;"><%= item.identificadorInforme %></td>
+              <td style="padding: 0.75rem; color: #dc2626; font-weight: 700;"><%= item.runInformado %></td>
+              <td style="padding: 0.75rem;"><%= item.tipoEstudio %></td>
+              <td style="padding: 0.75rem;"><span style="background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;"><%= item.origen %></span></td>
+              <td style="padding: 0.75rem; color: #64748b;"><%= item.fechaInforme %></td>
+              <td style="padding: 0.75rem;">
+                <span style="background: #fee2e2; color: #991b1b; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600;">
+                  <%= item.estadoRecepcion %>
+                </span>
+              </td>
+              <td style="padding: 0.75rem; color: #64748b;"><%= item.fechaRegistro ? item.fechaRegistro.slice(0, 19).replace('T', ' ') : '—' %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('parciales/footer') %>
+

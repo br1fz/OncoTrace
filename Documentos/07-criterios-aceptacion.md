@@ -175,8 +175,8 @@ Característica: Incorporación de informes al caso oncológico correspondiente
     Dado un informe validado de Anatomía Patológica con un hallazgo de malignidad o un valor crítico informado por el sistema de origen
     Y que su RUN corresponde inequívocamente al paciente de un caso registrado
     Cuando OncoTrace incorpora el informe al caso
-    Entonces genera una notificación prioritaria para el médico tratante y la gestora
-    Y la notificación permite identificar el caso y el informe que la origina
+    Entonces genera una alerta de seguimiento de tipo "Hallazgo crítico" para el médico tratante y la gestora
+    Y la alerta permite identificar el caso y el informe que la origina
 
   Escenario: HU-05-ESC-03 Discrepancia en la identificación del paciente
     Dado un informe cuyo identificador no permite asociarlo inequívocamente al paciente del caso
@@ -192,6 +192,16 @@ Característica: Incorporación de informes al caso oncológico correspondiente
     Cuando OncoTrace consulta los informes disponibles
     Entonces no presenta ese informe como validado ni el examen como recibido
     Y conserva pendiente la recepción del informe validado
+
+  Escenario: HU-05-ESC-05 Incorporación de un informe de compra de servicio externo
+    Dado un caso oncológico con un examen solicitado a un prestador externo
+    Y que el informe no está disponible en LIS ni en PACS
+    Cuando la gestora adjunta el informe externo en formato PDF
+    Entonces OncoTrace lo incorpora al expediente consolidado del caso
+    Y registra el origen del informe como compra de servicio externo
+    Y el examen queda identificado como recibido
+    Y la completitud de los exámenes solicitados se actualiza
+    Y el profesional autorizado puede consultar y descargar el informe adjunto
 ```
 
 ---

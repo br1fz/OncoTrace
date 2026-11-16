@@ -21,6 +21,7 @@ import {
 import { diasHabilesRestantes, diasCorridosEntre } from '../dominio/calendario-ges.js';
 import { RepositorioOncologico } from '../dominio/repositorios.js';
 import { ServicioAlertas } from './alertas.js';
+import type { ExamenConDetalle, ResumenCompletitudDiagnostica } from '../dominio/examenes.js';
 
 export interface TableroEtapas {
   etapas: {
@@ -56,6 +57,8 @@ export interface FichaCasoCompleta {
     objetivo: string;
     identificadorEntrada?: string;
   };
+  examenes?: ExamenConDetalle[];
+  completitudDiagnostica?: ResumenCompletitudDiagnostica;
 }
 
 export interface RegistroHitoInput {
@@ -195,6 +198,10 @@ export class ServicioSeguimiento {
         }
       : undefined;
 
+    // Exámenes diagnósticos y completitud (HU-05)
+    const examenes = this.repo.listarExamenesDetalladosPorCasoId(caso.id);
+    const completitudDiagnostica = this.repo.calcularCompletitudDiagnostica(caso.id);
+
     return {
       numeroCaso: caso.numeroCaso,
       run: caso.paciente.run,
@@ -216,7 +223,9 @@ export class ServicioSeguimiento {
       entradasBitacora,
       indicadorContactabilidad,
       rachaFallosConsecutivos,
-      proximaAccion
+      proximaAccion,
+      examenes,
+      completitudDiagnostica
     };
   }
 

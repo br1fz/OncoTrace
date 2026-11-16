@@ -21,7 +21,8 @@ La gestora consulta los informes y el estado de los exámenes del caso. OncoTrac
 ### Variantes representadas
 
 - **`alt` — Validación e identificación.** Si el RUN no permite identificar al paciente con certeza, el informe queda como excepción pendiente de revisión, se registra la discrepancia para auditoría y el examen sigue pendiente. Si el informe aún no está validado en el sistema de origen, se mantiene pendiente la recepción del resultado validado.
-- **`opt` — Hallazgo crítico.** Si se incorpora un informe validado de anatomía patológica con un hallazgo de malignidad o un valor crítico informado por el origen, OncoTrace notifica al médico tratante y a la gestora. El aviso permite identificar el caso y el informe.
+- **`opt` — Hallazgo crítico.** Si se incorpora un informe validado de anatomía patológica con un hallazgo de malignidad o un valor crítico informado por el origen, OncoTrace genera una alerta de seguimiento de tipo «Hallazgo crítico» para el médico tratante y la gestora, permitiendo identificar el caso y el informe que la originan.
+- **`opt` — Compra de servicio externo.** Si el examen corresponde a una compra de servicio externo y el informe no está disponible en LIS ni en PACS, la gestora adjunta el informe en formato PDF; OncoTrace lo incorpora al expediente consolidado, registra su origen como compra de servicio externo y actualiza la completitud del caso (HU-05-ESC-05).
 
 ---
 
@@ -161,7 +162,7 @@ OncoTrace ejecuta una evaluación automática periódica calculando días hábil
 
 | Diagrama | Escenarios de aceptación | Casos de uso | Participantes externos a OncoTrace | Conceptos del modelo de dominio |
 | :--- | :--- | :--- | :--- | :--- |
-| **DSS-01** | HU-05-ESC-01 a HU-05-ESC-04 | CU-01 y CU-02 | Gestor/a UGCO, médico tratante, LIS y PACS | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico` |
+| **DSS-01** | HU-05-ESC-01 a HU-05-ESC-05 | CU-01 y CU-02 | Gestor/a UGCO, médico tratante, LIS y PACS | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico`, `AlertaSeguimiento` |
 | **DSS-02** | HU-08-ESC-01 a HU-08-ESC-06 | CU-03, CU-04, CU-06, CU-07, CU-08 y CU-09 | TENS UGCO, funcionario/a UGAA, gestor/a UGCO y Sistema HCVB | `CasoOncologico`, `DossierDigitalDerivacion`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
 | **DSS-03** | HU-01-ESC-01 a HU-01-ESC-05 | CU-05 | Gestor/a UGCO y médico tratante | `Paciente`, `CasoOncologico`, `HitoAsistencial`, `ResolucionComite` |
 | **DSS-04** | HU-04-ESC-01 a HU-04-ESC-09 | CU-06 | Gestor/a UGCO y Unidad GES | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |

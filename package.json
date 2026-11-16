@@ -12,10 +12,12 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@types/multer": "^2.3.0",
     "better-sqlite3": "^13.0.3",
     "cookie-parser": "^1.4.7",
     "ejs": "^3.1.10",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "multer": "^2.5.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^9.6.0",
@@ -30,4 +32,3 @@
     "vitest": "^3.0.5"
   }
 }
-
