@@ -323,8 +323,29 @@ class FichaPresentacionComite {
   resumenClinico: Texto
   etapificacionTNM: Texto
   biopsiaValidadaReferencia: Texto
+  justificacionUrgencia: Texto
+  hipotesisDiagnostica: Texto
   propuestaConducta: Texto
+  medicoPresentador: Texto
+  gestorResponsable: Texto
+  tipoComite: TipoComiteOncologico
+  fechaSesion: Fecha
+  estado: EstadoFichaComite
   fechaGeneracion: FechaHora
+}
+
+enum EstadoFichaComite {
+  Generada
+  Validada
+}
+
+enum TipoComiteOncologico {
+  General
+  Digestivo
+  Mama
+  Tórax
+  Hematología
+  Tiroides
 }
 
 class ActaComite {

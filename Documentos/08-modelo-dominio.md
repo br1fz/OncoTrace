@@ -31,7 +31,7 @@ Archivo fuente: [modelo-dominio.puml](../diagramas/modelo-dominio.puml).
 | `DominioValoracion` | Dimensión específica evaluada (clínico-funcional, psicoemocional, cuidador, social, espiritual, cognitivo). | tipoDominio, descripcionHallazgo, requiereDerivacion, especialidadDerivada |
 | `EntradaBitacora` | Registro cronológico individual de contacto asistencial normado según el Journey Map de navegación, con programación del próximo contacto y soporte de adendas inmutables. | identificador, puntoContactoNormado, fechaContacto, canalContacto, interlocutor, motivoContacto, resumenInteraccion, acuerdosEstablecidos, responsableRegistro, estadoContacto, esAdenda, fechaProximoContacto, objetivoProximoContacto, entradaOriginalId |
 | `CuidadorAutorizado` | Persona de apoyo acreditada con autorización formal vigente para consultar el estado del paciente en canales de autoatención. | runCuidador, nombreCompleto, parentesco, telefonoContacto, autorizacionVigente, fechaRegistroAutorizacion |
-| `FichaPresentacionComite` | Expediente sintético consolidado automáticamente para la deliberación médica en el Comité Regional. | folioFicha, resumenClinico, etapificacionTNM, biopsiaValidadaReferencia, propuestaConducta, fechaGeneracion |
+| `FichaPresentacionComite` | Expediente sintético consolidado automáticamente para la deliberación médica en el Comité Regional, con sesión programada y ciclo de vida propio. | folioFicha, resumenClinico, etapificacionTNM, biopsiaValidadaReferencia, justificacionUrgencia, hipotesisDiagnostica, propuestaConducta, medicoPresentador, gestorResponsable, tipoComite, fechaSesion, estado, fechaGeneracion |
 | `ActaComite` | Documento legal colegiado que formaliza el acuerdo terapéutico adoptado durante la sesión. | numeroActa, fechaSesion, quorumAsistentes, resolucionAcordada, estadoFirma |
 | `FirmaElectronica` | Evidencia criptográfica de suscripción vinculante del acta por un médico especialista. | runFirmante, nombreFirmante, rolFirmante, estampaTiempo, hashIntegridad |
 | `RegistroREM7` | Agrupación estadística mensual de decisiones terapéuticas para consolidación ministerial. | periodoMes, seccion, codigoPrestacion, totalCasos |
@@ -106,6 +106,8 @@ Las multiplicidades se leen en ambos extremos. Por ejemplo, un paciente puede pr
 | `EstadoContactoBitacora` | Efectivo; No contactable. Registra la efectividad del contacto asistencial en cada entrada de la bitácora. |
 | `PuntoContactoNormado` | P1 Ingreso/Sospecha inicial; P2 Post-confirmación diagnóstica con IPD; P3 Etapificación/Post-resolución de comité; P4 Alta de hospitalización o cirugía; P5 Fin del tratamiento activo y retorno a la vida cotidiana; P6 Derivación a otro establecimiento de la red; No normado. Identifica el punto de contacto obligatorio del Journey Map al que corresponde una entrada de la bitácora. |
 | `EstadoSincronizacionMINSAL` | Pendiente de confirmación; Sincronizado; Pendiente de reintento. Modela el ciclo de vida de los mensajes de intercambio ministerial (HU-11). |
+| `EstadoFichaComite` | Generada; Validada. Generada es la ficha consolidada con folio asignado; Validada exige hipótesis diagnóstica y propuesta terapéutica del médico tratante y habilita la programación en la tabla de sesión (HU-06). |
+| `TipoComiteOncologico` | General; Digestivo; Mama; Tórax; Hematología; Tiroides. Clasifica la sesión del Comité Oncológico Regional en la que se presenta la ficha (HU-06). |
 
 ### Correspondencia entre hitos y puntos de contacto
 
@@ -153,6 +155,8 @@ Si el tipo de hito no coincide con ninguno de estos textos, no se abre obligaci�
 - La alerta de búsqueda activa se resuelve con un contacto `Efectivo` o con la acreditación de la respuesta de APS; el contacto que resuelve queda registrado en `entradaCumplimientoId`.
 
 - Los registros en `RegistroIntercambioMINSAL` inician en `Pendiente de confirmación` al emitirse el mensaje hacia la plataforma nacional, pasan a `Sincronizado` al recibir el acuse satisfactorio con folio de transacción MINSAL, o a `Pendiente de reintento` ante indisponibilidad o errores de formato para permitir su reprocesamiento auditado (HU-11).
+
+- La ficha de presentación a comité nace en estado **Generada** con folio `FIC-2026-NNN`. Pasa a **Validada** cuando el médico tratante registra hipótesis diagnóstica, propuesta terapéutica y etapificación TNM. La generación se bloquea si no hay biopsia validada, salvo que se registre una justificación de urgencia; la programación en la tabla de sesión exige estado Validada y al menos un estudio de imagen incorporado (HU-06-ESC-02, ESC-04 y ESC-05).
 
 ## Relación con las historias de usuario (HU-01 a HU-11)
 

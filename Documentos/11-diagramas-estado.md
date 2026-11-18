@@ -1,6 +1,6 @@
 # Diagramas de estado
 
-Este documento describe los estados y transiciones de las clases clave del dominio de OncoTrace con ciclo de vida relevante: `AlertaSeguimiento`, `DossierDigitalDerivacion`, `CasoOncologico` y `EstudioDiagnostico`. Los diagramas muestran las situaciones de cada objeto; las tablas precisan los eventos, las condiciones y las acciones que justifican los cambios.
+Este documento describe los estados y transiciones de las clases clave del dominio de OncoTrace con ciclo de vida relevante: `AlertaSeguimiento`, `DossierDigitalDerivacion`, `CasoOncologico`, `EstudioDiagnostico` y `FichaPresentacionComite`. Los diagramas muestran las situaciones de cada objeto; las tablas precisan los eventos, las condiciones y las acciones que justifican los cambios.
 
 **Referencias:** [Criterios de aceptación](./07-criterios-aceptacion.md) · [Modelo de dominio](./08-modelo-dominio.md) · [Casos de uso](./09-casos-de-uso.md) · [Diagramas de secuencia](./10-diagramas-secuencia.md) · [Historias de usuario](./04-historias-usuario.md).
 
@@ -175,8 +175,34 @@ El objeto `EstudioDiagnostico` modela la sincronización con LIS y PACS y los at
 
 ---
 
+## EST-05 — Ciclo de vida de FichaPresentacionComite
+
+- **Clase del dominio:** [`FichaPresentacionComite`](./08-modelo-dominio.md).
+- **Historias relacionadas:** [HU-06](./04-historias-usuario.md#hu-06).
+- **Casos de uso relacionados:** [CU-12 — Generar ficha de presentación a comité](./09-casos-de-uso.md#casos-de-uso-y-su-origen).
+- **Diagramas de secuencia relacionados:** no aplica; CU-12 no tiene DSS y su flujo se reconstruyó desde el Gherkin.
+
+![EST-05 — Ciclo de vida de una ficha de presentación a comité](../diagramas/EST-05-FichaPresentacionComite.png)
+
+**Archivo fuente:** [estados-objetos.puml](../diagramas/estados-objetos.puml) (`@startuml EST-05-FichaPresentacionComite`).
+
+### Descripción del ciclo de vida
+
+La ficha nace en **Generada** con folio `FIC-2026-NNN` cuando existe una biopsia validada o se registra una justificación médica de urgencia ([HU-06-ESC-01](./07-criterios-aceptacion.md#hu-06-esc-01-generación-automática-de-la-ficha-resumen) y [HU-06-ESC-05](./07-criterios-aceptacion.md#hu-06-esc-05-generación-excepcional-de-ficha-con-justificación-médica-de-urgencia)). Pasa a **Validada** cuando el médico tratante registra hipótesis diagnóstica, propuesta terapéutica y etapificación TNM, y queda identificado como `medicoPresentador`. Solo una ficha **Validada** se programa en la tabla de la sesión, y la programación exige al menos un estudio de imagen incorporado ([HU-06-ESC-03](./07-criterios-aceptacion.md#hu-06-esc-03-inclusión-en-la-tabla-de-sesión-del-comité-regional) y [HU-06-ESC-04](./07-criterios-aceptacion.md#hu-06-esc-04-bloqueo-de-programación-en-tabla-por-estudios-indispensables-faltantes)). Los bloqueos de ESC-02 y ESC-04 no crean ni cambian el estado. La ficha concluye con la sesión del comité, que se formaliza en el acta de HU-07.
+
+### Tabla de transiciones
+
+| Estado origen | Evento | Guarda | Acción | Estado destino |
+| :--- | :--- | :--- | :--- | :--- |
+| **Nodo inicial** | — | — | Solicitud de generación de la ficha | **Generada** |
+| **Generada** | `validarFicha` | [Médico tratante; hipótesis, propuesta y TNM registrados] | Registrar `medicoPresentador` | **Validada** |
+| **Validada** | `programarEnSesion` | [Al menos un estudio de imagen incorporado] | Asignar `tipoComite` y `fechaSesion`; añadir a la tabla oficial | **Validada** |
+| **Validada** | Sesión de comité realizada | [Acta formalizada en HU-07] | — | **Fin** |
+
+---
+
 ## Fuente editable
 
-El archivo PlantUML editable que contiene los cuatro diagramas de estado se encuentra en el repositorio:
+El archivo PlantUML editable que contiene los cinco diagramas de estado se encuentra en el repositorio:
 
 - [estados-objetos.puml](../diagramas/estados-objetos.puml)

@@ -200,3 +200,45 @@ legend top
   el examen en la completitud diagnóstica del caso (HU-05-ESC-01 a ESC-05).
 endlegend
 @enduml
+
+@startuml EST-05-FichaPresentacionComite
+!pragma layout smetana
+hide empty description
+skinparam shadowing false
+skinparam dpi 144
+skinparam backgroundColor #F7F9FC
+skinparam defaultFontName SansSerif
+skinparam titleFontSize 18
+skinparam titleFontColor #172A40
+skinparam stateFontSize 16
+skinparam stateArrowFontSize 13
+skinparam legendBackgroundColor #EDF3FA
+skinparam legendBorderColor #B7C9DD
+skinparam legendFontColor #172A40
+skinparam state {
+  BackgroundColor #EAF1F8
+  BorderColor #526B87
+  FontColor #172A40
+  ArrowColor #425B78
+  StartColor #526B87
+  EndColor #526B87
+}
+
+title EST-05 · Ciclo de vida de FichaPresentacionComite
+
+state "Generada" as G #EAF1F8
+state "Validada" as V #E7F4EC
+
+[*] -down-> G : / generarFicha\n  [biopsia validada o justificación médica de urgencia]\n  (asigna folio FIC-2026-NNN)
+G -down-> V : validarFicha\n[médico tratante; hipótesis diagnóstica, propuesta y TNM completos]\n/ registrar médico presentador
+V -right-> V : programarEnSesion\n[estudios indispensables completos]\n/ asignar tipoComité y fechaSesión
+V -down-> [*] : Sesión de comité realizada / HU-07
+
+legend top
+  **Ciclo de vida de Ficha de Presentación a Comité (HU-06).**
+  - ESC-02 bloquea la generación si no hay biopsia validada ni urgencia.
+  - ESC-04 bloquea la programación si faltan estudios indispensables (imagen).
+  - Solo una ficha en estado Validada puede programarse en la tabla oficial (ESC-03).
+endlegend
+@enduml
+

@@ -398,6 +398,21 @@ Característica: Generación automatizada de ficha de presentación a comité
     Cuando la gestora programa el caso para la próxima sesión del Comité Oncológico Regional
     Entonces OncoTrace añade el caso a la tabla oficial de la sesión
     Y deja el expediente digital disponible para la revisión previa del equipo médico participante
+
+  Escenario: HU-06-ESC-04 Bloqueo de programación en tabla por estudios indispensables faltantes
+    Dado un caso oncológico con Ficha de Presentación validada por el médico tratante
+    Y que el expediente consolidado no registra ningún estudio de imagen incorporado
+    Cuando la gestora intenta programar el caso en la tabla de la sesión del Comité Regional
+    Entonces OncoTrace bloquea la incorporación a la tabla oficial
+    Y alerta que faltan estudios indispensables antes de validar la inclusión del caso
+
+  Escenario: HU-06-ESC-05 Generación excepcional de ficha con justificación médica de urgencia
+    Dado un caso oncológico cuya orden de biopsia continúa pendiente o sin validación en LIS
+    Y que el médico tratante acredita una justificación clínica de urgencia
+    Cuando la gestora solicita generar la Ficha de Presentación a Comité registrando la justificación
+    Entonces OncoTrace emite la ficha con la marca de generación excepcional de urgencia
+    Y conserva en la ficha la justificación, el responsable y la fecha
+    Y deja constancia de que el informe histopatológico continúa pendiente de validación
 ```
 
 ---

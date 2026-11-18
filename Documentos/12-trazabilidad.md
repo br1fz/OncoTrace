@@ -11,7 +11,7 @@ Esta matriz constituye la **fuente de verdad canónica y vinculante** de trazabi
 
 ## Matriz de trazabilidad consolidada
 
-La matriz tiene una fila por cada requisito funcional y no funcional ([03-requisitos.md](./03-requisitos.md)), vinculando cada historia con sus casos de uso (CU-01 a CU-16), diagramas de secuencia (DSS-01 a DSS-04), diagramas de estado (EST-01 a EST-04) y entidades del modelo de dominio.
+La matriz tiene una fila por cada requisito funcional y no funcional ([03-requisitos.md](./03-requisitos.md)), vinculando cada historia con sus casos de uso (CU-01 a CU-16), diagramas de secuencia (DSS-01 a DSS-04), diagramas de estado (EST-01 a EST-05) y entidades del modelo de dominio.
 
 | Requisito (Entrega 1) | Historia | Caso(s) de uso | Secuencia | Estado | Clases del dominio |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -20,7 +20,7 @@ La matriz tiene una fila por cada requisito funcional y no funcional ([03-requis
 | **RF-03** · Bitácora de puntos de contacto | HU-03 | CU-11 | — | EST-01 | `EntradaBitacora`, `CasoOncologico`, `HitoAsistencial`, `AlertaSeguimiento` |
 | **RF-04** · Alertas GES e inactividad | HU-04 | CU-06 | DSS-04 | EST-01 | `CasoOncologico`, `GarantiaGES`, `AlertaSeguimiento`, `HitoAsistencial` |
 | **RF-05** · Consolidación de exámenes y alertas | HU-05 | CU-01, CU-02 | DSS-01 | EST-01, EST-04 | `CasoOncologico`, `OrdenExamen`, `EstudioDiagnostico`, `AlertaSeguimiento` |
-| **RF-06** · Ficha de presentación a comité | HU-06 | CU-12 | — | — | `FichaPresentacionComite`, `CasoOncologico`, `EstudioDiagnostico` |
+| **RF-06** · Ficha de presentación a comité | HU-06 | CU-12 | — | EST-05 | `FichaPresentacionComite`, `CasoOncologico`, `EstudioDiagnostico`, `EvaluacionMultidimensional` |
 | **RF-07** · Acta digital y registro REM 7 | HU-07 | CU-13 | — | — | `ActaComite`, `FirmaElectronica`, `RegistroREM7`, `ResolucionComite` |
 | **RF-08** · Derivaciones externas y reembolso de pasajes | HU-08 | CU-03, CU-04, CU-06, CU-07, CU-08, CU-09 | DSS-02 | EST-01, EST-02 | `CasoOncologico`, `ResolucionComite`, `DossierDigitalDerivacion`, `EstudioDiagnostico`, `InstructivoReembolsoPasajes`, `ContraReferenciaEpicrisis`, `AlertaSeguimiento`, `HitoAsistencial` |
 | **RF-09** · Tótem de autoatención | HU-09 | CU-14 | — | — | `InteraccionCanalUsuario`, `Paciente`, `CuidadorAutorizado`, `CasoOncologico` |
@@ -79,7 +79,7 @@ Las fuentes y relaciones de origen se mantienen según la [matriz de trazabilida
 | HU-04-ESC-01 a HU-04-ESC-09 | CU-06 · Gestionar alertas de seguimiento |
 | HU-05-ESC-01, HU-05-ESC-03, HU-05-ESC-04, HU-05-ESC-05 y HU-05-ESC-06 | CU-01 · Consolidar y consultar informes diagnósticos |
 | HU-05-ESC-02 | CU-02 · Recibir avisos de hallazgos críticos |
-| HU-06-ESC-01 a HU-06-ESC-03 | CU-12 · Generar ficha de presentación a comité |
+| HU-06-ESC-01 a HU-06-ESC-05 | CU-12 · Generar ficha de presentación a comité |
 | HU-07-ESC-01 a HU-07-ESC-03 | CU-13 · Registrar acta de comité, firma y consolidar REM 7 |
 | HU-08-ESC-01 | CU-07 · Confeccionar dossier de derivación |
 | HU-08-ESC-02 | CU-03 · Despachar derivación externa; CU-08 · Registrar entrega del instructivo de pasajes |
@@ -123,7 +123,7 @@ Los nombres corresponden a conceptos definidos en el [modelo de dominio](./08-mo
 | **HU-03** | DCU-01.D | — | EST-01 · Alertas de búsqueda activa y punto pendiente |
 | **HU-04** | DCU-01.A | DSS-04 · Detección y gestión de alertas preventivas GES | EST-01 · Ciclo de vida de `AlertaSeguimiento` |
 | **HU-05** | DCU-01.B | DSS-01 · Informes diagnósticos LIS/PACS | EST-01 · Alerta de hallazgo crítico<br>EST-03 · Retroceso de etapa en CasoOncologico (ESC-06)<br>EST-04 · Ciclo de vida de `EstudioDiagnostico` |
-| **HU-06** | DCU-01.D | — | — |
+| **HU-06** | DCU-01.D | — (CU-12 sin DSS; flujo reconstruido desde el Gherkin) | EST-05 · Ciclo de vida de `FichaPresentacionComite` |
 | **HU-07** | DCU-01.D | — | — |
 | **HU-08** | DCU-01.C | DSS-02 · Derivación externa y retorno HCVB | EST-01 · Alerta de rezago<br>EST-02 · Ciclo de vida de `DossierDigitalDerivacion` |
 | **HU-09** | DCU-01.D | — | — |
@@ -138,9 +138,9 @@ Las relaciones entre historias y diagramas son de muchos a muchos: por ejemplo, 
 
 1. **Diagramas de secuencia:** OncoTrace especifica cuatro Diagramas de Secuencia del Sistema (DSS-01 a DSS-04) en [10-diagramas-secuencia.md](./10-diagramas-secuencia.md) y `diagramas/diagramas-secuencia.puml`. DSS-01 cubre HU-05 con LIS/PACS y compras de servicio externo (HU-05-ESC-05); DSS-02 cubre HU-08 con HCVB; DSS-03 formaliza la interacción y validaciones temporales de HU-01; y DSS-04 formaliza el motor de evaluación de reglas preventivas de plazos e inactividad de HU-04.
 
-2. **Diagramas de estado:** OncoTrace formaliza cuatro diagramas de ciclo de vida (EST-01 a EST-04) en [11-diagramas-estado.md](./11-diagramas-estado.md) y `diagramas/estados-objetos.puml`. EST-01 modela `AlertaSeguimiento` (HU-03/HU-04/HU-05/HU-08); EST-02 modela `DossierDigitalDerivacion` (HU-08); EST-03 modela las 8 etapas asistenciales de `CasoOncologico` (HU-01 y retroceso excepcional en HU-05-ESC-06); y EST-04 modela los estados de validación y recepción de `EstudioDiagnostico` (HU-05).
+2. **Diagramas de estado:** OncoTrace formaliza cinco diagramas de ciclo de vida (EST-01 a EST-05) en [11-diagramas-estado.md](./11-diagramas-estado.md) y `diagramas/estados-objetos.puml`. EST-01 modela `AlertaSeguimiento` (HU-03/HU-04/HU-05/HU-08); EST-02 modela `DossierDigitalDerivacion` (HU-08); EST-03 modela las 8 etapas asistenciales de `CasoOncologico` (HU-01 y retroceso excepcional en HU-05-ESC-06); EST-04 modela los estados de validación y recepción de `EstudioDiagnostico` (HU-05); y EST-05 modela el ciclo de vida de `FichaPresentacionComite` (HU-06), con paso de Generada a Validada y programación en la tabla de sesión sin cambio de estado.
 
-3. **Cobertura integral de historias:** El repositorio cuenta con especificación formal y completa para las 11 historias de usuario (HU-01 a HU-11), con 52 escenarios de aceptación en Gherkin ([07-criterios-aceptacion.md](./07-criterios-aceptacion.md)), 16 casos de uso ([09-casos-de-uso.md](./09-casos-de-uso.md) y `casos-de-uso.puml` con vistas A a D), y 22 clases del dominio ([08-modelo-dominio.md](./08-modelo-dominio.md) y `modelo-dominio.puml` con vistas A a D).
+3. **Cobertura integral de historias:** El repositorio cuenta con especificación formal y completa para las 11 historias de usuario (HU-01 a HU-11), con 54 escenarios de aceptación en Gherkin ([07-criterios-aceptacion.md](./07-criterios-aceptacion.md)), 16 casos de uso ([09-casos-de-uso.md](./09-casos-de-uso.md) y `casos-de-uso.puml` con vistas A a D), y 22 clases del dominio ([08-modelo-dominio.md](./08-modelo-dominio.md) y `modelo-dominio.puml` con vistas A a D).
 
 4. **Vigencia y habilitación de generación:** Todas las historias y casos de uso CU-01 a CU-16 se encuentran plenamente vigentes y habilitados para ser derivados e implementados progresivamente por OpenCode / OpenSpec / Antigravity sin bloqueos metodológicos.
 
