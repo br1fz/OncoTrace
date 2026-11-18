@@ -68,3 +68,17 @@ Cuando el examen corresponda a una compra de servicio externo no disponible en L
 - **WHEN** la gestora intenta adjuntar un archivo que no está en formato PDF
 - **THEN** el sistema rechaza la carga e indica que el formato admitido es PDF
 - **AND** el examen permanece pendiente de recepción
+
+### Requirement: Reclasificación diagnóstica por informe discordante o no concluyente
+
+El sistema SHALL permitir registrar una reevaluación diagnóstica ante informes anatomopatológicos discordantes o no concluyentes en casos en Etapificación. El sistema SHALL retroceder la etapa a Confirmación diagnóstica, mover la tarjeta en el tablero, registrar el hito en la línea de tiempo y habilitar la solicitud de nuevos exámenes.
+
+#### Scenario: HU-05-ESC-06 Retroceso excepcional de Etapificación a Confirmación diagnóstica por informe discordante o no concluyente
+- **GIVEN** un caso oncológico que se encuentra en la etapa de "Etapificación" en el tablero
+- **AND** que se incorpora un informe diagnóstico o evaluación médica con resultado no concluyente, muestra insuficiente o discordancia diagnóstica
+- **WHEN** el profesional autorizado registra la reevaluación diagnóstica del caso
+- **THEN** OncoTrace retrocede la etapa actual del caso a "Confirmación diagnóstica"
+- **AND** actualiza la tarjeta del paciente en el tablero centralizado moviéndola a la columna "Confirmación diagnóstica"
+- **AND** registra el hito de "Reclasificación diagnóstica" en la línea de tiempo con fecha, responsable y justificación clínica
+- **AND** habilita la solicitud y seguimiento de nuevos exámenes confirmatorios
+

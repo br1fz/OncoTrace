@@ -80,3 +80,14 @@ El sistema SHALL registrar los hitos asistenciales de manera inmutable y validar
 - **THEN** el sistema rechaza el registro con el mensaje "La fecha de ocurrencia no puede ser anterior al último hito registrado"
 - **AND** no se generan incongruencias cronológicas en la línea de tiempo
 - **AND** la etapa del caso permanece sin cambios
+
+### Requirement: Retroceso de etapa por reclasificación diagnóstica (EST-03)
+El sistema SHALL permitir el retroceso excepcional de la etapa de Etapificación a Confirmación diagnóstica en `CasoOncologico` únicamente ante el registro de un hito de Reclasificación diagnóstica debidamente justificado por resultado no concluyente o discordante. El sistema SHALL actualizar atómicamente la etapa actual, persistir el hito en la línea de tiempo con su autor, fecha y justificación, y reflejar el cambio en la columna correspondiente del tablero.
+
+#### Scenario: Retroceso excepcional de Etapificación a Confirmación diagnóstica con registro de hito auditable
+- **GIVEN** un caso oncológico en la etapa de Etapificación
+- **WHEN** un profesional autorizado registra un hito de tipo Reclasificación diagnóstica indicando la justificación clínica del retroceso
+- **THEN** el sistema actualiza la etapa actual del caso a Confirmación diagnóstica
+- **AND** conserva el hito de Reclasificación diagnóstica en la línea de tiempo identificando fecha, usuario, rol y motivo
+- **AND** la tarjeta del caso en el tablero de seguimiento pasa a mostrarse en la etapa Confirmación diagnóstica
+
