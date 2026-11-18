@@ -202,6 +202,15 @@ Característica: Incorporación de informes al caso oncológico correspondiente
     Y el examen queda identificado como recibido
     Y la completitud de los exámenes solicitados se actualiza
     Y el profesional autorizado puede consultar y descargar el informe adjunto
+
+  Escenario: HU-05-ESC-06 Retroceso excepcional de Etapificación a Confirmación diagnóstica por informe discordante o no concluyente
+    Dado un caso oncológico que se encuentra en la etapa de "Etapificación" en el tablero
+    Y que se incorpora un informe diagnóstico o evaluación médica con resultado no concluyente, muestra insuficiente o discordancia diagnóstica
+    Cuando el profesional autorizado registra la reevaluación diagnóstica del caso
+    Entonces OncoTrace retrocede la etapa actual del caso a "Confirmación diagnóstica"
+    Y actualiza la tarjeta del paciente en el tablero centralizado moviéndola a la columna "Confirmación diagnóstica"
+    Y registra el hito de "Reclasificación diagnóstica" en la línea de tiempo con fecha, responsable y justificación clínica
+    Y habilita la solicitud y seguimiento de nuevos exámenes confirmatorios
 ```
 
 ---

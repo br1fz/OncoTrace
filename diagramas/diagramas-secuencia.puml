@@ -67,6 +67,13 @@ opt Compra de servicio externo no disponible en LIS ni PACS
   Gestor -> OT: Adjuntar informe externo en formato PDF
   OT --> Gestor: Incorporar informe al expediente consolidado y actualizar completitud
 end
+
+opt Resultado no concluyente o discordante en Etapificación (HU-05-ESC-06)
+  Medico -> OT: Registrar reevaluación diagnóstica con justificación clínica
+  OT -> OT: Retroceder etapa del caso a "Confirmación diagnóstica"
+  OT -> OT: Registrar hito de "Reclasificación diagnóstica" en timeline
+  OT --> Gestor: Actualizar ubicación en tablero Kanban y habilitar nuevos exámenes
+end
 @enduml
 
 @startuml DSS-02-HU-08

@@ -93,6 +93,7 @@ stateDiagram-v2
   [*] --> Sospecha: Ingreso del caso por sospecha clínica o CAE
   Sospecha --> ConfirmacionDiagnostica: Confirmación histopatológica / Emisión IPD
   ConfirmacionDiagnostica --> Etapificacion: Indicación de estudios de extensión
+  Etapificacion --> ConfirmacionDiagnostica: Reevaluación diagnóstica / resultado no concluyente o discordante (HU-05-ESC-06)
   Etapificacion --> Etapificacion: Resolución firmada de comité (hito en Etapificación)
   Etapificacion --> Tratamiento: Inicio efectivo del tratamiento registrado
   Tratamiento --> Rehabilitacion: Término de terapia activa (cirugía/QT/RT)
@@ -109,6 +110,7 @@ El objeto `CasoOncologico` transiciona a lo largo de las ocho etapas normadas de
 1. La resolución de comité es un **hito asistencial dentro de la etapa de Etapificación**, por lo que su registro no cambia la etapa del caso ni crea una etapa denominada "Comité" ([HU-01-ESC-03](./07-criterios-aceptacion.md#hu-01-esc-03-resolucion-de-comite-sin-inicio-del-tratamiento)).
 2. El cambio a la etapa **Tratamiento** exige que un profesional autorizado registre el evento de inicio efectivo de la terapia prescrita ([HU-01-ESC-02](./07-criterios-aceptacion.md#hu-01-esc-02-cambio-de-etapa-por-inicio-del-tratamiento)).
 3. El cierre formal se alcanza en **Alta y contrarreferencia**, tras completarse la vigilancia de sobrevivientes (5 años), remisión clínica completa, traslado de red o fallecimiento.
+4. Si durante la etapa de **Etapificación** se incorpora un informe anatomopatológico o evaluación médica con resultado no concluyente, muestra insuficiente o discordancia diagnóstica, el sistema admite el retroceso excepcional a **Confirmación diagnóstica** ([HU-05-ESC-06](./07-criterios-aceptacion.md#hu-05-esc-06-retroceso-excepcional-de-etapificacion-a-confirmacion-diagnostica-por-informe-discordante-o-no-concluyente)), actualizando la ubicación de la tarjeta en el tablero centralizado y registrando el hito de reclasificación en la línea de tiempo a la espera de nuevos exámenes.
 
 ### Tabla de transiciones
 
@@ -117,6 +119,7 @@ El objeto `CasoOncologico` transiciona a lo largo de las ocho etapas normadas de
 | **Nodo inicial** | — | — | Ingreso por derivación CAE, APS, Urgencias o hallazgo AP | **Sospecha** |
 | **Sospecha** | Confirmación diagnóstica | [Diagnóstico histopatológico o clínico validado] | Notificar al paciente y emitir IPD si es patología GES | **Confirmación diagnóstica** |
 | **Confirmación diagnóstica** | Indicación de etapificación | [Exámenes de extensión requeridos] | Emitir órdenes diagnósticas e iniciar rescate de exámenes | **Etapificación** |
+| **Etapificación** | Reevaluación diagnóstica | [Informe no concluyente, muestra insuficiente o discordancia clínica] | Registrar hito de reclasificación con justificación en línea de tiempo y actualizar tablero | **Confirmación diagnóstica** |
 | **Etapificación** | Registro de resolución de comité | [Sin confirmación clínica de inicio de terapia] | Registrar hito en línea de tiempo; mantener caso en Etapificación | **Etapificación** |
 | **Etapificación** | Registro de inicio de tratamiento | [Resolución previa de comité y acto médico de inicio] | Registrar hito con responsable y actualizar tablero Kanban | **Tratamiento** |
 | **Tratamiento** | Término de terapia activa | [Cirugía, ciclos QT o RT completados] | Derivar a equipo multidisciplinario (kine/psicosocial) | **Rehabilitación** |

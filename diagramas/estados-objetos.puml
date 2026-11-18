@@ -135,6 +135,7 @@ state "Alta y contrarreferencia" as AC #E7F4EC
 [*] -down-> S : / Ingreso del caso por sospecha\n  o hallazgo clínico
 S -down-> CD : Confirmación diagnóstica\n[diagnóstico histopatológico o clínico]\n/ Emisión IPD si aplica
 CD -down-> E : Indicación de etapificación\n/ Solicitud de estudios diagnósticos
+E -up-> CD : Reevaluación diagnóstica (HU-05-ESC-06)\n[informe no concluyente o discordante]\n/ Registrar hito y actualizar tablero
 E --> E : Resolución firmada de comité\n[sin evento clínico de inicio]\n/ Registrar hito en etapificación
 E -down-> T : Inicio del tratamiento registrado\n[resolución de comité registrada]\n/ Registrar hito y cambio de etapa
 T -down-> R : Finalización de terapia activa\n/ Derivación a rehabilitación
@@ -145,8 +146,9 @@ SS -down-> AC : Cumplimiento de vigilancia o remisión\n/ Contrarreferencia form
 AC -down-> [*]
 
 legend top
-  **Trayectoria oncológica de 8 etapas (HU-01).**
-  La resolución de comité se incorpora como hito de Etapificación (HU-01-ESC-03)
+  **Trayectoria oncológica de 8 etapas (HU-01 y HU-05).**
+  La resolución de comité se incorpora como hito de Etapificación (HU-01-ESC-03),
+  se admite el retroceso a Confirmación diagnóstica ante resultado no concluyente (HU-05-ESC-06)
   y el cambio a Tratamiento requiere registrar el inicio efectivo (HU-01-ESC-02).
 endlegend
 @enduml

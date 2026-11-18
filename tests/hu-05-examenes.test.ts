@@ -13,6 +13,7 @@ import {
   ORIGENES_INFORME,
   evaluarTransicionEstudio
 } from '../src/dominio/examenes.js';
+import { evaluarTransicionHito } from '../src/dominio/caso-oncologico.js';
 import { ServicioExamenes, PDF_MINIMO_BUFFER } from '../src/servicios/examenes.js';
 import { ServicioAlertas } from '../src/servicios/alertas.js';
 import { ServicioSeguimiento } from '../src/servicios/seguimiento.js';
@@ -949,6 +950,58 @@ describe('HU-05 — Consolidación e indexación automática de exámenes y aler
 
       expect(resSinAlertas.status).toBe(200);
       expect(resSinAlertas.text).not.toContain('id="popup-hallazgo-critico"');
+    });
+  });
+
+  describe('8. Reclasificación diagnóstica y retroceso de etapa (HU-05-ESC-06 / CA7)', () => {
+    it('8.1 (Unitario) evaluarTransicionHito valida el retroceso de Etapificación a Confirmación diagnóstica', () => {
+      const res = evaluarTransicionHito('Etapificación', 'Reclasificación diagnóstica: resultado no concluyente', false);
+      expect(res.esValido).toBe(true);
+      expect(res.nuevaEtapa).toBe('Confirmación diagnóstica');
+      expect(res.esReclasificacionDiagnostica).toBe(true);
+    });
+
+    it('8.2 (Unitario) evaluarTransicionHito rechaza el retroceso si el caso no está en Etapificación', () => {
+      const res = evaluarTransicionHito('Sospecha', 'Reclasificación diagnóstica', false);
+      expect(res.esValido).toBe(false);
+      expect(res.nuevaEtapa).toBe('Sospecha');
+      expect(res.error).toContain("solo aplica para casos en etapa 'Etapificación'");
+    });
+
+    it('8.3 (Integración) registrarHito actualiza la etapa en BD a Confirmación diagnóstica y crea el hito', () => {
+      // Dejar el caso en Etapificación
+      repo.actualizarEtapaCaso(casoId, 'Etapificación');
+      const casoAntes = repo.obtenerCasoPorNumero(NUMERO_CASO);
+      expect(casoAntes?.etapaActual).toBe('Etapificación');
+
+      const resHito = servicioSeguimiento.registrarHito(NUMERO_CASO, {
+        tipo: 'Reclasificación diagnóstica: biopsia no concluyente requiere nueva toma',
+        fechaOcurrencia: '2026-06-15',
+        responsable: 'Dra. María Paz Gómez',
+        rolResponsable: 'Médico tratante'
+      });
+
+      expect(resHito.ok).toBe(true);
+      expect(resHito.nuevaEtapa).toBe('Confirmación diagnóstica');
+
+      const casoDespues = repo.obtenerCasoPorNumero(NUMERO_CASO);
+      expect(casoDespues?.etapaActual).toBe('Confirmación diagnóstica');
+
+      const hitos = repo.listarHitosPorCasoId(casoId);
+      const hitoReclasif = hitos.find(h => h.tipo.includes('Reclasificación'));
+      expect(hitoReclasif).toBeDefined();
+      expect(hitoReclasif?.responsable).toBe('Dra. María Paz Gómez');
+    });
+
+    it('8.4 (Tablero) Al consultar el tablero Kanban, el caso reclasificado se ubica en Confirmación diagnóstica', () => {
+      repo.actualizarEtapaCaso(casoId, 'Confirmación diagnóstica');
+      const tablero = servicioSeguimiento.obtenerTablero();
+
+      const colConfirmacion = tablero.etapas.find(e => e.nombre === 'Confirmación diagnóstica');
+      const colEtapificacion = tablero.etapas.find(e => e.nombre === 'Etapificación');
+
+      expect(colConfirmacion?.casos.some(c => c.numeroCaso === NUMERO_CASO)).toBe(true);
+      expect(colEtapificacion?.casos.some(c => c.numeroCaso === NUMERO_CASO)).toBe(false);
     });
   });
 });

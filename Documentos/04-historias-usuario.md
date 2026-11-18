@@ -150,6 +150,7 @@
 - **HU-05-CA4 — Visualización integrada:** El profesional debe poder previsualizar y descargar los informes en PDF directamente desde OncoTrace sin necesidad de abrir visores externos.
 - **HU-05-CA5 — Registro de compras de servicio:** Si el examen corresponde a una compra de servicio externo (ej. PET-CT, EBUS), debe permitir a la gestora adjuntar el informe externo en formato PDF e incorporarlo al expediente consolidado.
 - **HU-05-CA6 — Tolerancia a fallos:** Si un archivo presenta discrepancia en el identificador del paciente, el sistema debe almacenarlo en una bandeja de excepciones para auditoría sin asociarlo incorrectamente.
+- **HU-05-CA7 — Reclasificación diagnóstica y retroceso excepcional de etapa:** Cuando un informe anatomopatológico o una evaluación diagnóstica incorpore un resultado no concluyente, muestra insuficiente o discordancia diagnóstica en un caso que se encuentra en la etapa de Etapificación, el sistema debe permitir registrar la reevaluación médica del caso, retrocediendo su etapa a Confirmación diagnóstica en el tablero Kanban y dejando constancia auditable del motivo, profesional responsable y fecha en la línea de tiempo, a la espera de nuevos exámenes confirmatorios.
 
 ---
 

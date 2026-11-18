@@ -126,6 +126,8 @@ Si el tipo de hito no coincide con ninguno de estos textos, no se abre obligaci�
 
 - El comité se registra como un hito; no es un valor de `EtapaTrayectoria`. Firmar su resolución no cambia por sí solo la etapa del caso.
 
+- El avance por las etapas asistenciales es secuencial hacia adelante, salvo la excepción clínica reglada de HU-05-ESC-06: ante un informe anatomopatológico o evaluación médica con resultado no concluyente, muestra insuficiente o discordancia diagnóstica en un caso en Etapificación, el médico tratante puede registrar una reevaluación diagnóstica que retrocede el caso a Confirmación diagnóstica, actualizando su posición en el tablero a la espera de nuevos exámenes.
+
 - Cada alerta GES debe vincularse a una garantía del mismo caso. Cada alerta de rezago debe vincularse a un dossier del mismo caso. Una alerta de inactividad se vincula directamente al caso y no necesita garantía ni dossier de origen.
 
 - Una gestión registrada no resuelve una garantía pendiente. El estado Resuelta requiere el hito de cumplimiento de la garantía o el contacto que restablece la actividad del caso. El estado No aplica requiere una causa documentada, fecha y responsable del cierre.

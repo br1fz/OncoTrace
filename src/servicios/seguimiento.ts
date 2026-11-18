@@ -290,8 +290,8 @@ export class ServicioSeguimiento {
         });
       }
 
-      // Actualizar etapa si corresponde a inicio de tratamiento
-      if (evalTransicion.esInicioTratamiento && evalTransicion.nuevaEtapa !== caso.etapaActual) {
+      // Actualizar etapa si corresponde a inicio de tratamiento o retroceso por reclasificación diagnóstica (HU-05-ESC-06)
+      if (evalTransicion.nuevaEtapa !== caso.etapaActual) {
         this.repo.actualizarEtapaCaso(caso.id!, evalTransicion.nuevaEtapa);
       }
 

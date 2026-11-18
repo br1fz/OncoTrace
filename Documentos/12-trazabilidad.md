@@ -77,7 +77,7 @@ Las fuentes y relaciones de origen se mantienen según la [matriz de trazabilida
 | HU-02-ESC-01 a HU-02-ESC-03 | CU-10 · Aplicar evaluación multidimensional y estratificar riesgo |
 | HU-03-ESC-01 a HU-03-ESC-06 | CU-11 · Registrar interacción en bitácora de acompañamiento |
 | HU-04-ESC-01 a HU-04-ESC-09 | CU-06 · Gestionar alertas de seguimiento |
-| HU-05-ESC-01, HU-05-ESC-03, HU-05-ESC-04 y HU-05-ESC-05 | CU-01 · Consolidar y consultar informes diagnósticos |
+| HU-05-ESC-01, HU-05-ESC-03, HU-05-ESC-04, HU-05-ESC-05 y HU-05-ESC-06 | CU-01 · Consolidar y consultar informes diagnósticos |
 | HU-05-ESC-02 | CU-02 · Recibir avisos de hallazgos críticos |
 | HU-06-ESC-01 a HU-06-ESC-03 | CU-12 · Generar ficha de presentación a comité |
 | HU-07-ESC-01 a HU-07-ESC-03 | CU-13 · Registrar acta de comité, firma y consolidar REM 7 |
@@ -122,7 +122,7 @@ Los nombres corresponden a conceptos definidos en el [modelo de dominio](./08-mo
 | **HU-02** | DCU-01.D | — | — |
 | **HU-03** | DCU-01.D | — | EST-01 · Alertas de búsqueda activa y punto pendiente |
 | **HU-04** | DCU-01.A | DSS-04 · Detección y gestión de alertas preventivas GES | EST-01 · Ciclo de vida de `AlertaSeguimiento` |
-| **HU-05** | DCU-01.B | DSS-01 · Informes diagnósticos LIS/PACS | EST-01 · Alerta de hallazgo crítico<br>EST-04 · Ciclo de vida de `EstudioDiagnostico` |
+| **HU-05** | DCU-01.B | DSS-01 · Informes diagnósticos LIS/PACS | EST-01 · Alerta de hallazgo crítico<br>EST-03 · Retroceso de etapa en CasoOncologico (ESC-06)<br>EST-04 · Ciclo de vida de `EstudioDiagnostico` |
 | **HU-06** | DCU-01.D | — | — |
 | **HU-07** | DCU-01.D | — | — |
 | **HU-08** | DCU-01.C | DSS-02 · Derivación externa y retorno HCVB | EST-01 · Alerta de rezago<br>EST-02 · Ciclo de vida de `DossierDigitalDerivacion` |
@@ -138,9 +138,9 @@ Las relaciones entre historias y diagramas son de muchos a muchos: por ejemplo, 
 
 1. **Diagramas de secuencia:** OncoTrace especifica cuatro Diagramas de Secuencia del Sistema (DSS-01 a DSS-04) en [10-diagramas-secuencia.md](./10-diagramas-secuencia.md) y `diagramas/diagramas-secuencia.puml`. DSS-01 cubre HU-05 con LIS/PACS y compras de servicio externo (HU-05-ESC-05); DSS-02 cubre HU-08 con HCVB; DSS-03 formaliza la interacción y validaciones temporales de HU-01; y DSS-04 formaliza el motor de evaluación de reglas preventivas de plazos e inactividad de HU-04.
 
-2. **Diagramas de estado:** OncoTrace formaliza cuatro diagramas de ciclo de vida (EST-01 a EST-04) en [11-diagramas-estado.md](./11-diagramas-estado.md) y `diagramas/estados-objetos.puml`. EST-01 modela `AlertaSeguimiento` (HU-03/HU-04/HU-05/HU-08); EST-02 modela `DossierDigitalDerivacion` (HU-08); EST-03 modela las 8 etapas asistenciales de `CasoOncologico` (HU-01); y EST-04 modela los estados de validación y recepción de `EstudioDiagnostico` (HU-05).
+2. **Diagramas de estado:** OncoTrace formaliza cuatro diagramas de ciclo de vida (EST-01 a EST-04) en [11-diagramas-estado.md](./11-diagramas-estado.md) y `diagramas/estados-objetos.puml`. EST-01 modela `AlertaSeguimiento` (HU-03/HU-04/HU-05/HU-08); EST-02 modela `DossierDigitalDerivacion` (HU-08); EST-03 modela las 8 etapas asistenciales de `CasoOncologico` (HU-01 y retroceso excepcional en HU-05-ESC-06); y EST-04 modela los estados de validación y recepción de `EstudioDiagnostico` (HU-05).
 
-3. **Cobertura integral de historias:** El repositorio cuenta con especificación formal y completa para las 11 historias de usuario (HU-01 a HU-11), con 51 escenarios de aceptación en Gherkin ([07-criterios-aceptacion.md](./07-criterios-aceptacion.md)), 16 casos de uso ([09-casos-de-uso.md](./09-casos-de-uso.md) y `casos-de-uso.puml` con vistas A a D), y 22 clases del dominio ([08-modelo-dominio.md](./08-modelo-dominio.md) y `modelo-dominio.puml` con vistas A a D).
+3. **Cobertura integral de historias:** El repositorio cuenta con especificación formal y completa para las 11 historias de usuario (HU-01 a HU-11), con 52 escenarios de aceptación en Gherkin ([07-criterios-aceptacion.md](./07-criterios-aceptacion.md)), 16 casos de uso ([09-casos-de-uso.md](./09-casos-de-uso.md) y `casos-de-uso.puml` con vistas A a D), y 22 clases del dominio ([08-modelo-dominio.md](./08-modelo-dominio.md) y `modelo-dominio.puml` con vistas A a D).
 
 4. **Vigencia y habilitación de generación:** Todas las historias y casos de uso CU-01 a CU-16 se encuentran plenamente vigentes y habilitados para ser derivados e implementados progresivamente por OpenCode / OpenSpec / Antigravity sin bloqueos metodológicos.
 
