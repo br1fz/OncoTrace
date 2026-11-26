@@ -66,6 +66,20 @@ describe('HU-01 — Tablero de trazabilidad y línea de tiempo clínica por etap
       expect(res.nuevaEtapa).toBe('Etapificación');
       expect(res.error).toContain('sin una resolución de comité previa');
     });
+
+    it('1.5 (HU-01-ESC-06) Indicación de etapificación transiciona de Confirmación diagnóstica a Etapificación', () => {
+      const res = evaluarTransicionHito('Confirmación diagnóstica', 'Indicación de etapificación y solicitud de estudios de extensión', false);
+      expect(res.esValido).toBe(true);
+      expect(res.nuevaEtapa).toBe('Etapificación');
+      expect(res.esAvanceEtapificacion).toBe(true);
+    });
+
+    it('1.6 (HU-01-ESC-07) Rechazo de indicación de etapificación si el caso no está en Confirmación diagnóstica', () => {
+      const res = evaluarTransicionHito('Sospecha', 'Indicación de etapificación y solicitud de estudios de extensión', false);
+      expect(res.esValido).toBe(false);
+      expect(res.nuevaEtapa).toBe('Sospecha');
+      expect(res.error).toContain('Confirmación diagnóstica');
+    });
   });
 
   describe('2. Servicio de Seguimiento y Cálculo de Días en Timeline', () => {
@@ -297,6 +311,68 @@ describe('HU-01 — Tablero de trazabilidad y línea de tiempo clínica por etap
       const getRes = await request(app).get('/casos/CASO-2026-003');
       expect(getRes.status).toBe(200);
       expect(getRes.text).not.toContain('Contacto de seguimiento y navegación asistencial');
+    });
+
+    it('Escenario: HU-01-ESC-06 Cambio de etapa a Etapificación por indicación de estudios de extensión', async () => {
+      const repo = new RepositorioOncologico(db);
+      const p = repo.crearPaciente({ run: '9.876.543-2', nombreCompleto: 'Carlos Araya Pizarro' });
+      repo.crearCaso({
+        numeroCaso: 'CASO-TEST-CD',
+        pacienteId: p,
+        especialidad: 'Gastroenterología',
+        codigoDiagnosticoOSospecha: 'C18.9',
+        etapaActual: 'Confirmación diagnóstica',
+        fechaIngreso: '2026-10-02'
+      });
+
+      const postRes = await request(app)
+        .post('/casos/CASO-TEST-CD/hitos')
+        .send({
+          tipo: 'Indicación de etapificación y solicitud de estudios de extensión',
+          fechaOcurrencia: '2026-10-25',
+          responsable: 'Dr. Fernando Bravo',
+          rolResponsable: 'Médico tratante'
+        });
+
+      expect(postRes.status).toBe(302);
+      expect(postRes.headers.location).toContain('/casos/CASO-TEST-CD');
+
+      const getRes = await request(app).get('/casos/CASO-TEST-CD');
+      expect(getRes.status).toBe(200);
+      expect(getRes.text).toContain('Etapificación');
+      expect(getRes.text).toContain('Indicación de etapificación');
+
+      const tableroRes = await request(app).get('/');
+      expect(tableroRes.status).toBe(200);
+      expect(tableroRes.text).toContain('CASO-TEST-CD');
+    });
+
+    it('Escenario: HU-01-ESC-08 Rechazo de indicación de etapificación por rol no autorizado', async () => {
+      const repo = new RepositorioOncologico(db);
+      const p = repo.crearPaciente({ run: '9.876.543-3', nombreCompleto: 'Test Rol No Autorizado' });
+      repo.crearCaso({
+        numeroCaso: 'CASO-TEST-ROL',
+        pacienteId: p,
+        especialidad: 'Gastroenterología',
+        codigoDiagnosticoOSospecha: 'C18.9',
+        etapaActual: 'Confirmación diagnóstica',
+        fechaIngreso: '2026-10-02'
+      });
+
+      const postRes = await request(app)
+        .post('/casos/CASO-TEST-ROL/hitos')
+        .send({
+          tipo: 'Indicación de etapificación y solicitud de estudios de extensión',
+          fechaOcurrencia: '2026-10-25',
+          responsable: 'TENS Pedro Soto',
+          rolResponsable: 'TENS UGCO'
+        });
+
+      expect(postRes.status).toBe(400);
+      expect(postRes.text).toContain('no tiene permisos para indicar etapificación');
+
+      const getRes = await request(app).get('/casos/CASO-TEST-ROL');
+      expect(getRes.text).toContain('Confirmación diagnóstica');
     });
   });
 });

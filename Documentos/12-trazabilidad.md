@@ -73,7 +73,7 @@ Las fuentes y relaciones de origen se mantienen según la [matriz de trazabilida
 
 | Escenarios de aceptación | Casos de uso relacionados |
 | :--- | :--- |
-| HU-01-ESC-01 a HU-01-ESC-05 | CU-05 · Dar seguimiento al caso oncológico |
+| HU-01-ESC-01 a HU-01-ESC-08 | CU-05 · Dar seguimiento al caso oncológico |
 | HU-02-ESC-01 a HU-02-ESC-03 | CU-10 · Aplicar evaluación multidimensional y estratificar riesgo |
 | HU-03-ESC-01 a HU-03-ESC-06 | CU-11 · Registrar interacción en bitácora de acompañamiento |
 | HU-04-ESC-01 a HU-04-ESC-09 | CU-06 · Gestionar alertas de seguimiento |
@@ -140,7 +140,7 @@ Las relaciones entre historias y diagramas son de muchos a muchos: por ejemplo, 
 
 2. **Diagramas de estado:** OncoTrace formaliza cinco diagramas de ciclo de vida (EST-01 a EST-05) en [11-diagramas-estado.md](./11-diagramas-estado.md) y `diagramas/estados-objetos.puml`. EST-01 modela `AlertaSeguimiento` (HU-03/HU-04/HU-05/HU-08); EST-02 modela `DossierDigitalDerivacion` (HU-08); EST-03 modela las 8 etapas asistenciales de `CasoOncologico` (HU-01 y retroceso excepcional en HU-05-ESC-06); EST-04 modela los estados de validación y recepción de `EstudioDiagnostico` (HU-05); y EST-05 modela el ciclo de vida de `FichaPresentacionComite` (HU-06), con paso de Generada a Validada y programación en la tabla de sesión sin cambio de estado.
 
-3. **Cobertura integral de historias:** El repositorio cuenta con especificación formal y completa para las 11 historias de usuario (HU-01 a HU-11), con 54 escenarios de aceptación en Gherkin ([07-criterios-aceptacion.md](./07-criterios-aceptacion.md)), 16 casos de uso ([09-casos-de-uso.md](./09-casos-de-uso.md) y `casos-de-uso.puml` con vistas A a D), y 22 clases del dominio ([08-modelo-dominio.md](./08-modelo-dominio.md) y `modelo-dominio.puml` con vistas A a D).
+3. **Cobertura integral de historias:** El repositorio cuenta con especificación formal y completa para las 11 historias de usuario (HU-01 a HU-11), con 57 escenarios de aceptación en Gherkin ([07-criterios-aceptacion.md](./07-criterios-aceptacion.md)), 16 casos de uso ([09-casos-de-uso.md](./09-casos-de-uso.md) y `casos-de-uso.puml` con vistas A a D), y 22 clases del dominio ([08-modelo-dominio.md](./08-modelo-dominio.md) y `modelo-dominio.puml` con vistas A a D).
 
 4. **Vigencia y habilitación de generación:** Todas las historias y casos de uso CU-01 a CU-16 se encuentran plenamente vigentes y habilitados para ser derivados e implementados progresivamente por OpenCode / OpenSpec / Antigravity sin bloqueos metodológicos.
 

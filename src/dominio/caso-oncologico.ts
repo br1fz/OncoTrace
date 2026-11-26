@@ -106,6 +106,7 @@ export interface ResultadoEvaluacionHito {
   esResolucionComite: boolean;
   esInicioTratamiento: boolean;
   esReclasificacionDiagnostica?: boolean;
+  esAvanceEtapificacion?: boolean;
 }
 
 export function normalizarTipoHito(tipo: string): string {
@@ -114,6 +115,7 @@ export function normalizarTipoHito(tipo: string): string {
 
 /**
  * Evalúa las reglas de transición de estado de EST-03 para CasoOncologico:
+ * - 'Indicación de etapificación': Avanza de Confirmación diagnóstica a Etapificación (HU-01-ESC-06 / EST-03).
  * - 'Resolución de comité': Se conserva en Etapificación (no crea etapa Comité).
  * - 'Inicio de tratamiento': Exige resolución de comité previa y estar en Etapificación; pasa a Tratamiento.
  * - 'Reclasificación diagnóstica': Permite el retroceso de Etapificación a Confirmación diagnóstica (HU-05-ESC-06).
@@ -132,6 +134,10 @@ export function evaluarTransicionHito(
     (norm.includes('retroceso') && norm.includes('confirmacion')) ||
     (norm.includes('discordante') && (norm.includes('diagnostico') || norm.includes('biopsia') || norm.includes('informe'))) ||
     (norm.includes('no concluyente') && (norm.includes('diagnostico') || norm.includes('biopsia') || norm.includes('informe')));
+  const esAvanceEtapificacion =
+    (norm.includes('etapificacion') && (norm.includes('indicacion') || norm.includes('solicitud') || norm.includes('estudio') || norm.includes('extension') || norm.includes('completado') || norm.includes('imagen'))) ||
+    norm.includes('estudios de extension') ||
+    norm.includes('solicitud de estudios');
 
   if (esResolucion) {
     return {
@@ -139,7 +145,8 @@ export function evaluarTransicionHito(
       nuevaEtapa: etapaActual, // Se conserva en Etapificación (no cambia de etapa)
       esResolucionComite: true,
       esInicioTratamiento: false,
-      esReclasificacionDiagnostica: false
+      esReclasificacionDiagnostica: false,
+      esAvanceEtapificacion: false
     };
   }
 
@@ -151,7 +158,8 @@ export function evaluarTransicionHito(
         error: `El retroceso por reclasificación diagnóstica solo aplica para casos en etapa 'Etapificación' (actual: '${etapaActual}').`,
         esResolucionComite: false,
         esInicioTratamiento: false,
-        esReclasificacionDiagnostica: true
+        esReclasificacionDiagnostica: true,
+        esAvanceEtapificacion: false
       };
     }
     return {
@@ -159,7 +167,40 @@ export function evaluarTransicionHito(
       nuevaEtapa: 'Confirmación diagnóstica',
       esResolucionComite: false,
       esInicioTratamiento: false,
-      esReclasificacionDiagnostica: true
+      esReclasificacionDiagnostica: true,
+      esAvanceEtapificacion: false
+    };
+  }
+
+  if (esAvanceEtapificacion) {
+    if (etapaActual !== 'Confirmación diagnóstica') {
+      if (etapaActual === 'Etapificación') {
+        return {
+          esValido: true,
+          nuevaEtapa: 'Etapificación',
+          esResolucionComite: false,
+          esInicioTratamiento: false,
+          esReclasificacionDiagnostica: false,
+          esAvanceEtapificacion: false
+        };
+      }
+      return {
+        esValido: false,
+        nuevaEtapa: etapaActual,
+        error: `El caso se encuentra en la etapa '${etapaActual}'; debe estar en 'Confirmación diagnóstica' para indicar etapificación.`,
+        esResolucionComite: false,
+        esInicioTratamiento: false,
+        esReclasificacionDiagnostica: false,
+        esAvanceEtapificacion: true
+      };
+    }
+    return {
+      esValido: true,
+      nuevaEtapa: 'Etapificación',
+      esResolucionComite: false,
+      esInicioTratamiento: false,
+      esReclasificacionDiagnostica: false,
+      esAvanceEtapificacion: true
     };
   }
 
@@ -171,7 +212,8 @@ export function evaluarTransicionHito(
         error: 'No se puede registrar inicio de tratamiento sin una resolución de comité previa registrada.',
         esResolucionComite: false,
         esInicioTratamiento: true,
-        esReclasificacionDiagnostica: false
+        esReclasificacionDiagnostica: false,
+        esAvanceEtapificacion: false
       };
     }
     if (etapaActual !== 'Etapificación') {
@@ -181,7 +223,8 @@ export function evaluarTransicionHito(
         error: `El caso se encuentra en la etapa '${etapaActual}'; debe estar en 'Etapificación' para iniciar tratamiento.`,
         esResolucionComite: false,
         esInicioTratamiento: true,
-        esReclasificacionDiagnostica: false
+        esReclasificacionDiagnostica: false,
+        esAvanceEtapificacion: false
       };
     }
     return {
@@ -189,7 +232,8 @@ export function evaluarTransicionHito(
       nuevaEtapa: 'Tratamiento',
       esResolucionComite: false,
       esInicioTratamiento: true,
-      esReclasificacionDiagnostica: false
+      esReclasificacionDiagnostica: false,
+      esAvanceEtapificacion: false
     };
   }
 
@@ -199,7 +243,8 @@ export function evaluarTransicionHito(
     nuevaEtapa: etapaActual,
     esResolucionComite: false,
     esInicioTratamiento: false,
-    esReclasificacionDiagnostica: false
+    esReclasificacionDiagnostica: false,
+    esAvanceEtapificacion: false
   };
 }
 

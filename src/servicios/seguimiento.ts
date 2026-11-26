@@ -275,6 +275,17 @@ export class ServicioSeguimiento {
       return { ok: false, error: evalTransicion.error };
     }
 
+    // 4.1. Validar autorización de rol para avance a Etapificación (CU-05 / HU-01-ESC-08)
+    if (evalTransicion.esAvanceEtapificacion) {
+      const rolesAutorizados = ['Gestor/a UGCO', 'Médico tratante'];
+      if (!rolesAutorizados.includes(input.rolResponsable)) {
+        return {
+          ok: false,
+          error: `Operación no autorizada: El rol '${input.rolResponsable}' no tiene permisos para indicar etapificación (roles autorizados: Gestor/a UGCO, Médico tratante).`
+        };
+      }
+    }
+
     // 4. Ejecutar cambios en transacción atómica
     const fechaRegistroIso = new Date().toISOString();
 

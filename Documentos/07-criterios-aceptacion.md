@@ -62,6 +62,26 @@ Característica: Seguimiento de casos oncológicos por etapas e hitos
     Entonces el sistema rechaza el registro con el mensaje "La fecha de ocurrencia no puede ser anterior al último hito registrado"
     Y no se generan incongruencias cronológicas en la línea de tiempo
     Y la etapa del caso permanece sin cambios
+
+  Escenario: HU-01-ESC-06 Cambio de etapa por indicación de estudios de extensión
+    Dado un caso oncológico en etapa de confirmación diagnóstica
+    Y un profesional autorizado con rol de gestora UGCO o médico tratante
+    Cuando el profesional registra la indicación de etapificación y solicitud de estudios de extensión
+    Entonces el caso pasa a la etapa de etapificación
+    Y la línea de tiempo incorpora el hito y el cambio de etapa
+    Y el tablero de trazabilidad refleja la nueva ubicación del caso en la columna Etapificación
+
+  Escenario: HU-01-ESC-07 Rechazo de indicación de etapificación por etapa incompatible
+    Dado un caso oncológico en una etapa asistencial distinta de confirmación diagnóstica
+    Cuando un profesional intenta registrar una indicación de etapificación para dicho caso
+    Entonces el sistema rechaza la operación informando que el caso debe encontrarse en confirmación diagnóstica
+    Y la etapa del caso permanece inalterada
+
+  Escenario: HU-01-ESC-08 Rechazo de indicación de etapificación por rol no autorizado
+    Dado un caso oncológico en etapa de confirmación diagnóstica
+    Cuando un usuario con rol no autorizado intenta registrar la indicación de etapificación
+    Entonces el sistema rechaza el registro por falta de permisos
+    Y no se modifica la línea de tiempo ni la etapa del caso
 ```
 
 ---

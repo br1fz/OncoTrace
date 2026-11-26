@@ -25,15 +25,16 @@
       <label for="tipoHito" class="form-label">Tipo de hito asistencial *</label>
       <select name="tipo" id="tipoHito" class="form-control" required onchange="toggleConductaComite(this.value)">
         <option value="">-- Seleccione el hito clínico a registrar --</option>
+        <option value="Indicación de etapificación y solicitud de estudios de extensión">Indicación de etapificación y solicitud de estudios de extensión (Pasa a Etapificación)</option>
         <option value="Resolución de comité oncológico">Resolución de comité oncológico (Conserva etapa en Etapificación)</option>
         <option value="Inicio efectivo de tratamiento">Inicio efectivo de tratamiento (Requiere resolución previa; pasa a Tratamiento)</option>
         <option value="Ingreso de sospecha desde APS">Ingreso de sospecha desde APS</option>
         <option value="Confirmación histopatológica">Confirmación histopatológica</option>
-        <option value="Estudios de etapificación e imágenes completados">Estudios de etapificación e imágenes completados</option>
+        <option value="Estudios de etapificación e imágenes completados">Estudios de etapificación e imágenes completados (Pasa o conserva Etapificación)</option>
         <option value="Contacto de seguimiento y navegación asistencial">Contacto de seguimiento y navegación asistencial</option>
         <option value="Evaluación multidisciplinaria de soporte">Evaluación multidisciplinaria de soporte</option>
       </select>
-      <span class="field-hint">EST-03: Solo el inicio de tratamiento respaldado por comité cambia la etapa a Tratamiento.</span>
+      <span class="field-hint">EST-03: La indicación de estudios de extensión avanza la etapa a Etapificación; el inicio de tratamiento respaldado por comité pasa a Tratamiento.</span>
     </div>
 
     <div class="form-row">
